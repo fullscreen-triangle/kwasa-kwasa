@@ -1,0 +1,80 @@
+// Basic Turbulance example script
+// This demonstrates the core language features
+
+// Project declaration with metadata
+project "Simple Demo" {
+    author: "Kwasa-Kwasa Team",
+    version: "0.1.0",
+    description: "A basic demo of Turbulance language features"
+}
+
+// Source declarations
+sources {
+    "data/sample.txt" as "text",
+    "data/reference.bib" as "bibliography"
+}
+
+// Function declaration
+funxn greet(name) {
+    return "Hello, " + name + "!";
+}
+
+// Text processing function
+funxn process_paragraph(text) {
+    within text {
+        // Apply text operations
+        simplify();
+        
+        // Conditional processing
+        given contains("complex") {
+            replace_jargon();
+        }
+        
+        ensure readability_score() > 70;
+    }
+}
+
+// Main execution block
+{
+    // Variable assignment
+    let welcome_message = greet("Turbulance User");
+    print(welcome_message);
+    
+    // String and number operations
+    let count = 5;
+    let stars = "*" * count;  // String repetition
+    print(stars);
+    
+    // Text unit creation and processing
+    let paragraph = "The complex algorithm utilizes advanced computational techniques to analyze textual data structures and extract semantic meaning through sophisticated language models and neural network architectures.";
+    
+    // Process text with the function
+    let processed = process_paragraph(paragraph);
+    print("Processed text:");
+    print(processed);
+    
+    // Text operations
+    let divided = paragraph / "and";  // Divide text by "and"
+    print("Text divided:");
+    for (let part in divided) {
+        print("  - " + part);
+    }
+    
+    // Research statement (would connect to knowledge database)
+    let info = research "computational linguistics";
+    print("Research result:");
+    print(info);
+}
+
+// Advanced text unit operations example
+funxn combine_explanations(text1, text2) {
+    // Multiplication of text units creates a coherent combination
+    return text1 * text2;
+}
+
+// Example of the ensure construct
+funxn validate_result(result) {
+    ensure result != none;
+    ensure result.contains("important");
+    return "Validation passed";
+} 
