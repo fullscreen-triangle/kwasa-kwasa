@@ -12,6 +12,7 @@ mod text_unit;
 mod orchestrator;
 mod knowledge;
 mod utils;
+mod wasm;
 
 #[derive(Parser)]
 #[command(name = "kwasa-kwasa")]

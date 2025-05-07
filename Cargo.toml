@@ -46,6 +46,13 @@ thiserror = "1.0.40"
 anyhow = "1.0.71"
 dotenv = "0.15.0"
 
+# WebAssembly
+wasm-bindgen = "0.2.87"
+web-sys = { version = "0.3.64", features = ["Window", "Performance", "console"] }
+js-sys = "0.3.64"
+serde-wasm-bindgen = "0.5.0"
+console_error_panic_hook = "0.1.7"
+
 [dev-dependencies]
 tempfile = "3.5.0"
 criterion = "0.5.1"
@@ -60,3 +67,6 @@ lto = true
 codegen-units = 1
 panic = "abort"
 strip = true
+
+[lib]
+crate-type = ["cdylib", "rlib"]

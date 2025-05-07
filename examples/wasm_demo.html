@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kwasa-Kwasa WebAssembly Demo</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1 {
+      color: #006699;
+      border-bottom: 2px solid #eee;
+      padding-bottom: 10px;
+    }
+    textarea {
+      width: 100%;
+      height: 150px;
+      margin: 10px 0;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+    button {
+      background-color: #006699;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+    button:hover {
+      background-color: #005588;
+    }
+    #result {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #f5f5f5;
+      border-radius: 4px;
+      white-space: pre-wrap;
+    }
+    .section {
+      margin-bottom: 30px;
+    }
+    .error {
+      color: #cc0000;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Kwasa-Kwasa WebAssembly Demo</h1>
+  
+  <div class="section">
+    <h2>Turbulance Code Execution</h2>
+    <textarea id="turbulanceCode">
+// Example Turbulance code
+var greeting = "Hello, world!"
+print(greeting)
+
+funxn greet(name, formal=false):
+    given formal:
+        return "Greetings, " + name + "."
+    return "Hello, " + name + "!"
+
+greet("Writer")
+    </textarea>
+    <button id="executeBtn">Execute Code</button>
+    <div id="codeResult"></div>
+  </div>
+
+  <div class="section">
+    <h2>Text Processing</h2>
+    <textarea id="textInput">
+The Kwasa-Kwasa framework provides a metacognitive approach to text processing. 
+It combines powerful language features with intelligent orchestration.
+Writers can define boundaries around text units and operate on them programmatically.
+    </textarea>
+    <button id="processBtn">Process Text</button>
+    <button id="divideBtn">Divide into Sentences</button>
+    <div id="textResult"></div>
+  </div>
+
+  <div class="section">
+    <h2>Goal Setting & Research</h2>
+    <input type="text" id="goalInput" placeholder="Enter a writing goal..." value="Creating technical documentation">
+    <button id="setGoalBtn">Set Goal</button>
+    <input type="text" id="researchInput" placeholder="Research topic..." value="programming languages">
+    <button id="researchBtn">Research</button>
+    <div id="researchResult"></div>
+  </div>
+
+  <script type="module">
+    // Import the Kwasa-Kwasa WebAssembly module
+    import init, { init_kwasa_wasm, KwasaConfig } from './pkg/kwasa_kwasa.js';
+
+    let kwasa;
+
+    // Initialize the WebAssembly module
+    async function initWasm() {
+      await init();
+      const config = new KwasaConfig();
+      config.set_debug(true);
+      kwasa = init_kwasa_wasm();
+      console.log("Kwasa-Kwasa WebAssembly module initialized");
+    }
+
+    // Execute Turbulance code
+    function executeCode() {
+      const code = document.getElementById('turbulanceCode').value;
+      try {
+        const result = kwasa.execute_code(code);
+        let output = `Result: ${result.result}\n`;
+        if (result.error) {
+          output += `\nError: ${result.error}`;
+          document.getElementById('codeResult').classList.add('error');
+        } else {
+          output += `\nExecution time: ${result.execution_time_ms.toFixed(2)}ms`;
+          document.getElementById('codeResult').classList.remove('error');
+        }
+        document.getElementById('codeResult').textContent = output;
+      } catch (error) {
+        document.getElementById('codeResult').textContent = `Error: ${error.message}`;
+        document.getElementById('codeResult').classList.add('error');
+      }
+    }
+
+    // Process text with the orchestrator
+    function processText() {
+      const text = document.getElementById('textInput').value;
+      try {
+        const processed = kwasa.process_text(text);
+        document.getElementById('textResult').textContent = processed;
+      } catch (error) {
+        document.getElementById('textResult').textContent = `Error: ${error.message}`;
+      }
+    }
+
+    // Divide text into units
+    function divideText() {
+      const text = document.getElementById('textInput').value;
+      try {
+        const units = kwasa.divide_text(text, "sentence");
+        let result = "Text divided into sentences:\n\n";
+        units.forEach((unit, index) => {
+          result += `${index + 1}. ${unit}\n`;
+        });
+        document.getElementById('textResult').textContent = result;
+      } catch (error) {
+        document.getElementById('textResult').textContent = `Error: ${error.message}`;
+      }
+    }
+
+    // Set a new goal
+    function setGoal() {
+      const goal = document.getElementById('goalInput').value;
+      try {
+        kwasa.set_goal(goal, 0.3);
+        document.getElementById('researchResult').textContent = `Goal set to: "${goal}"`;
+      } catch (error) {
+        document.getElementById('researchResult').textContent = `Error: ${error.message}`;
+      }
+    }
+
+    // Research a topic
+    function research() {
+      const topic = document.getElementById('researchInput').value;
+      try {
+        const results = kwasa.research(topic);
+        let output = `Research results for "${topic}":\n\n`;
+        if (results.length === 0) {
+          output += "No results found.";
+        } else {
+          results.forEach((result, index) => {
+            output += `${index + 1}. ${result}\n\n`;
+          });
+        }
+        document.getElementById('researchResult').textContent = output;
+      } catch (error) {
+        document.getElementById('researchResult').textContent = `Error: ${error.message}`;
+      }
+    }
+
+    // Set up event listeners
+    window.addEventListener('load', async () => {
+      await initWasm();
+      document.getElementById('executeBtn').addEventListener('click', executeCode);
+      document.getElementById('processBtn').addEventListener('click', processText);
+      document.getElementById('divideBtn').addEventListener('click', divideText);
+      document.getElementById('setGoalBtn').addEventListener('click', setGoal);
+      document.getElementById('researchBtn').addEventListener('click', research);
+    });
+  </script>
+</body>
+</html> 

@@ -1,7 +1,9 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet, VecDeque};
 use std::fmt;
 
-use crate::text_unit::boundary::{BoundaryType, TextUnit};
+use crate::text_unit::boundary::{BoundaryType, TextUnit, detect_boundaries};
+use crate::text_unit::operations::TextOperations;
+use crate::text_unit::TextUnitRegistry;
 
 /// Enum representing the type of a node in the document hierarchy
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -103,6 +105,11 @@ impl HierarchyNode {
         &self.content
     }
     
+    /// Get mutable access to the content
+    pub fn content_mut(&mut self) -> &mut TextUnit {
+        &mut self.content
+    }
+    
     /// Get the content as a string reference
     pub fn text(&self) -> &str {
         &self.content.content
@@ -181,7 +188,7 @@ impl HierarchyNode {
         }
         
         for child in &self.children {
-            result.extend(child.find_by_type(node_type));
+            result.extend(child.find_by_content(substring));
         }
         
         result
@@ -202,7 +209,7 @@ impl HierarchyNode {
         result
     }
     
-    /// Find node by ID
+    /// Find a node by ID in this subtree
     pub fn find_by_id(&self, id: usize) -> Option<&HierarchyNode> {
         if self.id == id {
             return Some(self);
@@ -217,26 +224,145 @@ impl HierarchyNode {
         None
     }
     
-    /// Get the path from the root to this node
+    /// Find the path to a node with the given ID
     pub fn path_to_node(&self, id: usize, current_path: &mut Vec<usize>) -> bool {
+        current_path.push(self.id);
+        
         if self.id == id {
             return true;
         }
         
         for child in &self.children {
-            current_path.push(child.id);
             if child.path_to_node(id, current_path) {
                 return true;
             }
-            current_path.pop();
         }
         
+        current_path.pop();
         false
+    }
+    
+    /// Apply an operation to this node and all its children
+    pub fn apply_operation<F>(&mut self, operation: F)
+    where
+        F: Fn(&mut TextUnit) + Copy,
+    {
+        // Apply to this node
+        operation(&mut self.content);
+        
+        // Apply to all children
+        for child in &mut self.children {
+            child.apply_operation(operation);
+        }
+    }
+    
+    /// Get nodes at a specific depth level (0 = this node, 1 = children, etc.)
+    pub fn nodes_at_depth(&self, depth: usize) -> Vec<&HierarchyNode> {
+        if depth == 0 {
+            return vec![self];
+        }
+        
+        let mut result = Vec::new();
+        for child in &self.children {
+            result.extend(child.nodes_at_depth(depth - 1));
+        }
+        result
+    }
+    
+    /// Find sibling nodes (nodes with same parent)
+    pub fn siblings(&self, hierarchy: &DocumentHierarchy) -> Vec<&HierarchyNode> {
+        match self.parent_id {
+            Some(parent_id) => {
+                if let Some(parent) = hierarchy.find_node_by_id(parent_id) {
+                    parent
+                        .children()
+                        .iter()
+                        .filter(|node| node.id() != self.id)
+                        .collect()
+                } else {
+                    Vec::new()
+                }
+            }
+            None => Vec::new(), // Root node has no siblings
+        }
+    }
+    
+    /// Get the next sibling, if any
+    pub fn next_sibling(&self, hierarchy: &DocumentHierarchy) -> Option<&HierarchyNode> {
+        match self.parent_id {
+            Some(parent_id) => {
+                if let Some(parent) = hierarchy.find_node_by_id(parent_id) {
+                    let children = parent.children();
+                    let pos = children.iter().position(|node| node.id() == self.id)?;
+                    if pos + 1 < children.len() {
+                        Some(&children[pos + 1])
+                    } else {
+                        None
+                    }
+                } else {
+                    None
+                }
+            }
+            None => None, // Root node has no siblings
+        }
+    }
+    
+    /// Get the previous sibling, if any
+    pub fn prev_sibling(&self, hierarchy: &DocumentHierarchy) -> Option<&HierarchyNode> {
+        match self.parent_id {
+            Some(parent_id) => {
+                if let Some(parent) = hierarchy.find_node_by_id(parent_id) {
+                    let children = parent.children();
+                    let pos = children.iter().position(|node| node.id() == self.id)?;
+                    if pos > 0 {
+                        Some(&children[pos - 1])
+                    } else {
+                        None
+                    }
+                } else {
+                    None
+                }
+            }
+            None => None, // Root node has no siblings
+        }
+    }
+    
+    /// Find ancestor nodes (parent, grandparent, etc.)
+    pub fn ancestors(&self, hierarchy: &DocumentHierarchy) -> Vec<&HierarchyNode> {
+        let mut result = Vec::new();
+        let mut current_id = self.parent_id;
+        
+        while let Some(id) = current_id {
+            if let Some(node) = hierarchy.find_node_by_id(id) {
+                result.push(node);
+                current_id = node.parent_id();
+            } else {
+                break;
+            }
+        }
+        
+        result
+    }
+    
+    /// Find all descendants (children, grandchildren, etc.)
+    pub fn descendants(&self) -> Vec<&HierarchyNode> {
+        let mut result = Vec::new();
+        
+        for child in &self.children {
+            result.push(child);
+            result.extend(child.descendants());
+        }
+        
+        result
+    }
+    
+    /// Get the level (depth from root) of this node
+    pub fn level(&self, hierarchy: &DocumentHierarchy) -> usize {
+        self.ancestors(hierarchy).len()
     }
 }
 
-/// Document hierarchy representation for structured text processing
-#[derive(Debug, Clone)]
+/// Document hierarchy representing the structure of a document
 pub struct DocumentHierarchy {
     /// Root node of the hierarchy
     root: Option<HierarchyNode>,
@@ -253,20 +379,27 @@ impl DocumentHierarchy {
         }
     }
     
-    /// Create a hierarchy from a text unit
+    /// Create a document hierarchy from a text unit
     pub fn from_text_unit(text_unit: TextUnit) -> Self {
         let mut hierarchy = Self::new();
+        
+        // Create root node
         let root_id = hierarchy.next_id;
         hierarchy.next_id += 1;
         
-        let root_node = HierarchyNode::new(
-            NodeType::from(text_unit.boundary_type.clone()),
-            text_unit.clone(),
-            root_id,
-            None,
-        );
+        let node_type = match text_unit.unit_type {
+            crate::text_unit::TextUnitType::Document => NodeType::Document,
+            crate::text_unit::TextUnitType::Section => NodeType::Section,
+            crate::text_unit::TextUnitType::Paragraph => NodeType::Paragraph,
+            crate::text_unit::TextUnitType::Sentence => NodeType::Sentence,
+            crate::text_unit::TextUnitType::Word => NodeType::Word,
+            crate::text_unit::TextUnitType::Character => NodeType::Word,
+            crate::text_unit::TextUnitType::Custom(_) => NodeType::Custom("Custom".to_string()),
+        };
         
-        hierarchy.root = Some(root_node);
+        let root = HierarchyNode::new(node_type, text_unit, root_id, None);
+        hierarchy.root = Some(root);
+        
         hierarchy.process_children(text_unit);
         
         hierarchy
@@ -274,112 +407,78 @@ impl DocumentHierarchy {
     
     /// Process children of a text unit and add them to the hierarchy
     fn process_children(&mut self, text_unit: TextUnit) {
-        // If the root doesn't exist yet, we can't process children
-        if self.root.is_none() {
-            return;
-        }
-        
-        // The current implementation is simplified
-        // A more sophisticated implementation would analyze the text unit
-        // and identify its hierarchical structure
-        
-        // For now, we'll create a simple hierarchy based on boundary types:
-        // Document > Section > Paragraph > Sentence > Word
-        
-        // Process based on the boundary type of the current unit
-        match text_unit.boundary_type {
-            BoundaryType::Document => {
-                // For a document, extract sections, then paragraphs, then sentences, etc.
-                self.extract_and_add_children(
-                    &text_unit,
-                    self.root.as_ref().unwrap().id(),
-                    BoundaryType::Section,
-                );
+        if let Some(root) = &mut self.root {
+            // First process paragraphs
+            if root.node_type() == &NodeType::Document {
+                self.extract_and_add_children(&text_unit, root.id(), BoundaryType::Paragraphs);
             }
-            BoundaryType::Section => {
-                // For a section, extract paragraphs, then sentences, etc.
-                self.extract_and_add_children(
-                    &text_unit,
-                    self.root.as_ref().unwrap().id(),
-                    BoundaryType::Paragraph,
-                );
+            
+            // Then process sentences within paragraphs
+            if let Some(paragraphs) = self.find_nodes_by_type(&NodeType::Paragraph).first() {
+                for paragraph in paragraphs {
+                    self.extract_and_add_children(&paragraph.content, paragraph.id(), BoundaryType::Sentences);
+                }
             }
-            BoundaryType::Paragraph => {
-                // For a paragraph, extract sentences, then words, etc.
-                self.extract_and_add_children(
-                    &text_unit,
-                    self.root.as_ref().unwrap().id(),
-                    BoundaryType::Sentence,
-                );
+            
+            // Process sentences directly if no paragraphs
+            if root.node_type() == &NodeType::Document && root.children().is_empty() {
+                self.extract_and_add_children(&text_unit, root.id(), BoundaryType::Sentences);
             }
-            BoundaryType::Sentence => {
-                // For a sentence, extract words
-                self.extract_and_add_children(
-                    &text_unit,
-                    self.root.as_ref().unwrap().id(),
-                    BoundaryType::Word,
-                );
-            }
-            _ => {
-                // Other boundary types don't have predefined children
-                // We could extract custom boundaries, but we'll skip for now
+            
+            // Process words within sentences
+            if let Some(sentences) = self.find_nodes_by_type(&NodeType::Sentence).first() {
+                for sentence in sentences {
+                    self.extract_and_add_children(&sentence.content, sentence.id(), BoundaryType::Words);
+                }
             }
         }
     }
     
-    /// Extract child units of a specific boundary type and add them to the hierarchy
+    /// Extract units of a certain type from parent and add them as children
     fn extract_and_add_children(
         &mut self,
         parent_unit: &TextUnit,
         parent_id: usize,
         child_boundary_type: BoundaryType,
     ) {
-        // Find the parent node
-        let parent_node = match self.find_node_by_id_mut(parent_id) {
-            Some(node) => node,
-            None => return, // Parent not found
-        };
+        // Create a temporary registry
+        let mut registry = TextUnitRegistry::new();
         
-        // Extract child units
-        let child_units = parent_unit.extract_units(&child_boundary_type);
+        // Detect boundaries
+        let child_ids = detect_boundaries(
+            &parent_unit.content,
+            child_boundary_type,
+            &mut registry,
+            None,
+        );
         
-        // Add each child unit as a node
-        for child_unit in child_units {
-            let child_id = self.next_id;
-            self.next_id += 1;
-            
-            let child_node = HierarchyNode::new(
-                NodeType::from(child_unit.boundary_type.clone()),
-                child_unit.clone(),
-                child_id,
-                Some(parent_id),
-            );
-            
-            parent_node.add_child(child_node);
-            
-            // Recursively process children of this child
-            // This is a simplified approach; more sophistication needed for real docs
-            match child_unit.boundary_type {
-                BoundaryType::Section => {
-                    self.extract_and_add_children(&child_unit, child_id, BoundaryType::Paragraph);
+        // Add children to parent
+        if let Some(parent) = self.find_node_by_id_mut(parent_id) {
+            for child_id in child_ids {
+                if let Some(child_unit) = registry.get_unit(child_id) {
+                    let node_id = self.next_id;
+                    self.next_id += 1;
+                    
+                    let node_type = NodeType::from(child_boundary_type);
+                    let node = HierarchyNode::new(
+                        node_type,
+                        child_unit.clone(),
+                        node_id,
+                        Some(parent_id),
+                    );
+                    
+                    parent.add_child(node);
                 }
-                BoundaryType::Paragraph => {
-                    self.extract_and_add_children(&child_unit, child_id, BoundaryType::Sentence);
-                }
-                BoundaryType::Sentence => {
-                    self.extract_and_add_children(&child_unit, child_id, BoundaryType::Word);
-                }
-                _ => {} // No further extraction for other types
             }
         }
     }
     
-    /// Get the root node
+    /// Get reference to the root node
     pub fn root(&self) -> Option<&HierarchyNode> {
         self.root.as_ref()
     }
     
-    /// Get mutable access to the root node
+    /// Get mutable reference to the root node
     pub fn root_mut(&mut self) -> Option<&mut HierarchyNode> {
         self.root.as_mut()
     }
@@ -391,98 +490,302 @@ impl DocumentHierarchy {
     
     /// Find a node by ID
     pub fn find_node_by_id(&self, id: usize) -> Option<&HierarchyNode> {
-        if let Some(root) = &self.root {
-            root.find_by_id(id)
-        } else {
-            None
-        }
+        self.root.as_ref().and_then(|root| root.find_by_id(id))
     }
     
     /// Find a node by ID (mutable)
     pub fn find_node_by_id_mut(&mut self, id: usize) -> Option<&mut HierarchyNode> {
-        // This is more complex because we need mutable access
-        // We'll do a recursive search
         Self::find_node_by_id_mut_recursive(&mut self.root, id)
     }
     
-    /// Helper for recursively finding a node by ID
+    /// Recursive helper for finding a node by ID and getting a mutable reference
     fn find_node_by_id_mut_recursive(
         node: &mut Option<HierarchyNode>,
         id: usize,
     ) -> Option<&mut HierarchyNode> {
-        match node {
-            Some(n) if n.id() == id => node.as_mut(),
-            Some(n) => {
-                for child in n.children_mut().iter_mut() {
-                    if child.id() == id {
-                        return Some(child);
-                    }
-                    
-                    if let Some(found) = 
-                        Self::find_node_by_id_mut_recursive(&mut Some(child.clone()), id) {
-                        return Some(found);
-                    }
-                }
-                None
+        if let Some(n) = node {
+            if n.id() == id {
+                return Some(n);
             }
-            None => None,
+            
+            for child in n.children_mut() {
+                let child_node = Some(child.clone());
+                if let Some(found) = Self::find_node_by_id_mut_recursive(&mut Some(child.clone()), id) {
+                    return Some(found);
+                }
+            }
         }
+        
+        None
     }
     
-    /// Find all nodes of a specific type
+    /// Find nodes by type
     pub fn find_nodes_by_type(&self, node_type: &NodeType) -> Vec<&HierarchyNode> {
-        if let Some(root) = &self.root {
-            root.find_by_type(node_type)
-        } else {
-            Vec::new()
-        }
+        self.root.as_ref().map_or_else(Vec::new, |root| root.find_by_type(node_type))
     }
     
-    /// Find all nodes containing a specific substring
+    /// Find nodes by content (substring match)
     pub fn find_nodes_by_content(&self, substring: &str) -> Vec<&HierarchyNode> {
-        if let Some(root) = &self.root {
-            root.find_by_content(substring)
-        } else {
-            Vec::new()
-        }
+        self.root.as_ref().map_or_else(Vec::new, |root| root.find_by_content(substring))
     }
     
-    /// Get the path from root to a specific node
+    /// Find the path to a node by ID
     pub fn path_to_node(&self, id: usize) -> Vec<usize> {
         let mut path = Vec::new();
-        
         if let Some(root) = &self.root {
-            path.push(root.id());
             root.path_to_node(id, &mut path);
         }
-        
         path
     }
     
-    /// Get the document text
+    /// Get the text of the entire document
     pub fn text(&self) -> String {
-        if let Some(root) = &self.root {
-            root.text().to_string()
-        } else {
-            String::new()
-        }
+        self.root.as_ref().map_or_else(String::new, |root| root.text().to_string())
     }
     
-    /// Count the total number of nodes in the hierarchy
+    /// Count the total number of nodes
     pub fn count_nodes(&self) -> usize {
-        if let Some(root) = &self.root {
-            root.count_nodes()
-        } else {
-            0
+        self.root.as_ref().map_or(0, |root| root.count_nodes())
+    }
+    
+    /// Get the maximum depth (height) of the hierarchy
+    pub fn depth(&self) -> usize {
+        self.root.as_ref().map_or(0, |root| root.depth())
+    }
+    
+    /// Apply an operation to all nodes in the hierarchy
+    pub fn apply_operation<F>(&mut self, operation: F)
+    where
+        F: Fn(&mut TextUnit) + Copy,
+    {
+        if let Some(root) = &mut self.root {
+            root.apply_operation(operation);
         }
     }
     
-    /// Get the maximum depth of the hierarchy
-    pub fn depth(&self) -> usize {
+    /// Get nodes at a specific level in the hierarchy (0 = root, 1 = root's children, etc.)
+    pub fn nodes_at_level(&self, level: usize) -> Vec<&HierarchyNode> {
+        self.root.as_ref().map_or_else(Vec::new, |root| root.nodes_at_depth(level))
+    }
+    
+    /// Build a new hierarchy by organizing nodes according to semantic relationships
+    pub fn build_semantic_hierarchy(&self) -> Self {
+        // Start with a copy of the document node
+        let mut new_hierarchy = DocumentHierarchy::new();
+        
         if let Some(root) = &self.root {
-            root.depth()
+            let new_root = HierarchyNode::new(
+                NodeType::Document,
+                root.content().clone(),
+                0,
+                None,
+            );
+            
+            new_hierarchy.set_root(new_root);
+            new_hierarchy.next_id = 1;
+            
+            // Group sentences by semantic similarity or topic
+            let sentences = self.find_nodes_by_type(&NodeType::Sentence);
+            
+            // Simple algorithm: group consecutive sentences with similar content
+            if !sentences.is_empty() {
+                let mut current_block = Vec::new();
+                let mut current_block_keywords = HashSet::new();
+                
+                for sentence in sentences {
+                    // Extract keywords from sentence
+                    let keywords: HashSet<String> = sentence.text()
+                        .split_whitespace()
+                        .filter(|w| w.len() > 3) // Only words of significant length
+                        .map(|w| w.to_lowercase())
+                        .collect();
+                    
+                    // Calculate overlap with current block
+                    let overlap = if current_block_keywords.is_empty() {
+                        1.0 // First sentence always starts a new block
+                    } else {
+                        let common_count = keywords.intersection(&current_block_keywords).count();
+                        if keywords.is_empty() {
+                            0.0
+                        } else {
+                            common_count as f64 / keywords.len() as f64
+                        }
+                    };
+                    
+                    // If there's sufficient overlap, add to current block
+                    if overlap > 0.2 {
+                        current_block.push(sentence);
+                        current_block_keywords.extend(keywords);
+                    } else {
+                        // Create a new semantic block from current sentences
+                        if !current_block.is_empty() {
+                            new_hierarchy.add_semantic_block(&current_block);
+                        }
+                        
+                        // Start a new block with this sentence
+                        current_block = vec![sentence];
+                        current_block_keywords = keywords;
+                    }
+                }
+                
+                // Add the last block if it exists
+                if !current_block.is_empty() {
+                    new_hierarchy.add_semantic_block(&current_block);
+                }
+            }
+        }
+        
+        new_hierarchy
+    }
+    
+    /// Helper to add a semantic block to the hierarchy
+    fn add_semantic_block(&mut self, sentences: &[&HierarchyNode]) {
+        if let Some(root) = &mut self.root {
+            // Combine the text of all sentences
+            let combined_text = sentences.iter()
+                .map(|s| s.text())
+                .collect::<Vec<_>>()
+                .join(" ");
+            
+            // Create a text unit for the semantic block
+            let text_unit = TextUnit::new(
+                combined_text,
+                sentences.first().map_or(0, |s| s.content().start),
+                sentences.last().map_or(0, |s| s.content().end),
+                crate::text_unit::TextUnitType::Custom(0), // Using custom type for semantic block
+                self.next_id,
+            );
+            
+            // Create a new node
+            let node_id = self.next_id;
+            self.next_id += 1;
+            
+            let mut block_node = HierarchyNode::new(
+                NodeType::SemanticBlock,
+                text_unit,
+                node_id,
+                Some(root.id()),
+            );
+            
+            // Add each sentence as a child of the semantic block
+            for sentence in sentences {
+                let child_id = self.next_id;
+                self.next_id += 1;
+                
+                let child_node = HierarchyNode::new(
+                    NodeType::Sentence,
+                    sentence.content().clone(),
+                    child_id,
+                    Some(node_id),
+                );
+                
+                block_node.add_child(child_node);
+            }
+            
+            // Add to root
+            root.add_child(block_node);
+        }
+    }
+    
+    /// Get all paths from root to leaf nodes
+    pub fn all_paths(&self) -> Vec<Vec<usize>> {
+        let mut paths = Vec::new();
+        
+        if let Some(root) = &self.root {
+            self.collect_paths(root, Vec::new(), &mut paths);
+        }
+        
+        paths
+    }
+    
+    /// Helper to collect all paths recursively
+    fn collect_paths(&self, node: &HierarchyNode, current_path: Vec<usize>, paths: &mut Vec<Vec<usize>>) {
+        let mut path = current_path;
+        path.push(node.id());
+        
+        if node.children().is_empty() {
+            // This is a leaf node
+            paths.push(path);
         } else {
-            0
+            // Continue recursion
+            for child in node.children() {
+                self.collect_paths(child, path.clone(), paths);
+            }
+        }
+    }
+    
+    /// Compare two nodes for similarity (0.0-1.0)
+    pub fn compare_nodes(&self, id1: usize, id2: usize) -> f64 {
+        let node1 = self.find_node_by_id(id1);
+        let node2 = self.find_node_by_id(id2);
+        
+        match (node1, node2) {
+            (Some(n1), Some(n2)) => {
+                // Use Jaccard similarity of words
+                let words1: HashSet<String> = n1.text()
+                    .split_whitespace()
+                    .map(|w| w.to_lowercase())
+                    .collect();
+                
+                let words2: HashSet<String> = n2.text()
+                    .split_whitespace()
+                    .map(|w| w.to_lowercase())
+                    .collect();
+                
+                if words1.is_empty() && words2.is_empty() {
+                    return 1.0;
+                }
+                
+                let intersection = words1.intersection(&words2).count();
+                let union = words1.len() + words2.len() - intersection;
+                
+                if union == 0 {
+                    0.0
+                } else {
+                    intersection as f64 / union as f64
+                }
+            },
+            _ => 0.0,
+        }
+    }
+    
+    /// Traverse the hierarchy in breadth-first order
+    pub fn breadth_first_traverse(&self) -> Vec<&HierarchyNode> {
+        let mut result = Vec::new();
+        let mut queue = VecDeque::new();
+        
+        if let Some(root) = &self.root {
+            queue.push_back(root);
+            
+            while let Some(node) = queue.pop_front() {
+                result.push(node);
+                
+                for child in node.children() {
+                    queue.push_back(child);
+                }
+            }
+        }
+        
+        result
+    }
+    
+    /// Traverse the hierarchy in depth-first order
+    pub fn depth_first_traverse(&self) -> Vec<&HierarchyNode> {
+        let mut result = Vec::new();
+        
+        if let Some(root) = &self.root {
+            self.depth_first_visit(root, &mut result);
+        }
+        
+        result
+    }
+    
+    /// Helper for depth-first traversal
+    fn depth_first_visit<'a>(&'a self, node: &'a HierarchyNode, result: &mut Vec<&'a HierarchyNode>) {
+        result.push(node);
+        
+        for child in node.children() {
+            self.depth_first_visit(child, result);
         }
     }
 }
@@ -490,58 +793,164 @@ impl DocumentHierarchy {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::text_unit::boundary::TextUnit;
+    use crate::text_unit::boundary::BoundaryType;
     
-    /// Create a test text unit with the given content and boundary type
+    /// Helper to create a test text unit
     fn create_test_unit(content: &str, boundary_type: BoundaryType) -> TextUnit {
-        TextUnit {
-            content: content.to_string(),
-            boundary_type,
-            start_pos: 0,
-            end_pos: content.len(),
-            metadata: HashMap::new(),
-        }
+        TextUnit::new(
+            content.to_string(),
+            0,
+            content.len(),
+            match boundary_type {
+                BoundaryType::Document => crate::text_unit::TextUnitType::Document,
+                BoundaryType::Section => crate::text_unit::TextUnitType::Section,
+                BoundaryType::Paragraph => crate::text_unit::TextUnitType::Paragraph,
+                BoundaryType::Sentence => crate::text_unit::TextUnitType::Sentence,
+                BoundaryType::Word => crate::text_unit::TextUnitType::Word,
+                BoundaryType::Character => crate::text_unit::TextUnitType::Character,
+                _ => crate::text_unit::TextUnitType::Custom(0),
+            },
+            0,
+        )
     }
     
     #[test]
     fn test_hierarchy_node_creation() {
-        let text_unit = create_test_unit("Test content", BoundaryType::Paragraph);
-        let node = HierarchyNode::new(NodeType::Paragraph, text_unit, 1, None);
+        let unit = create_test_unit("Test content", BoundaryType::Document);
+        let node = HierarchyNode::new(NodeType::Document, unit, 0, None);
         
-        assert_eq!(node.node_type(), &NodeType::Paragraph);
+        assert_eq!(node.node_type(), &NodeType::Document);
         assert_eq!(node.text(), "Test content");
-        assert_eq!(node.id(), 1);
+        assert_eq!(node.id(), 0);
         assert_eq!(node.parent_id(), None);
         assert!(node.children().is_empty());
     }
     
     #[test]
     fn test_hierarchy_node_metadata() {
-        let text_unit = create_test_unit("Test content", BoundaryType::Paragraph);
-        let mut node = HierarchyNode::new(NodeType::Paragraph, text_unit, 1, None);
+        let unit = create_test_unit("Test content", BoundaryType::Document);
+        let mut node = HierarchyNode::new(NodeType::Document, unit, 0, None);
         
-        node.add_metadata("author".to_string(), "Test Author".to_string());
-        node.add_metadata("category".to_string(), "Test".to_string());
+        node.add_metadata("key1".to_string(), "value1".to_string());
+        node.add_metadata("key2".to_string(), "value2".to_string());
         
-        assert_eq!(node.get_metadata("author"), Some(&"Test Author".to_string()));
-        assert_eq!(node.get_metadata("category"), Some(&"Test".to_string()));
-        assert_eq!(node.get_metadata("nonexistent"), None);
+        assert_eq!(node.get_metadata("key1"), Some(&"value1".to_string()));
+        assert_eq!(node.get_metadata("key2"), Some(&"value2".to_string()));
+        assert_eq!(node.get_metadata("key3"), None);
     }
     
     #[test]
     fn test_document_hierarchy_creation() {
-        let document_unit = create_test_unit("This is a test document. It has multiple sentences.", BoundaryType::Document);
-        let hierarchy = DocumentHierarchy::from_text_unit(document_unit);
+        let unit = create_test_unit("This is a test document. It has two sentences.", BoundaryType::Document);
+        let hierarchy = DocumentHierarchy::from_text_unit(unit);
         
         assert!(hierarchy.root().is_some());
-        if let Some(root) = hierarchy.root() {
-            assert_eq!(root.node_type(), &NodeType::Document);
-            assert_eq!(
-                root.text(),
-                "This is a test document. It has multiple sentences."
-            );
-        }
+        assert_eq!(hierarchy.root().unwrap().node_type(), &NodeType::Document);
+        assert!(hierarchy.count_nodes() > 1); // Should have created child nodes
     }
     
-    // More tests would be added for the full implementation
+    #[test]
+    fn test_hierarchy_navigation() {
+        // Create a simple hierarchy manually
+        let mut hierarchy = DocumentHierarchy::new();
+        
+        let doc_unit = create_test_unit("Document", BoundaryType::Document);
+        let mut root = HierarchyNode::new(NodeType::Document, doc_unit, 0, None);
+        
+        let para1_unit = create_test_unit("Paragraph 1", BoundaryType::Paragraph);
+        let mut para1 = HierarchyNode::new(NodeType::Paragraph, para1_unit, 1, Some(0));
+        
+        let para2_unit = create_test_unit("Paragraph 2", BoundaryType::Paragraph);
+        let para2 = HierarchyNode::new(NodeType::Paragraph, para2_unit, 2, Some(0));
+        
+        let sent1_unit = create_test_unit("Sentence 1.", BoundaryType::Sentence);
+        let sent1 = HierarchyNode::new(NodeType::Sentence, sent1_unit, 3, Some(1));
+        
+        let sent2_unit = create_test_unit("Sentence 2.", BoundaryType::Sentence);
+        let sent2 = HierarchyNode::new(NodeType::Sentence, sent2_unit, 4, Some(1));
+        
+        para1.add_child(sent1);
+        para1.add_child(sent2);
+        
+        root.add_child(para1);
+        root.add_child(para2);
+        
+        hierarchy.set_root(root);
+        
+        // Test navigation
+        assert_eq!(hierarchy.depth(), 3); // Doc -> Para -> Sent
+        assert_eq!(hierarchy.count_nodes(), 5); // 1 doc + 2 para + 2 sent
+        
+        // Test finding nodes by type
+        let paragraphs = hierarchy.find_nodes_by_type(&NodeType::Paragraph);
+        assert_eq!(paragraphs.len(), 2);
+        
+        let sentences = hierarchy.find_nodes_by_type(&NodeType::Sentence);
+        assert_eq!(sentences.len(), 2);
+        
+        // Test path to node
+        let path_to_sent2 = hierarchy.path_to_node(4);
+        assert_eq!(path_to_sent2, vec![0, 1, 4]);
+    }
+    
+    #[test]
+    fn test_hierarchy_traversal() {
+        // Create a simple hierarchy for testing
+        let mut hierarchy = DocumentHierarchy::new();
+        
+        let doc_unit = create_test_unit("Document", BoundaryType::Document);
+        let mut root = HierarchyNode::new(NodeType::Document, doc_unit, 0, None);
+        
+        let para1_unit = create_test_unit("Paragraph 1", BoundaryType::Paragraph);
+        let mut para1 = HierarchyNode::new(NodeType::Paragraph, para1_unit, 1, Some(0));
+        
+        let para2_unit = create_test_unit("Paragraph 2", BoundaryType::Paragraph);
+        let para2 = HierarchyNode::new(NodeType::Paragraph, para2_unit, 2, Some(0));
+        
+        let sent1_unit = create_test_unit("Sentence 1.", BoundaryType::Sentence);
+        let sent1 = HierarchyNode::new(NodeType::Sentence, sent1_unit, 3, Some(1));
+        
+        let sent2_unit = create_test_unit("Sentence 2.", BoundaryType::Sentence);
+        let sent2 = HierarchyNode::new(NodeType::Sentence, sent2_unit, 4, Some(1));
+        
+        para1.add_child(sent1);
+        para1.add_child(sent2);
+        
+        root.add_child(para1);
+        root.add_child(para2);
+        
+        hierarchy.set_root(root);
+        
+        // Test breadth-first traversal
+        let bfs = hierarchy.breadth_first_traverse();
+        assert_eq!(bfs.len(), 5);
+        assert_eq!(bfs[0].id(), 0); // Root
+        assert_eq!(bfs[1].id(), 1); // Para 1
+        assert_eq!(bfs[2].id(), 2); // Para 2
+        
+        // Test depth-first traversal
+        let dfs = hierarchy.depth_first_traverse();
+        assert_eq!(dfs.len(), 5);
+        assert_eq!(dfs[0].id(), 0); // Root
+        assert_eq!(dfs[1].id(), 1); // Para 1
+        assert_eq!(dfs[2].id(), 3); // Sent 1
+        assert_eq!(dfs[3].id(), 4); // Sent 2
+        assert_eq!(dfs[4].id(), 2); // Para 2
+    }
+    
+    #[test]
+    fn test_semantic_hierarchy_building() {
+        let text = "This is about AI. Artificial intelligence is transforming how we work. \
+                   Weather today is sunny. The forecast calls for clear skies all week.";
+        let unit = create_test_unit(text, BoundaryType::Document);
+        
+        let hierarchy = DocumentHierarchy::from_text_unit(unit);
+        let semantic_hierarchy = hierarchy.build_semantic_hierarchy();
+        
+        // Should have created semantic blocks
+        assert!(semantic_hierarchy.find_nodes_by_type(&NodeType::SemanticBlock).len() > 0);
+        
+        // The semantic blocks should group related sentences
+        assert!(semantic_hierarchy.count_nodes() < hierarchy.count_nodes());
+    }
 }

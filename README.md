@@ -651,3 +651,138 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 > "The way we interact with text hasn't fundamentally changed in decades. Kwasa-Kwasa is not just another text editor or document processor; it's a new paradigm for how writers can leverage computation to enhance their craft."
 
 ---
+
+## Metacognitive Orchestrator
+
+The Kwasa-Kwasa framework includes a powerful Metacognitive Orchestrator that manages the writing process:
+
+### Goal Representation
+
+The Orchestrator maintains a clear representation of writing goals:
+
+```turbulance
+// Setting up a writing goal
+var goal = new Goal("Write a technical tutorial for beginners", 0.4)
+goal.add_keywords(["tutorial", "beginner", "step-by-step", "explanation"])
+
+// Track progress towards the goal
+goal.update_progress(0.3)  // 30% complete
+goal.is_complete()         // Returns false
+```
+
+### Context Awareness
+
+The Orchestrator maintains awareness of the current writing context:
+
+```turbulance
+// The context tracks important elements of the writing
+var context = orchestrator.context()
+
+// Access contextual information
+context.get_keywords()             // Active keywords
+context.get_recent_keywords()      // Recent keywords by frequency
+context.get_research_terms()       // Research topics
+context.most_common_transition("algorithm")  // Common topic transitions
+```
+
+### Intervention System
+
+Interventions automatically improve text based on goals and context:
+
+```turbulance
+// Register interventions
+orchestrator.register_intervention(new ReadabilityIntervention())
+orchestrator.register_intervention(new CoherenceIntervention())
+orchestrator.register_intervention(new ResearchIntervention())
+
+// Process text with interventions
+var improved = orchestrator.process_text(original_text)
+```
+
+### Progress Evaluation
+
+The Orchestrator evaluates writing progress against goals:
+
+```turbulance
+// Evaluating alignment with goals
+var alignment = orchestrator.evaluate_alignment(text)
+if alignment < 0.3:
+    suggest_improvements()
+    
+// Getting progress metrics
+var progress = goal.progress()
+var estimated_completion = orchestrator.estimate_completion()
+```
+
+## WebAssembly Integration
+
+Kwasa-Kwasa can run directly in the browser through WebAssembly integration:
+
+### Setting up the WASM Module
+
+```html
+<script type="module">
+  // Import the Kwasa-Kwasa WebAssembly module
+  import init, { init_kwasa_wasm, KwasaConfig } from './pkg/kwasa_kwasa.js';
+
+  async function start() {
+    // Initialize the WASM module
+    await init();
+    
+    // Configure with your preferences
+    const config = new KwasaConfig();
+    config.set_goal("Technical writing");
+    config.set_debug(true);
+    
+    // Create the Kwasa-Kwasa instance
+    const kwasa = init_kwasa_wasm();
+    
+    // Now you can use all the Kwasa-Kwasa functionality
+    // directly in your web application
+  }
+  
+  start();
+</script>
+```
+
+### Available API
+
+The WebAssembly bindings expose the core Kwasa-Kwasa functionality:
+
+```javascript
+// Execute Turbulance code
+const result = kwasa.execute_code(`
+  var greeting = "Hello, world!"
+  print(greeting)
+`);
+
+// Process text with the metacognitive orchestrator
+const processed = kwasa.process_text(text);
+
+// Divide text into semantic units
+const sentences = kwasa.divide_text(text, "sentence");
+
+// Set writing goals
+kwasa.set_goal("Create technical documentation", 0.3);
+
+// Evaluate goal alignment
+const alignment = kwasa.evaluate_alignment(text);
+
+// Perform research
+const results = kwasa.research("programming languages");
+```
+
+### Example Web Application
+
+The framework includes a demo web application showing how to use Kwasa-Kwasa in a browser environment. To run the demo:
+
+```bash
+# Build the WebAssembly module
+wasm-pack build --target web
+
+# Serve the demo application
+cd examples
+python -m http.server
+```
+
+Then navigate to http://localhost:8000/wasm_demo.html to see the demo in action.
