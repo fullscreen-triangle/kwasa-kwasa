@@ -344,24 +344,67 @@ The `within` block allows operations on specific text units:
 
 ```turbulance
 // Process specific unit types
-within paragraph:
-    given contains("technical term"):
-        highlight()
-        add_definition()
-    given readability_score() < 70:
-        simplify()
+within text as paragraphs:
+    // Operate on each paragraph
+    print("Found paragraph: " + paragraph)
+    
+    within paragraph as sentences:
+        // Operate on each sentence within this paragraph
+        ensure sentences.length < 50  // Ensure sentences aren't too long
+        
+        // You can nest operations to any depth
+        within sentence as words:
+            // Process individual words
+            if word.length > 15:
+                simplify(word)
+```
 
-// Nested units
-within section("Methods"):
-    within paragraph:
-        ensure_consistent_terminology()
-    within sentence.first():
-        ensure_topic_sentence()
+### Document Hierarchy
 
-// Custom boundary definitions
-define boundary "concept" as segment(by="topic", min_length=100)
-within concept:
-    ensure_coherence()
+The framework provides a complete hierarchical representation of document structure:
+
+```turbulance
+var doc = new Document("my_file.txt")
+
+// Access the document hierarchy
+var hierarchy = doc.hierarchy()
+
+// Find specific node types
+var sections = hierarchy.findNodesByType("section")
+var titleNode = hierarchy.findNodesByContent("Introduction")[0]
+var deepNodes = hierarchy.nodesAtLevel(3)
+
+// Navigate between nodes
+var parent = titleNode.parent()
+var nextSibling = titleNode.nextSibling()
+var ancestors = titleNode.ancestors()
+var subtree = titleNode.descendants()
+
+// Compare semantic similarity
+var similarity = hierarchy.compareNodes(node1.id(), node2.id())
+// Returns a value between 0.0 (completely different) and 1.0 (identical)
+
+// Build a semantic organization
+var semanticHierarchy = hierarchy.buildSemanticHierarchy()
+// Groups content by topic rather than structure
+```
+
+#### Traversal and Path Finding
+
+```turbulance
+// Traverse the hierarchy in different ways
+var bfsNodes = hierarchy.breadthFirstTraverse()
+var dfsNodes = hierarchy.depthFirstTraverse()
+
+// Find paths through the document
+var allPaths = hierarchy.allPaths()
+var pathToNode = hierarchy.pathToNode(nodeId)
+
+// Apply operations to the entire hierarchy
+hierarchy.applyOperation(function(textUnit) {
+    // Transform each text unit
+    textUnit.content = textUnit.content.replace("old", "new")
+})
 ```
 
 ### Unit Selection and Filtering
@@ -503,6 +546,87 @@ document |>
     } |>
     finalize()
 ```
+
+#### Transformation Pipeline Architecture
+
+The framework implements a sophisticated pipeline system for text transformations:
+
+```rust
+// Define a custom transformation
+struct MyTransform;
+
+impl TextTransform for MyTransform {
+    fn apply(&self, unit: &TextUnit, registry: &mut TextUnitRegistry) -> OperationResult {
+        // Implementation logic
+    }
+    
+    fn name(&self) -> &str {
+        "MyTransform"
+    }
+    
+    fn description(&self) -> &str {
+        "Custom transformation for specific needs"
+    }
+}
+
+// Create and configure a pipeline
+let mut pipeline = TransformationPipeline::new(
+    "CustomPipeline",
+    "Pipeline for specialized text processing"
+);
+
+// Add transformations and enable metrics
+pipeline
+    .add_transform(SentenceSplitter)
+    .add_transform(MyTransform)
+    .add_transform(Simplifier::new(2))
+    .with_metrics();
+
+// Execute the pipeline
+let result = pipeline.execute(&document, &mut registry);
+
+// Access execution metrics
+if let Some(metrics) = pipeline.metrics() {
+    println!("Pipeline execution time: {}ms", metrics.total_time_ms);
+    println!("Units processed: {}", metrics.units_processed);
+}
+```
+
+#### Advanced Features
+
+The pipeline system supports several advanced capabilities:
+
+- **Composition and Chaining**: Transformations can be chained with the `chain()` method:
+  ```rust
+  let transform = ParagraphSplitter.chain(SentenceSplitter);
+  ```
+
+- **Performance Optimization**: Add timing or caching to any transformation:
+  ```rust
+  let transform = Simplifier::new(2).with_timing().with_caching();
+  ```
+
+- **Metrics Collection**: Detailed performance and execution metrics:
+  ```
+  Pipeline Metrics:
+  Total time: 45ms
+  Units processed: 12
+  Units produced: 24
+  Step times:
+    SentenceSplitter: 12ms
+    Simplifier: 33ms
+  ```
+
+- **Error Recovery**: Graceful handling of transformation errors with continuation strategies
+
+- **Prebuilt Pipelines**: Common transformation workflows are available as prebuilt pipelines:
+  ```rust
+  // Create a readability improvement pipeline
+  let pipeline = create_readability_pipeline();
+  
+  // Create a formalization pipeline
+  let pipeline = create_formalization_pipeline();
+  ```
 
 ## System Architecture
 
