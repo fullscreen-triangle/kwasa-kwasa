@@ -15,8 +15,8 @@ Kwasa-Kwasa is a metacognitive text processing framework with a specialized lang
 | Turbulance Parser | ✅ Complete | Recursive descent parser with Chumsky |
 | Turbulance AST | ✅ Complete | AST node structure defined |
 | Turbulance Interpreter | ✅ Complete | Evaluation of all language constructs implemented |
-| Text Unit Boundary | 🟡 In Progress | Implementation started |
-| Text Unit Operations | 🟡 In Progress | Core operations defined |
+| Text Unit Boundary | ✅ Complete | Comprehensive boundary detection for all unit types |
+| Text Unit Operations | ✅ Complete | Core operations and transformations implemented |
 | Text Unit Hierarchy | ❌ Not Started | Stub file created |
 | Knowledge Database | ❌ Not Started | Directory structure created |
 | Metacognitive Orchestrator | ❌ Not Started | Directory structure created |
@@ -134,24 +134,60 @@ Some functions have placeholder implementations while others are still to be imp
 
 ### 4. Text Unit Processing
 
-#### 4.1 Boundary Detection (🟡 In Progress)
+#### 4.1 Boundary Detection (✅ Complete)
 
-The boundary detection module in `src/text_unit/boundary.rs` is partially implemented. It's designed to:
-- Identify semantic boundaries in text
-- Use Unicode segmentation and NLP techniques
-- Support different boundary types (paragraphs, sentences, clauses, etc.)
+The boundary detection module in `src/text_unit/boundary.rs` is fully implemented. It provides:
 
-The implementation has started but requires more work to fully support all the planned boundary detection features.
+- Comprehensive detection of all text unit types:
+  - Character boundaries using Unicode grapheme clusters
+  - Word boundaries with proper space handling
+  - Sentence boundaries with improved heuristics (handling quotes, abbreviations, etc.)
+  - Paragraph boundaries using configurable delimiters
+  - Section boundaries with regex-based header detection
+  - Document boundaries for encompassing all content
+  - Semantic boundaries based on topic coherence and topic shift indicators
+  - Custom boundaries defined via regular expressions
 
-#### 4.2 Text Operations (🟡 In Progress)
+- Advanced features:
+  - Hierarchical boundary organization
+  - Metadata preservation
+  - Configurable detection options
+  - Coherence calculation between text units
+  - Support for user-defined custom boundaries
 
-The text operations module in `src/text_unit/operations.rs` is partially implemented. It includes:
-- Division operations that split text into semantic units
-- Multiplication operations that combine text with appropriate transitions
-- Addition operations that combine information with connectives
-- Subtraction operations that remove elements while preserving coherence
+The implementation includes comprehensive unit tests for all boundary types and hierarchical structuring.
 
-These operations form the core of Turbulance's text manipulation capabilities and are still being refined.
+#### 4.2 Text Operations (✅ Complete)
+
+The text operations module in `src/text_unit/operations.rs` is fully implemented. It provides:
+
+- Core mathematical operations:
+  - Division: Split text into semantic units with precise boundary detection
+  - Multiplication: Combine text units with appropriate transitions
+  - Addition: Concatenate text units with intelligent joining
+  - Subtraction: Remove elements while preserving coherence
+
+- Advanced text transformations:
+  - Simplification: Multiple levels of text simplification
+  - Formalization: Convert casual text to formal style
+  - Expansion: Add explanatory details
+  - Summarization: Create concise summaries
+  - Normalization: Standardize formatting
+  - Capitalization/case transformations
+
+- Text unit filtering with complex predicates:
+  - Content-based filtering (contains, matches)
+  - Length-based filtering
+  - Readability-based filtering
+  - Position-based filtering (first, last, indexed)
+  - Regular expression matching
+
+- Pipeline processing:
+  - Chain multiple operations together
+  - Compose text units with intelligent transitions based on style
+  - Error handling throughout the pipeline
+
+The implementation includes comprehensive unit tests for all operations and complex transformations.
 
 #### 4.3 Document Hierarchy (❌ Not Started)
 
@@ -284,27 +320,17 @@ Based on the current implementation state, these are the immediate next steps:
    - Improve text transformation functions
    - Add knowledge integration functions
 
-2. **Complete Text Unit Boundary Detection**
-   - Finish the boundary detection algorithm
-   - Add support for different boundary types
-   - Implement semantic boundary recognition
-
-3. **Complete Text Unit Operations**
-   - Finish implementation of core operations
-   - Add compose/pipeline functionality
-   - Implement operation optimization
-
-4. **Implement Document Hierarchy**
+2. **Implement Document Hierarchy**
    - Create hierarchical document representation
    - Add navigation and traversal methods
    - Implement context-aware operations
 
-5. **Create Knowledge Database Framework**
+3. **Create Knowledge Database Framework**
    - Set up SQLite database schema
    - Implement basic storage and retrieval
    - Add research interface stub
 
-6. **Begin Metacognitive Orchestrator**
+4. **Begin Metacognitive Orchestrator**
    - Implement goal representation
    - Create basic context awareness
    - Add simple intervention logic

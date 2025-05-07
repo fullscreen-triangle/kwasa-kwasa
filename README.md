@@ -54,157 +54,455 @@ The framework doesn't just process text; it understands your goals and guides th
 - **Knowledge Integration**: Connects writing with research sources contextually
 - **State Preservation**: Maintains awareness of the document's evolving state
 
-## Real-World Writing Workflow
+## Using Kwasa-Kwasa
 
-Kwasa-Kwasa fundamentally changes how writers work by allowing them to embed computational operations directly in their text. Here's how the workflow actually looks in practice:
-
-### 1. Setting the Document Goal
-
-The writer begins by defining their objective to the metacognitive orchestrator:
-
-```turbulance
-project article(
-    title="Black Swan Events in Aviation", 
-    goal="Explore rare but consequential incidents in aviation history",
-    audience="Aviation enthusiasts with technical knowledge"
-)
-```
-
-This primes the orchestrator to understand the context, purpose, and intended audience, enabling it to make relevant decisions throughout the writing process.
-
-### 2. Preparing Knowledge Sources
-
-The writer then connects information sources:
-
-```turbulance
-sources:
-    local("./aviation_incidents/*.txt")
-    web_search(engines=["google_scholar", "pubmed"])
-    knowledge_base("aviation_safety")
-    domain_experts(["crash_investigation", "aerodynamics"])
-```
-
-### 3. Writing with Embedded Functions
-
-The actual writing process integrates Turbulance functions directly into the document:
-
-```markdown
-# Black Swan Events in Aviation
-
-## Introduction
-
-funxn generate_hook(topic="aviation disasters", style="thought-provoking")
-
-Throughout aviation history, certain events have defied prediction and planning. 
-These "black swan" events, characterized by their extreme rarity and severe impact, 
-have fundamentally altered our understanding of aircraft safety.
-
-funxn summarize_key_themes(from="./aviation_incidents/*.txt") + 
-funxn add_transition_to_next_section()
-
-## The Pugachev Cobra Incident
-
-funxn research("Pugachev Cobra accident history") | 
-funxn filter(relevance > 0.8, contains="unexpected consequences") >
-funxn synthesize(max_length="3 paragraphs")
-
-funxn citation_needed()
-
-Let's analyze the aerodynamic principles:
-
-funxn extract_technical_details("high-alpha maneuvers") |
-funxn simplify(technical_level="moderately advanced") +
-funxn insert_diagram("airflow separation")
-
-## Historical Patterns
-
-funxn analyze_corpus("aviation_incidents") |
-funxn extract_patterns() |
-funxn visualize("timeline") + funxn add_annotations()
-
-funxn for_each(rare_incident_type):
-    fetch_examples(min=2, max=4) |
-    synthesize_common_factors() |
-    highlight_unexpected_elements()
-
-## Conclusion
-
-Our examination reveals that funxn summarize_findings() - 
-funxn filter_out(already_mentioned=true).
-
-funxn generate_implications(domain="aviation safety", scope="future developments")
-```
-
-### 4. Processing the Document
-
-When the writer runs the processing command:
+### Installation
 
 ```bash
-kwasa-kwasa process black_swan_article.md --interactive
+# Clone the repository
+git clone https://github.com/yourusername/kwasa-kwasa.git
+cd kwasa-kwasa
+
+# Build the project
+cargo build --release
+
+# Install globally
+cargo install --path .
 ```
 
-The system:
+### CLI Commands
 
-1. Identifies all embedded functions in the document
-2. Executes them in context, with awareness of the document goal
-3. Interacts with the writer when necessary for decisions
-4. Maintains a cohesive narrative while performing complex operations
+Kwasa-Kwasa provides a comprehensive command-line interface powered by the Clap framework:
 
-### 5. Mathematical-like Operations on Text
+#### Running Scripts
 
-Turbulance enables advanced operations on text units that mimic mathematical functions:
+Execute a standalone Turbulance script:
+
+```bash
+kwasa-kwasa run <script_path>
+```
+
+This command:
+- Tokenizes the script using the Logos-based lexer
+- Parses it with the recursive descent parser
+- Constructs the AST (Abstract Syntax Tree)
+- Executes the script using the interpreter
+- Outputs the results to stdout
+
+Example:
+```bash
+kwasa-kwasa run examples/text_analysis.turb
+```
+
+#### Validating Scripts
+
+Check a Turbulance script for syntax errors without executing it:
+
+```bash
+kwasa-kwasa validate <script_path>
+```
+
+This performs lexical and syntax validation, reporting:
+- Lexical errors (invalid tokens)
+- Syntax errors (malformed expressions)
+- Semantic errors (type mismatches, undefined variables)
+
+Example:
+```bash
+kwasa-kwasa validate my_script.turb
+```
+
+#### Processing Documents
+
+Process a document with embedded Turbulance commands:
+
+```bash
+kwasa-kwasa process <document_path> [--interactive]
+```
+
+This command:
+- Extracts Turbulance code blocks from the document
+- Executes them in sequence, maintaining state between blocks
+- Applies transformations directly to the document content
+- Generates output with the processed text
+
+The `--interactive` flag enables prompts for user input during processing.
+
+Example:
+```bash
+kwasa-kwasa process article.md --interactive
+```
+
+#### Interactive REPL
+
+Start an interactive Turbulance shell for experimentation:
+
+```bash
+kwasa-kwasa repl
+```
+
+The REPL (Read-Eval-Print Loop) provides:
+- Immediate feedback for Turbulance expressions
+- Command history navigation
+- Auto-completion of keywords and variables
+- Contextual help for standard library functions
+
+## Turbulance Language
+
+The Turbulance language is the core of Kwasa-Kwasa. It provides a rich, expressive syntax for text manipulation with semantic awareness.
+
+### Lexical Structure
+
+Turbulance has a well-defined token structure:
+- **Keywords**: `funxn`, `within`, `given`, `project`, `ensure`, `return`, etc.
+- **Operators**: `/` (division), `*` (multiplication), `+` (addition), `-` (subtraction), etc.
+- **Literals**: String literals (`"text"`), numbers, booleans (`true`/`false`)
+- **Identifiers**: Variable and function names with Unicode support
+- **Comments**: Single-line (`// comment`) and multi-line (`/* comment */`)
+
+### Syntax Highlights
 
 ```turbulance
-// Division: Splits text into semantic units
-intro_paragraphs / "key themes" => {theme_1, theme_2, theme_3}
+// Variable declaration
+var greeting = "Hello, world!"
 
-// Multiplication: Combines texts with proper transitions
-historical_context * current_regulations => implications_section  
+// Function declaration with parameters and default values
+funxn greet(name, formal=false):
+    given formal:
+        return "Greetings, " + name + "."
+    return "Hello, " + name + "!"
 
-// Addition: Combines information with appropriate connectives
-pilot_testimony + expert_analysis + simulation_data => comprehensive_view
+// Function call
+greet("Writer")
 
-// Subtraction: Removes specific elements while preserving coherence
-technical_explanation - jargon => accessible_explanation
+// Control flow with expressions
+var mood = "happy"
+given mood == "happy":
+    print("Glad to hear that!")
+else:
+    print("Hope things improve!")
 
-// Integration: Assimilates a concept across a text section
-∫(safety_concept) over historical_section => evolution_of_safety
-
-// Differentiation: Finds rate of change of concept emphasis
-d(public_perception)/d(time) => shifting_narratives
+// Block expressions
+var result = {
+    var x = compute_value()
+    x * 2
+}
 ```
 
-### 6. Complex Transformative Pipelines
+### Parser Design
 
-Writers can create sophisticated transformation sequences:
+The Turbulance parser is implemented as a recursive descent parser with robust error handling:
+
+- **Top-down parsing**: Builds the AST directly from the token stream
+- **Operator precedence**: Correctly handles complex expressions with appropriate precedence rules
+- **Error recovery**: Provides detailed error messages with location information
+- **Lookahead**: Uses limited lookahead for efficient parsing decisions
 
 ```turbulance
-section("Technical Background") |> 
-    divide_by_concept() |>
-    for_each_concept(c => 
-        c * research(c.main_term) |> 
-        ensure_accessibility(target_level="informed amateur") |>
-        add_visual_aid(if_available=true)
-    ) |>
-    reassemble_with_transitions() |>
-    ensure_flow(check_topic_progression=true)
+// This expression correctly follows operator precedence
+var result = 2 + 3 * 4       // Evaluates to 14, not 20
+var complex = (x + y) * (z / w) - factor  // Grouping with parentheses
 ```
 
-### 7. Real-time Metacognitive Intervention
+### Abstract Syntax Tree (AST)
 
-As the writer works, the orchestrator can intervene when it detects potential improvements:
+The AST representation provides a structured view of Turbulance programs:
 
+- **Node hierarchy**: Specialized node types for different language constructs
+- **Visitor pattern**: Allows for operations like interpretation, static analysis, and optimization
+- **Source mapping**: Preserves source location information for error reporting
+- **Semantic analysis**: Type checking and variable resolution
+
+AST node categories include:
+
+- **Declarations**: Functions, projects, variables
+- **Statements**: Assignment, return, control flow
+- **Expressions**: Binary, unary, literals, function calls
+- **Text operations**: Division, multiplication, addition, subtraction
+- **Special constructs**: Within blocks, given conditions, ensure assertions
+
+### Interpreter Implementation
+
+The Turbulance interpreter executes AST nodes with the following features:
+
+- **Evaluation strategy**: Eager evaluation with short-circuiting for logical operators
+- **Scoping**: Lexical scoping with closures
+- **Memory model**: Value semantics with reference counting for efficient text handling
+- **Error handling**: Runtime errors with stack traces and location information
+- **Standard library**: Built-in functions accessible to all Turbulance code
+
+```turbulance
+// Example demonstrating interpreter features
+funxn process_text(text):
+    // Lexical scope with closure
+    var transformations = []
+    
+    funxn add_transformation(name, func):
+        transformations.push({
+            "name": name,
+            "apply": func
+        })
+    
+    // Add some transformations
+    add_transformation("simplify", x => simplify_text(x))
+    add_transformation("enhance", x => enhance_readability(x))
+    
+    // Apply all transformations
+    var result = text
+    for each t in transformations:
+        result = t.apply(result)
+        
+    return result
 ```
-[ORCHESTRATOR SUGGESTION] 
-The current section appears to lack sufficient evidence for the claim about 
-pilot response times. Consider adding supporting research or modifying the claim. 
-Would you like me to:
-1. Search for relevant studies on pilot response time
-2. Suggest a more qualified statement
-3. Ignore and continue
+
+### Standard Library
+
+The Turbulance standard library provides a rich set of built-in functions for text analysis and manipulation:
+
+#### Text Analysis Functions
+
+```turbulance
+// Readability assessment
+readability_score(text)              // Returns Flesch-Kincaid score (0-100)
+grade_level(text)                    // Estimated grade level needed to understand
+complexity_analysis(text)            // Returns detailed complexity metrics
+
+// Content analysis
+extract_keywords(text, count=10)     // Extracts most significant keywords
+extract_entities(text, types=["person", "organization", "location"])
+extract_topics(text, depth=2)        // Hierarchical topic extraction
+sentiment_analysis(text)             // Returns polarity and subjectivity scores
+contains(text, pattern)              // Searches for pattern (string or regex)
 ```
 
-These interventions are contextually aware and directly tied to the document goals established at the outset.
+#### Text Transformation Functions
+
+```turbulance
+// Text simplification
+simplify_sentences(text, level="moderate")  // Simplifies complex sentences
+replace_jargon(text, domain="general")     // Replaces specialized terms
+formalize(text)                            // Increases formality
+casualize(text)                            // Makes text more conversational
+
+// Text enhancement
+enhance_clarity(text)                      // Improves clarity
+expand_acronyms(text)                      // Expands acronyms with definitions
+add_transitions(text)                      // Adds appropriate transition phrases
+restructure(text, pattern="problem-solution") // Restructures following pattern
+```
+
+#### Knowledge Integration Functions
+
+```turbulance
+// Research assistance
+research_context(topic, depth="medium")    // Retrieves contextual information
+find_citations(claim, max_results=5)       // Finds supporting citations
+fact_check(statement)                      // Verifies factual claims
+ensure_explanation_follows(term)           // Ensures term is explained
+```
+
+#### Utility Functions
+
+```turbulance
+// General utilities
+print(value)                               // Outputs to console
+len(collection)                            // Returns collection length
+typeof(value)                              // Returns type information
+join(collection, separator=" ")            // Joins collection elements
+format(template, ...args)                  // String formatting
+```
+
+## Text Unit System
+
+Kwasa-Kwasa's text unit system provides a powerful way to work with text at varying levels of granularity:
+
+### Text Unit Types
+
+The system recognizes multiple levels of text units:
+
+- **Document**: The entire text
+- **Section**: Major divisions with headings
+- **Paragraph**: Standard paragraph breaks
+- **Sentence**: Complete sentences with terminal punctuation
+- **Clause**: Grammatical clauses within sentences
+- **Phrase**: Meaningful word groups
+- **Word**: Individual words
+- **Character**: Individual characters
+
+### Boundary Detection
+
+Text units are identified through a combination of approaches:
+
+- **Structural markers**: Headings, paragraph breaks, list items
+- **Syntactic analysis**: Sentence and clause boundaries
+- **Semantic coherence**: Topic-based segmentation
+- **User-defined markers**: Custom delimiters specified in text
+
+### Working with Boundaries
+
+The `within` block allows operations on specific text units:
+
+```turbulance
+// Process specific unit types
+within paragraph:
+    given contains("technical term"):
+        highlight()
+        add_definition()
+    given readability_score() < 70:
+        simplify()
+
+// Nested units
+within section("Methods"):
+    within paragraph:
+        ensure_consistent_terminology()
+    within sentence.first():
+        ensure_topic_sentence()
+
+// Custom boundary definitions
+define boundary "concept" as segment(by="topic", min_length=100)
+within concept:
+    ensure_coherence()
+```
+
+### Unit Selection and Filtering
+
+Text units can be selected and filtered using various criteria:
+
+```turbulance
+// Selection by position
+paragraph.first()
+paragraph.last()
+paragraph[3]  // zero-based indexing
+paragraph.slice(2, 5)
+
+// Selection by content
+paragraph.containing("keyword")
+paragraph.matching(/pattern/)
+
+// Selection by property
+paragraph.where(length > 100)
+paragraph.where(readability_score() < 60)
+
+// Combining selections
+paragraph.where(contains("technical") && readability_score() < 70)
+```
+
+### Mathematical Operations on Text Units
+
+Turbulance enables powerful mathematical-like operations on text:
+
+#### Division (/)
+
+The division operator segments text into units:
+
+```turbulance
+// Divide text into paragraphs
+var paragraphs = document / "paragraph"
+
+// Divide by semantic units
+var topics = document / "topic"
+var concepts = document / "concept"
+
+// Custom division criteria
+var segments = document / {min_length: 200, coherence: "high"}
+
+// Chained division
+var sentences = (document / "paragraph")[0] / "sentence"
+```
+
+#### Multiplication (*)
+
+Multiplication combines text units with appropriate transitions:
+
+```turbulance
+// Combine with context-appropriate transitions
+var section = historical_context * current_regulations
+
+// Multiply with specific joining strategy
+var narrative = anecdote * explanation * conclusion * "causal"
+
+// Controlled multiplication with options
+var detailed_view = summary * details * {
+    transition_style: "elaborative",
+    ensure_coherence: true
+}
+```
+
+#### Addition (+)
+
+Addition combines information with connectives:
+
+```turbulance
+// Simple combination
+var comprehensive_view = pilot_testimony + expert_analysis
+
+// Addition with specific connective style
+var contrasting_views = view_a + view_b + "contrastive"
+
+// Complex addition with options
+var balanced_perspective = for_arguments + against_arguments + {
+    balance: "equal",
+    structure: "point-counterpoint"
+}
+```
+
+#### Subtraction (-)
+
+Subtraction removes elements while preserving coherence:
+
+```turbulance
+// Remove jargon
+var accessible_explanation = technical_explanation - jargon
+
+// Remove specific content
+var summary = full_text - examples - digressions
+
+// Subtraction with options
+var concise_version = original - {
+    target: "redundancies",
+    preserve: "key_points",
+    max_reduction: 0.3  // max 30% reduction
+}
+```
+
+### Transformation Pipelines
+
+Pipelines allow chaining operations for sophisticated text transformations:
+
+```turbulance
+// Basic pipeline with the |> operator
+section("Introduction") |>
+    analyze_sentiment() |>
+    extract_key_themes() |>
+    enhance_clarity(level="moderate") |>
+    ensure_consistency(with="conclusion")
+
+// Pipeline with conditional branches
+document |>
+    divide("section") |>
+    for_each() |> {
+        given type == "introduction":
+            ensure_hook() |> ensure_context()
+        given type == "methods":
+            ensure_clarity() |> ensure_completeness()
+        given type == "results":
+            visualize_data() |> highlight_key_findings()
+        given type == "discussion":
+            connect_to_literature() |> suggest_implications()
+    } |>
+    reassemble()
+
+// Pipeline with error handling
+document |>
+    try {
+        process_complex_transformations() |>
+        validate_results()
+    } catch (e) {
+        log_error(e) |>
+        fallback_to_simple_processing()
+    } |>
+    finalize()
+```
 
 ## System Architecture
 
@@ -259,52 +557,32 @@ These interventions are contextually aware and directly tied to the document goa
    - Citation and reference management
    - Fact verification system
 
-## Implementation Details
+## Technology Stack
 
-### Technology Stack
+Kwasa-Kwasa is built with modern, high-performance technologies:
 
-Kwasa-Kwasa is implemented using:
+- **Rust** - For memory safety, performance, and concurrency
+  - Logos for lexical analysis
+  - Chumsky for parsing
+  - Memory safety through ownership and borrowing system
+  - Immutable by default with controlled mutability
 
-- **Rust** for the core framework and Turbulance language engine
-  - Benefits: Memory safety, performance, concurrency
-  - Critical for handling large documents efficiently
-  - Excellent text processing capabilities
+- **SQLite** - Embedded database for knowledge storage
+  - Zero-configuration, serverless database
+  - Cross-platform compatibility
+  - Efficient for document metadata and knowledge indexing
 
-- **WebAssembly** for potential editor integration
-  - Allows embedding in browser-based environments
-  - Future compatibility with various writing interfaces
+- **WebAssembly** - For potential editor integrations
+  - Compiled Rust code deployable to browser environments
+  - Near-native performance in web applications
+  - Direct integration with text editors and IDEs
 
-- **SQLite** for the knowledge database
-  - Lightweight yet powerful for storing research information
-  - Embedded database requiring no additional setup
+- **gRPC** - For efficient service communication
+  - High-performance remote procedure calls
+  - Strongly typed interface definitions with Protocol Buffers
+  - Multi-language support for system extensions
 
-- **gRPC** for service communication
-  - Efficient communication between components
-  - Allows for distributed processing if needed
-
-### Development Priorities
-
-1. **Core Language Implementation**
-   - Turbulance parser and interpreter
-   - Basic text unit operations
-   - Function definition and execution
-
-2. **Metacognitive Systems**
-   - Document goal representation
-   - Context awareness implementation
-   - Basic intervention logic
-
-3. **Knowledge Integration**
-   - Research interface design
-   - Knowledge storage implementation
-   - Context-based retrieval
-
-4. **User Interfaces**
-   - Command-line interface for script execution
-   - Basic editor integration
-   - API for external tool integration
-
-## Use Cases
+## Real-World Use Cases
 
 ### Academic Writing
 
@@ -360,107 +638,13 @@ project research_article(topic="Pugachev Cobra Aerodynamics"):
         ensure all_claims are_supported()
 ```
 
-## Roadmap
-
-### Phase 1: Foundation (Q3 2023)
-- Core Turbulance language specification
-- Basic text unit processing implementation
-- Command-line interface for script execution
-- Simple knowledge integration system
-
-### Phase 2: Metacognition (Q4 2023)
-- Goal representation system
-- Context awareness implementation
-- Basic intervention logic
-- Enhanced knowledge integration
-
-### Phase 3: Advanced Features (Q1 2024)
-- Complex document structure support
-- Advanced semantic operations
-- External tool integration
-- Editor plugins
-
-### Phase 4: Refinement (Q2 2024)
-- Performance optimization
-- User experience improvements
-- Documentation and examples
-- Community feedback integration
-
-## Philosophy
-
-Kwasa-Kwasa embraces several core principles:
-
-1. **Text as Units, Not Strings**: Text has inherent structure and meaning that should be preserved during manipulation.
-
-2. **Intelligence, Not Automation**: The goal is to enhance the writer's capabilities, not replace their judgment.
-
-3. **Context is Everything**: Text operations should understand the context in which they're applied.
-
-4. **Goals Drive Process**: Writing tools should understand what you're trying to accomplish.
-
-5. **Knowledge Integration**: Research and writing should be seamlessly connected.
-
-## Getting Started
-
-> Note: Kwasa-Kwasa is currently in early development. The instructions below represent the intended usage once initial releases are available.
-
-### Prerequisites
-
-- Rust (1.53+)
-- SQLite3
-- Basic command-line familiarity
-
-### Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/yourusername/kwasa-kwasa.git
-cd kwasa-kwasa
-
-# Build the project
-cargo build --release
-
-# Install globally
-cargo install --path .
-```
-
-### Basic Usage
-
-Create a Turbulance script:
-
-```turbulance
-// example.turb
-funxn analyze_tone(text):
-    within text:
-        detect_sentiment()
-        highlight_emotional_language()
-        suggest_alternatives if tone != "objective"
-    return processed
-
-project article(file="my_article.md"):
-    apply analyze_tone to_all paragraphs
-    display results
-```
-
-Run the script:
-
-```bash
-kwasa-kwasa run example.turb
-```
-
 ## Contributing
 
-This project is primarily designed for personal use but welcomes contributions from serious writers and developers who understand the vision.
-
-If you're interested in contributing:
-
-1. Familiarize yourself with the architecture and philosophy
-2. Check the roadmap for current priorities
-3. Reach out to discuss potential contributions before submitting PRs
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on contributing to this project.
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
