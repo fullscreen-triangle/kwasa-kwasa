@@ -1,7 +1,12 @@
 pub mod boundary;
-pub mod hierarchy;
 pub mod operations;
+pub mod hierarchy;
 pub mod transform;
+
+// Re-export common types for convenience
+pub use boundary::{BoundaryType, TextUnit};
+pub use operations::{TextOperations, TextTransform};
+pub use hierarchy::{DocumentHierarchy, HierarchyNode, NodeType};
 
 use std::collections::HashMap;
 use std::fmt;
