@@ -109,4 +109,132 @@ considering these idea in relatedIdeas: {
     // Process each related idea
     allow content = idea.content()
     ensure content.length > 0
-} 
+}
+
+// Define a proposition with motions
+proposition TextAnalysis:
+    // Define motions within the proposition
+    motion Introduction("The text analysis begins with understanding the context.")
+    motion MainPoint("Proper analysis requires both syntactic and semantic understanding.")
+    motion Conclusion("By analyzing text with these methods, we gain deeper insights.")
+    
+    // Add metadata to the proposition
+    with_metadata("domain", "linguistics")
+    with_metadata("confidence", "0.95")
+    
+    // Process all motions in this proposition
+    considering all motions in this:
+        check_spelling(motion)
+        check_capitalization(motion)
+        
+        // Conditionally check for biases
+        given motion.content.length > 50:
+            check_sunken_cost_fallacy(motion)
+            
+    // Allow specific operations on specific motions
+    allow fact_checking on Introduction
+    allow sentiment_analysis on MainPoint
+    allow coherence_check on Conclusion
+
+// Define causes with their effects
+cause BiasedReasoning = {
+    primary: "emotional investment",
+    effects: [
+        "selective evidence consideration",
+        "overconfidence in judgment",
+        "resistance to contrary evidence"
+    ],
+    confidence: 0.75
+}
+
+// Create specialized data structures
+funxn demonstrate_data_structures():
+    // Create a text graph for concept relationships
+    var graph = new TextGraph()
+    graph.add_node("syntax", Motion("Syntactic analysis examines structure", "concept"))
+    graph.add_node("semantics", Motion("Semantic analysis examines meaning", "concept"))
+    graph.add_node("pragmatics", Motion("Pragmatic analysis examines context", "concept"))
+    
+    // Add relationships between concepts
+    graph.add_edge("syntax", "semantics", 0.7)
+    graph.add_edge("semantics", "pragmatics", 0.8)
+    
+    // Create a concept chain for cause-effect relationships
+    var chain = new ConceptChain()
+    chain.add_concept("education", Motion("Increased language education", "factor"))
+    chain.add_concept("awareness", Motion("Improved linguistic awareness", "result"))
+    chain.add_concept("comprehension", Motion("Better text comprehension", "result"))
+    
+    // Define causal relationships
+    chain.add_relationship("education", "awareness")
+    chain.add_relationship("awareness", "comprehension")
+    
+    // Create a hierarchy of ideas
+    var hierarchy = new IdeaHierarchy()
+    hierarchy.add_root("linguistics", Motion("Linguistics", "field"))
+    hierarchy.add_child("linguistics", "phonetics", Motion("Phonetics", "subfield"))
+    hierarchy.add_child("linguistics", "morphology", Motion("Morphology", "subfield"))
+    hierarchy.add_child("linguistics", "syntax", Motion("Syntax", "subfield"))
+    
+    // Create an argument map
+    var argmap = new ArgMap()
+    argmap.add_claim("main", Motion("Text analysis should be taught in schools", "claim"))
+    argmap.add_evidence(
+        "main", 
+        "evidence1", 
+        Motion("Improves critical thinking skills", "evidence"),
+        0.8
+    )
+    argmap.add_objection(
+        "main",
+        "objection1",
+        Motion("Curriculum is already overloaded", "objection")
+    )
+    
+    return {
+        "graph": graph,
+        "chain": chain,
+        "hierarchy": hierarchy,
+        "argmap": argmap
+    }
+
+// Demonstrate considering statements
+funxn analyze_text(text):
+    var paragraphs = text / "paragraph"
+    
+    // Consider all paragraphs
+    considering all paragraphs:
+        analyze_sentiment(paragraph)
+        
+    // Consider specific paragraphs
+    considering these paragraphs where contains("important"):
+        highlight(paragraph)
+        
+    // Consider a single item
+    considering item paragraphs[0]:
+        ensure_contains_hook()
+        
+    return "Analysis complete"
+
+// Main function
+funxn main():
+    // Create and analyze a proposition
+    var analysis = new TextAnalysis()
+    
+    // Use the cause in analysis
+    given text.contains_any(BiasedReasoning.effects):
+        warn("Potential bias detected")
+        
+    // Set up the data structures
+    var structures = demonstrate_data_structures()
+    
+    // Evaluate the strength of the argument
+    var strength = structures.argmap.evaluate_claim("main")
+    print("Argument strength: " + strength)
+    
+    // Return the results
+    return {
+        "proposition": analysis,
+        "data_structures": structures,
+        "bias_check": BiasedReasoning
+    } 
