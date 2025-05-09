@@ -312,6 +312,301 @@ join(collection, separator=" ")            // Joins collection elements
 format(template, ...args)                  // String formatting
 ```
 
+## Proposition and Motion System
+
+Kwasa-Kwasa introduces a fundamental paradigm shift from traditional object-oriented programming by replacing classes with **Propositions** that contain **Motions**—pieces of ideas with semantic meaning. This approach aligns with cognitive science principles of how human thought organizes conceptual information.
+
+### Propositions
+
+A Proposition serves as a container for related semantic units (Motions) that collectively represent an idea:
+
+```turbulance
+// Define a proposition
+proposition ArgumentAnalysis:
+    // Add motions to this proposition
+    motion Premise("The capacity for metacognition distinguishes human cognition")
+    motion Conclusion("AI systems require metacognitive capabilities")
+    motion Connection("Metacognition enables monitoring of reasoning processes")
+    
+    // Associate metadata with the proposition
+    with_metadata("domain", "cognitive_science")
+    with_metadata("confidence", "0.87")
+```
+
+Propositions support:
+- Named identification
+- Metadata attachment
+- Conversion to processing streams
+- Holistic operations on contained motions
+
+### Motions
+
+Motions are the fundamental building blocks within propositions, representing distinct pieces of an idea:
+
+```turbulance
+// Working with motions directly
+motion claim = new Motion("Text should be programmatically manipulable", "claim")
+motion evidence = new Motion("Word processors lack semantic awareness", "evidence")
+
+// Apply motion-specific analysis
+spelling_issues = claim.spelling()
+capitalization_issues = evidence.capitalization()
+
+// Check for cognitive biases
+if claim.check_sunken_cost_fallacy().has_bias:
+    print("Warning: Potential sunken cost fallacy detected")
+    
+// Custom pattern checking
+jargon_issues = claim.check_this_exactly("technical term")
+```
+
+Each Motion provides powerful analysis capabilities:
+- **Spelling Analysis**: Identifies potentially misspelled words with suggestions
+- **Capitalization Checking**: Ensures proper capitalization conventions
+- **Cognitive Bias Detection**: Identifies common reasoning fallacies
+- **Custom Pattern Analysis**: Flexible checking for specific textual patterns
+
+### Specialized Data Structures
+
+The framework introduces specialized data structures designed specifically for metacognitive text processing:
+
+#### TextGraph
+
+TextGraph represents relationships between text components as a weighted directed graph:
+
+```turbulance
+// Create a text graph of related concepts
+graph = new TextGraph()
+
+// Add nodes (text units)
+graph.add_node("concept1", Motion("Artificial intelligence", "concept"))
+graph.add_node("concept2", Motion("Machine learning", "concept"))
+graph.add_node("concept3", Motion("Deep learning", "concept"))
+
+// Add weighted relationships
+graph.add_edge("concept1", "concept2", 0.9)  // Strong relationship
+graph.add_edge("concept2", "concept3", 0.8)  // Strong relationship
+graph.add_edge("concept1", "concept3", 0.5)  // Moderate relationship
+
+// Find related concepts
+related = graph.find_related("concept1", 0.7)  // Only return strongly related
+```
+
+TextGraphs enable:
+- Relationship modeling between ideas
+- Weighted connections showing strength of relationships
+- Similarity-based retrieval
+- Network analysis of conceptual relationships
+
+#### ConceptChain
+
+ConceptChain represents sequences of ideas with cause-effect relationships:
+
+```turbulance
+// Create a chain of causally related ideas
+chain = new ConceptChain()
+
+// Add concepts in sequence
+chain.add_concept("climate_change", Motion("Rising global temperatures", "phenomenon"))
+chain.add_concept("ice_melt", Motion("Melting of polar ice caps", "effect"))
+chain.add_concept("sea_level", Motion("Rising sea levels", "effect"))
+
+// Define causal relationships
+chain.add_relationship("climate_change", "ice_melt")
+chain.add_relationship("ice_melt", "sea_level")
+
+// Query relationships
+cause = chain.cause_of("sea_level")  // Returns the ice_melt motion
+effect = chain.effect_of("climate_change")  // Returns the ice_melt motion
+```
+
+ConceptChains provide:
+- Causal relationship modeling
+- Sequential organization of ideas
+- Bidirectional cause-effect queries
+- Foundation for causal reasoning
+
+#### IdeaHierarchy
+
+IdeaHierarchy organizes ideas in a hierarchical tree structure:
+
+```turbulance
+// Create a hierarchical organization of ideas
+hierarchy = new IdeaHierarchy()
+
+// Add root-level ideas
+hierarchy.add_root("philosophy", Motion("Philosophy", "domain"))
+
+// Add children to create a hierarchy
+hierarchy.add_child("philosophy", "ethics", Motion("Ethics", "branch"))
+hierarchy.add_child("philosophy", "epistemology", Motion("Epistemology", "branch"))
+hierarchy.add_child("ethics", "virtue_ethics", Motion("Virtue Ethics", "theory"))
+hierarchy.add_child("ethics", "deontology", Motion("Deontological Ethics", "theory"))
+
+// Navigate the hierarchy
+ethics_theories = hierarchy.get_children("ethics")
+virtue_content = hierarchy.get_content("virtue_ethics")
+```
+
+IdeaHierarchy enables:
+- Taxonomic organization of concepts
+- Parent-child relationship modeling
+- Hierarchical navigation
+- Inheritance-like relationship representation
+
+#### ArgMap
+
+ArgMap represents argumentation maps with claims, evidence, and objections:
+
+```turbulance
+// Create an argument map
+argmap = new ArgMap()
+
+// Add the main claim
+argmap.add_claim("main_claim", Motion("AI should be regulated", "claim"))
+
+// Add supporting evidence
+argmap.add_evidence(
+    "main_claim", 
+    "evidence1", 
+    Motion("Unregulated AI poses existential risks", "evidence"),
+    0.8  // Strong evidence
+)
+
+// Add objections
+argmap.add_objection(
+    "main_claim",
+    "objection1",
+    Motion("Regulation stifles innovation", "objection")
+)
+
+// Evaluate claim strength based on evidence and objections
+strength = argmap.evaluate_claim("main_claim")  // Returns 0.7 (strong but contested)
+```
+
+ArgMap provides:
+- Structured argumentation representation
+- Evidence strength quantification
+- Objection tracking
+- Automated claim evaluation
+
+### Extended Language Syntax
+
+Turbulance has been enhanced with new language constructs that enable more expressive text processing:
+
+#### Considering Statements
+
+The `considering` keyword introduces a powerful new way to process collections contextually:
+
+```turbulance
+// Process all items in a collection
+considering all paragraphs in document:
+    analyze_sentiment(paragraph)
+    check_coherence(paragraph)
+    
+// Process specific items
+considering these paragraphs where contains("technical"):
+    replace_jargon(paragraph)
+    add_explanations(paragraph)
+    
+// Process a single item in depth
+considering item introduction:
+    ensure_contains_hook()
+    check_thesis_statement()
+    validate_length(max_words=200)
+```
+
+Unlike traditional loops, considering statements maintain contextual awareness across iterations.
+
+#### Cause Declarations
+
+The `cause` declaration introduces a named relationship between concepts:
+
+```turbulance
+// Define causes with their effects
+cause climate_change = {
+    primary: "greenhouse gas emissions",
+    effects: ["rising temperatures", "extreme weather", "sea level rise"],
+    confidence: 0.95
+}
+
+// Use causes in processing
+if text.contains_any(climate_change.effects):
+    suggest_related_context(climate_change.primary)
+```
+
+Causes explicitly model causality relationships rather than simply storing data.
+
+#### Allow Statements
+
+The `allow` statement introduces controlled permissions for text transformations:
+
+```turbulance
+// Permit specific transformations
+allow simplification on technical_sections
+allow formalization on conclusions
+allow citation_insertion throughout
+
+// Check permissions
+if allowed(restructuring, current_section):
+    perform_restructuring()
+```
+
+This permission system provides safeguards against unwanted text modifications.
+
+#### Motion Declarations
+
+The `motion` construct creates semantic meaning units:
+
+```turbulance
+// Create a motion
+motion main_argument = "The framework revolutionizes text processing"
+motion supporting_point = evidence_for(main_argument)
+
+// Apply operations
+main_argument.check_clarity()
+supporting_point.ensure_connects_to(main_argument)
+```
+
+Motions are first-class language entities that represent conceptual elements.
+
+### Example: Integrated Proposition Analysis
+
+```turbulance
+// Consider a proposition about climate change
+proposition ClimateAnalysis:
+    motion Observation("Global temperatures have risen 1.1°C since pre-industrial times")
+    motion Cause("Human activities are the dominant cause")
+    motion Prediction("Continued warming poses significant risks")
+    
+    // Create relationships between motions
+    considering all motions in this:
+        check_scientific_support(motion)
+        
+    // Build an argument map
+    argmap = new ArgMap()
+    argmap.add_claim("main", Cause)
+    argmap.add_evidence("main", "temp_evidence", Observation, 0.9)
+    
+    // Allow specific operations
+    allow fact_checking on Observation
+    allow uncertainty_analysis on Prediction
+    
+    // Create causal chain
+    cause human_activity = {
+        effects: ["temperature increase", "sea level rise", "biodiversity loss"],
+        confidence: 0.95
+    }
+    
+    // Evaluate strength
+    considering item Cause:
+        strength = argmap.evaluate_claim("main")
+        if strength > 0.8:
+            print("Strongly supported claim")
+```
+
+This example demonstrates the integration of the new features to create sophisticated text analysis capabilities within the metacognitive framework.
+
 ## Text Unit System
 
 Kwasa-Kwasa's text unit system provides a powerful way to work with text at varying levels of granularity:
@@ -837,6 +1132,60 @@ if alignment < 0.3:
 var progress = goal.progress()
 var estimated_completion = orchestrator.estimate_completion()
 ```
+
+### Advanced Streaming Architecture
+
+The Metacognitive Orchestrator implements a streaming-based concurrent processing model inspired by biological cognitive processes:
+
+```
+                                 ┌───────────────────────────────────────────┐
+                                 │        Metacognitive Orchestrator         │
+                                 │  ┌────────────────────────────────────┐   │
+                                 │  │          Context Layer             │   │
+                                 │  │  ┌─────────────────────────────┐   │   │
+                                 │  │  │      Reasoning Layer        │   │   │
+ Input                           │  │  │  ┌───────────────────────┐  │   │   │         Output
+Stream ─────────────────────────►│  │  │  │   Intuition Layer    │  │   │   │─────────► Stream
+                                 │  │  │  └───────────────────────┘  │   │   │
+                                 │  │  └─────────────────────────────┘   │   │
+                                 │  └────────────────────────────────────┘   │
+                                 └───────────────────────────────────────────┘
+                                       ▲             ▲             ▲
+                                       │             │             │
+                                       │             │             │
+                                       │             │             │
+                                       ▼             ▼             ▼
+                                 ┌──────────┐  ┌───────────┐  ┌───────────┐
+                                 │Glycolytic│  │ Dreaming  │  │  Lactate  │
+                                 │  Cycle   │◄─┤  Module   │◄─┤   Cycle   │
+                                 │Component │  │           │  │ Component │
+                                 └────┬─────┘  └───────────┘  └─────┬─────┘
+                                      │                             │
+                                      └─────────────────────────────┘
+```
+
+The architecture features three nested processing layers operating concurrently:
+
+1. **Context Layer**: Understands domain knowledge and establishes the relevant frame for processing
+2. **Reasoning Layer**: Handles logical processing and analytical computation
+3. **Intuition Layer**: Focuses on pattern recognition and heuristic reasoning
+
+The streaming implementation enables concurrent processing where:
+- Processing begins before complete input is available
+- Each layer can work on partial output from previous layers
+- Results are continuously refined as more information becomes available
+
+Supporting components include:
+
+- **Glycolytic Cycle Component**: Manages computational resources and task partitioning
+- **Dreaming Module**: Generates synthetic edge cases during low-utilization periods
+- **Lactate Cycle Component**: Stores and recycles partial computations when processing is interrupted
+
+This architecture delivers significant advantages:
+- Faster initial response times through partial processing
+- More efficient resource utilization
+- Enhanced ability to handle complex, open-ended tasks
+- Improved exploration of edge cases
 
 ## WebAssembly Integration
 

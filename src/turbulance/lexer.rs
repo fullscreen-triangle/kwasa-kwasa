@@ -32,6 +32,18 @@ pub enum TokenKind {
     #[token("each")]
     Each,
 
+    #[token("considering")]
+    Considering,
+
+    #[token("all")]
+    All,
+
+    #[token("these")]
+    These,
+
+    #[token("item")]
+    Item,
+
     #[token("in")]
     In,
 
@@ -49,6 +61,15 @@ pub enum TokenKind {
     
     #[token("to_all")]
     ToAll,
+
+    #[token("allow")]
+    Allow,
+
+    #[token("cause")]
+    Cause,
+
+    #[token("motion")]
+    Motion,
 
     // Operators
     #[token("+")]
@@ -172,12 +193,19 @@ impl fmt::Display for TokenKind {
             TokenKind::Else => write!(f, "else"),
             TokenKind::For => write!(f, "for"),
             TokenKind::Each => write!(f, "each"),
+            TokenKind::Considering => write!(f, "considering"),
+            TokenKind::All => write!(f, "all"),
+            TokenKind::These => write!(f, "these"),
+            TokenKind::Item => write!(f, "item"),
             TokenKind::In => write!(f, "in"),
             TokenKind::Return => write!(f, "return"),
             TokenKind::Ensure => write!(f, "ensure"),
             TokenKind::Research => write!(f, "research"),
             TokenKind::Apply => write!(f, "apply"),
             TokenKind::ToAll => write!(f, "to_all"),
+            TokenKind::Allow => write!(f, "allow"),
+            TokenKind::Cause => write!(f, "cause"),
+            TokenKind::Motion => write!(f, "motion"),
             TokenKind::Plus => write!(f, "+"),
             TokenKind::Minus => write!(f, "-"),
             TokenKind::Multiply => write!(f, "*"),
@@ -259,7 +287,7 @@ mod tests {
 
     #[test]
     fn test_lexer_keywords() {
-        let source = "funxn project sources within given if else for each in return ensure research apply to_all";
+        let source = "funxn project sources within given if else for each considering all these item in return ensure research apply to_all allow cause motion";
         let mut lexer = Lexer::new(source);
         let tokens = lexer.tokenize();
         
@@ -273,12 +301,19 @@ mod tests {
             TokenKind::Else,
             TokenKind::For,
             TokenKind::Each,
+            TokenKind::Considering,
+            TokenKind::All,
+            TokenKind::These,
+            TokenKind::Item,
             TokenKind::In,
             TokenKind::Return,
             TokenKind::Ensure,
             TokenKind::Research,
             TokenKind::Apply,
             TokenKind::ToAll,
+            TokenKind::Allow,
+            TokenKind::Cause,
+            TokenKind::Motion,
         ];
         
         assert_eq!(tokens.len(), expected_kinds.len());

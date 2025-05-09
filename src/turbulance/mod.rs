@@ -3,8 +3,12 @@ pub mod parser;
 pub mod ast;
 pub mod interpreter;
 pub mod stdlib;
+pub mod proposition;
+pub mod datastructures;
 
 pub use lexer::{Lexer, Token, TokenKind};
+pub use proposition::{Proposition, Motion};
+pub use datastructures::{TextGraph, ConceptChain, IdeaHierarchy, ArgMap};
 
 /// Error types for the Turbulance language
 #[derive(Debug, thiserror::Error)]
@@ -33,9 +37,14 @@ pub fn run(source: &str) -> Result<()> {
     // This is a placeholder for now - we'll implement the full execution pipeline
     // once we have the parser and interpreter
     let mut lexer = lexer::Lexer::new(source);
-    let _tokens = lexer.tokenize();
+    let tokens = lexer.tokenize();
     
-    // For now, just return a success result
+    let mut parser = parser::Parser::new(tokens);
+    let ast = parser.parse()?;
+    
+    let mut interpreter = interpreter::Interpreter::new();
+    let _ = interpreter.execute(&ast)?;
+    
     Ok(())
 }
 
@@ -44,13 +53,14 @@ pub const VERSION: &str = "0.1.0";
 
 /// Check if the given source code is syntactically valid
 pub fn validate(source: &str) -> Result<bool> {
-    // This is a placeholder for now - we'll implement syntax validation
-    // once we have the parser
     let mut lexer = lexer::Lexer::new(source);
-    let _tokens = lexer.tokenize();
+    let tokens = lexer.tokenize();
     
-    // For now, just return true
-    Ok(true)
+    let mut parser = parser::Parser::new(tokens);
+    match parser.parse() {
+        Ok(_) => Ok(true),
+        Err(_) => Ok(false),
+    }
 }
 
 #[cfg(test)]

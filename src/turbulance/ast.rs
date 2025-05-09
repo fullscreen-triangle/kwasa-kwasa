@@ -44,6 +44,8 @@ pub enum Value {
     Map(HashMap<String, Value>),
     Function(FunctionDef),
     TextUnit(TextUnit),
+    Cause(String, Box<Value>),
+    Motion(String, Box<Value>),
     None,
 }
 
@@ -102,6 +104,32 @@ pub enum Node {
         span: Span,
     },
     
+    // Iteration expressions (including new considering expressions)
+    ForEach {
+        iterable: Box<Node>,
+        variable: String,
+        body: Box<Node>,
+        span: Span,
+    },
+    ConsideringAll {
+        iterable: Box<Node>,
+        variable: String,
+        body: Box<Node>,
+        span: Span,
+    },
+    ConsideringThese {
+        iterable: Box<Node>,
+        variable: String,
+        body: Box<Node>,
+        span: Span,
+    },
+    ConsideringItem {
+        item: Box<Node>,
+        variable: String,
+        body: Box<Node>,
+        span: Span,
+    },
+    
     // Declarations
     FunctionDecl {
         name: String,
@@ -119,6 +147,11 @@ pub enum Node {
         sources: Vec<Source>,
         span: Span,
     },
+    Motion {
+        name: String,
+        content: Box<Node>,
+        span: Span,
+    },
     
     // Statements
     Block {
@@ -130,8 +163,17 @@ pub enum Node {
         value: Box<Node>,
         span: Span,
     },
+    CauseDecl {
+        name: String,
+        value: Box<Node>,
+        span: Span,
+    },
     ReturnStmt {
         value: Option<Box<Node>>,
+        span: Span,
+    },
+    AllowStmt {
+        value: Box<Node>,
         span: Span,
     },
     
@@ -264,14 +306,72 @@ impl fmt::Display for Value {
                                           } else {
                                               unit.content.clone()
                                           }),
+            Value::Cause(cause, value) => write!(f, "Cause({}, {})", cause, value),
+            Value::Motion(motion, value) => write!(f, "Motion({}, {})", motion, value),
             Value::None => write!(f, "None"),
         }
     }
 }
 
 /// Creates a program AST from a list of top-level nodes
-pub fn program(nodes: Vec<Node>, span: Span) -> Node {
-    Node::Block { statements: nodes, span }
+pub fn program(statements: Vec<Node>, span: Span) -> Node {
+    Node::Block { statements, span }
+}
+
+/// Helper function to create a cause declaration
+pub fn cause_decl(name: String, value: Node, span: Span) -> Node {
+    Node::CauseDecl {
+        name,
+        value: Box::new(value),
+        span,
+    }
+}
+
+/// Helper function to create a motion declaration
+pub fn motion(name: String, content: Node, span: Span) -> Node {
+    Node::Motion {
+        name,
+        content: Box::new(content),
+        span,
+    }
+}
+
+/// Helper function to create a considering_all statement
+pub fn considering_all(iterable: Node, variable: String, body: Node, span: Span) -> Node {
+    Node::ConsideringAll {
+        iterable: Box::new(iterable),
+        variable,
+        body: Box::new(body),
+        span,
+    }
+}
+
+/// Helper function to create a considering_these statement
+pub fn considering_these(iterable: Node, variable: String, body: Node, span: Span) -> Node {
+    Node::ConsideringThese {
+        iterable: Box::new(iterable),
+        variable,
+        body: Box::new(body),
+        span,
+    }
+}
+
+/// Helper function to create a considering_item statement
+pub fn considering_item(item: Node, variable: String, body: Node, span: Span) -> Node {
+    Node::ConsideringItem {
+        item: Box::new(item),
+        variable,
+        body: Box::new(body),
+        span,
+    }
+}
+
+/// Helper function to create an allow statement
+pub fn allow_stmt(value: Node, span: Span) -> Node {
+    Node::AllowStmt {
+        value: Box::new(value),
+        span,
+    }
 }
 
 #[cfg(test)]

@@ -1,0 +1,112 @@
+// Kwasa-Kwasa Framework Proposition Example
+// This demonstrates the new syntax and concepts
+
+// Define a motion (idea component)
+motion TextAnalysis {
+    // Motion can contain methods and properties
+    
+    // Use allow instead of let for variables
+    allow content = "This is an example text for analysis. It contains multiple sentences with varying structures. Some sentences are short. Others are more complex and have multiple clauses."
+    
+    // Define a cause (variable) that affects other elements
+    cause readabilityThreshold = 0.7
+    
+    // Analyze text using text operations
+    allow sentences = content.split(".")
+    
+    // Use considering all instead of for each
+    considering all sentence in sentences: {
+        allow cleanSentence = sentence.trim()
+        
+        // Skip empty sentences
+        given cleanSentence.length > 0: {
+            // Use the text unit analysis methods
+            allow spellingResult = cleanSentence.spelling()
+            allow capitalizationResult = cleanSentence.capitalization()
+            
+            // Check for cognitive biases
+            allow biasResult = cleanSentence.check_sunken_cost_fallacy()
+            
+            // Custom checks
+            allow complexityCheck = cleanSentence.check_this_exactly("complex")
+            
+            // Perform operations on results
+            within spellingResult: {
+                considering these word in misspelled: {
+                    ensure word.length > 2
+                }
+            }
+        }
+    }
+}
+
+// Define a research proposition
+motion ResearchProposition {
+    // Define causes (variables)
+    cause topic = "Cognitive biases in decision making"
+    cause depth = 0.85
+    
+    // Research operation
+    research topic
+    
+    // Create argument map data structure
+    allow argumentMap = new ArgMap()
+    
+    // Add claims to map
+    argumentMap.add_claim("main", "Cognitive biases significantly impact decision-making")
+    
+    // Add supporting evidence
+    argumentMap.add_evidence("main", "study1", "Research by Kahneman shows systematic errors in judgment", 0.9)
+    argumentMap.add_evidence("main", "study2", "Confirmation bias leads to selective information processing", 0.8)
+    
+    // Add objections
+    argumentMap.add_objection("main", "obj1", "Individual differences may moderate bias effects")
+    
+    // Evaluate claim strength
+    allow claimStrength = argumentMap.evaluate_claim("main")
+    
+    // Considering item for single-item processing
+    considering item claimStrength: {
+        given claimStrength > 0.7: {
+            // Use proposition's strength to determine actions
+            return "Strong claim requiring further investigation"
+        }
+    }
+}
+
+// Create a concept chain
+allow causalChain = new ConceptChain()
+
+// Add concepts and their relationships
+causalChain.add_concept("c1", "Availability heuristic affects risk assessment")
+causalChain.add_concept("c2", "People overestimate likelihood of vivid events")
+causalChain.add_concept("c3", "Media coverage influences perceived risk")
+
+// Define cause-effect relationships
+causalChain.add_relationship("c1", "c2")
+causalChain.add_relationship("c2", "c3")
+
+// Find effects using the chain
+allow effect = causalChain.effect_of("c1")
+
+// Demonstrate text graph
+allow conceptGraph = new TextGraph()
+
+// Add nodes representing ideas
+conceptGraph.add_node("n1", "Systematic biases affect all decision-making")
+conceptGraph.add_node("n2", "Heuristics provide cognitive shortcuts")
+conceptGraph.add_node("n3", "Fast thinking often leads to errors in judgment")
+
+// Add weighted relationships between ideas
+conceptGraph.add_edge("n1", "n2", 0.8)
+conceptGraph.add_edge("n2", "n3", 0.9)
+
+// Find related concepts
+allow relatedIdeas = conceptGraph.find_related("n1", 0.7)
+
+// Consider these ideas for processing
+considering these idea in relatedIdeas: {
+    // Process each related idea
+    allow content = idea.content()
+    ensure content.length > 0
+} 

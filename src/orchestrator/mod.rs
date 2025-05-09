@@ -1,6 +1,20 @@
+// Metacognitive Orchestrator Module
+// Implements a streaming-based concurrent processing architecture
+
+pub mod stream;
+pub mod metacognitive;
+pub mod biomimetic;
+pub mod types;
+pub mod examples;
 pub mod goal;
 pub mod context;
 pub mod intervention;
+
+// Re-export main components
+pub use metacognitive::MetacognitiveOrchestrator;
+pub use stream::StreamProcessor;
+pub use types::StreamData;
+pub use examples::{create_default_orchestrator, create_custom_orchestrator};
 
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};

@@ -38,6 +38,7 @@ scraper = "0.16.0"
 # Concurrency
 tokio = { version = "1.28.2", features = ["full"] }
 rayon = "1.7.0"
+async-trait = "0.1.68"
 
 # Utilities
 log = "0.4.18"

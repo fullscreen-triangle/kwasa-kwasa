@@ -56,6 +56,14 @@ impl Parser {
             return self.sources_declaration();
         }
         
+        if self.match_token(&[TokenKind::Cause]) {
+            return self.cause_declaration();
+        }
+        
+        if self.match_token(&[TokenKind::Motion]) {
+            return self.motion_declaration();
+        }
+        
         self.statement()
     }
     
@@ -221,6 +229,18 @@ impl Parser {
         
         if self.match_token(&[TokenKind::Research]) {
             return self.research_statement();
+        }
+        
+        if self.match_token(&[TokenKind::For]) {
+            return self.for_statement();
+        }
+        
+        if self.match_token(&[TokenKind::Considering]) {
+            return self.considering_statement();
+        }
+        
+        if self.match_token(&[TokenKind::Allow]) {
+            return self.allow_statement();
         }
         
         if self.match_token(&[TokenKind::LeftBrace]) {
@@ -997,6 +1017,197 @@ impl Node {
             Node::Error(_, span) => Some(*span),
         }
     }
+}
+
+/// Parse a cause declaration (replaces variable declaration)
+fn cause_declaration(&mut self) -> Result<Node, TurbulanceError> {
+    let start_span = self.previous().span.clone();
+    
+    let name = self.consume(TokenKind::Identifier, "Expected cause name after 'cause'")?
+        .lexeme.clone();
+    
+    self.consume(TokenKind::Assign, "Expected '=' after cause name")?;
+    
+    let value = self.expression()?;
+    
+    let end_span = self.previous().span.clone();
+    
+    let span = Span::new(
+        Position::new(0, 0, start_span.start),
+        Position::new(0, 0, end_span.end),
+    );
+    
+    Ok(ast::cause_decl(name, value, span))
+}
+
+/// Parse a motion declaration (like a class or function)
+fn motion_declaration(&mut self) -> Result<Node, TurbulanceError> {
+    let start_span = self.previous().span.clone();
+    
+    let name = self.consume(TokenKind::Identifier, "Expected motion name after 'motion'")?
+        .lexeme.clone();
+    
+    self.consume(TokenKind::LeftBrace, "Expected '{' after motion name")?;
+    
+    let content = self.block()?;
+    
+    let end_span = self.previous().span.clone();
+    
+    let span = Span::new(
+        Position::new(0, 0, start_span.start),
+        Position::new(0, 0, end_span.end),
+    );
+    
+    Ok(ast::motion(name, content, span))
+}
+
+/// Parse a for statement
+fn for_statement(&mut self) -> Result<Node, TurbulanceError> {
+    let start_span = self.previous().span.clone();
+    
+    self.consume(TokenKind::Each, "Expected 'each' after 'for'")?;
+    
+    let variable = self.consume(TokenKind::Identifier, "Expected variable name after 'each'")?
+        .lexeme.clone();
+    
+    self.consume(TokenKind::In, "Expected 'in' after variable name")?;
+    
+    let iterable = self.expression()?;
+    
+    self.consume(TokenKind::Colon, "Expected ':' after iterable expression")?;
+    
+    let body = self.block()?;
+    
+    let end_span = if let Node::Block { span, .. } = &body {
+        span.end
+    } else {
+        return Err(self.error("Expected block"));
+    };
+    
+    let span = Span::new(
+        Position::new(0, 0, start_span.start),
+        Position::new(0, 0, end_span.offset),
+    );
+    
+    Ok(Node::ForEach {
+        iterable: Box::new(iterable),
+        variable,
+        body: Box::new(body),
+        span,
+    })
+}
+
+/// Parse a considering statement (replaces for each)
+fn considering_statement(&mut self) -> Result<Node, TurbulanceError> {
+    let start_span = self.previous().span.clone();
+    
+    // Determine which type of considering statement we have
+    if self.match_token(&[TokenKind::All]) {
+        return self.considering_all_statement(start_span);
+    } else if self.match_token(&[TokenKind::These]) {
+        return self.considering_these_statement(start_span);
+    } else if self.match_token(&[TokenKind::Item]) {
+        return self.considering_item_statement(start_span);
+    } else {
+        return Err(self.error("Expected 'all', 'these', or 'item' after 'considering'"));
+    }
+}
+
+/// Parse a "considering all X" statement
+fn considering_all_statement(&mut self, start_span: logos::Span) -> Result<Node, TurbulanceError> {
+    let variable = self.consume(TokenKind::Identifier, "Expected variable name after 'all'")?
+        .lexeme.clone();
+    
+    self.consume(TokenKind::In, "Expected 'in' after variable name")?;
+    
+    let iterable = self.expression()?;
+    
+    self.consume(TokenKind::Colon, "Expected ':' after iterable expression")?;
+    
+    let body = self.block()?;
+    
+    let end_span = if let Node::Block { span, .. } = &body {
+        span.end
+    } else {
+        return Err(self.error("Expected block"));
+    };
+    
+    let span = Span::new(
+        Position::new(0, 0, start_span.start),
+        Position::new(0, 0, end_span.offset),
+    );
+    
+    Ok(ast::considering_all(iterable, variable, body, span))
+}
+
+/// Parse a "considering these X" statement
+fn considering_these_statement(&mut self, start_span: logos::Span) -> Result<Node, TurbulanceError> {
+    let variable = self.consume(TokenKind::Identifier, "Expected variable name after 'these'")?
+        .lexeme.clone();
+    
+    self.consume(TokenKind::In, "Expected 'in' after variable name")?;
+    
+    let iterable = self.expression()?;
+    
+    self.consume(TokenKind::Colon, "Expected ':' after iterable expression")?;
+    
+    let body = self.block()?;
+    
+    let end_span = if let Node::Block { span, .. } = &body {
+        span.end
+    } else {
+        return Err(self.error("Expected block"));
+    };
+    
+    let span = Span::new(
+        Position::new(0, 0, start_span.start),
+        Position::new(0, 0, end_span.offset),
+    );
+    
+    Ok(ast::considering_these(iterable, variable, body, span))
+}
+
+/// Parse a "considering item X" statement
+fn considering_item_statement(&mut self, start_span: logos::Span) -> Result<Node, TurbulanceError> {
+    let variable = self.consume(TokenKind::Identifier, "Expected variable name after 'item'")?
+        .lexeme.clone();
+    
+    self.consume(TokenKind::Colon, "Expected ':' after variable name")?;
+    
+    let item = self.expression()?;
+    
+    self.consume(TokenKind::Colon, "Expected ':' after item expression")?;
+    
+    let body = self.block()?;
+    
+    let end_span = if let Node::Block { span, .. } = &body {
+        span.end
+    } else {
+        return Err(self.error("Expected block"));
+    };
+    
+    let span = Span::new(
+        Position::new(0, 0, start_span.start),
+        Position::new(0, 0, end_span.offset),
+    );
+    
+    Ok(ast::considering_item(item, variable, body, span))
+}
+
+/// Parse an "allow" statement (replaces "let")
+fn allow_statement(&mut self) -> Result<Node, TurbulanceError> {
+    let start_span = self.previous().span.clone();
+    
+    let value = self.expression()?;
+    
+    let end_span = self.previous().span.clone();
+    
+    let span = Span::new(
+        Position::new(0, 0, start_span.start),
+        Position::new(0, 0, end_span.end),
+    );
+    
+    Ok(ast::allow_stmt(value, span))
 }
 
 #[cfg(test)]
