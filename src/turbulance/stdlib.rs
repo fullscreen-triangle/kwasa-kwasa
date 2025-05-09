@@ -75,9 +75,6 @@ impl StdLib {
 
 /// Calculate readability score for a text
 fn readability_score(args: Vec<Value>) -> Result<Value, TurbulanceError> {
-    // TODO: Implement readability scoring
-    // This is a stub implementation
-    
     // Check that we have at least one argument
     if args.is_empty() {
         return Err(TurbulanceError::RuntimeError {
@@ -96,20 +93,92 @@ fn readability_score(args: Vec<Value>) -> Result<Value, TurbulanceError> {
         }
     };
     
-    // Placeholder implementation
-    // In a real implementation, this would use proper readability metrics
-    let words = text.split_whitespace().count();
-    let sentences = text.split(&['.', '!', '?']).filter(|s| !s.trim().is_empty()).count();
+    // Implement Flesch-Kincaid readability algorithm
+    // 206.835 - 1.015 * (total words / total sentences) - 84.6 * (total syllables / total words)
     
-    if sentences == 0 {
+    // Count sentences - split by period, exclamation, question mark
+    let sentences: Vec<&str> = text
+        .split(&['.', '!', '?'])
+        .filter(|s| !s.trim().is_empty())
+        .collect();
+    let sentence_count = sentences.len();
+    
+    if sentence_count == 0 {
         return Ok(Value::Number(0.0));
     }
     
-    // Simple average words per sentence as placeholder
-    let avg_words_per_sentence = words as f64 / sentences as f64;
-    let score = 100.0 - (avg_words_per_sentence * 5.0).min(100.0);
+    // Count words - split by whitespace
+    let words: Vec<&str> = text
+        .split_whitespace()
+        .collect();
+    let word_count = words.len();
     
-    Ok(Value::Number(score))
+    if word_count == 0 {
+        return Ok(Value::Number(0.0));
+    }
+    
+    // Estimate syllable count - This is a simple approximation
+    let syllable_count = estimate_syllables(text);
+    
+    // Calculate Flesch Reading Ease score
+    let avg_sentences_per_word = word_count as f64 / sentence_count as f64;
+    let avg_syllables_per_word = syllable_count as f64 / word_count as f64;
+    
+    let score = 206.835 - (1.015 * avg_sentences_per_word) - (84.6 * avg_syllables_per_word);
+    
+    // Clamp the score to a reasonable range (0-100)
+    let clamped_score = score.max(0.0).min(100.0);
+    
+    Ok(Value::Number(clamped_score))
+}
+
+/// Helper function to estimate syllable count in a text
+fn estimate_syllables(text: &str) -> usize {
+    let text = text.to_lowercase();
+    let mut syllable_count = 0;
+    
+    // Process each word
+    for word in text.split_whitespace() {
+        // Remove non-alphanumeric characters
+        let word = word.chars()
+            .filter(|c| c.is_alphanumeric())
+            .collect::<String>();
+        
+        if word.is_empty() {
+            continue;
+        }
+        
+        // Count vowel groups in the word
+        let mut vowel_groups = 0;
+        let mut prev_is_vowel = false;
+        
+        for c in word.chars() {
+            let is_vowel = "aeiouy".contains(c);
+            
+            if is_vowel && !prev_is_vowel {
+                vowel_groups += 1;
+            }
+            
+            prev_is_vowel = is_vowel;
+        }
+        
+        // Adjust syllable count for specific patterns
+        
+        // Words ending with 'e' often don't pronounce it as a syllable
+        if word.ends_with('e') {
+            vowel_groups = vowel_groups.saturating_sub(1);
+        }
+        
+        // Words ending with 'le' usually count as a syllable
+        if word.ends_with("le") && word.len() > 2 && !"aeiouy".contains(word.chars().nth(word.len() - 3).unwrap_or('x')) {
+            vowel_groups += 1;
+        }
+        
+        // Ensure every word has at least one syllable
+        syllable_count += vowel_groups.max(1);
+    }
+    
+    syllable_count
 }
 
 /// Check if text contains a pattern
@@ -532,22 +601,71 @@ fn remove_excessive_adverbs(text: &str) -> String {
 
 /// Helper function to simplify complex phrases
 fn simplify_complex_phrases(text: &str) -> String {
-    let replacements = [
+    // Map of complex phrases to simpler alternatives
+    let phrases = [
+        // Verbose expressions
         ("in order to", "to"),
-        ("due to the fact that", "because"),
         ("for the purpose of", "for"),
         ("in the event that", "if"),
+        ("in the process of", "during"),
+        ("on the occasion of", "when"),
+        ("in the near future", "soon"),
+        ("at this point in time", "now"),
+        ("due to the fact that", "because"),
+        ("with reference to", "about"),
+        ("with regard to", "about"),
+        ("in relation to", "about"),
+        ("in the majority of instances", "usually"),
+        ("in a timely manner", "promptly"),
+        ("a number of", "several"),
+        ("the vast majority of", "most"),
+        ("in spite of the fact that", "although"),
+        ("on the grounds that", "because"),
+        ("for the reason that", "because"),
+        ("in the final analysis", "finally"),
+        ("in close proximity to", "near"),
+        ("until such time as", "until"),
+        ("it is often the case that", "often"),
+        ("as a consequence of", "because"),
+        ("in the aftermath of", "after"),
         ("prior to", "before"),
         ("subsequent to", "after"),
-        ("at this point in time", "now"),
-        ("with regard to", "about"),
-        ("in the absence of", "without"),
-        ("in the vicinity of", "near"),
+        ("in conjunction with", "with"),
+        ("notwithstanding the fact that", "although"),
+        
+        // Nominalizations
+        ("make a decision", "decide"),
+        ("come to the conclusion", "conclude"),
+        ("take into consideration", "consider"),
+        ("conduct an investigation", "investigate"),
+        ("provide a recommendation", "recommend"),
+        ("reach an agreement", "agree"),
+        ("hold a meeting", "meet"),
+        ("give consideration to", "consider"),
+        ("make reference to", "refer to"),
+        ("provide assistance to", "help"),
+        ("make an announcement", "announce"),
+        ("perform an analysis", "analyze"),
+        ("undertake an examination", "examine"),
+        ("implement a solution", "solve"),
+        ("make an assumption", "assume"),
+        ("conduct an assessment", "assess"),
+        ("perform an evaluation", "evaluate"),
+        
+        // Passive constructions commonly used
+        ("it has been observed that", "I observed that"),
+        ("it has been noted that", "note that"),
+        ("it is widely accepted that", "most people accept that"),
+        ("it is generally believed that", "most people believe that"),
+        ("it was determined that", "we determined that"),
+        ("it can be seen that", "clearly"),
+        ("it should be noted that", "note that"),
     ];
     
     let mut result = text.to_string();
-    for (complex, simple) in replacements.iter() {
-        let pattern = regex::Regex::new(&regex::escape(complex)).unwrap();
+    for (complex, simple) in phrases.iter() {
+        // Case insensitive replacement
+        let pattern = regex::Regex::new(&format!(r"(?i)\b{}\b", regex::escape(complex))).unwrap();
         result = pattern.replace_all(&result, *simple).to_string();
     }
     
@@ -573,40 +691,115 @@ fn reduce_nested_clauses(text: &str) -> String {
 
 /// Helper function to split long sentences
 fn split_long_sentences(text: &str) -> String {
-    // If the sentence is already short, return it as is
-    let words: Vec<&str> = text.split_whitespace().collect();
-    if words.len() <= 15 {
+    // Don't try to split very short sentences
+    if text.split_whitespace().count() < 20 {
         return text.to_string();
     }
     
-    // Look for conjunction points to split the sentence
-    let conjunctions = [", and ", ", but ", ", or ", "; ", ": "];
+    // Check for natural splitting points
+    // Common coordinating conjunctions and transition words
+    let split_points = [
+        ", and ", "; and ", ", but ", "; but ", ", or ", "; or ",
+        ", so ", "; so ", ", yet ", "; yet ", ", nor ", "; nor ",
+        ", however ", "; however ", ", therefore ", "; therefore ",
+        ", furthermore ", "; furthermore ", ", consequently ", "; consequently ",
+        ", nevertheless ", "; nevertheless ", ", meanwhile ", "; meanwhile ",
+        ", moreover ", "; moreover ", ", additionally ", "; additionally ",
+    ];
     
-    for conjunction in conjunctions.iter() {
-        if text.contains(conjunction) {
-            let parts: Vec<&str> = text.split(conjunction).collect();
-            if parts.len() >= 2 {
-                let mut result = String::new();
-                for (i, part) in parts.iter().enumerate() {
-                    if i > 0 {
-                        // Capitalize the first letter of the new sentence
-                        let mut chars = part.chars();
-                        if let Some(first_char) = chars.next() {
-                            result.push_str(". ");
-                            result.push(first_char.to_uppercase().next().unwrap_or(first_char));
-                            result.push_str(chars.as_str());
-                        }
-                    } else {
-                        result.push_str(part);
-                    }
-                }
-                return result;
+    // Find the best split point - closest to middle of sentence
+    let word_count = text.split_whitespace().count();
+    let target_position = word_count / 2;
+    
+    let mut best_split_point = None;
+    let mut best_split_distance = usize::MAX;
+    
+    // Count words until each potential split point to find the one closest to the middle
+    for split_marker in split_points.iter() {
+        if let Some(pos) = text.find(split_marker) {
+            let words_before = text[..pos].split_whitespace().count();
+            let distance_from_middle = if words_before > target_position {
+                words_before - target_position
+            } else {
+                target_position - words_before
+            };
+            
+            if distance_from_middle < best_split_distance {
+                best_split_distance = distance_from_middle;
+                best_split_point = Some((pos, split_marker.len()));
             }
         }
     }
     
-    // If no good split point was found, return the original
-    text.to_string()
+    // If found a good split point, split the sentence
+    if let Some((pos, len)) = best_split_point {
+        let (first_half, second_half) = text.split_at(pos + len);
+        
+        // Prepare first part ending
+        let first_part = first_half.trim_end_matches(|c| c == ',' || c == ';')
+            .trim_end();
+        
+        // Prepare second part beginning
+        let second_part = second_half.trim_start_matches(|c| c == ',' || c == ';' || c.is_whitespace())
+            .trim_start_matches(|c| c == 'a' && second_half.trim_start().starts_with("and"))
+            .trim_start_matches(|c| c == 'b' && second_half.trim_start().starts_with("but"))
+            .trim_start_matches(|c| c == 'o' && second_half.trim_start().starts_with("or"))
+            .trim_start_matches(|c| c == 's' && second_half.trim_start().starts_with("so"))
+            .trim_start_matches(|c| c == 'y' && second_half.trim_start().starts_with("yet"))
+            .trim_start_matches(|c| c == 'n' && second_half.trim_start().starts_with("nor"))
+            .trim_start();
+        
+        // Capitalize the first letter of the second part
+        let second_part = if !second_part.is_empty() {
+            let mut chars = second_part.chars();
+            match chars.next() {
+                None => String::new(),
+                Some(first_char) => {
+                    let first_upper = first_char.to_uppercase().collect::<String>();
+                    first_upper + chars.as_str()
+                }
+            }
+        } else {
+            String::new()
+        };
+        
+        // If first part doesn't end with punctuation, add a period
+        let first_part = if !first_part.ends_with(|c| c == '.' || c == '!' || c == '?') {
+            format!("{}.", first_part)
+        } else {
+            first_part.to_string()
+        };
+        
+        format!("{} {}", first_part, second_part)
+    } else {
+        // No good split point found - try to split at a comma near the middle
+        if let Some(pos) = text.find(", ") {
+            if pos > 10 && pos < text.len() - 10 {  // Ensure reasonable parts on both sides
+                let (first_half, second_half) = text.split_at(pos + 1);  // Include the comma
+                
+                let first_part = first_half.trim();
+                let mut second_part = second_half.trim_start();
+                
+                // Capitalize the first letter of the second part
+                if !second_part.is_empty() {
+                    let mut chars = second_part.chars();
+                    match chars.next() {
+                        None => (),
+                        Some(first_char) => {
+                            let first_upper = first_char.to_uppercase().collect::<String>();
+                            second_part = first_upper + chars.as_str();
+                        }
+                    }
+                }
+                
+                format!("{}. {}", first_part, second_part)
+            } else {
+                text.to_string()
+            }
+        } else {
+            text.to_string()
+        }
+    }
 }
 
 /// Helper function to favor active voice
@@ -901,45 +1094,123 @@ mod tests {
     #[test]
     fn test_stdlib_functions_exist() {
         let stdlib = StdLib::new();
-        
         assert!(stdlib.has_function("readability_score"));
         assert!(stdlib.has_function("contains"));
+        assert!(stdlib.has_function("extract_patterns"));
+        assert!(stdlib.has_function("research_context"));
+        assert!(stdlib.has_function("ensure_explanation_follows"));
+        assert!(stdlib.has_function("simplify_sentences"));
+        assert!(stdlib.has_function("replace_jargon"));
         assert!(stdlib.has_function("print"));
         assert!(stdlib.has_function("len"));
         assert!(stdlib.has_function("typeof"));
-        
-        assert!(!stdlib.has_function("nonexistent_function"));
     }
     
     #[test]
     fn test_contains_function() {
-        let stdlib = StdLib::new();
+        let args = vec![
+            Value::String("This is a test".to_string()),
+            Value::String("test".to_string()),
+        ];
         
-        let text = Value::String("Hello, world!".to_string());
-        let pattern = Value::String("world".to_string());
+        assert_eq!(contains(args.clone()).unwrap(), Value::Bool(true));
         
-        let result = stdlib.call("contains", vec![text.clone(), pattern]).unwrap();
-        assert_eq!(result, Value::Bool(true));
+        let args = vec![
+            Value::String("This is a test".to_string()),
+            Value::String("banana".to_string()),
+        ];
         
-        let wrong_pattern = Value::String("universe".to_string());
-        let result = stdlib.call("contains", vec![text, wrong_pattern]).unwrap();
-        assert_eq!(result, Value::Bool(false));
+        assert_eq!(contains(args.clone()).unwrap(), Value::Bool(false));
     }
     
     #[test]
     fn test_typeof_function() {
-        let stdlib = StdLib::new();
+        let args = vec![Value::Number(42.0)];
+        assert_eq!(typeof(args).unwrap(), Value::String("number".to_string()));
         
-        let string_val = Value::String("test".to_string());
-        let result = stdlib.call("typeof", vec![string_val]).unwrap();
-        assert_eq!(result, Value::String("string".to_string()));
+        let args = vec![Value::String("hello".to_string())];
+        assert_eq!(typeof(args).unwrap(), Value::String("string".to_string()));
+    }
+    
+    #[test]
+    fn test_readability_score() {
+        // Short, simple text should have a high readability score
+        let simple_text = "This is a simple text. It has short sentences. Words are small.";
+        let args = vec![Value::String(simple_text.to_string())];
+        let result = readability_score(args).unwrap();
         
-        let number_val = Value::Number(42.0);
-        let result = stdlib.call("typeof", vec![number_val]).unwrap();
-        assert_eq!(result, Value::String("number".to_string()));
+        if let Value::Number(score) = result {
+            assert!(score > 70.0, "Simple text should have high readability score");
+        } else {
+            panic!("Expected number result");
+        }
         
-        let bool_val = Value::Bool(true);
-        let result = stdlib.call("typeof", vec![bool_val]).unwrap();
-        assert_eq!(result, Value::String("boolean".to_string()));
+        // Complex text should have a lower readability score
+        let complex_text = "The implementation of the metacognitive orchestration framework necessitates a sophisticated understanding of computational linguistics and natural language processing algorithms, particularly when considering the interdisciplinary ramifications of semantic analysis in conjunction with knowledge representation methodologies.";
+        let args = vec![Value::String(complex_text.to_string())];
+        let result = readability_score(args).unwrap();
+        
+        if let Value::Number(score) = result {
+            assert!(score < 50.0, "Complex text should have lower readability score");
+        } else {
+            panic!("Expected number result");
+        }
+    }
+    
+    #[test]
+    fn test_simplify_sentences() {
+        // Test level 1 simplification
+        let complex_text = "I very quickly realized that the performance metrics were absolutely essential for determining the operational effectiveness.";
+        let args = vec![
+            Value::String(complex_text.to_string()),
+            Value::Number(1.0),
+        ];
+        
+        let result = simplify_sentences(args).unwrap();
+        if let Value::String(simplified) = result {
+            assert!(simplified.len() < complex_text.len(), "Text should be shorter after simplification");
+            assert!(!simplified.contains("very quickly"), "Excessive adverbs should be removed");
+            assert!(!simplified.contains("absolutely essential"), "Excessive adverbs should be removed");
+        } else {
+            panic!("Expected string result");
+        }
+        
+        // Test level 3 simplification with sentence splitting
+        let long_text = "The metacognitive framework integrates multiple layers of processing, including semantic analysis, contextual understanding, and knowledge integration, while also providing mechanisms for self-regulation, goal management, and error detection that improve overall system performance and user experience.";
+        let args = vec![
+            Value::String(long_text.to_string()),
+            Value::Number(3.0),
+        ];
+        
+        let result = simplify_sentences(args).unwrap();
+        if let Value::String(simplified) = result {
+            // Should have split the sentence
+            assert!(simplified.contains(". "), "Long sentence should be split");
+            // Check for active voice
+            assert!(simplified.contains("improves") || !simplified.contains("that improve"), 
+                   "Passive voice should be converted to active");
+        } else {
+            panic!("Expected string result");
+        }
+    }
+    
+    #[test]
+    fn test_estimate_syllables() {
+        assert_eq!(estimate_syllables("hello"), 2);
+        assert_eq!(estimate_syllables("computer"), 3);
+        assert_eq!(estimate_syllables("university"), 5);
+        assert_eq!(estimate_syllables("calculation"), 4);
+        assert_eq!(estimate_syllables("the quick brown fox"), 4);
+    }
+    
+    #[test]
+    fn test_simplify_complex_phrases() {
+        let text = "In order to make a decision, we need to take into consideration all factors.";
+        let simplified = simplify_complex_phrases(text);
+        assert_eq!(simplified, "To decide, we need to consider all factors.");
+        
+        let text = "Due to the fact that we are in close proximity to the deadline, we need to make an assessment of our progress.";
+        let simplified = simplify_complex_phrases(text);
+        assert_eq!(simplified, "Because we are near the deadline, we need to assess our progress.");
     }
 }

@@ -321,16 +321,30 @@ Kwasa-Kwasa introduces a fundamental paradigm shift from traditional object-orie
 A Proposition serves as a container for related semantic units (Motions) that collectively represent an idea:
 
 ```turbulance
-// Define a proposition
-proposition ArgumentAnalysis:
-    // Add motions to this proposition
-    motion Premise("The capacity for metacognition distinguishes human cognition")
-    motion Conclusion("AI systems require metacognitive capabilities")
-    motion Connection("Metacognition enables monitoring of reasoning processes")
+// Define a proposition with motions
+proposition TextAnalysis:
+    // Define motions within the proposition
+    motion Introduction("The text analysis begins with understanding the context.")
+    motion MainPoint("Proper analysis requires both syntactic and semantic understanding.")
+    motion Conclusion("By analyzing text with these methods, we gain deeper insights.")
     
-    // Associate metadata with the proposition
-    with_metadata("domain", "cognitive_science")
-    with_metadata("confidence", "0.87")
+    // Add metadata to the proposition
+    with_metadata("domain", "linguistics")
+    with_metadata("confidence", "0.95")
+    
+    // Process all motions in this proposition
+    considering all motions in this:
+        check_spelling(motion)
+        check_capitalization(motion)
+        
+        // Conditionally check for biases
+        given motion.content.length > 50:
+            check_sunken_cost_fallacy(motion)
+            
+    // Allow specific operations on specific motions
+    allow fact_checking on Introduction
+    allow sentiment_analysis on MainPoint
+    allow coherence_check on Conclusion
 ```
 
 Propositions support:
@@ -345,8 +359,8 @@ Motions are the fundamental building blocks within propositions, representing di
 
 ```turbulance
 // Working with motions directly
-motion claim = new Motion("Text should be programmatically manipulable", "claim")
-motion evidence = new Motion("Word processors lack semantic awareness", "evidence")
+motion claim = Motion("Text should be programmatically manipulable", "claim")
+motion evidence = Motion("Word processors lack semantic awareness", "evidence")
 
 // Apply motion-specific analysis
 spelling_issues = claim.spelling()
@@ -375,21 +389,18 @@ The framework introduces specialized data structures designed specifically for m
 TextGraph represents relationships between text components as a weighted directed graph:
 
 ```turbulance
-// Create a text graph of related concepts
-graph = new TextGraph()
+// Create a text graph for concept relationships
+var graph = new TextGraph()
+graph.add_node("syntax", Motion("Syntactic analysis examines structure", "concept"))
+graph.add_node("semantics", Motion("Semantic analysis examines meaning", "concept"))
+graph.add_node("pragmatics", Motion("Pragmatic analysis examines context", "concept"))
 
-// Add nodes (text units)
-graph.add_node("concept1", Motion("Artificial intelligence", "concept"))
-graph.add_node("concept2", Motion("Machine learning", "concept"))
-graph.add_node("concept3", Motion("Deep learning", "concept"))
-
-// Add weighted relationships
-graph.add_edge("concept1", "concept2", 0.9)  // Strong relationship
-graph.add_edge("concept2", "concept3", 0.8)  // Strong relationship
-graph.add_edge("concept1", "concept3", 0.5)  // Moderate relationship
+// Add relationships between concepts
+graph.add_edge("syntax", "semantics", 0.7)
+graph.add_edge("semantics", "pragmatics", 0.8)
 
 // Find related concepts
-related = graph.find_related("concept1", 0.7)  // Only return strongly related
+related = graph.find_related("syntax", 0.6)  // Return concepts related to syntax
 ```
 
 TextGraphs enable:
@@ -403,21 +414,19 @@ TextGraphs enable:
 ConceptChain represents sequences of ideas with cause-effect relationships:
 
 ```turbulance
-// Create a chain of causally related ideas
-chain = new ConceptChain()
-
-// Add concepts in sequence
-chain.add_concept("climate_change", Motion("Rising global temperatures", "phenomenon"))
-chain.add_concept("ice_melt", Motion("Melting of polar ice caps", "effect"))
-chain.add_concept("sea_level", Motion("Rising sea levels", "effect"))
+// Create a concept chain for cause-effect relationships
+var chain = new ConceptChain()
+chain.add_concept("education", Motion("Increased language education", "factor"))
+chain.add_concept("awareness", Motion("Improved linguistic awareness", "result"))
+chain.add_concept("comprehension", Motion("Better text comprehension", "result"))
 
 // Define causal relationships
-chain.add_relationship("climate_change", "ice_melt")
-chain.add_relationship("ice_melt", "sea_level")
+chain.add_relationship("education", "awareness")
+chain.add_relationship("awareness", "comprehension")
 
 // Query relationships
-cause = chain.cause_of("sea_level")  // Returns the ice_melt motion
-effect = chain.effect_of("climate_change")  // Returns the ice_melt motion
+cause = chain.cause_of("comprehension")  // Returns the awareness motion
+effect = chain.effect_of("education")    // Returns the awareness motion
 ```
 
 ConceptChains provide:
@@ -431,21 +440,16 @@ ConceptChains provide:
 IdeaHierarchy organizes ideas in a hierarchical tree structure:
 
 ```turbulance
-// Create a hierarchical organization of ideas
-hierarchy = new IdeaHierarchy()
-
-// Add root-level ideas
-hierarchy.add_root("philosophy", Motion("Philosophy", "domain"))
-
-// Add children to create a hierarchy
-hierarchy.add_child("philosophy", "ethics", Motion("Ethics", "branch"))
-hierarchy.add_child("philosophy", "epistemology", Motion("Epistemology", "branch"))
-hierarchy.add_child("ethics", "virtue_ethics", Motion("Virtue Ethics", "theory"))
-hierarchy.add_child("ethics", "deontology", Motion("Deontological Ethics", "theory"))
+// Create a hierarchy of ideas
+var hierarchy = new IdeaHierarchy()
+hierarchy.add_root("linguistics", Motion("Linguistics", "field"))
+hierarchy.add_child("linguistics", "phonetics", Motion("Phonetics", "subfield"))
+hierarchy.add_child("linguistics", "morphology", Motion("Morphology", "subfield"))
+hierarchy.add_child("linguistics", "syntax", Motion("Syntax", "subfield"))
 
 // Navigate the hierarchy
-ethics_theories = hierarchy.get_children("ethics")
-virtue_content = hierarchy.get_content("virtue_ethics")
+phonetics_content = hierarchy.get_content("phonetics")
+linguistics_children = hierarchy.get_children("linguistics")
 ```
 
 IdeaHierarchy enables:
@@ -460,28 +464,26 @@ ArgMap represents argumentation maps with claims, evidence, and objections:
 
 ```turbulance
 // Create an argument map
-argmap = new ArgMap()
-
-// Add the main claim
-argmap.add_claim("main_claim", Motion("AI should be regulated", "claim"))
+var argmap = new ArgMap()
+argmap.add_claim("main", Motion("Text analysis should be taught in schools", "claim"))
 
 // Add supporting evidence
 argmap.add_evidence(
-    "main_claim", 
+    "main", 
     "evidence1", 
-    Motion("Unregulated AI poses existential risks", "evidence"),
+    Motion("Improves critical thinking skills", "evidence"),
     0.8  // Strong evidence
 )
 
 // Add objections
 argmap.add_objection(
-    "main_claim",
+    "main",
     "objection1",
-    Motion("Regulation stifles innovation", "objection")
+    Motion("Curriculum is already overloaded", "objection")
 )
 
 // Evaluate claim strength based on evidence and objections
-strength = argmap.evaluate_claim("main_claim")  // Returns 0.7 (strong but contested)
+strength = argmap.evaluate_claim("main")  // Returns a value between 0 and 1
 ```
 
 ArgMap provides:
@@ -499,21 +501,20 @@ Turbulance has been enhanced with new language constructs that enable more expre
 The `considering` keyword introduces a powerful new way to process collections contextually:
 
 ```turbulance
-// Process all items in a collection
-considering all paragraphs in document:
+// Process all paragraphs in a document
+var paragraphs = text / "paragraph"
+
+// Consider all paragraphs
+considering all paragraphs:
     analyze_sentiment(paragraph)
-    check_coherence(paragraph)
     
-// Process specific items
-considering these paragraphs where contains("technical"):
-    replace_jargon(paragraph)
-    add_explanations(paragraph)
+// Consider specific paragraphs
+considering these paragraphs where contains("important"):
+    highlight(paragraph)
     
-// Process a single item in depth
-considering item introduction:
+// Consider a single item
+considering item paragraphs[0]:
     ensure_contains_hook()
-    check_thesis_statement()
-    validate_length(max_words=200)
 ```
 
 Unlike traditional loops, considering statements maintain contextual awareness across iterations.
@@ -524,15 +525,19 @@ The `cause` declaration introduces a named relationship between concepts:
 
 ```turbulance
 // Define causes with their effects
-cause climate_change = {
-    primary: "greenhouse gas emissions",
-    effects: ["rising temperatures", "extreme weather", "sea level rise"],
-    confidence: 0.95
+cause BiasedReasoning = {
+    primary: "emotional investment",
+    effects: [
+        "selective evidence consideration",
+        "overconfidence in judgment",
+        "resistance to contrary evidence"
+    ],
+    confidence: 0.75
 }
 
-// Use causes in processing
-if text.contains_any(climate_change.effects):
-    suggest_related_context(climate_change.primary)
+// Use the cause in analysis
+given text.contains_any(BiasedReasoning.effects):
+    warn("Potential bias detected")
 ```
 
 Causes explicitly model causality relationships rather than simply storing data.
@@ -542,12 +547,18 @@ Causes explicitly model causality relationships rather than simply storing data.
 The `allow` statement introduces controlled permissions for text transformations:
 
 ```turbulance
-// Permit specific transformations
-allow simplification on technical_sections
-allow formalization on conclusions
-allow citation_insertion throughout
+// Define permissions at the proposition level
+proposition ResearchPaper:
+    motion Abstract("...")
+    motion Literature("...")
+    motion Methods("...")
+    
+    // Permit specific transformations
+    allow fact_checking on Abstract
+    allow citation_validation on Literature
+    allow procedural_verification on Methods
 
-// Check permissions
+// Check permissions at runtime
 if allowed(restructuring, current_section):
     perform_restructuring()
 ```
@@ -560,12 +571,16 @@ The `motion` construct creates semantic meaning units:
 
 ```turbulance
 // Create a motion
-motion main_argument = "The framework revolutionizes text processing"
-motion supporting_point = evidence_for(main_argument)
+motion main_argument = Motion("The framework revolutionizes text processing", "claim")
 
-// Apply operations
-main_argument.check_clarity()
-supporting_point.ensure_connects_to(main_argument)
+// Use motions in a proposition
+proposition Argument:
+    motion Claim("AI requires metacognitive capabilities")
+    motion Support("Metacognition enables monitoring of reasoning")
+    
+    // Apply operations across motions
+    considering all motions in this:
+        check_clarity(motion)
 ```
 
 Motions are first-class language entities that represent conceptual elements.
@@ -573,36 +588,28 @@ Motions are first-class language entities that represent conceptual elements.
 ### Example: Integrated Proposition Analysis
 
 ```turbulance
-// Consider a proposition about climate change
-proposition ClimateAnalysis:
-    motion Observation("Global temperatures have risen 1.1°C since pre-industrial times")
-    motion Cause("Human activities are the dominant cause")
-    motion Prediction("Continued warming poses significant risks")
+// Main analysis function
+funxn main():
+    // Create and analyze a proposition
+    var analysis = new TextAnalysis()
     
-    // Create relationships between motions
-    considering all motions in this:
-        check_scientific_support(motion)
+    // Use the cause in analysis
+    given text.contains_any(BiasedReasoning.effects):
+        warn("Potential bias detected")
         
-    // Build an argument map
-    argmap = new ArgMap()
-    argmap.add_claim("main", Cause)
-    argmap.add_evidence("main", "temp_evidence", Observation, 0.9)
+    // Set up the data structures
+    var structures = demonstrate_data_structures()
     
-    // Allow specific operations
-    allow fact_checking on Observation
-    allow uncertainty_analysis on Prediction
+    // Evaluate the strength of the argument
+    var strength = structures.argmap.evaluate_claim("main")
+    print("Argument strength: " + strength)
     
-    // Create causal chain
-    cause human_activity = {
-        effects: ["temperature increase", "sea level rise", "biodiversity loss"],
-        confidence: 0.95
+    // Return the results
+    return {
+        "proposition": analysis,
+        "data_structures": structures,
+        "bias_check": BiasedReasoning
     }
-    
-    // Evaluate strength
-    considering item Cause:
-        strength = argmap.evaluate_claim("main")
-        if strength > 0.8:
-            print("Strongly supported claim")
 ```
 
 This example demonstrates the integration of the new features to create sophisticated text analysis capabilities within the metacognitive framework.
