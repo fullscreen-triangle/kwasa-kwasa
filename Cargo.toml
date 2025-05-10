@@ -58,9 +58,10 @@ console_error_panic_hook = "0.1.7"
 tempfile = "3.5.0"
 criterion = "0.5.1"
 
-[[bench]]
-name = "text_operations"
-harness = false
+# Comment out the bench section until we have the correct benchmark file
+# [[bench]]
+# name = "text_operations"
+# harness = false
 
 [profile.release]
 opt-level = 3
