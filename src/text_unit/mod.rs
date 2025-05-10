@@ -1,12 +1,15 @@
 pub mod boundary;
 pub mod operations;
+pub mod registry;
 pub mod hierarchy;
+pub mod utils;
 pub mod transform;
 
 // Re-export common types for convenience
 pub use boundary::{BoundaryType, TextUnit};
 pub use operations::{TextOperations, TextTransform};
 pub use hierarchy::{DocumentHierarchy, HierarchyNode, NodeType};
+pub use registry::TextUnitRegistry;
 
 use std::collections::HashMap;
 use std::fmt;
@@ -42,15 +45,22 @@ pub struct TextUnit {
 }
 
 /// Types of text units
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum TextUnitType {
-    Character,
-    Word,
-    Sentence,
-    Paragraph,
-    Section,
+    /// Full document
     Document,
-    Custom(usize), // Custom type with numeric ID
+    /// Section of document
+    Section,
+    /// Paragraph
+    Paragraph,
+    /// Sentence
+    Sentence,
+    /// Single word
+    Word,
+    /// Character
+    Character,
+    /// Custom type with ID
+    Custom(usize),
 }
 
 impl TextUnit {

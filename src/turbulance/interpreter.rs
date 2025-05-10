@@ -3,6 +3,83 @@ use crate::turbulance::ast::{Node, BinaryOp, UnaryOp, TextOp, Value};
 use crate::turbulance::TurbulanceError;
 use crate::text_unit::boundary::TextUnit;
 use crate::turbulance::stdlib::StdLib;
+use std::rc::Rc;
+use std::cell::RefCell;
+
+/// Function type for native (Rust) implementations of Turbulance functions
+pub type NativeFunction = fn(Vec<Value>) -> Result<Value>;
+
+/// Value types in the Turbulance language
+#[derive(Clone, Debug)]
+pub enum Value {
+    Number(f64),
+    String(String),
+    Boolean(bool),
+    Function(Function),
+    NativeFunction(NativeFunction),
+    Array(Vec<Value>),
+    Object(std::collections::HashMap<String, Value>),
+    Null,
+}
+
+#[derive(Clone, Debug)]
+pub struct Function {
+    params: Vec<String>,
+    body: Box<Statement>,
+    closure: Environment,
+}
+
+#[derive(Clone, Debug)]
+struct Environment {
+    values: HashMap<String, Value>,
+    enclosing: Option<Rc<RefCell<Environment>>>,
+}
+
+impl Environment {
+    fn new() -> Self {
+        Environment {
+            values: HashMap::new(),
+            enclosing: None,
+        }
+    }
+    
+    fn with_enclosing(enclosing: Rc<RefCell<Environment>>) -> Self {
+        Environment {
+            values: HashMap::new(),
+            enclosing: Some(enclosing),
+        }
+    }
+    
+    fn define(&mut self, name: String, value: Value) {
+        self.values.insert(name, value);
+    }
+    
+    fn get(&self, name: &str) -> Option<Value> {
+        match self.values.get(name) {
+            Some(value) => Some(value.clone()),
+            None => {
+                if let Some(enclosing) = &self.enclosing {
+                    enclosing.borrow().get(name)
+                } else {
+                    None
+                }
+            }
+        }
+    }
+    
+    fn assign(&mut self, name: &str, value: Value) -> Result<()> {
+        if self.values.contains_key(name) {
+            self.values.insert(name.to_string(), value);
+            Ok(())
+        } else if let Some(enclosing) = &self.enclosing {
+            enclosing.borrow_mut().assign(name, value)
+        } else {
+            Err(TurbulanceError::RuntimeError { 
+                message: format!("Undefined variable '{}'.", name) 
+            })
+        }
+    }
+}
 
 /// Represents the runtime environment for executing Turbulance code
 pub struct Interpreter {
@@ -14,25 +91,47 @@ pub struct Interpreter {
     
     /// Standard library functions
     stdlib: StdLib,
+    
+    environment: Rc<RefCell<Environment>>,
+    global_environment: Rc<RefCell<Environment>>,
+    stdlib_loaded: bool,
 }
 
 impl Interpreter {
     /// Create a new interpreter instance
     pub fn new() -> Self {
+        let global_env = Rc::new(RefCell::new(Environment::new()));
         Self {
             globals: HashMap::new(),
             scopes: vec![HashMap::new()], // Start with one scope (global)
             stdlib: StdLib::new(),
+            environment: Rc::clone(&global_env),
+            global_environment: global_env,
+            stdlib_loaded: false,
         }
     }
     
+    /// Register standard library functions
+    pub fn register_stdlib_functions(&mut self, functions: HashMap<&'static str, NativeFunction>) {
+        if self.stdlib_loaded {
+            return;
+        }
+        
+        let mut env = self.global_environment.borrow_mut();
+        for (name, func) in functions {
+            env.define(name.to_string(), Value::NativeFunction(func));
+        }
+        
+        self.stdlib_loaded = true;
+    }
+    
     /// Execute a full program node
-    pub fn execute(&mut self, node: &Node) -> Result<Value, TurbulanceError> {
+    pub fn execute(&mut self, node: &Node) -> Result<Value> {
         self.evaluate(node)
     }
     
     /// Evaluate a node and return its value
-    fn evaluate(&mut self, node: &Node) -> Result<Value, TurbulanceError> {
+    fn evaluate(&mut self, node: &Node) -> Result<Value> {
         match node {
             // Literals
             Node::StringLiteral(value, _) => Ok(Value::String(value.clone())),
@@ -77,7 +176,7 @@ impl Interpreter {
             Node::ReturnStmt { value, span } => {
                 match value {
                     Some(expr) => self.evaluate(expr),
-                    None => Ok(Value::None),
+                    None => Ok(Value::Null),
                 }
             },
             
@@ -161,7 +260,7 @@ impl Interpreter {
     
     // Implementation of evaluation methods (placeholder stubs for now)
     
-    fn evaluate_binary_expr(&mut self, left: &Node, operator: &BinaryOp, right: &Node) -> Result<Value, TurbulanceError> {
+    fn evaluate_binary_expr(&mut self, left: &Node, operator: &BinaryOp, right: &Node) -> Result<Value> {
         let left_val = self.evaluate(left)?;
         let right_val = self.evaluate(right)?;
         
@@ -187,7 +286,7 @@ impl Interpreter {
         }
     }
     
-    fn evaluate_unary_expr(&mut self, operator: &UnaryOp, operand: &Node) -> Result<Value, TurbulanceError> {
+    fn evaluate_unary_expr(&mut self, operator: &UnaryOp, operand: &Node) -> Result<Value> {
         let operand_value = self.evaluate(operand)?;
         
         match operator {
@@ -199,7 +298,7 @@ impl Interpreter {
         }
     }
     
-    fn evaluate_negate(&mut self, operand: Value) -> Result<Value, TurbulanceError> {
+    fn evaluate_negate(&mut self, operand: Value) -> Result<Value> {
         match operand {
             Value::Number(n) => Ok(Value::Number(-n)),
             _ => Err(TurbulanceError::RuntimeError { 
@@ -208,7 +307,7 @@ impl Interpreter {
         }
     }
     
-    fn evaluate_not(&mut self, operand: Value) -> Result<Value, TurbulanceError> {
+    fn evaluate_not(&mut self, operand: Value) -> Result<Value> {
         match operand {
             Value::Bool(b) => Ok(Value::Bool(!b)),
             _ => {
@@ -218,7 +317,7 @@ impl Interpreter {
         }
     }
     
-    fn evaluate_function_call(&mut self, function: &Node, arguments: &[Node]) -> Result<Value, TurbulanceError> {
+    fn evaluate_function_call(&mut self, function: &Node, arguments: &[Node]) -> Result<Value> {
         // Evaluate the function expression
         let function_value = self.evaluate(function)?;
         
@@ -231,7 +330,7 @@ impl Interpreter {
         match function_value {
             Value::Function(func) => {
                 // Call the user-defined function
-                self.call_function(func, evaluated_args)
+                self.execute_call(&func.name, &evaluated_args)
             },
             
             Value::String(name) => {
@@ -253,7 +352,7 @@ impl Interpreter {
         }
     }
     
-    fn evaluate_if_expr(&mut self, condition: &Node, then_branch: &Node, else_branch: &Option<Box<Node>>) -> Result<Value, TurbulanceError> {
+    fn evaluate_if_expr(&mut self, condition: &Node, then_branch: &Node, else_branch: &Option<Box<Node>>) -> Result<Value> {
         // Evaluate the condition
         let condition_value = self.evaluate(condition)?;
         
@@ -266,23 +365,23 @@ impl Interpreter {
             self.evaluate(else_branch)
         } else {
             // No else branch, return None
-            Ok(Value::None)
+            Ok(Value::Null)
         }
     }
     
-    fn evaluate_block(&mut self, statements: &[Node]) -> Result<Value, TurbulanceError> {
+    fn evaluate_block(&mut self, statements: &[Node]) -> Result<Value> {
         // Enter a new scope for the block
         self.enter_scope();
         
         // Evaluate each statement in the block
-        let mut result = Value::None;
+        let mut result = Value::Null;
         for statement in statements {
             match statement {
                 // Handle early returns within the block
                 Node::ReturnStmt { value, span } => {
                     result = match value {
                         Some(expr) => self.evaluate(expr)?,
-                        None => Value::None,
+                        None => Value::Null,
                     };
                     
                     // Exit the scope before returning
@@ -301,7 +400,7 @@ impl Interpreter {
         Ok(result)
     }
     
-    fn evaluate_assignment(&mut self, target: &Node, value: &Node) -> Result<Value, TurbulanceError> {
+    fn evaluate_assignment(&mut self, target: &Node, value: &Node) -> Result<Value> {
         // Evaluate the right-hand side first
         let value = self.evaluate(value)?;
         
@@ -372,7 +471,7 @@ impl Interpreter {
         }
     }
     
-    fn evaluate_within_block(&mut self, target: &Node, body: &Node) -> Result<Value, TurbulanceError> {
+    fn evaluate_within_block(&mut self, target: &Node, body: &Node) -> Result<Value> {
         // Evaluate the target expression (should result in a TextUnit)
         let target_value = self.evaluate(target)?;
         
@@ -402,14 +501,14 @@ impl Interpreter {
         
         // If the body evaluates to a value other than None, return that
         // Otherwise return the (possibly modified) text unit
-        if matches!(result, Value::None) {
+        if matches!(result, Value::Null) {
             Ok(final_this)
         } else {
             Ok(result)
         }
     }
     
-    fn evaluate_given_block(&mut self, condition: &Node, body: &Node) -> Result<Value, TurbulanceError> {
+    fn evaluate_given_block(&mut self, condition: &Node, body: &Node) -> Result<Value> {
         // Evaluate the condition
         let condition_value = self.evaluate(condition)?;
         
@@ -419,18 +518,18 @@ impl Interpreter {
             self.evaluate(body)
         } else {
             // Skip the body if the condition is false
-            Ok(Value::None)
+            Ok(Value::Null)
         }
     }
     
-    fn evaluate_ensure_stmt(&mut self, condition: &Node) -> Result<Value, TurbulanceError> {
+    fn evaluate_ensure_stmt(&mut self, condition: &Node) -> Result<Value> {
         // Evaluate the condition
         let condition_value = self.evaluate(condition)?;
         
         // Check if the condition is truthy
         if self.is_truthy(&condition_value) {
             // If the condition is true, return None (continue execution)
-            Ok(Value::None)
+            Ok(Value::Null)
         } else {
             // If the condition is false, raise a runtime error
             match condition {
@@ -448,7 +547,7 @@ impl Interpreter {
         }
     }
     
-    fn evaluate_research_stmt(&mut self, query: &Node) -> Result<Value, TurbulanceError> {
+    fn evaluate_research_stmt(&mut self, query: &Node) -> Result<Value> {
         // Evaluate the query
         let query_value = self.evaluate(query)?;
         
@@ -468,7 +567,7 @@ impl Interpreter {
         Ok(Value::TextUnit(TextUnit::new(research_result)))
     }
     
-    fn evaluate_text_operation(&mut self, operation: &TextOp, target: &Node, arguments: &[Node]) -> Result<Value, TurbulanceError> {
+    fn evaluate_text_operation(&mut self, operation: &TextOp, target: &Node, arguments: &[Node]) -> Result<Value> {
         // Evaluate the target
         let target_value = self.evaluate(target)?;
         
@@ -513,37 +612,37 @@ impl Interpreter {
             Value::Map(m) => !m.is_empty(),
             Value::TextUnit(tu) => !tu.content.is_empty(),
             Value::Function(_) => true,
-            Value::None => false,
+            Value::Null => false,
         }
     }
     
     // Text operation implementations (placeholders)
-    fn apply_simplify(&self, text_unit: TextUnit, args: &[Value]) -> Result<Value, TurbulanceError> {
+    fn apply_simplify(&self, text_unit: TextUnit, args: &[Value]) -> Result<Value> {
         // Placeholder implementation
         let simplified = format!("[Simplified] {}", text_unit.content);
         Ok(Value::TextUnit(TextUnit::new(simplified)))
     }
     
-    fn apply_expand(&self, text_unit: TextUnit, args: &[Value]) -> Result<Value, TurbulanceError> {
+    fn apply_expand(&self, text_unit: TextUnit, args: &[Value]) -> Result<Value> {
         // Placeholder implementation
         let expanded = format!("{}\n\n[Additional details and explanations would be added here.]", text_unit.content);
         Ok(Value::TextUnit(TextUnit::new(expanded)))
     }
     
-    fn apply_formalize(&self, text_unit: TextUnit, args: &[Value]) -> Result<Value, TurbulanceError> {
+    fn apply_formalize(&self, text_unit: TextUnit, args: &[Value]) -> Result<Value> {
         // Placeholder implementation
         let formalized = text_unit.content.replace("I ", "one ").replace("we ", "one ");
         let formalized = format!("[Formalized] {}", formalized);
         Ok(Value::TextUnit(TextUnit::new(formalized)))
     }
     
-    fn apply_informalize(&self, text_unit: TextUnit, args: &[Value]) -> Result<Value, TurbulanceError> {
+    fn apply_informalize(&self, text_unit: TextUnit, args: &[Value]) -> Result<Value> {
         // Placeholder implementation
         let informalized = format!("[Informalized] {}", text_unit.content);
         Ok(Value::TextUnit(TextUnit::new(informalized)))
     }
     
-    fn apply_rewrite(&self, text_unit: TextUnit, args: &[Value]) -> Result<Value, TurbulanceError> {
+    fn apply_rewrite(&self, text_unit: TextUnit, args: &[Value]) -> Result<Value> {
         // Check for style argument
         let style = if !args.is_empty() {
             match &args[0] {
@@ -559,7 +658,7 @@ impl Interpreter {
         Ok(Value::TextUnit(TextUnit::new(rewritten)))
     }
     
-    fn apply_translate(&self, text_unit: TextUnit, args: &[Value]) -> Result<Value, TurbulanceError> {
+    fn apply_translate(&self, text_unit: TextUnit, args: &[Value]) -> Result<Value> {
         // Check for language argument
         if args.is_empty() {
             return Err(TurbulanceError::RuntimeError {
@@ -579,7 +678,7 @@ impl Interpreter {
         Ok(Value::TextUnit(TextUnit::new(translated)))
     }
     
-    fn apply_extract(&self, text_unit: TextUnit, args: &[Value]) -> Result<Value, TurbulanceError> {
+    fn apply_extract(&self, text_unit: TextUnit, args: &[Value]) -> Result<Value> {
         // Check for pattern argument
         if args.is_empty() {
             return Err(TurbulanceError::RuntimeError {
@@ -600,11 +699,11 @@ impl Interpreter {
             let extracted = format!("[Extracted by pattern '{}'] {}", pattern, &pattern);
             Ok(Value::TextUnit(TextUnit::new(extracted)))
         } else {
-            Ok(Value::None)
+            Ok(Value::Null)
         }
     }
     
-    fn apply_summarize(&self, text_unit: TextUnit, args: &[Value]) -> Result<Value, TurbulanceError> {
+    fn apply_summarize(&self, text_unit: TextUnit, args: &[Value]) -> Result<Value> {
         // Placeholder implementation - just take the first sentence
         let first_sentence = text_unit.content.split('.')
             .next()
@@ -615,7 +714,7 @@ impl Interpreter {
         Ok(Value::TextUnit(TextUnit::new(summary)))
     }
     
-    fn evaluate_function_decl(&mut self, name: &str, parameters: &[crate::turbulance::ast::Parameter], body: &Node) -> Result<Value, TurbulanceError> {
+    fn evaluate_function_decl(&mut self, name: &str, parameters: &[crate::turbulance::ast::Parameter], body: &Node) -> Result<Value> {
         // Create a function value
         let func = crate::turbulance::ast::Function {
             name: name.to_string(),
@@ -632,7 +731,7 @@ impl Interpreter {
         Ok(function_value)
     }
     
-    fn evaluate_project_decl(&mut self, name: &str, attributes: &HashMap<String, Node>, body: &Node) -> Result<Value, TurbulanceError> {
+    fn evaluate_project_decl(&mut self, name: &str, attributes: &HashMap<String, Node>, body: &Node) -> Result<Value> {
         // Create a map to store the evaluated attributes
         let mut project_attributes = HashMap::new();
         
@@ -663,7 +762,7 @@ impl Interpreter {
         Ok(Value::Map(project_attributes))
     }
     
-    fn evaluate_sources_decl(&mut self, sources: &[crate::turbulance::ast::Source]) -> Result<Value, TurbulanceError> {
+    fn evaluate_sources_decl(&mut self, sources: &[crate::turbulance::ast::Source]) -> Result<Value> {
         // Create a list to store the evaluated sources
         let mut sources_list = Vec::new();
         
@@ -692,7 +791,7 @@ impl Interpreter {
     
     // Helper methods for binary operations
     
-    fn evaluate_add(&mut self, left: Value, right: Value) -> Result<Value, TurbulanceError> {
+    fn evaluate_add(&mut self, left: Value, right: Value) -> Result<Value> {
         match (left, right) {
             // Number + Number = Number
             (Value::Number(l), Value::Number(r)) => Ok(Value::Number(l + r)),
@@ -738,7 +837,7 @@ impl Interpreter {
         }
     }
     
-    fn evaluate_subtract(&mut self, left: Value, right: Value) -> Result<Value, TurbulanceError> {
+    fn evaluate_subtract(&mut self, left: Value, right: Value) -> Result<Value> {
         match (left, right) {
             // Number - Number = Number
             (Value::Number(l), Value::Number(r)) => Ok(Value::Number(l - r)),
@@ -764,7 +863,7 @@ impl Interpreter {
         }
     }
     
-    fn evaluate_multiply(&mut self, left: Value, right: Value) -> Result<Value, TurbulanceError> {
+    fn evaluate_multiply(&mut self, left: Value, right: Value) -> Result<Value> {
         match (left, right) {
             // Number * Number = Number
             (Value::Number(l), Value::Number(r)) => Ok(Value::Number(l * r)),
@@ -809,7 +908,7 @@ impl Interpreter {
         }
     }
     
-    fn evaluate_divide(&mut self, left: Value, right: Value) -> Result<Value, TurbulanceError> {
+    fn evaluate_divide(&mut self, left: Value, right: Value) -> Result<Value> {
         match (left, right) {
             // Number / Number = Number
             (Value::Number(l), Value::Number(r)) => {
@@ -859,7 +958,7 @@ impl Interpreter {
         }
     }
     
-    fn evaluate_less_than(&mut self, left: Value, right: Value) -> Result<Value, TurbulanceError> {
+    fn evaluate_less_than(&mut self, left: Value, right: Value) -> Result<Value> {
         match (left, right) {
             (Value::Number(l), Value::Number(r)) => Ok(Value::Bool(l < r)),
             (Value::String(l), Value::String(r)) => Ok(Value::Bool(l < r)),
@@ -869,7 +968,7 @@ impl Interpreter {
         }
     }
     
-    fn evaluate_greater_than(&mut self, left: Value, right: Value) -> Result<Value, TurbulanceError> {
+    fn evaluate_greater_than(&mut self, left: Value, right: Value) -> Result<Value> {
         match (left, right) {
             (Value::Number(l), Value::Number(r)) => Ok(Value::Bool(l > r)),
             (Value::String(l), Value::String(r)) => Ok(Value::Bool(l > r)),
@@ -879,7 +978,7 @@ impl Interpreter {
         }
     }
     
-    fn evaluate_less_than_equal(&mut self, left: Value, right: Value) -> Result<Value, TurbulanceError> {
+    fn evaluate_less_than_equal(&mut self, left: Value, right: Value) -> Result<Value> {
         match (left, right) {
             (Value::Number(l), Value::Number(r)) => Ok(Value::Bool(l <= r)),
             (Value::String(l), Value::String(r)) => Ok(Value::Bool(l <= r)),
@@ -889,7 +988,7 @@ impl Interpreter {
         }
     }
     
-    fn evaluate_greater_than_equal(&mut self, left: Value, right: Value) -> Result<Value, TurbulanceError> {
+    fn evaluate_greater_than_equal(&mut self, left: Value, right: Value) -> Result<Value> {
         match (left, right) {
             (Value::Number(l), Value::Number(r)) => Ok(Value::Bool(l >= r)),
             (Value::String(l), Value::String(r)) => Ok(Value::Bool(l >= r)),
@@ -899,7 +998,7 @@ impl Interpreter {
         }
     }
     
-    fn evaluate_and(&mut self, left: Value, right: Value) -> Result<Value, TurbulanceError> {
+    fn evaluate_and(&mut self, left: Value, right: Value) -> Result<Value> {
         match (left, right) {
             (Value::Bool(l), Value::Bool(r)) => Ok(Value::Bool(l && r)),
             (l, r) => Err(TurbulanceError::RuntimeError { 
@@ -908,7 +1007,7 @@ impl Interpreter {
         }
     }
     
-    fn evaluate_or(&mut self, left: Value, right: Value) -> Result<Value, TurbulanceError> {
+    fn evaluate_or(&mut self, left: Value, right: Value) -> Result<Value> {
         match (left, right) {
             (Value::Bool(l), Value::Bool(r)) => Ok(Value::Bool(l || r)),
             (l, r) => Err(TurbulanceError::RuntimeError { 
@@ -917,7 +1016,7 @@ impl Interpreter {
         }
     }
     
-    fn evaluate_pipe(&mut self, left: Value, right: Value) -> Result<Value, TurbulanceError> {
+    fn evaluate_pipe(&mut self, left: Value, right: Value) -> Result<Value> {
         // The pipe operator (|) is for creating a pipeline by applying right to left
         // For example: "text" | filter_function
         // This requires that the right value be a function
@@ -934,7 +1033,7 @@ impl Interpreter {
         }
     }
     
-    fn evaluate_pipe_forward(&mut self, left: Value, right: Value) -> Result<Value, TurbulanceError> {
+    fn evaluate_pipe_forward(&mut self, left: Value, right: Value) -> Result<Value> {
         // The forward pipe operator (|>) is like the pipe but with specialized pipeline semantics
         // It's intended for chaining multiple operations
         Err(TurbulanceError::RuntimeError { 
@@ -942,7 +1041,7 @@ impl Interpreter {
         })
     }
     
-    fn evaluate_arrow(&mut self, left: Value, right: Value) -> Result<Value, TurbulanceError> {
+    fn evaluate_arrow(&mut self, left: Value, right: Value) -> Result<Value> {
         // The arrow operator (=>) is used for transformation result assignment
         // For example: division_operation => result_variable
         Err(TurbulanceError::RuntimeError { 
@@ -951,47 +1050,59 @@ impl Interpreter {
     }
     
     // Helper function to call a user-defined function
-    fn call_function(&mut self, function: crate::turbulance::ast::Function, args: Vec<Value>) -> Result<Value, TurbulanceError> {
+    fn execute_call(&mut self, callee: &str, arguments: &[Value]) -> Result<Value> {
+        // Get the function from the environment
+        let func = match self.environment.borrow().get(callee) {
+            Some(Value::Function(f)) => f,
+            Some(Value::NativeFunction(f)) => {
+                // Execute native function
+                let mut args = Vec::new();
+                for arg in arguments {
+                    args.push(arg.clone());
+                }
+                return f(args);
+            },
+            _ => return Err(TurbulanceError::RuntimeError { 
+                message: format!("'{}' is not a function.", callee) 
+            }),
+        };
+        
         // Check argument count
-        if args.len() != function.parameters.len() {
-            return Err(TurbulanceError::RuntimeError {
+        if arguments.len() != func.params.len() {
+            return Err(TurbulanceError::RuntimeError { 
                 message: format!(
-                    "Function '{}' expected {} arguments but got {}",
-                    function.name,
-                    function.parameters.len(),
-                    args.len()
-                )
+                    "Expected {} arguments but got {}.", 
+                    func.params.len(), 
+                    arguments.len()
+                ) 
             });
         }
         
-        // Create a new scope for the function call
-        self.enter_scope();
+        // Create new environment with function's closure as parent
+        let closure_env = Rc::new(RefCell::new(func.closure.clone()));
+        let mut env = Environment::with_enclosing(closure_env);
         
-        // Restore closure environment if present
-        if let Some(closure) = function.closure {
-            for (name, value) in closure {
-                self.define_variable(name, value);
-            }
+        // Define parameters in the new environment
+        for (param, value) in func.params.iter().zip(arguments.iter()) {
+            env.define(param.clone(), value.clone());
         }
         
-        // Bind arguments to parameters
-        for (param, arg) in function.parameters.iter().zip(args) {
-            self.define_variable(param.name.clone(), arg);
-        }
+        // Execute the function body with the new environment
+        let previous_env = self.environment.clone();
+        self.environment = Rc::new(RefCell::new(env));
         
-        // Execute the function body
-        let result = self.evaluate(&function.body)?;
+        let result = self.evaluate(&func.body)?;
         
-        // Exit the function scope
-        self.exit_scope();
+        // Restore the previous environment
+        self.environment = previous_env;
         
         Ok(result)
     }
     
     // Capture the current scope for closures
-    fn capture_current_scope(&self) -> Option<HashMap<String, Value>> {
+    fn capture_current_scope(&self) -> Environment {
         if self.scopes.is_empty() {
-            return None;
+            return Environment::new();
         }
         
         // Create a new map to hold the captured variables
@@ -1004,7 +1115,10 @@ impl Interpreter {
             }
         }
         
-        Some(captured)
+        Environment {
+            values: captured,
+            enclosing: None,
+        }
     }
     
     // Get access to the standard library
@@ -1172,4 +1286,5 @@ mod tests {
         }
     }
 }
+
 

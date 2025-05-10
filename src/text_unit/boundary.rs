@@ -2,6 +2,7 @@ use unicode_segmentation::UnicodeSegmentation;
 use std::collections::HashSet;
 use regex::Regex;
 use crate::text_unit::{TextUnit, TextUnitType, TextUnitRegistry};
+use crate::text_unit::utils::string_similarity;
 
 /// Different types of boundaries that can be detected
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -695,28 +696,8 @@ pub fn build_hierarchy(
 
 // Calculate semantic coherence between two text units (0.0-1.0)
 pub fn calculate_coherence(unit1: &TextUnit, unit2: &TextUnit) -> f64 {
-    // A simple coherence measure based on shared words
-    // More sophisticated measures can be implemented (e.g., using embeddings)
-    
-    let words1: HashSet<String> = unit1.content
-        .split_whitespace()
-        .map(|w| w.to_lowercase())
-        .collect();
-    
-    let words2: HashSet<String> = unit2.content
-        .split_whitespace()
-        .map(|w| w.to_lowercase())
-        .collect();
-    
-    if words1.is_empty() || words2.is_empty() {
-        return 0.0;
-    }
-    
-    // Calculate Jaccard similarity: intersection size / union size
-    let intersection_size = words1.intersection(&words2).count() as f64;
-    let union_size = words1.union(&words2).count() as f64;
-    
-    intersection_size / union_size
+    // Use the common string similarity function for consistency
+    string_similarity(&unit1.content, &unit2.content)
 }
 
 #[cfg(test)]

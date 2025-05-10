@@ -4,6 +4,7 @@ use std::fmt;
 use crate::text_unit::boundary::{BoundaryType, TextUnit, detect_boundaries};
 use crate::text_unit::operations::TextOperations;
 use crate::text_unit::TextUnitRegistry;
+use crate::text_unit::utils::string_similarity;
 
 /// Enum representing the type of a node in the document hierarchy
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -270,7 +271,7 @@ impl HierarchyNode {
     }
     
     /// Find sibling nodes (nodes with same parent)
-    pub fn siblings(&self, hierarchy: &DocumentHierarchy) -> Vec<&HierarchyNode> {
+    pub fn siblings<'a>(&self, hierarchy: &'a DocumentHierarchy) -> Vec<&'a HierarchyNode> {
         match self.parent_id {
             Some(parent_id) => {
                 if let Some(parent) = hierarchy.find_node_by_id(parent_id) {
@@ -288,7 +289,7 @@ impl HierarchyNode {
     }
     
     /// Get the next sibling, if any
-    pub fn next_sibling(&self, hierarchy: &DocumentHierarchy) -> Option<&HierarchyNode> {
+    pub fn next_sibling<'a>(&self, hierarchy: &'a DocumentHierarchy) -> Option<&'a HierarchyNode> {
         match self.parent_id {
             Some(parent_id) => {
                 if let Some(parent) = hierarchy.find_node_by_id(parent_id) {
@@ -308,7 +309,7 @@ impl HierarchyNode {
     }
     
     /// Get the previous sibling, if any
-    pub fn prev_sibling(&self, hierarchy: &DocumentHierarchy) -> Option<&HierarchyNode> {
+    pub fn prev_sibling<'a>(&self, hierarchy: &'a DocumentHierarchy) -> Option<&'a HierarchyNode> {
         match self.parent_id {
             Some(parent_id) => {
                 if let Some(parent) = hierarchy.find_node_by_id(parent_id) {
@@ -328,7 +329,7 @@ impl HierarchyNode {
     }
     
     /// Find ancestor nodes (parent, grandparent, etc.)
-    pub fn ancestors(&self, hierarchy: &DocumentHierarchy) -> Vec<&HierarchyNode> {
+    pub fn ancestors<'a>(&self, hierarchy: &'a DocumentHierarchy) -> Vec<&'a HierarchyNode> {
         let mut result = Vec::new();
         let mut current_id = self.parent_id;
         
@@ -495,24 +496,32 @@ impl DocumentHierarchy {
     
     /// Find a node by ID (mutable)
     pub fn find_node_by_id_mut(&mut self, id: usize) -> Option<&mut HierarchyNode> {
-        Self::find_node_by_id_mut_recursive(&mut self.root, id)
-    }
-    
-    /// Recursive helper for finding a node by ID and getting a mutable reference
-    fn find_node_by_id_mut_recursive(
-        node: &mut Option<HierarchyNode>,
-        id: usize,
-    ) -> Option<&mut HierarchyNode> {
-        if let Some(n) = node {
-            if n.id() == id {
-                return Some(n);
+        // First check if the root matches
+        if let Some(root) = self.root.as_mut() {
+            if root.id() == id {
+                return Some(root);
             }
             
-            for child in n.children_mut() {
-                let child_node = Some(child.clone());
-                if let Some(found) = Self::find_node_by_id_mut_recursive(&mut Some(child.clone()), id) {
-                    return Some(found);
-                }
+            // Search within root using a non-recursive approach
+            return find_node_by_id_mut_helper(root, id);
+        }
+        
+        None
+    }
+    
+    /// Helper function to find a node by ID and get a mutable reference
+    fn find_node_by_id_mut_helper(node: &mut HierarchyNode, id: usize) -> Option<&mut HierarchyNode> {
+        // Check direct children first
+        for child in node.children_mut() {
+            if child.id() == id {
+                return Some(child);
+            }
+        }
+        
+        // Then check nested children with a flat approach to avoid recursion issues
+        for child in node.children_mut() {
+            if let Some(found) = find_node_by_id_mut_helper(child, id) {
+                return Some(found);
             }
         }
         
@@ -721,29 +730,8 @@ impl DocumentHierarchy {
         
         match (node1, node2) {
             (Some(n1), Some(n2)) => {
-                // Use Jaccard similarity of words
-                let words1: HashSet<String> = n1.text()
-                    .split_whitespace()
-                    .map(|w| w.to_lowercase())
-                    .collect();
-                
-                let words2: HashSet<String> = n2.text()
-                    .split_whitespace()
-                    .map(|w| w.to_lowercase())
-                    .collect();
-                
-                if words1.is_empty() && words2.is_empty() {
-                    return 1.0;
-                }
-                
-                let intersection = words1.intersection(&words2).count();
-                let union = words1.len() + words2.len() - intersection;
-                
-                if union == 0 {
-                    0.0
-                } else {
-                    intersection as f64 / union as f64
-                }
+                // Use common string similarity function
+                string_similarity(n1.text(), n2.text())
             },
             _ => 0.0,
         }

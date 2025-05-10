@@ -10,6 +10,12 @@ pub use lexer::{Lexer, Token, TokenKind};
 pub use proposition::{Proposition, Motion};
 pub use datastructures::{TextGraph, ConceptChain, IdeaHierarchy, ArgMap};
 
+// Include generated code from build.rs
+include!(concat!(env!("TURBULANCE_GENERATED_DIR"), "/parser_tables.rs"));
+include!(concat!(env!("TURBULANCE_GENERATED_DIR"), "/stdlib_bindings.rs"));
+include!(concat!(env!("TURBULANCE_GENERATED_DIR"), "/token_definitions.rs"));
+include!(concat!(env!("TURBULANCE_GENERATED_DIR"), "/ast_serialization.rs"));
+
 /// Error types for the Turbulance language
 #[derive(Debug, thiserror::Error)]
 pub enum TurbulanceError {
@@ -34,15 +40,22 @@ pub type Result<T> = std::result::Result<T, TurbulanceError>;
 
 /// Parse and run a Turbulance script
 pub fn run(source: &str) -> Result<()> {
-    // This is a placeholder for now - we'll implement the full execution pipeline
-    // once we have the parser and interpreter
+    // Initialize language components using generated code
+    let keyword_table = keywords_table();
+    let operator_precedence = operator_precedence();
+    let stdlib = stdlib_functions();
+    
+    // Tokenize the source code
     let mut lexer = lexer::Lexer::new(source);
     let tokens = lexer.tokenize();
     
+    // Parse tokens into AST
     let mut parser = parser::Parser::new(tokens);
     let ast = parser.parse()?;
     
+    // Execute program with standard library
     let mut interpreter = interpreter::Interpreter::new();
+    interpreter.register_stdlib_functions(stdlib);
     let _ = interpreter.execute(&ast)?;
     
     Ok(())
@@ -61,6 +74,12 @@ pub fn validate(source: &str) -> Result<bool> {
         Ok(_) => Ok(true),
         Err(_) => Ok(false),
     }
+}
+
+// Serialize AST to JSON
+pub fn serialize_ast(program: &ast::Program) -> String {
+    let serializable = SerializableAst::from(program);
+    serde_json::to_string_pretty(&serializable).unwrap_or_else(|_| "{}".to_string())
 }
 
 #[cfg(test)]

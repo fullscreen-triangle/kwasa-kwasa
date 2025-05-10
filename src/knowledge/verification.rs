@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 use crate::knowledge::{FactVerification, KnowledgeDomain};
+use crate::text_unit::utils::string_similarity;
 
 /// Fact verifier for checking the truthfulness of statements
 pub struct FactVerifier {
@@ -120,29 +121,6 @@ impl FactVerifier {
     pub fn name(&self) -> &str {
         &self.name
     }
-}
-
-/// Very simple string similarity calculation (Jaccard similarity of words)
-fn string_similarity(s1: &str, s2: &str) -> f64 {
-    let words1: Vec<&str> = s1.to_lowercase().split_whitespace().collect();
-    let words2: Vec<&str> = s2.to_lowercase().split_whitespace().collect();
-    
-    let mut intersection = 0;
-    let mut union = words1.len() + words2.len();
-    
-    for word1 in &words1 {
-        if words2.contains(word1) {
-            intersection += 1;
-            // Don't count words twice in the union
-            union -= 1;
-        }
-    }
-    
-    if union == 0 {
-        return 1.0; // Both strings are empty
-    }
-    
-    intersection as f64 / union as f64
 }
 
 /// More sophisticated FactVerifier that can compose multiple sources
@@ -281,20 +259,7 @@ mod tests {
         assert!(result.is_none());
     }
     
-    #[test]
-    fn test_string_similarity() {
-        // Identical strings
-        assert_eq!(string_similarity("hello world", "hello world"), 1.0);
-        
-        // Completely different
-        assert_eq!(string_similarity("hello world", "goodbye moon"), 0.0);
-        
-        // Partially similar
-        let s1 = "Rust is a programming language";
-        let s2 = "Rust is a systems programming language";
-        let similarity = string_similarity(s1, s2);
-        assert!(similarity > 0.6 && similarity < 1.0);
-    }
+    // Use the tests for string_similarity from the utils module
     
     #[test]
     fn test_composite_verifier() {
