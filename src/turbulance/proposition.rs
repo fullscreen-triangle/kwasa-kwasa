@@ -194,7 +194,7 @@ impl Motion {
         BiasAnalysisResult {
             text: self.content.clone(),
             bias_type: "Sunken Cost Fallacy".to_string(),
-            indicators: found_indicators,
+            indicators: found_indicators.clone(),
             has_bias: !found_indicators.is_empty(),
         }
     }

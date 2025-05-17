@@ -565,7 +565,7 @@ pub mod research;
 pub mod verification;
 
 // Re-export common types
-pub use database::KnowledgeDatabase;
+pub use database::KnowledgeDatabase as DatabaseImpl;
 pub use citation::Citation;
 pub use research::ResearchQuery;
 pub use verification::FactVerifier;

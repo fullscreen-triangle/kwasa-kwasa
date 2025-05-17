@@ -166,7 +166,10 @@ impl StreamProcessor for ContextLayerProcessor {
         tokio::spawn(async move {
             while let Some(mut data) = processed.recv().await {
                 // Enrich with knowledge context
-                let kb = knowledge.lock().unwrap();
+                {
+                    let kb = knowledge.lock().unwrap();
+                    // Use kb here if needed
+                }
                 data.with_metadata("layer", "context");
                 
                 // Send enriched data

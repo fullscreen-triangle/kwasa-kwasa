@@ -2,7 +2,7 @@ use logos::{Logos, Span};
 use std::fmt;
 
 /// TokenKind represents all possible token types in the Turbulance language
-#[derive(Logos, Debug, Clone, PartialEq)]
+#[derive(Logos, Debug, Clone, Hash, Eq, PartialEq)]
 pub enum TokenKind {
     // Keywords
     #[token("funxn")]
@@ -168,8 +168,7 @@ pub enum TokenKind {
     #[regex(r"[ \t\n\r]+", logos::skip)]
     Whitespace,
 
-    // Error handling
-    #[error]
+    // Error token (without the error attribute as Logos 0.13+ doesn't require it)
     Error,
 }
 

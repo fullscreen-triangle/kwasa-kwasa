@@ -367,7 +367,9 @@ section("Introduction") |>
 
 ## Using Kwasa-Kwasa
 
-### Installation
+### Building the Project
+
+To build the Kwasa-Kwasa framework and the Turbulance language:
 
 ```bash
 # Clone the repository
@@ -376,64 +378,83 @@ cd kwasa-kwasa
 
 # Build the project
 cargo build --release
-
-# Install globally
-cargo install --path .
 ```
 
-### CLI Commands
+The build process will automatically:
+1. Generate parser tables for the Turbulance language
+2. Create bindings for the standard library functions
+3. Generate token definitions and AST serialization code
+4. Configure the build based on your target platform
 
-Kwasa-Kwasa provides a comprehensive command-line interface:
+### Running Turbulance Scripts
 
-#### Running Scripts
+Once built, you can run Turbulance scripts using the CLI:
 
 ```bash
-kwasa-kwasa run <script_path>
+# Run a script
+./target/release/kwasa-kwasa run examples/hello_world.turb
+
+# Validate a script
+./target/release/kwasa-kwasa validate path/to/script.turb
+
+# Start the REPL
+./target/release/kwasa-kwasa repl
 ```
 
-This executes a standalone Turbulance script, parsing and interpreting it.
+### Example Turbulance Script
 
-#### Validating Scripts
+Here's a simple example of a Turbulance script:
 
-```bash
-kwasa-kwasa validate <script_path>
+```turbulance
+funxn analyze_text(text):
+    var score = readability_score(text)
+    
+    within text:
+        given score < 60:
+            print("Text is complex. Simplifying...")
+            simplify_sentences(text, "moderate")
+        given score >= 60 and score < 80:
+            print("Text has good readability.")
+        given score >= 80:
+            print("Text is very readable.")
+            
+    given text.contains("technical_term"):
+        ensure_explanation_follows(text, "technical_term")
+        
+    return text
+
+// Run the analysis on a sample text
+var sample = "The technical_term is a specialized concept that requires explanation."
+var result = analyze_text(sample)
+print(result)
 ```
 
-Checks a script for syntax errors without executing it.
+### Turbulance Standard Library
 
-#### Processing Documents
+The Turbulance language comes with a comprehensive standard library for text processing and analysis:
 
-```bash
-kwasa-kwasa process <document_path> [--interactive]
-```
+#### Text Analysis Functions
+- `readability_score(text)`: Calculates Flesch-Kincaid readability score (0-100)
+- `sentiment_analysis(text)`: Analyzes sentiment polarity and subjectivity
+- `extract_keywords(text, count=10)`: Extracts significant keywords from text
 
-Processes a document with embedded Turbulance commands, applying transformations directly to the content.
+#### Text Transformation Functions
+- `simplify_sentences(text, level="moderate")`: Simplifies complex sentences
+- `replace_jargon(text, domain="general")`: Replaces domain-specific jargon
+- `formalize(text)`: Increases formality of text
 
-#### Interactive REPL
+#### Research Functions
+- `research_context(topic, depth="medium")`: Retrieves contextual information
+- `fact_check(statement)`: Verifies factual claims
+- `ensure_explanation_follows(text, term)`: Ensures term is explained
 
-```bash
-kwasa-kwasa repl
-```
-
-Starts an interactive Turbulance shell for experimentation.
-
-### WebAssembly Integration
-
-Kwasa-Kwasa can run directly in the browser through WebAssembly:
-
-```javascript
-// Execute Turbulance code
-const result = kwasa.execute_code(`
-  var greeting = "Hello, world!"
-  print(greeting)
-`);
-
-// Process text with the metacognitive orchestrator
-const processed = kwasa.process_text(text);
-
-// Divide text into semantic units
-const sentences = kwasa.divide_text(text, "sentence");
-```
+#### Utility Functions
+- `print(value)`: Outputs to console
+- `len(collection)`: Returns collection length
+- `typeof(value)`: Returns type information
+- `json_stringify(value)`: Converts a value to JSON string
+- `json_parse(json_string)`: Parses a JSON string into a value
+- `time()`: Returns current time as Unix timestamp
 
 ## Technology Stack
 

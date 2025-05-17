@@ -46,19 +46,19 @@ impl StreamData {
     }
     
     /// Set a metadata value
-    pub fn with_metadata(mut self, key: &str, value: &str) -> Self {
+    pub fn with_metadata(&mut self, key: &str, value: &str) -> &mut Self {
         self.metadata.insert(key.to_string(), value.to_string());
         self
     }
     
     /// Set confidence level
-    pub fn with_confidence(mut self, confidence: Confidence) -> Self {
+    pub fn with_confidence(&mut self, confidence: Confidence) -> &mut Self {
         self.confidence = confidence;
         self
     }
     
     /// Add processing state
-    pub fn with_state(mut self, key: &str, value: &str) -> Self {
+    pub fn with_state(&mut self, key: &str, value: &str) -> &mut Self {
         self.state.insert(key.to_string(), value.to_string());
         self
     }

@@ -412,7 +412,7 @@ fn detect_section_boundaries(
     }
     
     // Extract sections based on header positions
-    let mut sections = Vec::new();
+    let mut sections: Vec<TextUnit> = Vec::new();
     
     for i in 0..headers.len() {
         let (start, _, header) = &headers[i];

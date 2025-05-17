@@ -5,7 +5,6 @@ use std::env;
 use std::fs::{self, File};
 use std::io::{self, Write};
 use std::path::{Path, PathBuf};
-use std::process::Command;
 
 fn main() -> io::Result<()> {
     // Track dependencies for rebuild
@@ -58,10 +57,10 @@ fn generate_parser_tables(out_dir: &Path) -> io::Result<()> {
     // Keywords table
     writeln!(file, "pub fn keywords_table() -> HashMap<&'static str, crate::turbulance::TokenKind> {{")?;
     writeln!(file, "    let mut keywords = HashMap::new();")?;
-    writeln!(file, "    keywords.insert(\"funxn\", crate::turbulance::TokenKind::Function);")?;
+    writeln!(file, "    keywords.insert(\"funxn\", crate::turbulance::TokenKind::FunctionDecl);")?;
     writeln!(file, "    keywords.insert(\"within\", crate::turbulance::TokenKind::Within);")?;
     writeln!(file, "    keywords.insert(\"given\", crate::turbulance::TokenKind::Given);")?;
-    writeln!(file, "    keywords.insert(\"project\", crate::turbulance::TokenKind::Project);")?;
+    writeln!(file, "    keywords.insert(\"project\", crate::turbulance::TokenKind::ProjectDecl);")?;
     writeln!(file, "    keywords.insert(\"ensure\", crate::turbulance::TokenKind::Ensure);")?;
     writeln!(file, "    keywords.insert(\"return\", crate::turbulance::TokenKind::Return);")?;
     writeln!(file, "    keywords.insert(\"proposition\", crate::turbulance::TokenKind::Proposition);")?;
@@ -82,8 +81,8 @@ fn generate_parser_tables(out_dir: &Path) -> io::Result<()> {
     writeln!(file, "    let mut precedence = HashMap::new();")?;
     writeln!(file, "    precedence.insert(crate::turbulance::TokenKind::Plus, 10);")?;
     writeln!(file, "    precedence.insert(crate::turbulance::TokenKind::Minus, 10);")?;
-    writeln!(file, "    precedence.insert(crate::turbulance::TokenKind::Star, 20);")?;
-    writeln!(file, "    precedence.insert(crate::turbulance::TokenKind::Slash, 20);")?;
+    writeln!(file, "    precedence.insert(crate::turbulance::TokenKind::Multiply, 20);")?;
+    writeln!(file, "    precedence.insert(crate::turbulance::TokenKind::Divide, 20);")?;
     writeln!(file, "    precedence.insert(crate::turbulance::TokenKind::Equal, 5);")?;
     writeln!(file, "    precedence.insert(crate::turbulance::TokenKind::NotEqual, 5);")?;
     writeln!(file, "    precedence.insert(crate::turbulance::TokenKind::LessThan, 5);")?;
@@ -222,7 +221,7 @@ fn generate_token_definitions(out_dir: &Path) -> io::Result<()> {
     writeln!(file, "    LeftParen,")?;
     writeln!(file, "    #[token(\")\")]")?;
     writeln!(file, "    RightParen,")?;
-    writeln!(file, "    #[token(\"{{\")]")?;
+    writeln!(file, "    #[token(\"{{\")")?;
     writeln!(file, "    LeftBrace,")?;
     writeln!(file, "    #[token(\"}}\")]")?;
     writeln!(file, "    RightBrace,")?;
@@ -306,17 +305,17 @@ fn generate_ast_serialization(out_dir: &Path) -> io::Result<()> {
     writeln!(file, "    Proposition {{name: String, motions: Vec<SerializableMotion>}},")?;
     writeln!(file, "}}")?;
     writeln!(file, "")?;
-    writeln!(file, "impl From<&Declaration> for SerializableDeclaration {{")?;
-    writeln!(file, "    fn from(decl: &Declaration) -> Self {{")?;
+    writeln!(file, "impl From<&crate::turbulance::ast::Declaration> for SerializableDeclaration {{")?;
+    writeln!(file, "    fn from(decl: &crate::turbulance::ast::Declaration) -> Self {{")?;
     writeln!(file, "        match decl {{")?;
-    writeln!(file, "            Declaration::Function {{name, params, body}} => {{")?;
+    writeln!(file, "            crate::turbulance::ast::Declaration::Function {{name, params, body}} => {{")?;
     writeln!(file, "                SerializableDeclaration::Function {{")?;
     writeln!(file, "                    name: name.clone(),")?;
     writeln!(file, "                    params: params.clone(),")?;
     writeln!(file, "                    body: body.into(),")?;
     writeln!(file, "                }}")?;
     writeln!(file, "            }},")?;
-    writeln!(file, "            Declaration::Project {{name, body}} => {{")?;
+    writeln!(file, "            crate::turbulance::ast::Declaration::Project {{name, body}} => {{")?;
     writeln!(file, "                SerializableDeclaration::Project {{")?;
     writeln!(file, "                    name: name.clone(),")?;
     writeln!(file, "                    body: body.into(),")?;

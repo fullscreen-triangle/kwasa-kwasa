@@ -50,11 +50,11 @@ impl From<BoundaryType> for NodeType {
     fn from(boundary_type: BoundaryType) -> Self {
         match boundary_type {
             BoundaryType::Document => NodeType::Document,
-            BoundaryType::Section => NodeType::Section,
-            BoundaryType::Paragraph => NodeType::Paragraph,
-            BoundaryType::Sentence => NodeType::Sentence,
-            BoundaryType::Word => NodeType::Word,
-            BoundaryType::Character => NodeType::Word, // Map to Word as closest equivalent
+            BoundaryType::Sections => NodeType::Section,
+            BoundaryType::Paragraphs => NodeType::Paragraph,
+            BoundaryType::Sentences => NodeType::Sentence,
+            BoundaryType::Words => NodeType::Word,
+            BoundaryType::Characters => NodeType::Word, // Map to Word as closest equivalent
             BoundaryType::Semantic => NodeType::SemanticBlock,
             BoundaryType::Custom(name) => NodeType::Custom(name),
         }
@@ -189,7 +189,7 @@ impl HierarchyNode {
         }
         
         for child in &self.children {
-            result.extend(child.find_by_content(substring));
+            result.extend(child.find_by_type(node_type));
         }
         
         result
@@ -416,7 +416,8 @@ impl DocumentHierarchy {
             
             // Then process sentences within paragraphs
             if let Some(paragraphs) = self.find_nodes_by_type(&NodeType::Paragraph).first() {
-                for paragraph in paragraphs {
+                for p in 0..paragraphs.len() {
+                    let paragraph = &paragraphs[p];
                     self.extract_and_add_children(&paragraph.content, paragraph.id(), BoundaryType::Sentences);
                 }
             }
@@ -428,7 +429,8 @@ impl DocumentHierarchy {
             
             // Process words within sentences
             if let Some(sentences) = self.find_nodes_by_type(&NodeType::Sentence).first() {
-                for sentence in sentences {
+                for s in 0..sentences.len() {
+                    let sentence = &sentences[s];
                     self.extract_and_add_children(&sentence.content, sentence.id(), BoundaryType::Words);
                 }
             }
@@ -503,7 +505,7 @@ impl DocumentHierarchy {
             }
             
             // Search within root using a non-recursive approach
-            return find_node_by_id_mut_helper(root, id);
+            return Self::find_node_by_id_mut_helper(root, id);
         }
         
         None
@@ -520,7 +522,7 @@ impl DocumentHierarchy {
         
         // Then check nested children with a flat approach to avoid recursion issues
         for child in node.children_mut() {
-            if let Some(found) = find_node_by_id_mut_helper(child, id) {
+            if let Some(found) = Self::find_node_by_id_mut_helper(child, id) {
                 return Some(found);
             }
         }
@@ -601,7 +603,8 @@ impl DocumentHierarchy {
                 let mut current_block = Vec::new();
                 let mut current_block_keywords = HashSet::new();
                 
-                for sentence in sentences {
+                for s in 0..sentences.len() {
+                    let sentence = &sentences[s];
                     // Extract keywords from sentence
                     let keywords: HashSet<String> = sentence.text()
                         .split_whitespace()
@@ -618,7 +621,7 @@ impl DocumentHierarchy {
                             0.0
                         } else {
                             common_count as f64 / keywords.len() as f64
-                        }
+                        };
                     };
                     
                     // If there's sufficient overlap, add to current block
@@ -791,11 +794,11 @@ mod tests {
             content.len(),
             match boundary_type {
                 BoundaryType::Document => crate::text_unit::TextUnitType::Document,
-                BoundaryType::Section => crate::text_unit::TextUnitType::Section,
-                BoundaryType::Paragraph => crate::text_unit::TextUnitType::Paragraph,
-                BoundaryType::Sentence => crate::text_unit::TextUnitType::Sentence,
-                BoundaryType::Word => crate::text_unit::TextUnitType::Word,
-                BoundaryType::Character => crate::text_unit::TextUnitType::Character,
+                BoundaryType::Sections => crate::text_unit::TextUnitType::Section,
+                BoundaryType::Paragraphs => crate::text_unit::TextUnitType::Paragraph,
+                BoundaryType::Sentences => crate::text_unit::TextUnitType::Sentence,
+                BoundaryType::Words => crate::text_unit::TextUnitType::Word,
+                BoundaryType::Characters => crate::text_unit::TextUnitType::Character,
                 _ => crate::text_unit::TextUnitType::Custom(0),
             },
             0,
@@ -845,16 +848,16 @@ mod tests {
         let doc_unit = create_test_unit("Document", BoundaryType::Document);
         let mut root = HierarchyNode::new(NodeType::Document, doc_unit, 0, None);
         
-        let para1_unit = create_test_unit("Paragraph 1", BoundaryType::Paragraph);
+        let para1_unit = create_test_unit("Paragraph 1", BoundaryType::Paragraphs);
         let mut para1 = HierarchyNode::new(NodeType::Paragraph, para1_unit, 1, Some(0));
         
-        let para2_unit = create_test_unit("Paragraph 2", BoundaryType::Paragraph);
+        let para2_unit = create_test_unit("Paragraph 2", BoundaryType::Paragraphs);
         let para2 = HierarchyNode::new(NodeType::Paragraph, para2_unit, 2, Some(0));
         
-        let sent1_unit = create_test_unit("Sentence 1.", BoundaryType::Sentence);
+        let sent1_unit = create_test_unit("Sentence 1.", BoundaryType::Sentences);
         let sent1 = HierarchyNode::new(NodeType::Sentence, sent1_unit, 3, Some(1));
         
-        let sent2_unit = create_test_unit("Sentence 2.", BoundaryType::Sentence);
+        let sent2_unit = create_test_unit("Sentence 2.", BoundaryType::Sentences);
         let sent2 = HierarchyNode::new(NodeType::Sentence, sent2_unit, 4, Some(1));
         
         para1.add_child(sent1);
@@ -870,10 +873,10 @@ mod tests {
         assert_eq!(hierarchy.count_nodes(), 5); // 1 doc + 2 para + 2 sent
         
         // Test finding nodes by type
-        let paragraphs = hierarchy.find_nodes_by_type(&NodeType::Paragraph);
+        let paragraphs = hierarchy.find_nodes_by_type(&NodeType::Paragraphs);
         assert_eq!(paragraphs.len(), 2);
         
-        let sentences = hierarchy.find_nodes_by_type(&NodeType::Sentence);
+        let sentences = hierarchy.find_nodes_by_type(&NodeType::Sentences);
         assert_eq!(sentences.len(), 2);
         
         // Test path to node
@@ -889,16 +892,16 @@ mod tests {
         let doc_unit = create_test_unit("Document", BoundaryType::Document);
         let mut root = HierarchyNode::new(NodeType::Document, doc_unit, 0, None);
         
-        let para1_unit = create_test_unit("Paragraph 1", BoundaryType::Paragraph);
+        let para1_unit = create_test_unit("Paragraph 1", BoundaryType::Paragraphs);
         let mut para1 = HierarchyNode::new(NodeType::Paragraph, para1_unit, 1, Some(0));
         
-        let para2_unit = create_test_unit("Paragraph 2", BoundaryType::Paragraph);
+        let para2_unit = create_test_unit("Paragraph 2", BoundaryType::Paragraphs);
         let para2 = HierarchyNode::new(NodeType::Paragraph, para2_unit, 2, Some(0));
         
-        let sent1_unit = create_test_unit("Sentence 1.", BoundaryType::Sentence);
+        let sent1_unit = create_test_unit("Sentence 1.", BoundaryType::Sentences);
         let sent1 = HierarchyNode::new(NodeType::Sentence, sent1_unit, 3, Some(1));
         
-        let sent2_unit = create_test_unit("Sentence 2.", BoundaryType::Sentence);
+        let sent2_unit = create_test_unit("Sentence 2.", BoundaryType::Sentences);
         let sent2 = HierarchyNode::new(NodeType::Sentence, sent2_unit, 4, Some(1));
         
         para1.add_child(sent1);

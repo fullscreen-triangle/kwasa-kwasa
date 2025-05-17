@@ -298,7 +298,7 @@ pub fn multiply(
     }
     
     // Combine metadata from all units
-    for unit in sorted_units {
+    for unit in &sorted_units {
         for (key, value) in &unit.metadata {
             metadata.insert(key.clone(), value.clone());
         }
@@ -389,7 +389,7 @@ pub fn subtract(
     
     // Create the resulting unit
     let result_unit = TextUnit::with_metadata(
-        new_content,
+        new_content.clone(),
         from.metadata.clone(),
         from.start,
         // End position is approximate since we removed content
@@ -775,7 +775,7 @@ pub fn transform(
     
     // Create a new unit with the transformed content
     let result_unit = TextUnit::with_metadata(
-        transformed,
+        transformed.clone(),
         unit.metadata.clone(),
         unit.start,
         unit.start + transformed.len(),
@@ -978,7 +978,7 @@ pub fn compose(
     
     // Create a new unit with the composed content
     let result_unit = TextUnit::new(
-        composed,
+        composed.clone(),
         sorted_units[0].start,
         sorted_units[0].start + composed.len(),
         sorted_units[0].unit_type,

@@ -6,11 +6,17 @@ use crate::turbulance::stdlib::StdLib;
 use std::rc::Rc;
 use std::cell::RefCell;
 
+// Define Result type for Turbulance operations
+type Result<T> = std::result::Result<T, TurbulanceError>;
+
+// Define Statement as an alias for Node
+type Statement = Node;
+
 /// Function type for native (Rust) implementations of Turbulance functions
 pub type NativeFunction = fn(Vec<Value>) -> Result<Value>;
 
 /// Value types in the Turbulance language
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum Value {
     Number(f64),
     String(String),
@@ -21,6 +27,67 @@ pub enum Value {
     Object(std::collections::HashMap<String, Value>),
     Null,
 }
+
+// Adding implementations for Value comparison
+impl Eq for Value {
+    // Note: This is a simplification - floats typically don't implement Eq
+    // For production code, you might want a more sophisticated implementation
+}
+
+// Implement Hash for Value
+impl std::hash::Hash for Value {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        match self {
+            Value::Number(n) => {
+                // Convert float to bits for hashing
+                let bits = n.to_bits();
+                bits.hash(state);
+            },
+            Value::String(s) => s.hash(state),
+            Value::Boolean(b) => b.hash(state),
+            Value::Function(f) => f.hash(state),
+            Value::NativeFunction(_) => {
+                // Function pointers aren't hashable directly
+                // Use type ID as a stand-in
+                std::any::TypeId::of::<NativeFunction>().hash(state);
+            },
+            Value::Array(arr) => {
+                // Hash each element
+                for v in arr {
+                    v.hash(state);
+                }
+            },
+            Value::Object(map) => {
+                // Hash each key-value pair
+                for (k, v) in map {
+                    k.hash(state);
+                    v.hash(state);
+                }
+            },
+            Value::Null => 0.hash(state),
+        }
+    }
+}
+
+// Add Hash implementation for Function
+impl std::hash::Hash for Function {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.params.hash(state);
+        // We can't hash the Statement directly, so use a proxy value
+        self.body.to_string().hash(state);
+    }
+}
+
+// Add PartialEq implementation for Function
+impl PartialEq for Function {
+    fn eq(&self, other: &Self) -> bool {
+        self.params == other.params && 
+        self.body.to_string() == other.body.to_string()
+    }
+}
+
+// Add Eq implementation for Function
+impl Eq for Function {}
 
 #[derive(Clone, Debug)]
 pub struct Function {
@@ -136,7 +203,7 @@ impl Interpreter {
             // Literals
             Node::StringLiteral(value, _) => Ok(Value::String(value.clone())),
             Node::NumberLiteral(value, _) => Ok(Value::Number(*value)),
-            Node::BoolLiteral(value, _) => Ok(Value::Bool(*value)),
+            Node::BoolLiteral(value, _) => Ok(Value::Boolean(*value)),
             
             // Variables
             Node::Identifier(name, span) => {
@@ -309,10 +376,10 @@ impl Interpreter {
     
     fn evaluate_not(&mut self, operand: Value) -> Result<Value> {
         match operand {
-            Value::Bool(b) => Ok(Value::Bool(!b)),
+            Value::Boolean(b) => Ok(Value::Boolean(!b)),
             _ => {
                 // Non-boolean values are coerced using is_truthy
-                Ok(Value::Bool(!self.is_truthy(&operand)))
+                Ok(Value::Boolean(!self.is_truthy(&operand)))
             }
         }
     }
@@ -605,7 +672,7 @@ impl Interpreter {
     // Helper for checking if a value is "truthy"
     fn is_truthy(&self, value: &Value) -> bool {
         match value {
-            Value::Bool(b) => *b,
+            Value::Boolean(b) => *b,
             Value::Number(n) => *n != 0.0,
             Value::String(s) => !s.is_empty(),
             Value::List(l) => !l.is_empty(),
@@ -1000,7 +1067,7 @@ impl Interpreter {
     
     fn evaluate_and(&mut self, left: Value, right: Value) -> Result<Value> {
         match (left, right) {
-            (Value::Bool(l), Value::Bool(r)) => Ok(Value::Bool(l && r)),
+            (Value::Boolean(l), Value::Boolean(r)) => Ok(Value::Boolean(l && r)),
             (l, r) => Err(TurbulanceError::RuntimeError { 
                 message: format!("Logical AND requires boolean operands, got: {:?} and {:?}", l, r) 
             }),
@@ -1009,7 +1076,7 @@ impl Interpreter {
     
     fn evaluate_or(&mut self, left: Value, right: Value) -> Result<Value> {
         match (left, right) {
-            (Value::Bool(l), Value::Bool(r)) => Ok(Value::Bool(l || r)),
+            (Value::Boolean(l), Value::Boolean(r)) => Ok(Value::Boolean(l || r)),
             (l, r) => Err(TurbulanceError::RuntimeError { 
                 message: format!("Logical OR requires boolean operands, got: {:?} and {:?}", l, r) 
             }),
@@ -1163,7 +1230,7 @@ mod tests {
         let bool_node = Node::BoolLiteral(true, span);
         let result = interpreter.execute(&bool_node);
         assert!(result.is_ok());
-        if let Ok(Value::Bool(b)) = result {
+        if let Ok(Value::Boolean(b)) = result {
             assert_eq!(b, true);
         } else {
             panic!("Expected boolean value");
