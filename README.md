@@ -21,7 +21,7 @@ In the same way that DJ Kool Herc "invented" sampling and modern dance music, Je
 
 The dance was intensely physical—deliberately so. In regions where political independence was still a distant dream, kwasa-kwasa became a covert meeting ground for insurgent groups. Instead of clandestine gatherings, people could congregate at venues playing this popular music. Insurgency thus became not just morally justified but something that soothed both soul and body. The lyrics? No one fully understood them, nor did they need to—the souls of the performers were understood without their words being comprehended. Always having five solid reasons to dance, reasons that expert in the fields of philosophy, economics, medicine, psychology and religion, would unanimously affirm, was the problem. A simple solution to a complicated problem. 
 
-Artists like Awilo Longomba, Papa Wemba, and Alan Nkuku weren't merely performing—they were expressing their souls in a way that needed no translation. They could be understood without being literally understood. This is the essence of what our framework aims to achieve with text: **ensuring that the soul of your meaning is never misunderstood**.
+Artists like Awilo Longomba, Papa Wemba,Pepe Kale, and Alan Nkuku weren't merely performing—they were expressing their souls in a way that needed no translation. They could be understood without being literally understood. This is the essence of what our framework aims to achieve with text: **ensuring that the soul of your meaning is never misunderstood**.
 
 ### The Logo's Meaning
 
@@ -366,7 +366,15 @@ section("Introduction") |>
 │  │   Processor     │◄────►│  Integration             │     │
 │  │                 │      │  Engine                  │     │
 │  │                 │      │                          │     │
-│  └─────────────────┘      └──────────────────────────┘     │
+│  └────────┬────────┘      └──────────────────────────┘     │
+│           │                                                 │
+│           ▼                                                 │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │                 Domain Extensions                    │   │
+│  ├─────────────────┬─────────────────┬─────────────────┤   │
+│  │    Genomic      │   Spectrometry  │    Chemistry     │   │
+│  │    Analysis     │    Analysis     │    Analysis      │   │
+│  └─────────────────┴─────────────────┴─────────────────┘   │
 │                                                             │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -396,6 +404,12 @@ section("Introduction") |>
    - Knowledge database for storing domain information
    - Citation and reference management
    - Fact verification system
+   
+5. **Domain Extensions**
+   - Genomic sequence analysis for DNA/RNA data
+   - Mass spectrometry analysis for experimental data
+   - Cheminformatics for molecular structure processing
+   - Pattern-based meaning extraction across domains
 
 ## Using Kwasa-Kwasa
 
@@ -405,7 +419,7 @@ To build the Kwasa-Kwasa framework and the Turbulance language:
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/kwasa-kwasa.git
+git clone https://github.com/fullscreen-triangle/kwasa-kwasa.git
 cd kwasa-kwasa
 
 # Build the project
@@ -563,3 +577,81 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on contributing to this pr
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Domain Extensions
+
+Kwasa-Kwasa's core philosophy of arbitrarily defined boundaries and semantic unit manipulation extends beyond traditional text processing to other domains, allowing you to work with diverse data types using the same powerful abstractions.
+
+### Genomic Sequence Analysis
+
+Process and analyze DNA and RNA sequences with the same operators used for text:
+
+```turbulance
+import genomic
+
+// Create a DNA sequence
+var dna = genomic.NucleotideSequence.new("ATGCTAGCTAGCTAGCTA", "gene_123")
+
+// Use division to split into different unit types
+var codons = dna / "codon"  // Split into triplets
+var motifs = dna / "GCTA"   // Split by specific pattern
+
+// Find genes and regulatory regions
+within dna:
+    given contains("ATG"):
+        print("Found start codon at position {}".format(index_of("ATG")))
+```
+
+### Mass Spectrometry Analysis
+
+Work with spectral data from analytical chemistry experiments:
+
+```turbulance
+import spectrometry
+
+// Create a spectrum from m/z and intensity values
+var mz_values = [100.1, 120.2, 130.3, 145.6, 180.9, 212.4, 258.3]
+var intensities = [1050, 320, 5200, 750, 3500, 12300, 8400]
+var spectrum = spectrometry.MassSpectrum.from_numeric_data(mz_values, intensities, "sample")
+
+// Analyze peaks in a specific range
+var fragments = spectrum.peaks_in_range(200.0, 300.0)
+
+// Division by m/z ranges
+var spectrum_parts = spectrum / "mz_range"
+
+// Filter by intensity
+var significant_peaks = spectrum.filter_by_intensity(1000)
+```
+
+### Cheminformatics
+
+Process and analyze molecular structures using SMILES notation:
+
+```turbulance
+import chemistry
+
+// Create molecules from SMILES
+var aspirin = chemistry.Molecule.from_smiles("CC(=O)OC1=CC=CC=C1C(=O)O", "aspirin")
+
+// Divide molecule by functional groups
+var functional_groups = aspirin / "functional_group"
+
+// Simulate a reaction (multiplication operator)
+var reaction_product = ethanol * aspirin
+
+// Find similar molecules
+var similar_molecules = find_similar(aspirin, molecule_database)
+```
+
+### Feature Highlights
+
+All domain extensions maintain the core features of Kwasa-Kwasa:
+
+1. **Mathematical Operators**: The same mathematical operators (/, *, +, -) work consistently across all domains
+2. **Boundary Flexibility**: Define boundaries at any level of granularity
+3. **Propositions and Motions**: Create semantic relationships between domain-specific concepts
+4. **Transformation Pipelines**: Chain operations for complex analysis workflows
+5. **Domain Integration**: Seamlessly work across multiple domains in a single script
+
+These extensions demonstrate Kwasa-Kwasa's philosophy that meaning can be extracted from the mechanical arrangement of symbols, regardless of their conventional semantic content or domain origin.

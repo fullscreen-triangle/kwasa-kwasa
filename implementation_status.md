@@ -404,6 +404,120 @@ As all planned components have now been implemented, the focus shifts to:
    - Create a package ecosystem for extensions
    - Establish contribution guidelines for the open source community
 
+5. **Expand Application Domains**
+   - Extend the framework to handle genomic sequence analysis
+   - Develop pattern recognition for letter-level meaning extraction
+   - Create domain-specific extensions for specialized fields
+
+## Domain Expansion Plan
+
+Building on Kwasa-kwasa's core philosophy of arbitrarily defined boundaries and semantic unit manipulation, we are expanding the framework to handle domains beyond traditional text processing:
+
+### Genomic Sequence Analysis
+
+The Turbulance language can be extended to provide powerful tools for genomic sequence analysis:
+
+1. **Flexible boundary definition**: Allow defining units at multiple scales:
+   - Genes
+   - Exons/introns
+   - Motifs
+   - Codons
+   - Individual nucleotides
+
+2. **Contextual genomic processing**: Analyze sequences while preserving biological context
+
+3. **Transformation pipelines for genomic operations**:
+   ```turbulance
+   dna_sequence |> 
+     identify_coding_regions() |>
+     filter_by_expression_level(threshold=0.8) |>
+     align_with_reference_genome()
+   ```
+
+4. **Domain-specific genomic operations**:
+   ```turbulance
+   // Split sequence into motifs
+   var regulatory_regions = sequence / "motif"
+   
+   // Recombine sequences
+   var hybrid_sequence = sequence1 * sequence2
+   
+   // Add genetic elements
+   var modified_gene = original_gene + promoter_sequence
+   
+   // Remove specific regions
+   var truncated_sequence = full_sequence - repetitive_regions
+   ```
+
+5. **Propositions and motions for genetic relationships**:
+   ```turbulance
+   proposition GeneRegulation:
+     motion Activation("Gene X activates Gene Y")
+     motion Suppression("Gene Z suppresses Gene X")
+   ```
+
+### Pattern-Based Meaning Extraction
+
+We're exploring extracting meaning from the fundamental structure of text itself:
+
+1. **Grapheme pattern analysis**:
+   ```turbulance
+   within text as graphemes:
+       identify_root_patterns()
+       trace_etymological_history()
+   ```
+
+2. **Orthographic signature detection**:
+   ```turbulance
+   proposition TextFingerprint:
+       motion LetterDistribution(calculate_frequency_signature(text))
+       motion VisualDensity(analyze_whitespace_distribution(text))
+   ```
+
+3. **Statistical pattern significance**:
+   ```turbulance
+   var distinctive_patterns = text - expected_distribution
+   var anomaly_score = measure_statistical_deviation(text)
+   ```
+
+4. **Sequence-agnostic manipulations**:
+   ```turbulance
+   // Process sequence based on pure structure without semantic interpretation
+   processed_sequence = sequence.transform(n => n.position % 3 == 0 ? 'X' : n)
+   var entropy = calculate_shannon_entropy(sequence)
+   
+   // Work with any arbitrary sequence type
+   var reversed_units = sequence / 3  // Split into 3-character units
+                             |> reverse_each()
+                             |> join()
+   ```
+
+## Implementation Strategy for Domain Expansions
+
+To implement these domain expansions, we'll take the following approach:
+
+1. **Core Framework Abstraction**
+   - Refactor text unit boundaries to handle arbitrary unit types
+   - Develop a plugin system for domain-specific extensions
+   - Create generic interface for unit operators (/, *, +, -)
+
+2. **Genomic Analysis Extension**
+   - Implement nucleotide and codon tokenization
+   - Create genomic-specific operations library
+   - Develop visualization components for genomic data
+
+3. **Pattern Analysis Components**
+   - Build statistical analysis tools for character distributions
+   - Implement entropy and information density calculations
+   - Create pattern matching algorithms for sequence anomalies
+
+4. **Testing and Validation**
+   - Develop test cases with real genomic datasets
+   - Benchmark against existing genomic analysis tools
+   - Create examples demonstrating letter-pattern analysis
+
+These expansions align with the core philosophy of Kwasa-kwasa by recognizing that the framework's power comes from its ability to manipulate arbitrarily defined units regardless of their semantic meaning to humans.
+
 ## Technical Challenges to Address
 
 1. **Semantic Boundary Detection**
