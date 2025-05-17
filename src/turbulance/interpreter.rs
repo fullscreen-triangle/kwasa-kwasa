@@ -12,8 +12,8 @@ type Result<T> = std::result::Result<T, TurbulanceError>;
 // Define Statement as an alias for Node
 type Statement = Node;
 
-/// Function type for native (Rust) implementations of Turbulance functions
-pub type NativeFunction = fn(Vec<Value>) -> Result<Value>;
+/// Native function type that can be called from Turbulance
+pub type NativeFunction = Box<dyn Fn(Vec<Value>) -> Result<Value> + Send + Sync>;
 
 /// Value types in the Turbulance language
 #[derive(Clone, Debug, PartialEq)]

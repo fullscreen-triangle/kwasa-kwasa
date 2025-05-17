@@ -116,54 +116,54 @@ fn generate_stdlib_bindings(out_dir: &Path) -> io::Result<()> {
     
     // Text analysis functions
     writeln!(file, "    // Text analysis functions")?;
-    writeln!(file, "    functions.insert(\"readability_score\", |args| {{")?;
+    writeln!(file, "    functions.insert(\"readability_score\", Box::new(|args| {{")?;
     writeln!(file, "        crate::turbulance::stdlib::text_analysis::readability_score(args)")?;
-    writeln!(file, "    }});")?;
-    writeln!(file, "    functions.insert(\"sentiment_analysis\", |args| {{")?;
+    writeln!(file, "    }}));")?;
+    writeln!(file, "    functions.insert(\"sentiment_analysis\", Box::new(|args| {{")?;
     writeln!(file, "        crate::turbulance::stdlib::text_analysis::sentiment_analysis(args)")?;
-    writeln!(file, "    }});")?;
-    writeln!(file, "    functions.insert(\"extract_keywords\", |args| {{")?;
+    writeln!(file, "    }}));")?;
+    writeln!(file, "    functions.insert(\"extract_keywords\", Box::new(|args| {{")?;
     writeln!(file, "        crate::turbulance::stdlib::text_analysis::extract_keywords(args)")?;
-    writeln!(file, "    }});")?;
+    writeln!(file, "    }}));")?;
     
     // Text transformation functions
     writeln!(file, "")?;
     writeln!(file, "    // Text transformation functions")?;
-    writeln!(file, "    functions.insert(\"simplify_sentences\", |args| {{")?;
+    writeln!(file, "    functions.insert(\"simplify_sentences\", Box::new(|args| {{")?;
     writeln!(file, "        crate::turbulance::stdlib::text_transform::simplify_sentences(args)")?;
-    writeln!(file, "    }});")?;
-    writeln!(file, "    functions.insert(\"replace_jargon\", |args| {{")?;
+    writeln!(file, "    }}));")?;
+    writeln!(file, "    functions.insert(\"replace_jargon\", Box::new(|args| {{")?;
     writeln!(file, "        crate::turbulance::stdlib::text_transform::replace_jargon(args)")?;
-    writeln!(file, "    }});")?;
-    writeln!(file, "    functions.insert(\"formalize\", |args| {{")?;
+    writeln!(file, "    }}));")?;
+    writeln!(file, "    functions.insert(\"formalize\", Box::new(|args| {{")?;
     writeln!(file, "        crate::turbulance::stdlib::text_transform::formalize(args)")?;
-    writeln!(file, "    }});")?;
+    writeln!(file, "    }}));")?;
     
     // Research assistance functions
     writeln!(file, "")?;
     writeln!(file, "    // Research assistance functions")?;
-    writeln!(file, "    functions.insert(\"research_context\", |args| {{")?;
+    writeln!(file, "    functions.insert(\"research_context\", Box::new(|args| {{")?;
     writeln!(file, "        crate::turbulance::stdlib::research::research_context(args)")?;
-    writeln!(file, "    }});")?;
-    writeln!(file, "    functions.insert(\"fact_check\", |args| {{")?;
+    writeln!(file, "    }}));")?;
+    writeln!(file, "    functions.insert(\"fact_check\", Box::new(|args| {{")?;
     writeln!(file, "        crate::turbulance::stdlib::research::fact_check(args)")?;
-    writeln!(file, "    }});")?;
-    writeln!(file, "    functions.insert(\"ensure_explanation_follows\", |args| {{")?;
+    writeln!(file, "    }}));")?;
+    writeln!(file, "    functions.insert(\"ensure_explanation_follows\", Box::new(|args| {{")?;
     writeln!(file, "        crate::turbulance::stdlib::research::ensure_explanation_follows(args)")?;
-    writeln!(file, "    }});")?;
+    writeln!(file, "    }}));")?;
     
     // Utility functions
     writeln!(file, "")?;
     writeln!(file, "    // Utility functions")?;
-    writeln!(file, "    functions.insert(\"print\", |args| {{")?;
+    writeln!(file, "    functions.insert(\"print\", Box::new(|args| {{")?;
     writeln!(file, "        crate::turbulance::stdlib::utils::print(args)")?;
-    writeln!(file, "    }});")?;
-    writeln!(file, "    functions.insert(\"len\", |args| {{")?;
+    writeln!(file, "    }}));")?;
+    writeln!(file, "    functions.insert(\"len\", Box::new(|args| {{")?;
     writeln!(file, "        crate::turbulance::stdlib::utils::len(args)")?;
-    writeln!(file, "    }});")?;
-    writeln!(file, "    functions.insert(\"typeof\", |args| {{")?;
+    writeln!(file, "    }}));")?;
+    writeln!(file, "    functions.insert(\"typeof\", Box::new(|args| {{")?;
     writeln!(file, "        crate::turbulance::stdlib::utils::typeof_fn(args)")?;
-    writeln!(file, "    }});")?;
+    writeln!(file, "    }}));")?;
     
     writeln!(file, "")?;
     writeln!(file, "    functions")?;
@@ -221,7 +221,7 @@ fn generate_token_definitions(out_dir: &Path) -> io::Result<()> {
     writeln!(file, "    LeftParen,")?;
     writeln!(file, "    #[token(\")\")]")?;
     writeln!(file, "    RightParen,")?;
-    writeln!(file, "    #[token(\"{{\")")?;
+    writeln!(file, "    #[token(\"{{\")]")?;
     writeln!(file, "    LeftBrace,")?;
     writeln!(file, "    #[token(\"}}\")]")?;
     writeln!(file, "    RightBrace,")?;
