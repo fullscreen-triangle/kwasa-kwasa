@@ -52,6 +52,8 @@ Kwasa-Kwasa is a specialized framework designed for writers who need programmati
   - [Proposition and Motion System](#proposition-and-motion-system)
   - [Text Unit System](#text-unit-system)
 - [System Architecture](#system-architecture)
+  - [Core Components](#core-components)
+  - [Domain Extensions](#domain-extensions)
 - [Installation and Usage](#using-kwasa-kwasa)
 - [Real-World Use Cases](#real-world-use-cases)
 - [Technology Stack](#technology-stack)
@@ -411,6 +413,84 @@ section("Introduction") |>
    - Cheminformatics for molecular structure processing
    - Pattern-based meaning extraction across domains
 
+## Domain Extensions
+
+Kwasa-Kwasa's core philosophy of arbitrarily defined boundaries and semantic unit manipulation extends beyond traditional text processing to other domains, allowing you to work with diverse data types using the same powerful abstractions.
+
+### Genomic Sequence Analysis
+
+Process and analyze DNA and RNA sequences with the same operators used for text:
+
+```turbulance
+import genomic
+
+// Create a DNA sequence
+var dna = genomic.NucleotideSequence.new("ATGCTAGCTAGCTAGCTA", "gene_123")
+
+// Use division to split into different unit types
+var codons = dna / "codon"  // Split into triplets
+var motifs = dna / "GCTA"   // Split by specific pattern
+
+// Find genes and regulatory regions
+within dna:
+    given contains("ATG"):
+        print("Found start codon at position {}".format(index_of("ATG")))
+```
+
+### Mass Spectrometry Analysis
+
+Work with spectral data from analytical chemistry experiments:
+
+```turbulance
+import spectrometry
+
+// Create a spectrum from m/z and intensity values
+var mz_values = [100.1, 120.2, 130.3, 145.6, 180.9, 212.4, 258.3]
+var intensities = [1050, 320, 5200, 750, 3500, 12300, 8400]
+var spectrum = spectrometry.MassSpectrum.from_numeric_data(mz_values, intensities, "sample")
+
+// Analyze peaks in a specific range
+var fragments = spectrum.peaks_in_range(200.0, 300.0)
+
+// Division by m/z ranges
+var spectrum_parts = spectrum / "mz_range"
+
+// Filter by intensity
+var significant_peaks = spectrum.filter_by_intensity(1000)
+```
+
+### Cheminformatics
+
+Process and analyze molecular structures using SMILES notation:
+
+```turbulance
+import chemistry
+
+// Create molecules from SMILES
+var aspirin = chemistry.Molecule.from_smiles("CC(=O)OC1=CC=CC=C1C(=O)O", "aspirin")
+
+// Divide molecule by functional groups
+var functional_groups = aspirin / "functional_group"
+
+// Simulate a reaction (multiplication operator)
+var reaction_product = ethanol * aspirin
+
+// Find similar molecules
+var similar_molecules = find_similar(aspirin, molecule_database)
+```
+
+### Feature Highlights
+
+All domain extensions maintain the core features of Kwasa-Kwasa:
+
+1. **Mathematical Operators**: The same mathematical operators (/, *, +, -) work consistently across all domains
+2. **Boundary Flexibility**: Define boundaries at any level of granularity
+3. **Propositions and Motions**: Create semantic relationships between domain-specific concepts
+4. **Transformation Pipelines**: Chain operations for complex analysis workflows
+5. **Domain Integration**: Seamlessly work across multiple domains in a single script
+
+These extensions demonstrate Kwasa-Kwasa's philosophy that meaning can be extracted from the mechanical arrangement of symbols, regardless of their conventional semantic content or domain origin.
+
 ## Using Kwasa-Kwasa
 
 ### Building the Project
@@ -577,81 +657,3 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on contributing to this pr
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Domain Extensions
-
-Kwasa-Kwasa's core philosophy of arbitrarily defined boundaries and semantic unit manipulation extends beyond traditional text processing to other domains, allowing you to work with diverse data types using the same powerful abstractions.
-
-### Genomic Sequence Analysis
-
-Process and analyze DNA and RNA sequences with the same operators used for text:
-
-```turbulance
-import genomic
-
-// Create a DNA sequence
-var dna = genomic.NucleotideSequence.new("ATGCTAGCTAGCTAGCTA", "gene_123")
-
-// Use division to split into different unit types
-var codons = dna / "codon"  // Split into triplets
-var motifs = dna / "GCTA"   // Split by specific pattern
-
-// Find genes and regulatory regions
-within dna:
-    given contains("ATG"):
-        print("Found start codon at position {}".format(index_of("ATG")))
-```
-
-### Mass Spectrometry Analysis
-
-Work with spectral data from analytical chemistry experiments:
-
-```turbulance
-import spectrometry
-
-// Create a spectrum from m/z and intensity values
-var mz_values = [100.1, 120.2, 130.3, 145.6, 180.9, 212.4, 258.3]
-var intensities = [1050, 320, 5200, 750, 3500, 12300, 8400]
-var spectrum = spectrometry.MassSpectrum.from_numeric_data(mz_values, intensities, "sample")
-
-// Analyze peaks in a specific range
-var fragments = spectrum.peaks_in_range(200.0, 300.0)
-
-// Division by m/z ranges
-var spectrum_parts = spectrum / "mz_range"
-
-// Filter by intensity
-var significant_peaks = spectrum.filter_by_intensity(1000)
-```
-
-### Cheminformatics
-
-Process and analyze molecular structures using SMILES notation:
-
-```turbulance
-import chemistry
-
-// Create molecules from SMILES
-var aspirin = chemistry.Molecule.from_smiles("CC(=O)OC1=CC=CC=C1C(=O)O", "aspirin")
-
-// Divide molecule by functional groups
-var functional_groups = aspirin / "functional_group"
-
-// Simulate a reaction (multiplication operator)
-var reaction_product = ethanol * aspirin
-
-// Find similar molecules
-var similar_molecules = find_similar(aspirin, molecule_database)
-```
-
-### Feature Highlights
-
-All domain extensions maintain the core features of Kwasa-Kwasa:
-
-1. **Mathematical Operators**: The same mathematical operators (/, *, +, -) work consistently across all domains
-2. **Boundary Flexibility**: Define boundaries at any level of granularity
-3. **Propositions and Motions**: Create semantic relationships between domain-specific concepts
-4. **Transformation Pipelines**: Chain operations for complex analysis workflows
-5. **Domain Integration**: Seamlessly work across multiple domains in a single script
-
-These extensions demonstrate Kwasa-Kwasa's philosophy that meaning can be extracted from the mechanical arrangement of symbols, regardless of their conventional semantic content or domain origin.
