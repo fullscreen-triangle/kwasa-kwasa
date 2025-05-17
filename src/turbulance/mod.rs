@@ -5,6 +5,7 @@ pub mod interpreter;
 pub mod stdlib;
 pub mod proposition;
 pub mod datastructures;
+pub mod domain_extensions;
 
 pub use lexer::{Lexer, Token, TokenKind};
 pub use proposition::{Proposition, Motion};
@@ -56,6 +57,11 @@ pub fn run(source: &str) -> Result<()> {
     // Execute program with standard library
     let mut interpreter = interpreter::Interpreter::new();
     interpreter.register_stdlib_functions(stdlib);
+    
+    // Register domain extensions
+    domain_extensions::register_domain_extensions(&mut interpreter)
+        .map_err(|e| TurbulanceError::RuntimeError { message: e.to_string() })?;
+    
     let _ = interpreter.execute(&ast)?;
     
     Ok(())

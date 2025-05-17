@@ -133,6 +133,29 @@ len(collection)                             // Returns collection length
 typeof(value)                               // Returns type information
 ```
 
+#### Statistical Analysis Functions
+- `ngram_probability(text, sequence, n=3)`: Returns probability of a letter sequence given surrounding context
+- `conditional_probability(text, sequence, condition)`: Calculates probability of sequence given conditional context
+- `positional_distribution(text, pattern)`: Maps occurrences of pattern across different positions in text
+- `entropy_measure(text, window_size=50)`: Calculates information entropy within sliding windows
+- `sequence_significance(text, sequence)`: Tests statistical significance of a sequence compared to baseline
+- `markov_transition(text, order=1)`: Generates transition probability matrix for text elements
+- `zipf_analysis(text)`: Analyzes token frequency distribution against Zipf's law
+- `positional_entropy(text, unit="paragraph")`: Measures information distribution across structural units
+- `contextual_uniqueness(text, sequence)`: Evaluates how distinctive a sequence is in different contexts
+
+#### Positional Importance Analysis
+- `positional_importance(text, unit="paragraph")`: Calculates importance score based on position within document
+- `section_weight_map(document)`: Creates heatmap of importance weights across document sections
+- `structural_prominence(text, structure_type="heading")`: Measures text importance based on structural context
+- `proximity_weight(text, anchor_points)`: Weights text importance by proximity to key document anchors
+- `transition_importance(text)`: Assigns higher importance to text at section transitions or logical boundaries
+- `opening_closing_emphasis(text)`: Weights text at the beginning and end of units more heavily
+- `local_global_context(text)`: Compares importance of text in its local context versus the entire document
+- `hierarchical_importance(document)`: Cascades importance scores through document hierarchy levels
+- `citation_proximity(text)`: Weights text based on proximity to citations or evidence
+- `rhetorical_position_score(text)`: Assigns scores based on position within rhetorical structures
+
 ### Metacognitive Orchestration
 
 The framework doesn't just process text; it understands your goals and guides the writing process through the Metacognitive Orchestrator.

@@ -13,6 +13,10 @@ mod orchestrator;
 mod knowledge;
 mod utils;
 mod wasm;
+mod genomic;
+mod spectrometry;
+mod chemistry;
+mod pattern;
 
 #[derive(Parser)]
 #[command(name = "kwasa-kwasa")]

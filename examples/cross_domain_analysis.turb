@@ -1,0 +1,120 @@
+// Example of cross-domain analysis using Turbulance
+// This demonstrates how the framework can analyze different
+// data types with the same powerful abstractions
+
+// Import all domain modules
+import genomic
+import spectrometry
+import chemistry
+import pattern
+
+//----------------------------------------------------------------------------
+// Create data instances from each domain
+//----------------------------------------------------------------------------
+
+// DNA sequence
+var dna = genomic.NucleotideSequence.new("ATGCTAGCTAGCTAGCTA", "gene_sample")
+
+// Mass spectrum
+var mz_values = [100.1, 120.2, 130.3, 145.6, 180.9, 212.4, 258.3]
+var intensities = [1050, 320, 5200, 750, 3500, 12300, 8400]
+var spectrum = spectrometry.MassSpectrum.from_numeric_data(mz_values, intensities, "mass_spec")
+
+// Chemical molecule (aspirin)
+var aspirin = chemistry.Molecule.from_smiles("CC(=O)OC1=CC=CC=C1C(=O)O", "aspirin")
+
+// Text for pattern analysis
+var text = "The structure of DNA and the way it encodes information has parallels to how language functions."
+var pattern_analyzer = pattern.PatternAnalyzer.new()
+
+//----------------------------------------------------------------------------
+// Cross-domain pattern discovery
+//----------------------------------------------------------------------------
+
+funxn analyze_patterns_across_domains():
+    print("--- Cross-Domain Pattern Analysis ---")
+    
+    // Extract patterns from DNA
+    var dna_content = dna.content()
+    var dna_ngrams = pattern_analyzer.analyze_ngrams(dna_content, 3)
+    print("\nDNA 3-mer frequency distribution:")
+    for each (ngram, count) in dna_ngrams.most_frequent(5):
+        print("  {} occurs {} times".format(String.from_utf8(ngram), count))
+    
+    // Extract patterns from SMILES string
+    var smiles = aspirin.smiles()
+    var smiles_bytes = smiles.as_bytes()
+    var chem_patterns = pattern_analyzer.analyze_ngrams(smiles_bytes, 2)
+    print("\nChemical SMILES pattern distribution:")
+    for each (pattern, count) in chem_patterns.most_frequent(5):
+        print("  {} occurs {} times".format(String.from_utf8(pattern), count))
+    
+    // Compare pattern distributions from different domains
+    var text_bytes = text.as_bytes()
+    var text_patterns = pattern_analyzer.analyze_ngrams(text_bytes, 2)
+    
+    print("\nEntropy comparison:")
+    print("  DNA entropy: {:.4}".format(dna_ngrams.entropy()))
+    print("  Chemical structure entropy: {:.4}".format(chem_patterns.entropy()))
+    print("  Text entropy: {:.4}".format(text_patterns.entropy()))
+
+//----------------------------------------------------------------------------
+// Cross-domain operations using mathematical operators
+//----------------------------------------------------------------------------
+
+funxn demonstrate_universal_operators():
+    print("\n--- Universal Operators Across Domains ---")
+    
+    // Division operator (/) in each domain
+    var genomic_ops = genomic.NucleotideOperations.new()
+    var codons = genomic_ops.divide(dna, "codon")
+    print("\nDNA divided into {} codons".format(len(codons)))
+    
+    var spectrum_ops = spectrometry.SpectrumOperations.new()
+    var spectrum_ranges = spectrum_ops.divide(spectrum, "mz_range")
+    print("Spectrum divided into {} m/z ranges".format(len(spectrum_ranges)))
+    
+    var molecule_ops = chemistry.MoleculeOperations.new()
+    var functional_groups = molecule_ops.divide(aspirin, "functional_group")
+    print("Aspirin divided into {} functional groups".format(len(functional_groups)))
+    
+    // Addition operator (+) combining units from same domain
+    var dna2 = genomic.NucleotideSequence.new("GGAATTCC", "primer")
+    var combined_dna = genomic_ops.add(dna, dna2)
+    print("\nCombined DNA length: {} bases".format(len(combined_dna.content())))
+
+//----------------------------------------------------------------------------
+// Cross-domain proposition & motion analysis
+//----------------------------------------------------------------------------
+
+funxn analyze_with_propositions():
+    print("\n--- Cross-Domain Semantic Analysis ---")
+    
+    proposition CrossDomainAnalysis:
+        motion GenomicPattern("Repetitive patterns in DNA may indicate functional regions")
+        motion ChemicalStructure("Chemical functional groups determine molecular properties")
+        motion SpectralFeature("Spectral peaks represent molecular fragments")
+        
+        // Apply analysis to each domain with universal abstractions
+        considering all motions in this:
+            print("Analyzing: {}".format(motion.content()))
+            
+        // DNA analysis with proposition context
+        within dna:
+            given contains("GCT"):
+                print("GCT codon found in DNA, may code for Alanine")
+                
+        // Chemical analysis with proposition context
+        within aspirin.smiles():
+            given contains("C(=O)O"):
+                print("Carboxylic acid group found in molecule, indicates acidity")
+                
+        // Spectrum analysis with proposition context
+        within spectrum:
+            given spectrum.base_peak().mz > 200:
+                print("High m/z base peak suggesting intact molecular structure")
+
+// Run all analysis functions
+analyze_patterns_across_domains()
+demonstrate_universal_operators()
+analyze_with_propositions() 
