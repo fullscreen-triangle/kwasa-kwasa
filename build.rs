@@ -107,8 +107,11 @@ fn generate_stdlib_bindings(out_dir: &Path) -> io::Result<()> {
     writeln!(file, "use std::collections::HashMap;")?;
     writeln!(file, "use crate::turbulance::interpreter::Value;")?;
     writeln!(file, "use crate::turbulance::interpreter::NativeFunction;")?;
+    writeln!(file, "use crate::turbulance::Result;")?;
     writeln!(file, "use crate::turbulance::TurbulanceError;")?;
-    writeln!(file, "use std::result::Result;")?;
+    writeln!(file, "")?;
+    writeln!(file, "// Define standard function type for consistent casting")?;
+    writeln!(file, "type StdlibFnType = fn(Vec<Value>) -> Result<Value>;")?;
     writeln!(file, "")?;
     
     // Generate function registry
@@ -118,30 +121,30 @@ fn generate_stdlib_bindings(out_dir: &Path) -> io::Result<()> {
     
     // Text analysis functions
     writeln!(file, "    // Text analysis functions")?;
-    writeln!(file, "    functions.insert(\"readability_score\", Box::new(crate::turbulance::stdlib::text_analysis::readability_score));")?;
-    writeln!(file, "    functions.insert(\"sentiment_analysis\", Box::new(crate::turbulance::stdlib::text_analysis::sentiment_analysis));")?;
-    writeln!(file, "    functions.insert(\"extract_keywords\", Box::new(crate::turbulance::stdlib::text_analysis::extract_keywords));")?;
+    writeln!(file, "    functions.insert(\"readability_score\", Box::new(crate::turbulance::stdlib::text_analysis::readability_score as StdlibFnType));")?;
+    writeln!(file, "    functions.insert(\"sentiment_analysis\", Box::new(crate::turbulance::stdlib::text_analysis::sentiment_analysis as StdlibFnType));")?;
+    writeln!(file, "    functions.insert(\"extract_keywords\", Box::new(crate::turbulance::stdlib::text_analysis::extract_keywords as StdlibFnType));")?;
     
     // Text transformation functions
     writeln!(file, "")?;
     writeln!(file, "    // Text transformation functions")?;
-    writeln!(file, "    functions.insert(\"simplify_sentences\", Box::new(crate::turbulance::stdlib::text_transform::simplify_sentences));")?;
-    writeln!(file, "    functions.insert(\"replace_jargon\", Box::new(crate::turbulance::stdlib::text_transform::replace_jargon));")?;
-    writeln!(file, "    functions.insert(\"formalize\", Box::new(crate::turbulance::stdlib::text_transform::formalize));")?;
+    writeln!(file, "    functions.insert(\"simplify_sentences\", Box::new(crate::turbulance::stdlib::text_transform::simplify_sentences as StdlibFnType));")?;
+    writeln!(file, "    functions.insert(\"replace_jargon\", Box::new(crate::turbulance::stdlib::text_transform::replace_jargon as StdlibFnType));")?;
+    writeln!(file, "    functions.insert(\"formalize\", Box::new(crate::turbulance::stdlib::text_transform::formalize as StdlibFnType));")?;
     
     // Research assistance functions
     writeln!(file, "")?;
     writeln!(file, "    // Research assistance functions")?;
-    writeln!(file, "    functions.insert(\"research_context\", Box::new(crate::turbulance::stdlib::research::research_context));")?;
-    writeln!(file, "    functions.insert(\"fact_check\", Box::new(crate::turbulance::stdlib::research::fact_check));")?;
-    writeln!(file, "    functions.insert(\"ensure_explanation_follows\", Box::new(crate::turbulance::stdlib::research::ensure_explanation_follows));")?;
+    writeln!(file, "    functions.insert(\"research_context\", Box::new(crate::turbulance::stdlib::research::research_context as StdlibFnType));")?;
+    writeln!(file, "    functions.insert(\"fact_check\", Box::new(crate::turbulance::stdlib::research::fact_check as StdlibFnType));")?;
+    writeln!(file, "    functions.insert(\"ensure_explanation_follows\", Box::new(crate::turbulance::stdlib::research::ensure_explanation_follows as StdlibFnType));")?;
     
     // Utility functions
     writeln!(file, "")?;
     writeln!(file, "    // Utility functions")?;
-    writeln!(file, "    functions.insert(\"print\", Box::new(crate::turbulance::stdlib::utils::print));")?;
-    writeln!(file, "    functions.insert(\"len\", Box::new(crate::turbulance::stdlib::utils::len));")?;
-    writeln!(file, "    functions.insert(\"typeof\", Box::new(crate::turbulance::stdlib::utils::typeof_fn));")?;
+    writeln!(file, "    functions.insert(\"print\", Box::new(crate::turbulance::stdlib::utils::print as StdlibFnType));")?;
+    writeln!(file, "    functions.insert(\"len\", Box::new(crate::turbulance::stdlib::utils::len as StdlibFnType));")?;
+    writeln!(file, "    functions.insert(\"typeof\", Box::new(crate::turbulance::stdlib::utils::typeof_fn as StdlibFnType));")?;
     
     writeln!(file, "")?;
     writeln!(file, "    functions")?;
