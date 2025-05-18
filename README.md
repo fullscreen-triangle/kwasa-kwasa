@@ -51,6 +51,7 @@ Kwasa-Kwasa is a specialized framework designed for writers who need programmati
   - [Metacognitive Orchestration](#metacognitive-orchestration)
   - [Proposition and Motion System](#proposition-and-motion-system)
   - [Text Unit System](#text-unit-system)
+  - [Hybrid Imperative-Logical-Fuzzy Programming](#hybrid-imperative-logical-fuzzy-programming)
 - [System Architecture](#system-architecture)
   - [Core Components](#core-components)
   - [Domain Extensions](#domain-extensions)
@@ -391,39 +392,116 @@ section("Introduction") |>
     ensure_consistency(with="conclusion")
 ```
 
+### Hybrid Imperative-Logical-Fuzzy Programming
+
+Kwasa-kwasa extends beyond traditional imperative programming with a powerful hybrid paradigm that incorporates logical programming and fuzzy logic capabilities.
+
+#### Logical Programming Engine
+
+The logical programming engine adds declarative rule-based reasoning to the framework:
+
+```turbulance
+// Fact declaration
+fact gene("BRCA1").
+fact protein("p220").
+fact codes_for("BRCA1", "p220").
+
+// Rule declaration
+rule gene_produces_protein(Gene, Protein) :-
+    gene(Gene),
+    protein(Protein),
+    codes_for(Gene, Protein).
+
+// Query with variables
+query all Protein where gene_produces_protein("BRCA1", Protein)
+
+// Pattern unification
+unify sequence("ATGC") with motif(X)
+```
+
+This logical approach enables:
+- **Declarative Knowledge Representation**: Express domain knowledge as logical rules rather than procedural code
+- **Pattern Matching**: Unify variables across domains via pattern matching
+- **Constraint Satisfaction**: Define and validate constraints across evidence
+- **Non-Monotonic Reasoning**: Handle conflicting evidence and default assumptions
+
+#### Fuzzy Logic System
+
+The fuzzy logic engine provides facilities for representing and reasoning with uncertainty:
+
+```turbulance
+// Define linguistic variables
+fuzzy_variable gene_expression_level(0.0, 100.0) {
+    term low: triangular(0, 0, 30)
+    term moderate: triangular(20, 50, 80)
+    term high: triangular(70, 100, 100)
+}
+
+// Define fuzzy rules
+fuzzy_rule gene_expression_rule {
+    if gene_expression_level is low then protein_abundance is low with 0.9
+}
+
+// Using hedges
+fuzzy_rule with_hedges {
+    if gene_expression_level is very high and protein_abundance is somewhat low
+    then regulation_status is extremely abnormal with 0.7
+}
+```
+
+The fuzzy logic system enables:
+- **Uncertainty Management**: Represent and reason with degrees of belief and fuzzy concepts
+- **Linguistic Variables**: Define complex concepts using natural language terms
+- **Fuzzy Inference**: Draw conclusions from imprecise evidence
+- **Belief Propagation**: Propagate certainty levels through evidence networks
+
+#### Advanced Concepts
+
+The hybrid system introduces several advanced concepts:
+
+1. **Fuzzy Units and Structural Boundaries**: Represents text units with fuzzy boundaries, acknowledging that meaning can span traditional structural boundaries with different degrees of membership.
+
+2. **Contextual Meaning and Interpretation**: Words and concepts carry different meanings in different contexts, and the system models this through context-specific interpretations.
+
+3. **Dreaming Module**: Uses downtime to explore scenarios and develop new rules autonomously, enabling continuous learning and knowledge discovery.
+
+4. **Computational Distribution**: Optimizes performance through intelligent distribution of tasks across different computation types (numerical, logical, fuzzy, pattern matching).
+
+5. **Fuzzy Data Structures**: All data structures can be represented with fuzzy characteristics, including fuzzy containers, maps, graphs, and trees.
+
 ## System Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                      KWASA-KWASA FRAMEWORK                   │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│  ┌─────────────────┐      ┌──────────────────────────┐     │
-│  │                 │      │                          │     │
-│  │   Turbulance    │◄────►│  Metacognitive           │     │
-│  │   Language      │      │  Orchestrator            │     │
-│  │   Engine        │      │                          │     │
-│  │                 │      │                          │     │
-│  └────────┬────────┘      └──────────┬───────────────┘     │
-│           │                          │                      │
-│           ▼                          ▼                      │
-│  ┌─────────────────┐      ┌──────────────────────────┐     │
-│  │                 │      │                          │     │
-│  │   Text Unit     │      │  Knowledge               │     │
-│  │   Processor     │◄────►│  Integration             │     │
-│  │                 │      │  Engine                  │     │
-│  │                 │      │                          │     │
-│  └────────┬────────┘      └──────────────────────────┘     │
-│           │                                                 │
-│           ▼                                                 │
-│  ┌─────────────────────────────────────────────────────┐   │
-│  │                 Domain Extensions                    │   │
-│  ├─────────────────┬─────────────────┬─────────────────┤   │
-│  │    Genomic      │   Spectrometry  │    Chemistry     │   │
-│  │    Analysis     │    Analysis     │    Analysis      │   │
-│  └─────────────────┴─────────────────┴─────────────────┘   │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────┐
+│                KWASA-KWASA HYBRID PROGRAMMING FRAMEWORK                 │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  ┌───────────────────┐                ┌───────────────────────────┐     │
+│  │  Imperative       │                │  Logical & Fuzzy Engine   │     │
+│  │  Execution Engine │◄──────────────►│  ┌─────────┐ ┌─────────┐  │     │
+│  │  (Turbulance)     │                │  │ Logical │ │ Fuzzy   │  │     │
+│  └─────────┬─────────┘                │  │ Core    │ │ Core    │  │     │
+│            │                          │  └─────────┘ └─────────┘  │     │
+│            │                          └───────────┬───────────────┘     │
+│            │                                      │                     │
+│            ▼                                      ▼                     │
+│  ┌─────────────────────────────────────────────────────────────────┐   │
+│  │                 Hybrid Reasoning System                          │   │
+│  │  ┌────────────────┐ ┌───────────────┐ ┌────────────────────┐    │   │
+│  │  │ Evidence       │ │ Rule-Based    │ │ Uncertainty        │    │   │
+│  │  │ Network        │ │ Inference     │ │ Management         │    │   │
+│  │  └────────────────┘ └───────────────┘ └────────────────────┘    │   │
+│  └──────────────────────────────┬──────────────────────────────────┘   │
+│                                 │                                       │
+│                                 ▼                                       │
+│  ┌─────────────────────────────────────────────────────────────────┐   │
+│  │                   Domain-Specific Extensions                     │   │
+│  ├─────────────┬───────────────┬──────────────┬───────────────┬────┤   │
+│  │ Genomic     │ Spectrometry  │ Chemistry    │ Text          │    │   │
+│  │ Analysis    │ Analysis      │ Analysis     │ Analysis      │    │   │
+│  └─────────────┴───────────────┴──────────────┴───────────────┴────┘   │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Core Components
@@ -458,177 +536,68 @@ section("Introduction") |>
    - Cheminformatics for molecular structure processing
    - Pattern-based meaning extraction across domains
 
-## Domain Extensions
+6. **Logical Programming Engine**
+   - Parser for logical facts and rules
+   - Unification and pattern matching system
+   - Query solver and inference engine
+   - Integration with evidence network
+
+7. **Fuzzy Logic Engine**
+   - Linguistic variable framework
+   - Membership function implementations
+   - Fuzzy inference algorithms
+   - Defuzzification methods
+
+8. **Hybrid Reasoning System**
+   - Combined reasoning across paradigms
+   - Domain bridges for different data types
+   - Unified query interface
+   - Conflict detection and resolution
+
+### Domain Extensions
 
 Kwasa-Kwasa's core philosophy of arbitrarily defined boundaries and semantic unit manipulation extends beyond traditional text processing to other domains, allowing you to work with diverse data types using the same powerful abstractions.
 
-### EvidenceNetwork Data Structure
+#### Hybrid Evidence Analysis
 
-At the heart of Kwasa-Kwasa's cross-domain integration capabilities is the **EvidenceNetwork** - a Bayesian-based framework for representing and reconciling conflicting evidence with quantified uncertainty:
-
-```turbulance
-import evidence
-
-// Build an evidence network connecting genomic and spectrometry data
-var network = evidence.EvidenceNetwork.new()
-
-// Add nodes from different domains
-network.add_node("genome_1", genomic_sequence, 0.85)  // High confidence
-network.add_node("spectrum_1", mass_spectrum, 0.70)   // Medium confidence
-
-// Create relationships between evidence with uncertainty quantification
-network.add_edge("genome_1", "spectrum_1", "supports", 0.8, 0.1)  // Strong support, low uncertainty
-
-// Propagate beliefs through the network
-network.propagate_beliefs()
-
-// Analyze conflicts in evidence
-var conflicts = network.identify_conflicts()
-
-// Find critical evidence for a conclusion
-var critical = network.sensitivity_analysis("conclusion_1")
-```
-
-The EvidenceNetwork enables:
-- **Uncertainty Representation**: Explicit quantification of belief and uncertainty
-- **Cross-Domain Reconciliation**: Integration of evidence from different scientific domains
-- **Belief Propagation**: Bayesian-inspired propagation of beliefs through connected evidence
-- **Conflict Detection**: Identification of contradictory evidence
-- **Sensitivity Analysis**: Determination of which evidence most impacts a conclusion
-
-### High-Throughput Genomic Analysis
-
-Process and analyze DNA and RNA sequences with parallel processing capabilities:
-
-```turbulance
-import genomic.high_throughput as ht_genomic
-
-// Create a DNA sequence
-var dna = genomic.NucleotideSequence.new("ATGCTAGCTAGCTAGCTA", "gene_123")
-
-// Find motifs using parallel processing
-var motifs_to_find = [motif1, motif2, motif3]
-var motif_results = ht_genomic.find_motifs_parallel(dna, motifs_to_find, 0.7)
-
-// Perform parallel multiple sequence alignment
-var aligned_sequences = ht_genomic.align_sequences_parallel([seq1, seq2, seq3], 0.5)
-
-// Fast k-mer counting with multithreaded processing
-var kmer_counts = ht_genomic.count_kmers_parallel(dna, 6)
-
-// High-throughput SNP detection
-var snps = ht_genomic.detect_snps_parallel(sample, reference)
-
-// Efficient sequence compression (2-bit encoding)
-var compressor = ht_genomic.SequenceCompressor.new()
-var compressed = compressor.compress(dna)
-```
-
-### High-Throughput Mass Spectrometry
-
-Work with spectral data using parallel processing for complex analyses:
-
-```turbulance
-import spectrometry.high_throughput as ht_spec
-
-// Create a mass spectrum
-var spectrum = spectrometry.MassSpectrum.from_numeric_data(mz_values, intensities, "sample")
-
-// Process multiple spectra in parallel
-var processed_spectra = ht_spec.process_spectra_parallel(spectra, normalize_spectrum)
-
-// Find peaks across multiple spectra simultaneously
-var all_peaks = ht_spec.find_peaks_parallel(spectra, 500.0, 3.0)
-
-// Extract chromatograms for multiple m/z values in parallel
-var chromatograms = ht_spec.extract_chromatograms_parallel(spectra, [150.5, 245.3, 360.2], 0.1)
-
-// Parallel deconvolution of spectra
-var deconvoluted = ht_spec.deconvolute_spectra_parallel(spectra)
-
-// Detect features across multiple LC-MS runs
-var features = ht_spec.detect_features_parallel(runs, 0.01, 0.5)
-
-// Align multiple spectra to a reference
-var aligned = ht_spec.align_spectra_parallel(spectra, reference, 0.05)
-```
-
-### Evidence Integration
-
-Connect and analyze evidence across domains:
+The hybrid system enables advanced evidence integration and analysis across domains:
 
 ```turbulance
 import evidence
+import logic
+import fuzzy
+import hybrid
 
-// Create integration instance
-var integrator = evidence.EvidenceIntegration.new()
+// Create hybrid reasoning system
+var hybrid_system = hybrid.HybridReasoningSystem.new()
 
-// Build network from genomic and spectrometry data
-var network = integrator.build_network(genomic_sequences, spectra, 0.6)
+// Define logical rules
+hybrid_system.add_logical_rules([
+    "protein_coding_gene(Gene) :- gene(Gene), has_exon(Gene, _)",
+    "protein_present(Gene, Sample) :- protein_coding_gene(Gene), peptide_detected(Sample, Peptide), derives_from(Peptide, Gene)",
+    "protein_absent(Gene, Sample) :- protein_coding_gene(Gene), not protein_present(Gene, Sample)"
+])
 
-// Analyze conflicting evidence
-var conflicts = integrator.analyze_conflicts(network)
-for conflict in conflicts:
-    print("Conflict between {} and {} (strength: {})".format(
-        conflict.source_id, conflict.target_id, conflict.conflict_strength))
+// Define fuzzy variables
+hybrid_system.add_fuzzy_variable(fuzzy_variable gene_expression(0.0, 100.0) {
+    term low: trapezoidal(0, 0, 20, 40)
+    term medium: triangular(30, 50, 70)
+    term high: trapezoidal(60, 80, 100, 100)
+})
 
-// Identify critical evidence for a conclusion
-var critical = integrator.identify_critical_evidence(network, "genomic_1")
-for evidence in critical:
-    print("Critical evidence: {} (impact: {})".format(
-        evidence.node_id, evidence.impact))
+// Define fuzzy rules
+hybrid_system.add_fuzzy_rule("if gene_expression is high and protein_present is true " +
+                           "then evidence_consistency is supporting")
 
-// Export network for visualization
-var graph = integrator.export_graph(network)
+// Apply hybrid reasoning
+hybrid_system.apply_logical_rules()
+hybrid_system.apply_fuzzy_rules()
+
+// Find contradictions in the evidence
+var contradictions = hybrid_system.query(
+    "gene(Gene), fuzzy_belief(Gene, 'evidence_consistency', 'contradictory', Degree), Degree > 0.7"
+)
 ```
-
-### Cross-Domain Analysis Example
-
-This example demonstrates the integration of genomic sequences and mass spectrometry data:
-
-```turbulance
-funxn analyze_protein_evidence(gene_sequence, mass_spectrum):
-    // Extract protein sequence from gene
-    var protein = gene_sequence.translate()
-    
-    // Generate theoretical peptide fragments
-    var fragments = protein.digest("trypsin")
-    
-    // Compare theoretical fragments with observed spectrum
-    var matches = ht_spec.match_peptides(fragments, mass_spectrum, 0.01)
-    
-    // Build evidence network
-    var network = evidence.EvidenceNetwork.new()
-    network.add_node("gene", gene_sequence, 0.8)
-    network.add_node("spectrum", mass_spectrum, 0.7)
-    
-    // Add evidence relationships based on peptide matches
-    for match in matches:
-        network.add_node(
-            "peptide_" + match.id,
-            match.peptide,
-            match.score
-        )
-        network.add_edge("gene", "peptide_" + match.id, "produces", match.score, 0.1)
-        network.add_edge("peptide_" + match.id, "spectrum", "explains", match.score, 0.2)
-    
-    // Analyze evidence
-    network.propagate_beliefs()
-    return network
-```
-
-### Feature Highlights
-
-All domain extensions maintain the core features of Kwasa-Kwasa, with enhanced capabilities:
-
-1. **High-Performance Parallel Processing**: Leverage multi-core CPUs for scientific data analysis
-2. **Cross-Domain Integration**: Connect evidence and insights across different scientific domains
-3. **Uncertainty Quantification**: Explicitly model and propagate uncertainty in analyses
-4. **Mathematical Operators**: The same mathematical operators (/, *, +, -) work consistently across all domains
-5. **Boundary Flexibility**: Define boundaries at any level of granularity, from nucleotides to genes
-6. **Evidence-Based Analysis**: Build, visualize, and analyze networks of scientific evidence
-
-These extensions demonstrate Kwasa-Kwasa's philosophy that meaning can be extracted from the mechanical arrangement of symbols, regardless of their conventional semantic content or domain origin, while adding robust support for high-throughput scientific analyses.
 
 ## Using Kwasa-Kwasa
 
@@ -744,85 +713,68 @@ Kwasa-Kwasa is built with modern, high-performance technologies:
 
 ## Real-World Use Cases
 
-### Genomic Sequence Analysis
+### Genomic Sequence Analysis with Logical Rules
 
 ```turbulance
-project genome_analysis(title="Antimicrobial Resistance Prediction Model"):
-    require datasets = ["training_sequences.fasta", "test_sequences.fasta",
-                        "resistance_phenotypes.csv"]
-    
-    // Set up high-throughput processing
-    setup ht_genomics = genomic.high_throughput.HighThroughputGenomics.new()
-    
-    within dataset("training_sequences"):
-        // Find resistance-associated motifs in parallel
-        motifs = ht_genomics.find_motifs_parallel(sequences, known_markers, 0.7)
-        
-        // Count k-mers efficiently for machine learning features
-        kmer_features = ht_genomics.count_kmers_parallel(sequences, 6)
-        
-        // Build evidence network connecting sequences to phenotypes
-        network = evidence.build_network(sequences, phenotypes, 0.6)
-    
-    before model_training:
-        validate_feature_significance(motifs, kmer_features)
-        ensure cross_validation(k=5, metric="accuracy")
+import genomic.high_throughput as ht_genomic
+import logic.genomic
+
+// Set up logic for genomic analysis
+var rule_base = logic.RuleBase.new()
+
+// Add genomic rules
+rule_base.add_rule("functional_region(Gene, Start, End) :- " +
+                  "gene(Gene), " +
+                  "contains_motif(Gene, 'TATA', Position), " +
+                  "Start is Position - 30, " +
+                  "End is Position + 5, " +
+                  "gc_content_in_range(Gene, Start, End, Content), " +
+                  "Content < 0.4.")
+
+// Apply rules to derive new knowledge
+rule_base.apply_rules()
+
+// Query for functional regions
+var regions = rule_base.query("functional_region(Gene, Start, End)")
 ```
 
-### Mass Spectrometry Integration
+### Mass Spectrometry Analysis with Fuzzy Logic
 
 ```turbulance
-project metabolomics(title="Multi-Omics Cancer Biomarker Discovery"):
-    require datasets = ["patient_spectra/*.mzXML", "genomics/*.vcf", 
-                       "clinical_data.csv"]
+import spectrometry.high_throughput as ht_spec
+import fuzzy.spectrometry
+
+// Create fuzzy logic engine
+var fuzzy_engine = fuzzy.FuzzyLogicEngine.new()
+
+// Define fuzzy rules
+fuzzy_engine.add_rule("if peak_intensity is strong and mass_accuracy is high " +
+                      "then peptide_identification is high")
+
+// Process spectra
+var results = ht_spec.process_spectra_parallel(spectra, (spectrum) => {
+    // Find peaks
+    var peaks = ht_spec.find_peaks_parallel([spectrum], 500.0, 3.0)[0]
     
-    // Set up high-throughput processing
-    setup ht_spec = spectrometry.high_throughput.HighThroughputSpectrometry.new()
+    // Apply fuzzy inference
+    var result = fuzzy_engine.infer({
+        "peak_intensity": fuzzy_engine.fuzzify("peak_intensity", norm_intensity),
+        "mass_accuracy": fuzzy_engine.fuzzify("mass_accuracy", mass_accuracy)
+    })
     
-    within dataset("patient_spectra"):
-        // Extract features across all LC-MS runs
-        features = ht_spec.detect_features_parallel(runs, 0.01, 0.2)
-        
-        // Connect to genomic variants
-        var evidence_network = evidence.EvidenceIntegration.new()
-        network = evidence_network.build_network(variants, features, 0.65)
-        
-        // Identify biomarker candidates
-        candidates = network.sensitivity_analysis("cancer_phenotype")
+    // Get peptide identification confidence
+    var confidence = result["peptide_identification"]
     
-    before biomarker_selection:
-        verify false_discovery_rate(candidates, 0.05)
-        ensure biological_pathway_enrichment(candidates)
+    // Use confidence levels for decision-making
+    if confidence["high"] > 0.7 {
+        // Accept identification with high confidence
+    }
+})
 ```
 
-### Scientific Evidence Integration
+### Hybrid Evidence Analysis
 
-```turbulance
-project drug_discovery(title="Multi-Modal Evidence for Target Validation"):
-    setup evidence_integration = evidence.EvidenceIntegration.new()
-    
-    // Collect evidence from multiple sources
-    genomic_evidence = collect_genomic_data("target_gene")
-    proteomic_evidence = collect_ms_data("target_protein")
-    literature_evidence = collect_publications("target_mechanism")
-    
-    // Build integrated evidence network
-    network = evidence_integration.build_network(
-        genomic_evidence, 
-        proteomic_evidence,
-        0.7
-    )
-    
-    // Analyze conflicts in evidence
-    conflicts = evidence_integration.analyze_conflicts(network)
-    
-    // Identify critical evidence for conclusions
-    critical = evidence_integration.identify_critical_evidence(network, "target_efficacy")
-    
-    before target_selection:
-        verify evidence_likelihood(network, "efficacy_hypothesis") > 0.8
-        ensure no_unresolved_conflicts(conflicts)
-```
+// ... existing content about evidence analysis...
 
 ## Contributing
 
