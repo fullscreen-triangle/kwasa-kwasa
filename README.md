@@ -144,6 +144,17 @@ typeof(value)                               // Returns type information
 - `positional_entropy(text, unit="paragraph")`: Measures information distribution across structural units
 - `contextual_uniqueness(text, sequence)`: Evaluates how distinctive a sequence is in different contexts
 
+#### Cross-Domain Statistical Analysis
+- `motif_enrichment(genomic_sequence, motif)`: Calculates statistical enrichment of genomic motifs
+- `spectral_correlation(spectrum1, spectrum2)`: Computes correlation between mass spectral patterns
+- `evidence_likelihood(evidence_network, hypothesis)`: Calculates probability of hypothesis given evidence
+- `uncertainty_propagation(evidence_network, node_id)`: Models how uncertainty propagates through evidence
+- `bayesian_update(prior_belief, new_evidence)`: Updates belief based on new evidence using Bayes' theorem
+- `confidence_interval(measurement, confidence_level)`: Calculates confidence intervals for measurements
+- `cross_domain_correlation(genomic_data, spectral_data)`: Finds correlations between multi-domain datasets
+- `false_discovery_rate(matches, null_model)`: Estimates false discovery rate in pattern matching results
+- `permutation_significance(observed, randomized)`: Calculates significance through permutation testing
+
 #### Positional Importance Analysis
 - `positional_importance(text, unit="paragraph")`: Calculates importance score based on position within document
 - `section_weight_map(document)`: Creates heatmap of importance weights across document sections
@@ -247,28 +258,39 @@ if claim.check_sunken_cost_fallacy().has_bias:
 
 #### Specialized Data Structures
 
-The framework introduces data structures specifically for metacognitive text processing:
+The framework introduces data structures specifically for metacognitive text processing and scientific data analysis:
 
 1. **TextGraph**: Represents relationships between text components as a weighted directed graph
 2. **ConceptChain**: Represents sequences of ideas with cause-effect relationships
 3. **IdeaHierarchy**: Organizes ideas in a hierarchical tree structure
 4. **ArgMap**: Creates argumentation maps with claims, evidence, and objections
+5. **EvidenceNetwork**: Implements a Bayesian framework for managing conflicting scientific evidence
 
 ```turbulance
-// Create an argument map
-var argmap = new ArgMap()
-argmap.add_claim("main", Motion("Text analysis should be taught in schools", "claim"))
+// Create an evidence network for scientific analysis
+var network = new EvidenceNetwork()
 
-// Add supporting evidence
-argmap.add_evidence(
-    "main", 
-    "evidence1", 
-    Motion("Improves critical thinking skills", "evidence"),
-    0.8  // Strong evidence
-)
+// Add nodes representing different types of evidence
+network.add_node("genomic_1", EvidenceNode.GenomicFeature {
+    sequence: dna_sequence,
+    position: "chr7:55249071-55249143",
+    motion: Motion("EGFR exon sequence with activating mutation")
+})
 
-// Evaluate claim strength based on evidence and objections
-strength = argmap.evaluate_claim("main")  // Returns a value between 0 and 1
+network.add_node("spectrum_1", EvidenceNode.Spectra {
+    peaks: mass_spec_peaks,
+    retention_time: 15.7,
+    motion: Motion("Mass spectrum showing drug metabolite")
+})
+
+// Add edges representing relationships between evidence
+network.add_edge("genomic_1", "spectrum_1", EdgeType.Supports { strength: 0.85 }, 0.2)
+
+// Propagate beliefs through the network
+network.propagate_beliefs()
+
+// Analyze sensitivity to understand which evidence is most critical
+sensitivity = network.sensitivity_analysis("genomic_1")  // Returns impact scores
 ```
 
 #### Extended Language Syntax
@@ -440,79 +462,173 @@ section("Introduction") |>
 
 Kwasa-Kwasa's core philosophy of arbitrarily defined boundaries and semantic unit manipulation extends beyond traditional text processing to other domains, allowing you to work with diverse data types using the same powerful abstractions.
 
-### Genomic Sequence Analysis
+### EvidenceNetwork Data Structure
 
-Process and analyze DNA and RNA sequences with the same operators used for text:
+At the heart of Kwasa-Kwasa's cross-domain integration capabilities is the **EvidenceNetwork** - a Bayesian-based framework for representing and reconciling conflicting evidence with quantified uncertainty:
 
 ```turbulance
-import genomic
+import evidence
+
+// Build an evidence network connecting genomic and spectrometry data
+var network = evidence.EvidenceNetwork.new()
+
+// Add nodes from different domains
+network.add_node("genome_1", genomic_sequence, 0.85)  // High confidence
+network.add_node("spectrum_1", mass_spectrum, 0.70)   // Medium confidence
+
+// Create relationships between evidence with uncertainty quantification
+network.add_edge("genome_1", "spectrum_1", "supports", 0.8, 0.1)  // Strong support, low uncertainty
+
+// Propagate beliefs through the network
+network.propagate_beliefs()
+
+// Analyze conflicts in evidence
+var conflicts = network.identify_conflicts()
+
+// Find critical evidence for a conclusion
+var critical = network.sensitivity_analysis("conclusion_1")
+```
+
+The EvidenceNetwork enables:
+- **Uncertainty Representation**: Explicit quantification of belief and uncertainty
+- **Cross-Domain Reconciliation**: Integration of evidence from different scientific domains
+- **Belief Propagation**: Bayesian-inspired propagation of beliefs through connected evidence
+- **Conflict Detection**: Identification of contradictory evidence
+- **Sensitivity Analysis**: Determination of which evidence most impacts a conclusion
+
+### High-Throughput Genomic Analysis
+
+Process and analyze DNA and RNA sequences with parallel processing capabilities:
+
+```turbulance
+import genomic.high_throughput as ht_genomic
 
 // Create a DNA sequence
 var dna = genomic.NucleotideSequence.new("ATGCTAGCTAGCTAGCTA", "gene_123")
 
-// Use division to split into different unit types
-var codons = dna / "codon"  // Split into triplets
-var motifs = dna / "GCTA"   // Split by specific pattern
+// Find motifs using parallel processing
+var motifs_to_find = [motif1, motif2, motif3]
+var motif_results = ht_genomic.find_motifs_parallel(dna, motifs_to_find, 0.7)
 
-// Find genes and regulatory regions
-within dna:
-    given contains("ATG"):
-        print("Found start codon at position {}".format(index_of("ATG")))
+// Perform parallel multiple sequence alignment
+var aligned_sequences = ht_genomic.align_sequences_parallel([seq1, seq2, seq3], 0.5)
+
+// Fast k-mer counting with multithreaded processing
+var kmer_counts = ht_genomic.count_kmers_parallel(dna, 6)
+
+// High-throughput SNP detection
+var snps = ht_genomic.detect_snps_parallel(sample, reference)
+
+// Efficient sequence compression (2-bit encoding)
+var compressor = ht_genomic.SequenceCompressor.new()
+var compressed = compressor.compress(dna)
 ```
 
-### Mass Spectrometry Analysis
+### High-Throughput Mass Spectrometry
 
-Work with spectral data from analytical chemistry experiments:
+Work with spectral data using parallel processing for complex analyses:
 
 ```turbulance
-import spectrometry
+import spectrometry.high_throughput as ht_spec
 
-// Create a spectrum from m/z and intensity values
-var mz_values = [100.1, 120.2, 130.3, 145.6, 180.9, 212.4, 258.3]
-var intensities = [1050, 320, 5200, 750, 3500, 12300, 8400]
+// Create a mass spectrum
 var spectrum = spectrometry.MassSpectrum.from_numeric_data(mz_values, intensities, "sample")
 
-// Analyze peaks in a specific range
-var fragments = spectrum.peaks_in_range(200.0, 300.0)
+// Process multiple spectra in parallel
+var processed_spectra = ht_spec.process_spectra_parallel(spectra, normalize_spectrum)
 
-// Division by m/z ranges
-var spectrum_parts = spectrum / "mz_range"
+// Find peaks across multiple spectra simultaneously
+var all_peaks = ht_spec.find_peaks_parallel(spectra, 500.0, 3.0)
 
-// Filter by intensity
-var significant_peaks = spectrum.filter_by_intensity(1000)
+// Extract chromatograms for multiple m/z values in parallel
+var chromatograms = ht_spec.extract_chromatograms_parallel(spectra, [150.5, 245.3, 360.2], 0.1)
+
+// Parallel deconvolution of spectra
+var deconvoluted = ht_spec.deconvolute_spectra_parallel(spectra)
+
+// Detect features across multiple LC-MS runs
+var features = ht_spec.detect_features_parallel(runs, 0.01, 0.5)
+
+// Align multiple spectra to a reference
+var aligned = ht_spec.align_spectra_parallel(spectra, reference, 0.05)
 ```
 
-### Cheminformatics
+### Evidence Integration
 
-Process and analyze molecular structures using SMILES notation:
+Connect and analyze evidence across domains:
 
 ```turbulance
-import chemistry
+import evidence
 
-// Create molecules from SMILES
-var aspirin = chemistry.Molecule.from_smiles("CC(=O)OC1=CC=CC=C1C(=O)O", "aspirin")
+// Create integration instance
+var integrator = evidence.EvidenceIntegration.new()
 
-// Divide molecule by functional groups
-var functional_groups = aspirin / "functional_group"
+// Build network from genomic and spectrometry data
+var network = integrator.build_network(genomic_sequences, spectra, 0.6)
 
-// Simulate a reaction (multiplication operator)
-var reaction_product = ethanol * aspirin
+// Analyze conflicting evidence
+var conflicts = integrator.analyze_conflicts(network)
+for conflict in conflicts:
+    print("Conflict between {} and {} (strength: {})".format(
+        conflict.source_id, conflict.target_id, conflict.conflict_strength))
 
-// Find similar molecules
-var similar_molecules = find_similar(aspirin, molecule_database)
+// Identify critical evidence for a conclusion
+var critical = integrator.identify_critical_evidence(network, "genomic_1")
+for evidence in critical:
+    print("Critical evidence: {} (impact: {})".format(
+        evidence.node_id, evidence.impact))
+
+// Export network for visualization
+var graph = integrator.export_graph(network)
+```
+
+### Cross-Domain Analysis Example
+
+This example demonstrates the integration of genomic sequences and mass spectrometry data:
+
+```turbulance
+funxn analyze_protein_evidence(gene_sequence, mass_spectrum):
+    // Extract protein sequence from gene
+    var protein = gene_sequence.translate()
+    
+    // Generate theoretical peptide fragments
+    var fragments = protein.digest("trypsin")
+    
+    // Compare theoretical fragments with observed spectrum
+    var matches = ht_spec.match_peptides(fragments, mass_spectrum, 0.01)
+    
+    // Build evidence network
+    var network = evidence.EvidenceNetwork.new()
+    network.add_node("gene", gene_sequence, 0.8)
+    network.add_node("spectrum", mass_spectrum, 0.7)
+    
+    // Add evidence relationships based on peptide matches
+    for match in matches:
+        network.add_node(
+            "peptide_" + match.id,
+            match.peptide,
+            match.score
+        )
+        network.add_edge("gene", "peptide_" + match.id, "produces", match.score, 0.1)
+        network.add_edge("peptide_" + match.id, "spectrum", "explains", match.score, 0.2)
+    
+    // Analyze evidence
+    network.propagate_beliefs()
+    return network
 ```
 
 ### Feature Highlights
 
-All domain extensions maintain the core features of Kwasa-Kwasa:
+All domain extensions maintain the core features of Kwasa-Kwasa, with enhanced capabilities:
 
-1. **Mathematical Operators**: The same mathematical operators (/, *, +, -) work consistently across all domains
-2. **Boundary Flexibility**: Define boundaries at any level of granularity
-3. **Propositions and Motions**: Create semantic relationships between domain-specific concepts
-4. **Transformation Pipelines**: Chain operations for complex analysis workflows
-5. **Domain Integration**: Seamlessly work across multiple domains in a single script
+1. **High-Performance Parallel Processing**: Leverage multi-core CPUs for scientific data analysis
+2. **Cross-Domain Integration**: Connect evidence and insights across different scientific domains
+3. **Uncertainty Quantification**: Explicitly model and propagate uncertainty in analyses
+4. **Mathematical Operators**: The same mathematical operators (/, *, +, -) work consistently across all domains
+5. **Boundary Flexibility**: Define boundaries at any level of granularity, from nucleotides to genes
+6. **Evidence-Based Analysis**: Build, visualize, and analyze networks of scientific evidence
 
-These extensions demonstrate Kwasa-Kwasa's philosophy that meaning can be extracted from the mechanical arrangement of symbols, regardless of their conventional semantic content or domain origin.
+These extensions demonstrate Kwasa-Kwasa's philosophy that meaning can be extracted from the mechanical arrangement of symbols, regardless of their conventional semantic content or domain origin, while adding robust support for high-throughput scientific analyses.
 
 ## Using Kwasa-Kwasa
 
@@ -628,49 +744,84 @@ Kwasa-Kwasa is built with modern, high-performance technologies:
 
 ## Real-World Use Cases
 
-### Academic Writing
+### Genomic Sequence Analysis
 
 ```turbulance
-project thesis(title="Quantum Computing Applications in Cryptography"):
-    require sections = ["introduction", "literature_review", "methodology", 
-                       "results", "discussion", "conclusion"]
+project genome_analysis(title="Antimicrobial Resistance Prediction Model"):
+    require datasets = ["training_sequences.fasta", "test_sequences.fasta",
+                        "resistance_phenotypes.csv"]
     
-    for each section:
-        ensure readability_score > 40
-        ensure citation_density appropriate_for(section)
+    // Set up high-throughput processing
+    setup ht_genomics = genomic.high_throughput.HighThroughputGenomics.new()
+    
+    within dataset("training_sequences"):
+        // Find resistance-associated motifs in parallel
+        motifs = ht_genomics.find_motifs_parallel(sequences, known_markers, 0.7)
         
-    within section("methodology"):
-        ensure contains(experiment_details)
-        ensure formula_accuracy()
+        // Count k-mers efficiently for machine learning features
+        kmer_features = ht_genomics.count_kmers_parallel(sequences, 6)
+        
+        // Build evidence network connecting sequences to phenotypes
+        network = evidence.build_network(sequences, phenotypes, 0.6)
+    
+    before model_training:
+        validate_feature_significance(motifs, kmer_features)
+        ensure cross_validation(k=5, metric="accuracy")
 ```
 
-### Technical Documentation
+### Mass Spectrometry Integration
 
 ```turbulance
-project api_docs(api="GraphQL Schema"):
-    for each endpoint:
-        ensure has(description, parameters, return_values, examples)
-        ensure code_samples are_valid()
+project metabolomics(title="Multi-Omics Cancer Biomarker Discovery"):
+    require datasets = ["patient_spectra/*.mzXML", "genomics/*.vcf", 
+                       "clinical_data.csv"]
+    
+    // Set up high-throughput processing
+    setup ht_spec = spectrometry.high_throughput.HighThroughputSpectrometry.new()
+    
+    within dataset("patient_spectra"):
+        // Extract features across all LC-MS runs
+        features = ht_spec.detect_features_parallel(runs, 0.01, 0.2)
         
-    within all_sections:
-        detect jargon()
-        if audience != "expert":
-            provide_explanation()
+        // Connect to genomic variants
+        var evidence_network = evidence.EvidenceIntegration.new()
+        network = evidence_network.build_network(variants, features, 0.65)
+        
+        // Identify biomarker candidates
+        candidates = network.sensitivity_analysis("cancer_phenotype")
+    
+    before biomarker_selection:
+        verify false_discovery_rate(candidates, 0.05)
+        ensure biological_pathway_enrichment(candidates)
 ```
 
-### Research-Intensive Writing
+### Scientific Evidence Integration
 
 ```turbulance
-project research_article(topic="Aerodynamics"):
-    setup knowledge_base from ["aviation", "aerodynamics", "physics"]
+project drug_discovery(title="Multi-Modal Evidence for Target Validation"):
+    setup evidence_integration = evidence.EvidenceIntegration.new()
     
-    within section("introduction"):
-        research context(topic)
-        ensure historical_context(topic)
+    // Collect evidence from multiple sources
+    genomic_evidence = collect_genomic_data("target_gene")
+    proteomic_evidence = collect_ms_data("target_protein")
+    literature_evidence = collect_publications("target_mechanism")
     
-    before completion:
-        verify technical_accuracy()
-        ensure all_claims are_supported()
+    // Build integrated evidence network
+    network = evidence_integration.build_network(
+        genomic_evidence, 
+        proteomic_evidence,
+        0.7
+    )
+    
+    // Analyze conflicts in evidence
+    conflicts = evidence_integration.analyze_conflicts(network)
+    
+    // Identify critical evidence for conclusions
+    critical = evidence_integration.identify_critical_evidence(network, "target_efficacy")
+    
+    before target_selection:
+        verify evidence_likelihood(network, "efficacy_hypothesis") > 0.8
+        ensure no_unresolved_conflicts(conflicts)
 ```
 
 ## Contributing
