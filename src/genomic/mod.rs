@@ -6,11 +6,18 @@
 use std::fmt::Debug;
 use std::{collections::HashMap, marker::PhantomData};
 
+// Add the high-throughput module
+pub mod high_throughput;
+
 /// Re-exports from this module
 pub mod prelude {
     pub use super::{
         NucleotideSequence, CodonUnit, GeneUnit, MotifUnit, ExonUnit, IntronUnit,
         GenomicBoundaryDetector, GenomicOperations,
+        // Add exports for high-throughput components
+        high_throughput::{
+            HighThroughputGenomics, SequenceCompressor, CompressedSequence
+        },
     };
 }
 
@@ -226,6 +233,16 @@ impl NucleotideSequence {
         
         result
     }
+    
+    /// Set metadata for this sequence
+    pub fn set_metadata(&mut self, metadata: GenomicMetadata) {
+        self.metadata = metadata;
+    }
+    
+    /// Get metadata for this sequence
+    pub fn metadata(&self) -> &GenomicMetadata {
+        &self.metadata
+    }
 }
 
 impl Unit for NucleotideSequence {
@@ -335,6 +352,19 @@ pub struct MotifUnit {
     name: Option<String>,
     /// Position weight matrix
     pwm: Option<Vec<[f64; 4]>>,
+}
+
+impl MotifUnit {
+    /// Create a new motif unit from a nucleotide sequence
+    pub fn new(sequence: NucleotideSequence) -> Self {
+        Self {
+            content: sequence.content().to_vec(),
+            metadata: sequence.metadata().clone(),
+            id: sequence.id().clone(),
+            name: None,
+            pwm: None,
+        }
+    }
 }
 
 impl Unit for MotifUnit {

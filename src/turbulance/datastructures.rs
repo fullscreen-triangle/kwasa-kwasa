@@ -316,4 +316,305 @@ impl ArgMap {
         // Normalize to 0.0-1.0 range
         strength.max(0.0).min(1.0)
     }
+}
+
+/// EvidenceNetwork implements a Bayesian-based framework for representing 
+/// conflicting evidence with quantified uncertainty
+pub struct EvidenceNetwork {
+    /// Evidence nodes in the network
+    nodes: HashMap<String, EvidenceNode>,
+    
+    /// Adjacency list of relationships
+    adjacency: HashMap<String, Vec<(String, EdgeType, f64)>>,
+    
+    /// Belief values for nodes
+    beliefs: HashMap<String, f64>,
+    
+    /// Uncertainty metrics for evidence propagation
+    uncertainty: UncertaintyQuantifier,
+}
+
+/// Types of evidence nodes
+#[derive(Debug, Clone)]
+pub enum EvidenceNode {
+    Molecule { 
+        structure: String, 
+        formula: String,
+        motion: Motion 
+    },
+    Spectra { 
+        peaks: Vec<(f64, f64)>, 
+        retention_time: f64,
+        motion: Motion 
+    },
+    GenomicFeature { 
+        sequence: Vec<u8>, 
+        position: Option<String>,
+        motion: Motion 
+    },
+    Evidence { 
+        source: String, 
+        timestamp: String,
+        motion: Motion 
+    },
+}
+
+/// Types of edges in the evidence network
+#[derive(Debug, Clone)]
+pub enum EdgeType {
+    Supports { strength: f64 },
+    Contradicts { strength: f64 },
+    PartOf,
+    Catalyzes { rate: f64 },
+    Transforms,
+    BindsTo { affinity: f64 },
+}
+
+/// Quantifier for uncertainty in evidence relationships
+#[derive(Debug, Clone)]
+pub struct UncertaintyQuantifier {
+    /// Global uncertainty parameters
+    pub global_params: HashMap<String, f64>,
+    /// Node-specific uncertainty
+    pub node_uncertainty: HashMap<String, f64>,
+    /// Edge-specific uncertainty
+    pub edge_uncertainty: HashMap<(String, String), f64>,
+}
+
+impl EvidenceNetwork {
+    /// Create a new evidence network
+    pub fn new() -> Self {
+        Self {
+            nodes: HashMap::new(),
+            adjacency: HashMap::new(),
+            beliefs: HashMap::new(),
+            uncertainty: UncertaintyQuantifier {
+                global_params: HashMap::new(),
+                node_uncertainty: HashMap::new(),
+                edge_uncertainty: HashMap::new(),
+            },
+        }
+    }
+    
+    /// Add a node to the network
+    pub fn add_node(&mut self, id: &str, node: EvidenceNode) {
+        self.nodes.insert(id.to_string(), node);
+        
+        // Initialize empty adjacency list
+        if !self.adjacency.contains_key(id) {
+            self.adjacency.insert(id.to_string(), Vec::new());
+        }
+        
+        // Set default belief value
+        self.beliefs.insert(id.to_string(), 0.5); // Neutral belief by default
+    }
+    
+    /// Add an edge between nodes
+    pub fn add_edge(&mut self, from: &str, to: &str, edge_type: EdgeType, uncertainty: f64) {
+        if let Some(edges) = self.adjacency.get_mut(from) {
+            edges.push((to.to_string(), edge_type, uncertainty));
+        }
+    }
+    
+    /// Set belief value for a node
+    pub fn set_belief(&mut self, id: &str, belief: f64) {
+        // Ensure belief is between 0 and 1
+        let belief = belief.max(0.0).min(1.0);
+        self.beliefs.insert(id.to_string(), belief);
+    }
+    
+    /// Get belief value for a node
+    pub fn get_belief(&self, id: &str) -> Option<f64> {
+        self.beliefs.get(id).copied()
+    }
+    
+    /// Get a node by id
+    pub fn get_node(&self, id: &str) -> Option<&EvidenceNode> {
+        self.nodes.get(id)
+    }
+    
+    /// Get all edges from a node
+    pub fn get_edges(&self, id: &str) -> Vec<(&str, &EdgeType, f64)> {
+        self.adjacency.get(id)
+            .map(|edges| {
+                edges.iter()
+                    .map(|(to, edge_type, uncertainty)| 
+                        (to.as_str(), edge_type, *uncertainty))
+                    .collect()
+            })
+            .unwrap_or_default()
+    }
+    
+    /// Propagate belief changes through the network using Bayesian rules
+    pub fn propagate_beliefs(&mut self) {
+        // Store the original beliefs to avoid order-dependent updates
+        let original_beliefs = self.beliefs.clone();
+        
+        // For each node
+        for (id, _) in &self.nodes {
+            // Get the current belief
+            let current_belief = *original_beliefs.get(id).unwrap_or(&0.5);
+            
+            // Get all nodes that influence this node
+            for (from, edges) in &self.adjacency {
+                for (to, edge_type, uncertainty) in edges {
+                    if to != id {
+                        continue;
+                    }
+                    
+                    let from_belief = *original_beliefs.get(from).unwrap_or(&0.5);
+                    
+                    // Update belief based on edge type
+                    let new_belief = match edge_type {
+                        EdgeType::Supports { strength } => {
+                            // Supporting evidence increases belief (weighted by strength and uncertainty)
+                            let impact = from_belief * strength * (1.0 - uncertainty);
+                            // Combine using a Bayesian-inspired approach
+                            (current_belief + impact) / (1.0 + impact)
+                        },
+                        EdgeType::Contradicts { strength } => {
+                            // Contradicting evidence decreases belief (weighted by strength and uncertainty)
+                            let impact = (1.0 - from_belief) * strength * (1.0 - uncertainty);
+                            // Combine using a Bayesian-inspired approach
+                            (current_belief - impact).max(0.0)
+                        },
+                        EdgeType::PartOf => {
+                            // Part-of relationship transfers belief
+                            // If the parent is believed, the part is more likely to be correct
+                            (current_belief + from_belief) / 2.0
+                        },
+                        EdgeType::Catalyzes { rate } => {
+                            // Catalysis slightly increases belief based on rate
+                            current_belief + (0.1 * rate * from_belief * (1.0 - uncertainty))
+                        },
+                        EdgeType::Transforms => {
+                            // Transformation has complex impact on belief
+                            // If A transforms into B, and A is likely, B is more likely
+                            (current_belief + 0.3 * from_belief) / 1.3
+                        },
+                        EdgeType::BindsTo { affinity } => {
+                            // Binding increases correlation between beliefs
+                            (current_belief + affinity * from_belief) / (1.0 + affinity)
+                        },
+                    };
+                    
+                    // Update the belief
+                    self.beliefs.insert(id.to_string(), new_belief);
+                }
+            }
+        }
+    }
+    
+    /// Calculate uncertainty bounds for a given node
+    pub fn calculate_uncertainty_bounds(&self, id: &str) -> Option<(f64, f64)> {
+        let belief = *self.beliefs.get(id)?;
+        
+        // Get node-specific uncertainty
+        let node_uncertainty = self.uncertainty.node_uncertainty.get(id).copied().unwrap_or(0.1);
+        
+        // Calculate bounds
+        let lower_bound = (belief - node_uncertainty).max(0.0);
+        let upper_bound = (belief + node_uncertainty).min(1.0);
+        
+        Some((lower_bound, upper_bound))
+    }
+    
+    /// Identify conflicting evidence
+    pub fn identify_conflicts(&self) -> Vec<(String, String, f64)> {
+        let mut conflicts = Vec::new();
+        
+        // For each node
+        for (id, _) in &self.nodes {
+            // Get edges that contradict this node
+            for (from, edges) in &self.adjacency {
+                for (to, edge_type, uncertainty) in edges {
+                    if to != id {
+                        continue;
+                    }
+                    
+                    if let EdgeType::Contradicts { strength } = edge_type {
+                        conflicts.push((from.clone(), id.clone(), *strength));
+                    }
+                }
+            }
+        }
+        
+        conflicts
+    }
+    
+    /// Find the critical nodes that most impact a given conclusion
+    pub fn sensitivity_analysis(&self, target_id: &str) -> Vec<(String, f64)> {
+        let mut sensitivities = Vec::new();
+        
+        // For each node, calculate how much it impacts the target belief
+        for (id, _) in &self.nodes {
+            if id == target_id {
+                continue;
+            }
+            
+            // Simple approximation of sensitivity
+            let mut impact = 0.0;
+            
+            // Direct impact through edges
+            for (to, edge_type, uncertainty) in self.get_edges(id) {
+                if to == target_id {
+                    match edge_type {
+                        EdgeType::Supports { strength } => impact += strength * (1.0 - uncertainty),
+                        EdgeType::Contradicts { strength } => impact += strength * (1.0 - uncertainty),
+                        _ => impact += 0.1, // Small impact for other edge types
+                    }
+                }
+            }
+            
+            // Indirect impact (simplified)
+            for (mid_id, _) in &self.nodes {
+                if mid_id == id || mid_id == target_id {
+                    continue;
+                }
+                
+                // Check for paths: id -> mid_id -> target_id
+                let has_first_edge = self.adjacency.get(id)
+                    .map(|edges| edges.iter().any(|(to, _, _)| to == mid_id))
+                    .unwrap_or(false);
+                    
+                let has_second_edge = self.adjacency.get(mid_id)
+                    .map(|edges| edges.iter().any(|(to, _, _)| to == target_id))
+                    .unwrap_or(false);
+                    
+                if has_first_edge && has_second_edge {
+                    impact += 0.05; // Small indirect impact
+                }
+            }
+            
+            if impact > 0.0 {
+                sensitivities.push((id.clone(), impact));
+            }
+        }
+        
+        // Sort by impact (highest first)
+        sensitivities.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap_or(std::cmp::Ordering::Equal));
+        
+        sensitivities
+    }
+    
+    /// Get all nodes in the network
+    pub fn nodes(&self) -> &HashMap<String, EvidenceNode> {
+        &self.nodes
+    }
+    
+    /// Get all edges in the network
+    pub fn edges(&self) -> HashMap<&str, Vec<(&str, &EdgeType, f64)>> {
+        let mut result = HashMap::new();
+        
+        for (source, edges) in &self.adjacency {
+            let mapped_edges: Vec<(&str, &EdgeType, f64)> = edges.iter()
+                .map(|(target, edge_type, uncertainty)| 
+                    (target.as_str(), edge_type, *uncertainty))
+                .collect();
+            
+            result.insert(source.as_str(), mapped_edges);
+        }
+        
+        result
+    }
 } 

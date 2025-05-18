@@ -6,10 +6,17 @@
 use std::fmt::Debug;
 use std::{collections::HashMap, marker::PhantomData};
 
+// Add the high-throughput module
+pub mod high_throughput;
+
 /// Re-exports from this module
 pub mod prelude {
     pub use super::{
         MassSpectrum, Peak, SpectrumMetadata, SpectrumBoundaryDetector, SpectrumOperations,
+        // Add exports for high-throughput components
+        high_throughput::{
+            HighThroughputSpectrometry, DeconvolutedPeak, Feature, AlignedSpectrum, AlignedPeak
+        },
     };
 }
 
@@ -298,6 +305,21 @@ impl MassSpectrum {
             metadata: self.metadata.clone(),
             id: UnitId::new(format!("{}_{}_to_{}", self.id.0, min_mz, max_mz)),
         }
+    }
+    
+    /// Set metadata for this spectrum
+    pub fn set_metadata(&mut self, metadata: SpectrumMetadata) {
+        self.metadata = metadata;
+    }
+    
+    /// Get metadata for this spectrum
+    pub fn metadata(&self) -> &SpectrumMetadata {
+        &self.metadata
+    }
+    
+    /// Add a peak to the spectrum
+    pub fn add_peak(&mut self, peak: Peak) {
+        self.peaks.push(peak);
     }
 }
 

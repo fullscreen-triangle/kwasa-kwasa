@@ -208,6 +208,18 @@ impl Motion {
             count: self.content.matches(pattern).count(),
         }
     }
+    
+    /// Create a new Motion with the given content
+    #[cfg(not(feature = "wasm"))]
+    pub fn new(content: impl Into<String>) -> Self {
+        let content = content.into();
+        Self {
+            content,
+            unit_type: TextUnitType::Unknown,
+            confidence: 1.0,
+            properties: HashMap::new(),
+        }
+    }
 }
 
 /// Result of a spelling check

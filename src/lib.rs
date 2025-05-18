@@ -8,6 +8,7 @@ pub mod genomic;
 pub mod spectrometry;
 pub mod chemistry;
 pub mod pattern;
+pub mod evidence;
 
 // Re-export important modules
 pub use turbulance::run;
@@ -17,4 +18,15 @@ pub use text_unit::TextUnit;
 pub use genomic::prelude::*;
 pub use spectrometry::prelude::*;
 pub use chemistry::prelude::*;
-pub use pattern::prelude::*; 
+pub use pattern::prelude::*;
+
+// Prelude for easy imports
+pub mod prelude {
+    pub use crate::turbulance::prelude::*;
+    pub use crate::genomic::prelude::*;
+    pub use crate::spectrometry::prelude::*;
+    pub use crate::evidence::{
+        EvidenceIntegration, ConflictReport, CriticalEvidence, 
+        VisGraph, VisNode, VisEdge
+    };
+} 
