@@ -207,10 +207,11 @@ pub struct Molecule {
 impl Molecule {
     /// Create a new molecule from raw bytes
     pub fn new(content: impl Into<Vec<u8>>, id: impl Into<String>) -> Self {
-        let content = content.into();
+        let content_vec = content.into();
+        let content_clone = content_vec.clone();
         Self {
-            content,
-            smiles: String::from_utf8_lossy(&content).to_string(),
+            content: content_vec,
+            smiles: String::from_utf8_lossy(&content_clone).to_string(),
             atoms: Vec::new(),
             bonds: Vec::new(),
             metadata: MoleculeMetadata {

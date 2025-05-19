@@ -659,34 +659,52 @@ pub fn build_hierarchy(
     
     // For each section, detect paragraphs
     for section_id in &section_ids {
-        if let Some(section) = registry.get_unit(*section_id) {
-            let paragraph_ids = detect_paragraph_boundaries(&section.content, registry, &BoundaryDetectionOptions::default());
-            
-            // Update positions to be relative to the document, not the section
-            for para_id in &paragraph_ids {
-                if let Some(para) = registry.get_unit_mut(*para_id) {
-                    para.start += section.start;
-                    para.end += section.start;
-                }
-                
-                registry.set_parent_child(*section_id, *para_id);
+        // Store section content and start position in local variables to avoid simultaneous borrows
+        let (section_content, section_start) = {
+            let section = registry.get_unit(*section_id)
+                .expect("Section should exist");
+            (section.content.clone(), section.start)
+        };
+        
+        // Now we can use section_content without borrowing from registry
+        let paragraph_ids = detect_paragraph_boundaries(&section_content, registry, &BoundaryDetectionOptions::default());
+        
+        // Update positions to be relative to the document, not the section
+        for para_id in &paragraph_ids {
+            // Store paragraph data in a separate scope
+            {
+                let para = registry.get_unit_mut(*para_id)
+                    .expect("Paragraph should exist");
+                para.start += section_start;
+                para.end += section_start;
             }
             
-            // For each paragraph, detect sentences
-            for para_id in &paragraph_ids {
-                if let Some(para) = registry.get_unit(*para_id) {
-                    let sentence_ids = detect_sentence_boundaries(&para.content, registry, &BoundaryDetectionOptions::default());
-                    
-                    // Update positions to be relative to the document
-                    for sent_id in &sentence_ids {
-                        if let Some(sent) = registry.get_unit_mut(*sent_id) {
-                            sent.start += para.start;
-                            sent.end += para.start;
-                        }
-                        
-                        registry.set_parent_child(*para_id, *sent_id);
-                    }
+            registry.set_parent_child(*section_id, *para_id);
+        }
+        
+        // For each paragraph, detect sentences
+        for para_id in &paragraph_ids {
+            // Store paragraph content and start position in local variables
+            let (para_content, para_start) = {
+                let para = registry.get_unit(*para_id)
+                    .expect("Paragraph should exist");
+                (para.content.clone(), para.start)
+            };
+            
+            // Now we can use para_content without borrowing from registry
+            let sentence_ids = detect_sentence_boundaries(&para_content, registry, &BoundaryDetectionOptions::default());
+            
+            // Update positions to be relative to the document
+            for sent_id in &sentence_ids {
+                // Store sentence data in a separate scope
+                {
+                    let sent = registry.get_unit_mut(*sent_id)
+                        .expect("Sentence should exist");
+                    sent.start += para_start;
+                    sent.end += para_start;
                 }
+                
+                registry.set_parent_child(*para_id, *sent_id);
             }
         }
     }

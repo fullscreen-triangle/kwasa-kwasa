@@ -1,9 +1,10 @@
 use std::collections::HashMap;
 use crate::turbulance::datastructures::{EvidenceNetwork, EvidenceNode, EdgeType, UncertaintyQuantifier};
-use crate::genomic::{NucleotideSequence, GeneUnit, MotifUnit, Position, UnitId as GenomicUnitId};
+use crate::genomic::{NucleotideSequence, GeneUnit, MotifUnit, Position, UnitId as GenomicUnitId, Unit};
 use crate::spectrometry::{MassSpectrum, Peak, UnitId as SpectrumUnitId};
 use crate::turbulance::proposition::Motion;
 use rayon::prelude::*;
+use crate::turbulance::TextUnitType;
 
 /// Integration module for EvidenceNetwork with genomic and spectrometry data
 pub struct EvidenceIntegration;
@@ -42,12 +43,12 @@ impl EvidenceIntegration {
             let id = format!("genomic_{}", idx);
             
             // Create a Motion object with the sequence content
-            let content = String::from_utf8_lossy(sequence.content()).to_string();
-            let motion = Motion::new(content);
+            let content = String::from_utf8_lossy(&sequence.content).to_string();
+            let motion = Motion::new(&content, TextUnitType::Paragraph);
             
             // Add to network
             network.add_node(&id, EvidenceNode::GenomicFeature { 
-                sequence: sequence.content().to_vec(), 
+                sequence: sequence.content.to_vec(), 
                 position: sequence.metadata().position.as_ref().map(|p| 
                     format!("{}:{}-{}", p.reference, p.start, p.end)
                 ),
@@ -81,7 +82,7 @@ impl EvidenceIntegration {
                 peaks.len(), 
                 spectrum.base_peak().map(|p| p.mz).unwrap_or(0.0)
             );
-            let motion = Motion::new(content);
+            let motion = Motion::new(&content, TextUnitType::Paragraph);
             
             // Add to network
             network.add_node(&id, EvidenceNode::Spectra { 
@@ -250,8 +251,8 @@ impl EvidenceIntegration {
         for (source, edges) in network.edges().iter() {
             for (target, edge_type, uncertainty) in edges {
                 graph.edges.push(VisEdge {
-                    source: source.clone(),
-                    target: target.clone(),
+                    source: source.to_string(),
+                    target: target.to_string(),
                     edge_type: format!("{:?}", edge_type),
                     weight: get_edge_weight(edge_type),
                     uncertainty: *uncertainty,
@@ -260,6 +261,31 @@ impl EvidenceIntegration {
         }
         
         graph
+    }
+
+    /// Connect source and target with information about their relationship
+    pub fn connect_evidence(&self, 
+                          network: &mut EvidenceNetwork, 
+                          source: &str,
+                          target: &str,
+                          relation_type: RelationType,
+                          certainty: f64) {
+        // Convert source and target to owned Strings
+        let source = source.to_string();
+        let target = target.to_string();
+        
+        // Create edge type based on relation
+        let edge_type = match relation_type {
+            RelationType::Supports => EdgeType::Supports { strength: certainty },
+            RelationType::Contradicts => EdgeType::Contradicts { strength: certainty },
+            RelationType::Extends => EdgeType::Extends { strength: certainty },
+            RelationType::BindsTo => EdgeType::BindsTo { affinity: certainty },
+            RelationType::Citation => EdgeType::Citation { reliability: certainty },
+        };
+        
+        // Add the edge with uncertainty based on certainty
+        let uncertainty = 1.0 - certainty;
+        network.add_edge(&source, &target, edge_type, uncertainty);
     }
 }
 

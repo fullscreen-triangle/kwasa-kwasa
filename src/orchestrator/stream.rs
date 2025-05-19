@@ -114,6 +114,7 @@ impl StreamProcessor for IdentityProcessor {
         let (tx, rx) = channel(DEFAULT_BUFFER_SIZE);
         
         tokio::spawn(async move {
+            let mut input = input; // Make mutable locally
             while let Some(data) = input.recv().await {
                 let _ = tx.send(data).await;
             }
@@ -155,6 +156,7 @@ where
         let func = &self.func;
         
         tokio::spawn(async move {
+            let mut input = input; // Make mutable locally
             while let Some(data) = input.recv().await {
                 let result = func(data);
                 let _ = tx.send(result).await;

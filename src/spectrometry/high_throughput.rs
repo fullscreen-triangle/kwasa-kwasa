@@ -2,6 +2,7 @@ use std::sync::Arc;
 use rayon::prelude::*;
 use crate::spectrometry::{MassSpectrum, Peak, UnitId, SpectrumMetadata, MzRange};
 use std::collections::{HashMap, BTreeMap, HashSet};
+use crate::spectrometry::Unit;
 
 /// High-throughput mass spectrometry operations for parallel processing
 pub struct HighThroughputSpectrometry;
@@ -74,7 +75,7 @@ impl HighThroughputSpectrometry {
     pub fn extract_chromatograms_parallel(&self, 
                                          spectra: &[MassSpectrum], 
                                          mz_values: &[f64], 
-                                         tolerance: f64) -> HashMap<f64, Vec<(f64, f64)>> {
+                                         tolerance: f64) -> BTreeMap<f64, Vec<(f64, f64)>> {
         // Process each m/z value in parallel
         let chromatograms: Vec<(f64, Vec<(f64, f64)>)> = mz_values.par_iter()
             .map(|&mz| {
@@ -83,8 +84,8 @@ impl HighThroughputSpectrometry {
             })
             .collect();
         
-        // Convert to hashmap
-        let mut result = HashMap::new();
+        // Convert to BTreeMap instead of HashMap for f64 keys
+        let mut result = BTreeMap::new();
         for (mz, chromatogram) in chromatograms {
             result.insert(mz, chromatogram);
         }
@@ -381,7 +382,7 @@ impl HighThroughputSpectrometry {
         }
         
         AlignedSpectrum {
-            id: UnitId::new(format!("aligned_{}", spectrum.id())),
+            id: UnitId::new(format!("aligned_{}", spectrum.id)),
             peaks: aligned_peaks,
             similarity_score: calculate_similarity(&aligned_peaks),
         }

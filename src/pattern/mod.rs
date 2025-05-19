@@ -15,17 +15,28 @@ pub mod prelude {
     };
 }
 
+/// Metadata for patterns
+#[derive(Debug, Clone, PartialEq, Default)]
+pub struct PatternMetadata {
+    /// Source of the pattern
+    pub source: Option<String>,
+    /// Additional key-value annotations
+    pub annotations: HashMap<String, String>,
+}
+
 /// A pattern identified in a unit
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Pattern {
     /// The raw pattern content
-    content: Vec<u8>,
+    pub pattern: Vec<u8>,
     /// Pattern length
-    length: usize,
+    pub label: String,
     /// Pattern occurrences
-    occurrences: usize,
+    pub positions: Vec<usize>,
     /// Pattern significance score
-    significance: f64,
+    pub significance: f64,
+    /// Pattern metadata
+    pub metadata: PatternMetadata,
 }
 
 impl Pattern {
@@ -35,10 +46,11 @@ impl Pattern {
         let length = content.len();
         
         Self {
-            content,
-            length,
-            occurrences: 0,
+            pattern: content,
+            label: String::new(),
+            positions: Vec::new(),
             significance: 0.0,
+            metadata: PatternMetadata::default(),
         }
     }
     
@@ -48,10 +60,11 @@ impl Pattern {
         let length = content.len();
         
         Self {
-            content,
-            length,
-            occurrences,
+            pattern: content,
+            label: String::new(),
+            positions: Vec::new(),
             significance: 0.0,
+            metadata: PatternMetadata::default(),
         }
     }
     
@@ -63,12 +76,12 @@ impl Pattern {
     
     /// Get the raw content of this pattern
     pub fn content(&self) -> &[u8] {
-        &self.content
+        &self.pattern
     }
     
     /// Get the number of occurrences of this pattern
     pub fn occurrences(&self) -> usize {
-        self.occurrences
+        self.positions.len()
     }
     
     /// Get the significance score of this pattern
@@ -329,7 +342,7 @@ impl PatternAnalyzer<Vec<u8>> {
         
         let mut compressed_content = Vec::new();
         let mut pattern_indices = Vec::new();
-        let patterns: Vec<_> = significant_patterns.iter().map(|p| p.content.clone()).collect();
+        let patterns: Vec<_> = significant_patterns.iter().map(|p| p.pattern.clone()).collect();
         
         let mut i = 0;
         while i < content.len() {

@@ -407,7 +407,7 @@ impl Parser {
         let expr = self.pipe()?;
         
         if self.match_token(&[TokenKind::Assign]) {
-            let equals = self.previous();
+            let equals_token = self.previous().clone(); // Clone the token to avoid the borrow conflict
             let value = Box::new(self.assignment()?);
             
             match expr {
@@ -421,7 +421,7 @@ impl Parser {
                         ),
                     });
                 },
-                _ => return Err(self.error_at_token(&equals, "Invalid assignment target")),
+                _ => return Err(self.error_at_token(&equals_token, "Invalid assignment target")),
             }
         }
         
@@ -995,17 +995,14 @@ impl Node {
     /// Get the span of a node, if available
     fn span(&self) -> Option<Span> {
         match self {
-            Node::StringLiteral(_, span) => Some(*span),
-            Node::NumberLiteral(_, span) => Some(*span),
-            Node::BoolLiteral(_, span) => Some(*span),
+            Node::Number(_, span) => Some(*span),
+            Node::String(_, span) => Some(*span),
+            Node::Boolean(_, span) => Some(*span),
             Node::Identifier(_, span) => Some(*span),
             Node::BinaryExpr { span, .. } => Some(*span),
             Node::UnaryExpr { span, .. } => Some(*span),
             Node::FunctionCall { span, .. } => Some(*span),
             Node::IfExpr { span, .. } => Some(*span),
-            Node::FunctionDecl { span, .. } => Some(*span),
-            Node::ProjectDecl { span, .. } => Some(*span),
-            Node::SourcesDecl { span, .. } => Some(*span),
             Node::Block { span, .. } => Some(*span),
             Node::Assignment { span, .. } => Some(*span),
             Node::ReturnStmt { span, .. } => Some(*span),
@@ -1014,7 +1011,29 @@ impl Node {
             Node::EnsureStmt { span, .. } => Some(*span),
             Node::ResearchStmt { span, .. } => Some(*span),
             Node::TextOperation { span, .. } => Some(*span),
+            Node::FunctionDecl { span, .. } => Some(*span),
+            Node::ProjectDecl { span, .. } => Some(*span),
+            Node::SourcesDecl { span, .. } => Some(*span),
+            Node::ForEach { span, .. } => Some(*span),
+            Node::ConsideringAll { span, .. } => Some(*span),
+            Node::ConsideringThese { span, .. } => Some(*span),
+            Node::ConsideringItem { span, .. } => Some(*span),
+            Node::Motion { span, .. } => Some(*span),
             Node::Error(_, span) => Some(*span),
+            Node::Allow { span, .. } => Some(*span),
+            Node::Cause { span, .. } => Some(*span),
+            Node::PipeExpr { span, .. } => Some(*span),
+            Node::ArrayExpr { span, .. } => Some(*span),
+            Node::ObjectExpr { span, .. } => Some(*span),
+            Node::PropertyAccess { span, .. } => Some(*span),
+            Node::FormatString { span, .. } => Some(*span),
+            Node::Range { span, .. } => Some(*span),
+            Node::ListComprehension { span, .. } => Some(*span),
+            Node::TypeAnnotation { span, .. } => Some(*span),
+            Node::ImportStmt { span, .. } => Some(*span),
+            Node::ExportStmt { span, .. } => Some(*span),
+            // Add a catch-all for any future variants
+            _ => None,
         }
     }
 }

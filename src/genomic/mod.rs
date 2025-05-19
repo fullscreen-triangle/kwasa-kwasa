@@ -194,31 +194,31 @@ impl NucleotideSequence {
     pub fn translate(&self) -> Vec<u8> {
         let mut result = Vec::new();
         
-        // Simple translation table
-        let codon_table: HashMap<&[u8], u8> = [
-            (b"TTT", b'F'), (b"TTC", b'F'), (b"TTA", b'L'), (b"TTG", b'L'),
-            (b"CTT", b'L'), (b"CTC", b'L'), (b"CTA", b'L'), (b"CTG", b'L'),
-            (b"ATT", b'I'), (b"ATC", b'I'), (b"ATA", b'I'), (b"ATG", b'M'),
-            (b"GTT", b'V'), (b"GTC", b'V'), (b"GTA", b'V'), (b"GTG", b'V'),
-            (b"TCT", b'S'), (b"TCC", b'S'), (b"TCA", b'S'), (b"TCG", b'S'),
-            (b"CCT", b'P'), (b"CCC", b'P'), (b"CCA", b'P'), (b"CCG", b'P'),
-            (b"ACT", b'T'), (b"ACC", b'T'), (b"ACA", b'T'), (b"ACG", b'T'),
-            (b"GCT", b'A'), (b"GCC", b'A'), (b"GCA", b'A'), (b"GCG", b'A'),
-            (b"TAT", b'Y'), (b"TAC", b'Y'), (b"TAA", b'*'), (b"TAG", b'*'),
-            (b"CAT", b'H'), (b"CAC", b'H'), (b"CAA", b'Q'), (b"CAG", b'Q'),
-            (b"AAT", b'N'), (b"AAC", b'N'), (b"AAA", b'K'), (b"AAG", b'K'),
-            (b"GAT", b'D'), (b"GAC", b'D'), (b"GAA", b'E'), (b"GAG", b'E'),
-            (b"TGT", b'C'), (b"TGC", b'C'), (b"TGA", b'*'), (b"TGG", b'W'),
-            (b"CGT", b'R'), (b"CGC", b'R'), (b"CGA", b'R'), (b"CGG", b'R'),
-            (b"AGT", b'S'), (b"AGC", b'S'), (b"AGA", b'R'), (b"AGG", b'R'),
-            (b"GGT", b'G'), (b"GGC", b'G'), (b"GGA", b'G'), (b"GGG", b'G'),
+        // Fix the codon table HashMap collection with appropriate type conversion
+        let codon_table: HashMap<Vec<u8>, u8> = [
+            (b"TTT".to_vec(), b'F'), (b"TTC".to_vec(), b'F'), (b"TTA".to_vec(), b'L'), (b"TTG".to_vec(), b'L'),
+            (b"CTT".to_vec(), b'L'), (b"CTC".to_vec(), b'L'), (b"CTA".to_vec(), b'L'), (b"CTG".to_vec(), b'L'),
+            (b"ATT".to_vec(), b'I'), (b"ATC".to_vec(), b'I'), (b"ATA".to_vec(), b'I'), (b"ATG".to_vec(), b'M'),
+            (b"GTT".to_vec(), b'V'), (b"GTC".to_vec(), b'V'), (b"GTA".to_vec(), b'V'), (b"GTG".to_vec(), b'V'),
+            (b"TCT".to_vec(), b'S'), (b"TCC".to_vec(), b'S'), (b"TCA".to_vec(), b'S'), (b"TCG".to_vec(), b'S'),
+            (b"CCT".to_vec(), b'P'), (b"CCC".to_vec(), b'P'), (b"CCA".to_vec(), b'P'), (b"CCG".to_vec(), b'P'),
+            (b"ACT".to_vec(), b'T'), (b"ACC".to_vec(), b'T'), (b"ACA".to_vec(), b'T'), (b"ACG".to_vec(), b'T'),
+            (b"GCT".to_vec(), b'A'), (b"GCC".to_vec(), b'A'), (b"GCA".to_vec(), b'A'), (b"GCG".to_vec(), b'A'),
+            (b"TAT".to_vec(), b'Y'), (b"TAC".to_vec(), b'Y'), (b"TAA".to_vec(), b'*'), (b"TAG".to_vec(), b'*'),
+            (b"CAT".to_vec(), b'H'), (b"CAC".to_vec(), b'H'), (b"CAA".to_vec(), b'Q'), (b"CAG".to_vec(), b'Q'),
+            (b"AAT".to_vec(), b'N'), (b"AAC".to_vec(), b'N'), (b"AAA".to_vec(), b'K'), (b"AAG".to_vec(), b'K'),
+            (b"GAT".to_vec(), b'D'), (b"GAC".to_vec(), b'D'), (b"GAA".to_vec(), b'E'), (b"GAG".to_vec(), b'E'),
+            (b"TGT".to_vec(), b'C'), (b"TGC".to_vec(), b'C'), (b"TGA".to_vec(), b'*'), (b"TGG".to_vec(), b'W'),
+            (b"CGT".to_vec(), b'R'), (b"CGC".to_vec(), b'R'), (b"CGA".to_vec(), b'R'), (b"CGG".to_vec(), b'R'),
+            (b"AGT".to_vec(), b'S'), (b"AGC".to_vec(), b'S'), (b"AGA".to_vec(), b'R'), (b"AGG".to_vec(), b'R'),
+            (b"GGT".to_vec(), b'G'), (b"GGC".to_vec(), b'G'), (b"GGA".to_vec(), b'G'), (b"GGG".to_vec(), b'G'),
         ].iter().cloned().collect();
         
         // Translate each codon
         for i in (0..self.content.len()).step_by(3) {
             if i + 3 <= self.content.len() {
-                let codon = &self.content[i..i+3];
-                if let Some(&amino_acid) = codon_table.get(codon) {
+                let codon = self.content[i..i+3].to_vec();
+                if let Some(&amino_acid) = codon_table.get(&codon) {
                     // Stop at stop codon
                     if amino_acid == b'*' {
                         break;
