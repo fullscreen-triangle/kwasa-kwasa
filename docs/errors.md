@@ -195,36 +195,56 @@ Self {
 }
 ```
 
-### ❌ Error: Cannot borrow `*node` as mutable more than once at a time in `src/text_unit/hierarchy.rs`
-**Solution:** Restructure the recursive algorithm to avoid multiple mutable borrows
-```rust
-// Implementation steps:
-// 1. Change the recursive approach to an iterative approach using a stack
-// 2. Create a separate data structure to track changes
-// 3. Process nodes one at a time
+### ✅ Error: Cannot borrow `*node` as mutable more than once at a time in `src/text_unit/hierarchy.rs`
+**Solution:** Restructure the `find_node_by_id_mut_helper` method to avoid multiple mutable borrows using a two-phase approach with separate scopes
 
+```rust
 // Change from
-fn process_node(&mut self, node: &mut Node) {
-    // First recursive call borrowing node mutably
-    self.process_children(&mut node.children);
+fn find_node_by_id_mut_helper(node: &mut HierarchyNode, id: usize) -> Option<&mut HierarchyNode> {
+    // Check direct children first
+    for child in node.children_mut() {
+        if child.id() == id {
+            return Some(child);
+        }
+    }
     
-    // Second recursive call borrowing node mutably again
-    self.update_node_attributes(&mut node);
+    // Then check nested children with a flat approach to avoid recursion issues
+    for child in node.children_mut() {
+        if let Some(found) = Self::find_node_by_id_mut_helper(child, id) {
+            return Some(found);
+        }
+    }
+    
+    None
 }
 
 // To
-fn process_node(&mut self, node: &mut Node) {
-    // Store node IDs to process instead of recursive calls
-    let mut node_ids_to_process = vec![node.id];
-    
-    // Process each node once
-    while let Some(id) = node_ids_to_process.pop() {
-        let current_node = self.get_node_by_id_mut(id);
-        // Process this node...
+fn find_node_by_id_mut_helper(node: &mut HierarchyNode, id: usize) -> Option<&mut HierarchyNode> {
+    // Store the IDs of children to prevent multiple mutable borrows
+    let mut child_ids = Vec::new();
+    {
+        // Scope to limit the borrow of children_mut
+        let children = node.children_mut();
         
-        // Add children to the processing queue
-        node_ids_to_process.extend(current_node.children.iter().map(|c| c.id));
+        // First pass: check direct children and collect their indices
+        for (i, child) in children.iter().enumerate() {
+            if child.id() == id {
+                return Some(&mut children[i]);
+            }
+            child_ids.push(i);
+        }
     }
+    
+    // Second pass: check children's subtrees
+    for i in child_ids {
+        // This gets a fresh mutable borrow each time
+        let child = &mut node.children_mut()[i];
+        if let Some(found) = Self::find_node_by_id_mut_helper(child, id) {
+            return Some(found);
+        }
+    }
+    
+    None
 }
 ```
 
@@ -245,48 +265,81 @@ async fn process(&self, input: Receiver<StreamData>) -> Receiver<StreamData> {
 }
 ```
 
-### ❌ Error: Borrowed data escapes outside of method in `src/orchestrator/stream.rs`
-**Solution:** Restructure the closure to avoid capturing `self` reference
-```rust
-// Implementation steps:
-// 1. Extract all needed data from self before the closure
-// 2. Clone or copy values that need to be moved into the closure
-// 3. Use Arc to share ownership when necessary
+### ✅ Error: Borrowed data escapes outside of method in `src/orchestrator/stream.rs`
+**Solution:** Require that functions be cloneable and clone them before using in closures
 
+```rust
 // Change from
-async fn process(&self, input: Receiver<StreamData>) -> Receiver<StreamData> {
-    let (tx, rx) = channel(DEFAULT_BUFFER_SIZE);
-    
-    tokio::spawn(async move {
-        // Error: closure captures &self but is returned from function
-        while let Some(data) = input.recv().await {
-            let result = self.transform(data); // Borrowed reference escapes here
-            tx.send(result).await.unwrap();
+impl<F> FunctionProcessor<F>
+where
+    F: Fn(StreamData) -> StreamData + Send + Sync + 'static,
+{
+    pub fn new(name: &str, func: F) -> Self {
+        Self {
+            name: name.to_string(),
+            func,
         }
-    });
-    
-    rx
+    }
+}
+
+#[async_trait]
+impl<F> StreamProcessor for FunctionProcessor<F>
+where
+    F: Fn(StreamData) -> StreamData + Send + Sync + 'static,
+{
+    async fn process(&self, input: Receiver<StreamData>) -> Receiver<StreamData> {
+        let (tx, rx) = channel(DEFAULT_BUFFER_SIZE);
+        let func = &self.func;
+        
+        tokio::spawn(async move {
+            let mut input = input; // Make mutable locally
+            while let Some(data) = input.recv().await {
+                let result = func(data);
+                let _ = tx.send(result).await;
+            }
+        });
+        
+        rx
+    }
 }
 
 // To
-async fn process(&self, input: Receiver<StreamData>) -> Receiver<StreamData> {
-    let (tx, rx) = channel(DEFAULT_BUFFER_SIZE);
-    
-    // Clone or extract any needed data from self
-    let transformer = self.transformer.clone(); // Assuming transformer is Arc<T> or similar
-    
-    tokio::spawn(async move {
-        while let Some(data) = input.recv().await {
-            let result = transformer.transform(data); // Use cloned data instead of self
-            tx.send(result).await.unwrap();
+impl<F> FunctionProcessor<F>
+where
+    F: Fn(StreamData) -> StreamData + Send + Sync + Clone + 'static,
+{
+    pub fn new(name: &str, func: F) -> Self {
+        Self {
+            name: name.to_string(),
+            func,
         }
-    });
-    
-    rx
+    }
+}
+
+#[async_trait]
+impl<F> StreamProcessor for FunctionProcessor<F>
+where
+    F: Fn(StreamData) -> StreamData + Send + Sync + Clone + 'static,
+{
+    async fn process(&self, input: Receiver<StreamData>) -> Receiver<StreamData> {
+        let (tx, rx) = channel(DEFAULT_BUFFER_SIZE);
+        // Clone the function to avoid reference issues
+        let func = self.func.clone();
+        
+        tokio::spawn(async move {
+            let mut input = input; // Make mutable locally
+            while let Some(data) = input.recv().await {
+                let result = func(data);
+                let _ = tx.send(result).await;
+            }
+        });
+        
+        rx
+    }
 }
 ```
 
-### ❌ Error: Cannot borrow `self.context`, `self.conn`, etc. as mutable, as they are behind `&` references
+### ✅ Error: Cannot borrow `self.context`, `self.conn`, etc. as mutable, as they are behind `&` references
 **Solution:** Change method signatures to take `&mut self`
 ```rust
 // Implementation steps:
@@ -295,12 +348,21 @@ async fn process(&self, input: Receiver<StreamData>) -> Receiver<StreamData> {
 // 3. Ensure thread safety if needed with proper locking mechanisms
 
 // Change from
-pub fn update_context_with_unit(&self, unit_id: usize) {
-    self.context.add_keyword(keyword); // Error
+pub fn add_knowledge(&self, key: &str, value: &str) {
+    let mut kb = self.knowledge.lock().unwrap();
+    kb.insert(key.to_string(), value.to_string());
+    
+    // Also add to dreaming module
+    self.dreaming.add_knowledge(value);
 }
+
 // To
-pub fn update_context_with_unit(&mut self, unit_id: usize) {
-    self.context.add_keyword(keyword); // OK
+pub fn add_knowledge(&mut self, key: &str, value: &str) {
+    let mut kb = self.knowledge.lock().unwrap();
+    kb.insert(key.to_string(), value.to_string());
+    
+    // Also add to dreaming module
+    self.dreaming.add_knowledge(value);
 }
 ```
 

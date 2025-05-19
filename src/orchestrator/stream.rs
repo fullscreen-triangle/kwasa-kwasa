@@ -136,7 +136,7 @@ pub struct FunctionProcessor<F> {
 
 impl<F> FunctionProcessor<F>
 where
-    F: Fn(StreamData) -> StreamData + Send + Sync + 'static,
+    F: Fn(StreamData) -> StreamData + Send + Sync + Clone + 'static,
 {
     pub fn new(name: &str, func: F) -> Self {
         Self {
@@ -149,11 +149,12 @@ where
 #[async_trait]
 impl<F> StreamProcessor for FunctionProcessor<F>
 where
-    F: Fn(StreamData) -> StreamData + Send + Sync + 'static,
+    F: Fn(StreamData) -> StreamData + Send + Sync + Clone + 'static,
 {
     async fn process(&self, input: Receiver<StreamData>) -> Receiver<StreamData> {
         let (tx, rx) = channel(DEFAULT_BUFFER_SIZE);
-        let func = &self.func;
+        // Clone self into the closure to avoid reference issues
+        let func = Arc::new(self.func.clone());
         
         tokio::spawn(async move {
             let mut input = input; // Make mutable locally

@@ -96,7 +96,7 @@ impl MetacognitiveOrchestrator {
     }
     
     /// Add knowledge to the knowledge base
-    pub fn add_knowledge(&self, key: &str, value: &str) {
+    pub fn add_knowledge(&mut self, key: &str, value: &str) {
         let mut kb = self.knowledge.lock().unwrap();
         kb.insert(key.to_string(), value.to_string());
         
