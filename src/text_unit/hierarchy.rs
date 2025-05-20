@@ -415,11 +415,9 @@ impl DocumentHierarchy {
             }
             
             // Then process sentences within paragraphs
-            if let Some(paragraphs) = self.find_nodes_by_type(&NodeType::Paragraph).first() {
-                for p in 0..paragraphs.len() {
-                    let paragraph = &paragraphs[p];
-                    self.extract_and_add_children(&paragraph.content, paragraph.id(), BoundaryType::Sentences);
-                }
+            let paragraphs = self.find_nodes_by_type(&NodeType::Paragraph);
+            for paragraph in &paragraphs {
+                self.extract_and_add_children(&paragraph.content, paragraph.id(), BoundaryType::Sentences);
             }
             
             // Process sentences directly if no paragraphs
@@ -428,11 +426,9 @@ impl DocumentHierarchy {
             }
             
             // Process words within sentences
-            if let Some(sentences) = self.find_nodes_by_type(&NodeType::Sentence).first() {
-                for s in 0..sentences.len() {
-                    let sentence = &sentences[s];
-                    self.extract_and_add_children(&sentence.content, sentence.id(), BoundaryType::Words);
-                }
+            let sentences = self.find_nodes_by_type(&NodeType::Sentence);
+            for sentence in &sentences {
+                self.extract_and_add_children(&sentence.content, sentence.id(), BoundaryType::Words);
             }
         }
     }
@@ -513,24 +509,22 @@ impl DocumentHierarchy {
     
     /// Helper function to find a node by ID and get a mutable reference
     fn find_node_by_id_mut_helper(node: &mut HierarchyNode, id: usize) -> Option<&mut HierarchyNode> {
-        // Store the IDs of children to prevent multiple mutable borrows
-        let mut child_ids = Vec::new();
-        {
-            // Scope to limit the borrow of children_mut
-            let children = node.children_mut();
-            
-            // First pass: check direct children and collect their indices
-            for (i, child) in children.iter().enumerate() {
-                if child.id() == id {
-                    return Some(&mut children[i]);
-                }
-                child_ids.push(i);
+        // First, check if any direct child matches the ID
+        let children_ids: Vec<(usize, usize)> = node.children_mut()
+            .iter()
+            .enumerate()
+            .map(|(i, child)| (i, child.id()))
+            .collect();
+        
+        // Check for direct matches
+        for (i, child_id) in &children_ids {
+            if *child_id == id {
+                return Some(&mut node.children_mut()[*i]);
             }
         }
         
-        // Second pass: check children's subtrees
-        for i in child_ids {
-            // This gets a fresh mutable borrow each time
+        // If no direct match, recurse one child at a time
+        for (i, _) in children_ids {
             let child = &mut node.children_mut()[i];
             if let Some(found) = Self::find_node_by_id_mut_helper(child, id) {
                 return Some(found);
@@ -631,7 +625,7 @@ impl DocumentHierarchy {
                             0.0
                         } else {
                             common_count as f64 / keywords.len() as f64
-                        };
+                        }
                     };
                     
                     // If there's sufficient overlap, add to current block
@@ -641,7 +635,8 @@ impl DocumentHierarchy {
                     } else {
                         // Create a new semantic block from current sentences
                         if !current_block.is_empty() {
-                            new_hierarchy.add_semantic_block(&current_block);
+                            let sentences_slice: Vec<&HierarchyNode> = current_block.iter().cloned().collect();
+                            new_hierarchy.add_semantic_block(&sentences_slice);
                         }
                         
                         // Start a new block with this sentence
@@ -652,7 +647,8 @@ impl DocumentHierarchy {
                 
                 // Add the last block if it exists
                 if !current_block.is_empty() {
-                    new_hierarchy.add_semantic_block(&current_block);
+                    let sentences_slice: Vec<&HierarchyNode> = current_block.iter().cloned().collect();
+                    new_hierarchy.add_semantic_block(&sentences_slice);
                 }
             }
         }
