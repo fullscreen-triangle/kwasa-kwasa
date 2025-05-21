@@ -5,6 +5,7 @@ use crate::text_unit::boundary::TextUnit;
 use crate::turbulance::stdlib::StdLib;
 use std::rc::Rc;
 use std::cell::RefCell;
+use std::fmt;
 
 // Define Result type for Turbulance operations
 type Result<T> = std::result::Result<T, TurbulanceError>;
@@ -25,6 +26,7 @@ pub enum Value {
     NativeFunction(NativeFunction),
     Array(Vec<Value>),
     Object(std::collections::HashMap<String, Value>),
+    Module(ObjectRef),
     Null,
 }
 
@@ -63,6 +65,11 @@ impl std::hash::Hash for Value {
                     k.hash(state);
                     v.hash(state);
                 }
+            },
+            Value::Module(_) => {
+                // Module references aren't hashable directly
+                // Use type ID as a stand-in
+                std::any::TypeId::of::<ObjectRef>().hash(state);
             },
             Value::Null => 0.hash(state),
         }
@@ -1191,6 +1198,59 @@ impl Interpreter {
     // Get access to the standard library
     fn get_stdlib(&self) -> Option<&StdLib> {
         Some(&self.stdlib)
+    }
+    
+    /// Set a global variable
+    pub fn set_global(&mut self, name: &str, value: Value) {
+        let mut env = self.global_environment.borrow_mut();
+        env.define(name.to_string(), value);
+    }
+}
+
+/// Reference to a shared object (using reference counting)
+#[derive(Clone)]
+pub struct ObjectRef(Rc<RefCell<dyn Object>>);
+
+impl ObjectRef {
+    /// Create a new object reference
+    pub fn new<T: Object + 'static>(obj: T) -> Self {
+        ObjectRef(Rc::new(RefCell::new(obj)))
+    }
+    
+    /// Borrow the object
+    pub fn borrow(&self) -> std::cell::Ref<dyn Object> {
+        self.0.borrow()
+    }
+    
+    /// Borrow the object mutably
+    pub fn borrow_mut(&self) -> std::cell::RefMut<dyn Object> {
+        self.0.borrow_mut()
+    }
+}
+
+impl fmt::Debug for ObjectRef {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "ObjectRef")
+    }
+}
+
+/// Object trait for custom objects
+pub trait Object: fmt::Debug {
+    /// Get a property from the object
+    fn get(&self, _name: &str) -> Option<Value> {
+        None
+    }
+    
+    /// Set a property on the object
+    fn set(&mut self, _name: &str, _value: Value) {
+        // Default implementation does nothing
+    }
+    
+    /// Call a method on the object
+    fn call_method(&self, _name: &str, _args: &[Value]) -> Result<Value> {
+        Err(TurbulanceError::RuntimeError { 
+            message: format!("Object doesn't support method calls") 
+        })
     }
 }
 

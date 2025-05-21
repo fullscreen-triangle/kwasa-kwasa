@@ -21,8 +21,8 @@ pub mod prelude {
     };
 }
 
-/// Common metadata for genomic units
-#[derive(Debug, Clone)]
+/// Metadata for genomic units
+#[derive(Debug, Clone, Eq, Hash, PartialEq)]
 pub struct GenomicMetadata {
     /// Source of the sequence (e.g., organism, database)
     pub source: Option<String>,
@@ -34,8 +34,8 @@ pub struct GenomicMetadata {
     pub annotations: HashMap<String, String>,
 }
 
-/// Strand orientation
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+/// Strand direction
+#[derive(Debug, Clone, Eq, Hash, PartialEq)]
 pub enum Strand {
     /// Forward strand (+)
     Forward,
@@ -45,8 +45,8 @@ pub enum Strand {
     Unknown,
 }
 
-/// Position in a genomic context
-#[derive(Debug, Clone)]
+/// Position in a reference sequence
+#[derive(Debug, Clone, Eq, Hash, PartialEq)]
 pub struct Position {
     /// Starting position (0-based)
     pub start: usize,
@@ -56,14 +56,20 @@ pub struct Position {
     pub reference: String,
 }
 
-/// Unique identifier for a unit
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+/// Unique identifier for genomic units
+#[derive(Debug, Clone, Eq, Hash, PartialEq)]
 pub struct UnitId(String);
 
 impl UnitId {
     /// Create a new unit ID
     pub fn new(id: impl Into<String>) -> Self {
-        Self(id.into())
+        UnitId(id.into())
+    }
+}
+
+impl std::fmt::Display for UnitId {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.0)
     }
 }
 
@@ -340,7 +346,7 @@ impl Unit for GeneUnit {
 //------------------------------------------------------------------------------
 
 /// A recurring pattern unit
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Eq, Hash, PartialEq)]
 pub struct MotifUnit {
     /// The motif sequence
     content: Vec<u8>,

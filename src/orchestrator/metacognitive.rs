@@ -154,7 +154,7 @@ impl ContextLayerProcessor {
 impl StreamProcessor for ContextLayerProcessor {
     async fn process(&self, input: Receiver<StreamData>) -> Receiver<StreamData> {
         // Process through the underlying processor
-        let processed = self.processor.process(input).await;
+        let mut processed = self.processor.process(input).await;
         
         // Create output channel
         let (tx, rx) = channel(32);
@@ -204,7 +204,7 @@ impl ReasoningLayerProcessor {
 impl StreamProcessor for ReasoningLayerProcessor {
     async fn process(&self, input: Receiver<StreamData>) -> Receiver<StreamData> {
         // Process through the underlying processor
-        let processed = self.processor.process(input).await;
+        let mut processed = self.processor.process(input).await;
         
         // Create output channel
         let (tx, rx) = channel(32);
@@ -250,7 +250,7 @@ impl IntuitionLayerProcessor {
 impl StreamProcessor for IntuitionLayerProcessor {
     async fn process(&self, input: Receiver<StreamData>) -> Receiver<StreamData> {
         // Process through the underlying processor
-        let processed = self.processor.process(input).await;
+        let mut processed = self.processor.process(input).await;
         
         // Create output channel
         let (tx, rx) = channel(32);
@@ -292,7 +292,7 @@ impl DefaultContextLayer {
 
 #[async_trait]
 impl StreamProcessor for DefaultContextLayer {
-    async fn process(&self, input: Receiver<StreamData>) -> Receiver<StreamData> {
+    async fn process(&self, mut input: Receiver<StreamData>) -> Receiver<StreamData> {
         let (tx, rx) = channel(32);
         
         tokio::spawn(async move {
@@ -327,7 +327,7 @@ impl DefaultReasoningLayer {
 
 #[async_trait]
 impl StreamProcessor for DefaultReasoningLayer {
-    async fn process(&self, input: Receiver<StreamData>) -> Receiver<StreamData> {
+    async fn process(&self, mut input: Receiver<StreamData>) -> Receiver<StreamData> {
         let (tx, rx) = channel(32);
         
         tokio::spawn(async move {
@@ -359,7 +359,7 @@ impl DefaultIntuitionLayer {
 
 #[async_trait]
 impl StreamProcessor for DefaultIntuitionLayer {
-    async fn process(&self, input: Receiver<StreamData>) -> Receiver<StreamData> {
+    async fn process(&self, mut input: Receiver<StreamData>) -> Receiver<StreamData> {
         let (tx, rx) = channel(32);
         
         tokio::spawn(async move {

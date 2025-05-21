@@ -3,6 +3,7 @@ use rayon::prelude::*;
 use crate::spectrometry::{MassSpectrum, Peak, UnitId, SpectrumMetadata, MzRange};
 use std::collections::{HashMap, BTreeMap, HashSet};
 use crate::spectrometry::Unit;
+use crate::spectrometry::SpectrumFeature;
 
 /// High-throughput mass spectrometry operations for parallel processing
 pub struct HighThroughputSpectrometry;

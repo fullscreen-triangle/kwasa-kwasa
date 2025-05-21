@@ -42,14 +42,20 @@ pub struct MzRange {
     pub end: f64,
 }
 
-/// Unique identifier for a unit
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+/// Unique identifier for spectrometry units
+#[derive(Debug, Clone, Eq, Hash, PartialEq)]
 pub struct UnitId(String);
 
 impl UnitId {
     /// Create a new unit ID
     pub fn new(id: impl Into<String>) -> Self {
-        Self(id.into())
+        UnitId(id.into())
+    }
+}
+
+impl std::fmt::Display for UnitId {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.0)
     }
 }
 

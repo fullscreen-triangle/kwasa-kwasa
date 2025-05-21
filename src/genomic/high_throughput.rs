@@ -186,7 +186,7 @@ impl HighThroughputGenomics {
                 }
                 
                 // Simple pairwise alignment (real implementation would use Needleman-Wunsch or similar)
-                self.align_to_reference(seq.content, reference_content, gap_penalty)
+                self.align_to_reference(&seq.content, &reference_content, gap_penalty)
             })
             .collect();
         
@@ -278,8 +278,8 @@ impl HighThroughputGenomics {
     pub fn detect_snps_parallel(&self, 
                                sequence: &NucleotideSequence, 
                                reference: &NucleotideSequence) -> Vec<(usize, u8, u8)> {
-        let seq_content = sequence.content;
-        let ref_content = reference.content;
+        let seq_content = &sequence.content;
+        let ref_content = &reference.content;
         
         // Skip parallel processing for short sequences
         if seq_content.len() < 10000 || ref_content.len() < 10000 {

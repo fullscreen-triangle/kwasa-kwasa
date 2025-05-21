@@ -509,22 +509,24 @@ impl DocumentHierarchy {
     
     /// Helper function to find a node by ID and get a mutable reference
     fn find_node_by_id_mut_helper(node: &mut HierarchyNode, id: usize) -> Option<&mut HierarchyNode> {
-        // First, check if any direct child matches the ID
-        let children_ids: Vec<(usize, usize)> = node.children_mut()
-            .iter()
-            .enumerate()
-            .map(|(i, child)| (i, child.id()))
-            .collect();
-        
-        // Check for direct matches
-        for (i, child_id) in &children_ids {
-            if *child_id == id {
-                return Some(&mut node.children_mut()[*i]);
+        // Store the IDs of children to prevent multiple mutable borrows
+        let mut child_ids = Vec::new();
+        {
+            // Scope to limit the borrow of children_mut
+            let children = node.children_mut();
+            
+            // First pass: check direct children and collect their indices
+            for (i, child) in children.iter().enumerate() {
+                if child.id() == id {
+                    return Some(&mut children[i]);
+                }
+                child_ids.push(i);
             }
         }
         
-        // If no direct match, recurse one child at a time
-        for (i, _) in children_ids {
+        // Second pass: check children's subtrees
+        for i in child_ids {
+            // This gets a fresh mutable borrow each time
             let child = &mut node.children_mut()[i];
             if let Some(found) = Self::find_node_by_id_mut_helper(child, id) {
                 return Some(found);
@@ -635,20 +637,19 @@ impl DocumentHierarchy {
                     } else {
                         // Create a new semantic block from current sentences
                         if !current_block.is_empty() {
-                            let sentences_slice: Vec<&HierarchyNode> = current_block.iter().cloned().collect();
-                            new_hierarchy.add_semantic_block(&sentences_slice);
+                            new_hierarchy.add_semantic_block(&current_block);
+                            current_block.clear();
                         }
                         
                         // Start a new block with this sentence
-                        current_block = vec![sentence];
+                        current_block.push(sentence);
                         current_block_keywords = keywords;
                     }
                 }
                 
                 // Add the last block if it exists
                 if !current_block.is_empty() {
-                    let sentences_slice: Vec<&HierarchyNode> = current_block.iter().cloned().collect();
-                    new_hierarchy.add_semantic_block(&sentences_slice);
+                    new_hierarchy.add_semantic_block(&current_block);
                 }
             }
         }

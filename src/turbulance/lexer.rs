@@ -11,6 +11,18 @@ pub enum TokenKind {
     #[token("project")]
     ProjectDecl,
 
+    #[token("proposition")]
+    Proposition,
+
+    #[token("var")]
+    Var,
+
+    #[token("true")]
+    True,
+
+    #[token("false")]
+    False,
+
     #[token("sources")]
     SourcesDecl,
 
@@ -185,6 +197,10 @@ impl fmt::Display for TokenKind {
         match self {
             TokenKind::FunctionDecl => write!(f, "funxn"),
             TokenKind::ProjectDecl => write!(f, "project"),
+            TokenKind::Proposition => write!(f, "proposition"),
+            TokenKind::Var => write!(f, "var"),
+            TokenKind::True => write!(f, "true"),
+            TokenKind::False => write!(f, "false"),
             TokenKind::SourcesDecl => write!(f, "sources"),
             TokenKind::Within => write!(f, "within"),
             TokenKind::Given => write!(f, "given"),
@@ -237,6 +253,7 @@ impl fmt::Display for TokenKind {
             TokenKind::Comment => write!(f, "comment"),
             TokenKind::Whitespace => write!(f, "whitespace"),
             TokenKind::Error => write!(f, "error"),
+            _ => write!(f, "{:?}", self),
         }
     }
 }
