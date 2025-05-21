@@ -140,12 +140,7 @@ fn process_document(document_path: &PathBuf, interactive: bool) -> Result<()> {
 }
 
 fn start_repl() -> Result<()> {
-    println!("{} v{}", "Turbulance REPL".green().bold(), turbulance::VERSION);
-    println!("Type 'exit' to quit");
-    
-    // This is a placeholder for now - we'll implement the REPL
-    // in a future version
-    println!("{}", "REPL not yet implemented".yellow());
-    
+    let mut repl = cli::Repl::new().with_context(|| "Failed to initialize REPL")?;
+    repl.start().with_context(|| "Error during REPL execution")?;
     Ok(())
 }

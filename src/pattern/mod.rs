@@ -7,11 +7,16 @@ use std::fmt::Debug;
 use std::{collections::HashMap, marker::PhantomData};
 use std::hash::Hash;
 
+pub mod metacognitive;
+
 /// Re-exports from this module
 pub mod prelude {
     pub use super::{
         PatternAnalyzer, OrthographicAnalyzer, FrequencyDistribution,
         Pattern, PatternSignificance, VisualDensityMap,
+    };
+    pub use super::metacognitive::{
+        MetaCognitive, MetaNode, MetaEdge, MetaNodeType, MetaEdgeType
     };
 }
 
@@ -27,45 +32,43 @@ pub struct PatternMetadata {
 /// A pattern identified in a unit
 #[derive(Debug, Clone, PartialEq)]
 pub struct Pattern {
-    /// The raw pattern content
-    pub pattern: Vec<u8>,
-    /// Pattern length
-    pub label: String,
-    /// Pattern occurrences
-    pub positions: Vec<usize>,
-    /// Pattern significance score
+    /// Unique identifier
+    pub id: String,
+    /// Pattern name
+    pub name: String,
+    /// Pattern description
+    pub description: String,
+    /// Pattern confidence level (0.0 - 1.0)
+    pub confidence: f64,
+    /// Elements that make up this pattern
+    pub elements: Vec<String>,
+    /// Pattern significance score (0.0 - 1.0)
     pub significance: f64,
-    /// Pattern metadata
-    pub metadata: PatternMetadata,
+    /// The source of this pattern
+    pub source: Option<String>,
+    /// Tags associated with this pattern
+    pub tags: Vec<String>,
 }
 
 impl Pattern {
     /// Create a new pattern
-    pub fn new(content: impl Into<Vec<u8>>) -> Self {
-        let content = content.into();
-        let length = content.len();
-        
+    pub fn new(id: impl Into<String>, name: impl Into<String>, description: impl Into<String>) -> Self {
         Self {
-            pattern: content,
-            label: String::new(),
-            positions: Vec::new(),
+            id: id.into(),
+            name: name.into(),
+            description: description.into(),
+            confidence: 0.5,
+            elements: Vec::new(),
             significance: 0.0,
-            metadata: PatternMetadata::default(),
+            source: None,
+            tags: Vec::new(),
         }
     }
     
-    /// Create a new pattern with occurrence information
-    pub fn with_occurrences(content: impl Into<Vec<u8>>, occurrences: usize) -> Self {
-        let content = content.into();
-        let length = content.len();
-        
-        Self {
-            pattern: content,
-            label: String::new(),
-            positions: Vec::new(),
-            significance: 0.0,
-            metadata: PatternMetadata::default(),
-        }
+    /// Set the confidence level for this pattern
+    pub fn with_confidence(mut self, confidence: f64) -> Self {
+        self.confidence = confidence;
+        self
     }
     
     /// Set the significance score for this pattern
@@ -74,19 +77,22 @@ impl Pattern {
         self
     }
     
-    /// Get the raw content of this pattern
-    pub fn content(&self) -> &[u8] {
-        &self.pattern
+    /// Add elements to this pattern
+    pub fn with_elements(mut self, elements: Vec<String>) -> Self {
+        self.elements = elements;
+        self
     }
     
-    /// Get the number of occurrences of this pattern
-    pub fn occurrences(&self) -> usize {
-        self.positions.len()
+    /// Set the source of this pattern
+    pub fn with_source(mut self, source: impl Into<String>) -> Self {
+        self.source = Some(source.into());
+        self
     }
     
-    /// Get the significance score of this pattern
-    pub fn significance(&self) -> f64 {
-        self.significance
+    /// Add tags to this pattern
+    pub fn with_tags(mut self, tags: Vec<String>) -> Self {
+        self.tags = tags;
+        self
     }
 }
 

@@ -6,10 +6,14 @@ pub mod stdlib;
 pub mod proposition;
 pub mod datastructures;
 pub mod domain_extensions;
+pub mod context;
 
 pub use lexer::{Lexer, Token, TokenKind};
 pub use proposition::{Proposition, Motion};
 pub use datastructures::{TextGraph, ConceptChain, IdeaHierarchy, ArgMap};
+pub use context::Context;
+pub use context::Value;
+pub use context::Function;
 
 // Include generated code from build.rs
 include!(concat!(env!("TURBULANCE_GENERATED_DIR"), "/parser_tables.rs"));
@@ -86,6 +90,15 @@ pub fn validate(source: &str) -> Result<bool> {
 pub fn serialize_ast(program: &ast::Program) -> String {
     let serializable = SerializableAst::from(program);
     serde_json::to_string_pretty(&serializable).unwrap_or_else(|_| "{}".to_string())
+}
+
+/// Run Turbulance code with a specific context
+pub fn run_with_context(source: &str, context: &mut Context) -> Result<String> {
+    let tokens = lexer::lex(source)?;
+    let mut parser = parser::Parser::new(tokens);
+    let ast = parser.parse()?;
+    let result = interpreter::interpret(ast, context)?;
+    Ok(result)
 }
 
 #[cfg(test)]

@@ -9,6 +9,7 @@ pub mod spectrometry;
 pub mod chemistry;
 pub mod pattern;
 pub mod evidence;
+pub mod error;
 
 // Re-export important modules
 pub use turbulance::run;
@@ -19,6 +20,7 @@ pub use genomic::prelude::*;
 pub use spectrometry::prelude::*;
 pub use chemistry::prelude::*;
 pub use pattern::prelude::*;
+pub use error::{Error, Result, ErrorReporter};
 
 // Prelude for easy imports
 pub mod prelude {
@@ -29,4 +31,5 @@ pub mod prelude {
         EvidenceIntegration, ConflictReport, CriticalEvidence, 
         VisGraph, VisNode, VisEdge
     };
+    pub use crate::error::{Error, Result, ErrorReporter};
 } 

@@ -6,6 +6,7 @@ use crate::turbulance::stdlib::StdLib;
 use std::rc::Rc;
 use std::cell::RefCell;
 use std::fmt;
+use crate::turbulance::context::{Context, Value};
 
 // Define Result type for Turbulance operations
 type Result<T> = std::result::Result<T, TurbulanceError>;
