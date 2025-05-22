@@ -63,10 +63,10 @@ console_error_panic_hook = "0.1.7"
 tempfile = "3.5.0"
 criterion = "0.5.1"
 
-# Comment out benchmark until proper bench file is created
-# [[bench]]
-# name = "text_operations"
-# harness = false
+# Benchmark configuration is now active
+[[bench]]
+name = "text_operations"
+harness = false
 
 [profile.release]
 opt-level = 3

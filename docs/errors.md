@@ -455,7 +455,7 @@ After addressing these errors, the following steps are required to complete the 
 - Add detailed debugging information in verbose mode
 - Implement graceful degradation for non-critical errors
 
-### 3. ❌ Performance Optimization
+### 3. ❓ Performance Optimization
 **Implementation Steps:**
 - Profile code to identify bottlenecks
 - Optimize memory usage in core data structures
@@ -464,6 +464,7 @@ After addressing these errors, the following steps are required to complete the 
 - Optimize parser for faster compilation
 - Reduce unnecessary cloning and copying of data
 - Implement lazy evaluation where appropriate
+- ✅ Create benchmark suite for performance measurement and tracking (implemented in benches/text_operations.rs)
 
 ### 4. ❌ Documentation Expansion
 **Implementation Steps:**
@@ -506,3 +507,57 @@ After addressing these errors, the following steps are required to complete the 
 - Write installation and upgrade documentation
 
 These steps will bring the Kwasa-kwasa framework to a fully functional state where users can reliably use the text processing capabilities and the advanced features for scientific data analysis.
+
+## Implementation Notes
+
+### ✅ Benchmark Suite Implementation (2023-11-15)
+**Issue:** The benchmarking capability was disabled in Cargo.toml with a comment: "Comment out benchmark until proper bench file is created"
+
+**Solution:** Implemented a comprehensive benchmark suite in benches/text_operations.rs
+
+```rust
+// Created benchmark file structure with three main benchmark groups
+criterion_group!(
+    benches,
+    bench_text_unit_operations,
+    bench_text_processor,
+    bench_metacognitive
+);
+
+// Each group tests specific operations:
+
+// 1. TextUnit Operations
+// - Text unit creation
+// - Sentence splitting
+// - Text unit merging
+
+// 2. TextProcessor Operations
+// - Basic text processing
+// - Pattern extraction
+// - Relationship discovery 
+
+// 3. MetaCognitive Operations
+// - Reasoning capabilities
+// - Reflection functionality
+```
+
+**Changes:**
+1. Created `benches/text_operations.rs` with comprehensive benchmarks for core framework operations
+2. Uncommented the benchmark configuration in Cargo.toml:
+```toml
+[[bench]]
+name = "text_operations"
+harness = false
+```
+3. Implemented benchmarks for three key areas:
+   - Basic text unit operations
+   - Text processor functionality
+   - MetaCognitive reasoning engine
+
+**Benefits:**
+- Provides a baseline for measuring performance improvements
+- Identifies potential bottlenecks in text processing operations
+- Enables continuous performance monitoring as the codebase evolves
+- Helps validate optimizations by quantifying their impact
+
+This implementation is a critical step in the Performance Optimization section of the framework completion plan. Running these benchmarks will help identify areas that need optimization and track improvements over time.
