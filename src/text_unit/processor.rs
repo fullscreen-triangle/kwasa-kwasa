@@ -195,4 +195,120 @@ impl TextProcessor {
         
         summary
     }
+    
+    /// Extract patterns from text using sophisticated metacognitive reasoning
+    pub fn extract_patterns(&mut self, text: &str) -> Result<Vec<crate::pattern::Pattern>> {
+        // Process the text first
+        let result = self.process(text)?;
+        
+        // Apply advanced pattern recognition
+        let mut enhanced_patterns = Vec::new();
+        
+        // Group related patterns using clustering
+        if !result.patterns.is_empty() {
+            let mut clusters = self.cluster_patterns(&result.patterns);
+            
+            for cluster in clusters {
+                if let Some(primary) = cluster.first() {
+                    // Create an enhanced pattern with additional metadata
+                    let mut enhanced = primary.clone();
+                    
+                    // Add metadata from cluster analysis
+                    enhanced.add_annotation("cluster_size", &format!("{}", cluster.len()));
+                    enhanced.add_annotation("derived_from", "metacognitive_analysis");
+                    
+                    // Calculate confidence boost based on cluster support
+                    let confidence_boost = (cluster.len() as f64 * 0.05).min(0.3);
+                    enhanced.confidence = (enhanced.confidence + confidence_boost).min(1.0);
+                    
+                    enhanced_patterns.push(enhanced);
+                }
+            }
+        }
+        
+        // If no patterns found through clustering, return original patterns
+        if enhanced_patterns.is_empty() {
+            return Ok(result.patterns);
+        }
+        
+        Ok(enhanced_patterns)
+    }
+    
+    /// Cluster similar patterns together
+    fn cluster_patterns(&self, patterns: &[crate::pattern::Pattern]) -> Vec<Vec<crate::pattern::Pattern>> {
+        let mut clusters: Vec<Vec<crate::pattern::Pattern>> = Vec::new();
+        
+        // Simple clustering algorithm based on tag similarity
+        for pattern in patterns {
+            let mut added = false;
+            
+            // Try to add to existing cluster
+            for cluster in &mut clusters {
+                if let Some(first) = cluster.first() {
+                    // Check if tags overlap significantly
+                    let common_tags = pattern.tags.iter()
+                        .filter(|tag| first.tags.contains(tag))
+                        .count();
+                    
+                    let similarity = if first.tags.is_empty() || pattern.tags.is_empty() {
+                        0.0
+                    } else {
+                        common_tags as f64 / first.tags.len().max(pattern.tags.len()) as f64
+                    };
+                    
+                    if similarity > 0.5 {
+                        cluster.push(pattern.clone());
+                        added = true;
+                        break;
+                    }
+                }
+            }
+            
+            // Create new cluster if not added to existing one
+            if !added {
+                clusters.push(vec![pattern.clone()]);
+            }
+        }
+        
+        clusters
+    }
+    
+    /// Apply metacognitive reasoning to discover complex semantic relationships
+    pub fn discover_relationships(&mut self, text: &str) -> Result<Vec<(String, String, String)>> {
+        // Process the text 
+        self.process(text)?;
+        
+        // Extract relationship triplets (subject, predicate, object)
+        let mut relationships = Vec::new();
+        
+        // Get nodes from the metacognitive engine
+        let nodes = self.meta.get_nodes()?;
+        let edges = self.meta.get_edges()?;
+        
+        // Convert edges to relationship triplets
+        for edge in edges {
+            // Find source and target nodes
+            let source_node = nodes.iter().find(|n| n.id == edge.source);
+            let target_node = nodes.iter().find(|n| n.id == edge.target);
+            
+            if let (Some(source), Some(target)) = (source_node, target_node) {
+                // Create relationship triplet
+                let subject = source.content.clone();
+                let object = target.content.clone();
+                let predicate = match edge.edge_type {
+                    crate::pattern::metacognitive::MetaEdgeType::Causes => "causes".to_string(),
+                    crate::pattern::metacognitive::MetaEdgeType::Contains => "contains".to_string(),
+                    crate::pattern::metacognitive::MetaEdgeType::Implies => "implies".to_string(),
+                    crate::pattern::metacognitive::MetaEdgeType::Supports => "supports".to_string(),
+                    crate::pattern::metacognitive::MetaEdgeType::Contradicts => "contradicts".to_string(),
+                    crate::pattern::metacognitive::MetaEdgeType::Relates => "relates to".to_string(),
+                    _ => "is related to".to_string(),
+                };
+                
+                relationships.push((subject, predicate, object));
+            }
+        }
+        
+        Ok(relationships)
+    }
 } 

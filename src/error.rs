@@ -74,6 +74,76 @@ pub enum Error {
     Custom(String),
 }
 
+impl Error {
+    /// Create a parsing error
+    pub fn parse(message: &str, line: usize, column: usize) -> Self {
+        Self::Parse {
+            message: message.to_string(),
+            line,
+            column,
+        }
+    }
+    
+    /// Create a lexical error
+    pub fn lexical(message: &str, position: usize) -> Self {
+        Self::Lexical {
+            message: message.to_string(),
+            position,
+        }
+    }
+    
+    /// Create a syntax error
+    pub fn syntax(message: &str, position: usize) -> Self {
+        Self::Syntax {
+            message: message.to_string(),
+            position,
+        }
+    }
+    
+    /// Create a semantic error
+    pub fn semantic(message: &str) -> Self {
+        Self::Semantic(message.to_string())
+    }
+    
+    /// Create a runtime error
+    pub fn runtime(message: &str) -> Self {
+        Self::Runtime(message.to_string())
+    }
+    
+    /// Create a pattern recognition error
+    pub fn pattern(message: &str) -> Self {
+        Self::Pattern(message.to_string())
+    }
+    
+    /// Create a knowledge error
+    pub fn knowledge(message: &str) -> Self {
+        Self::Knowledge(message.to_string())
+    }
+    
+    /// Create an evidence error
+    pub fn evidence(message: &str) -> Self {
+        Self::Evidence(message.to_string())
+    }
+    
+    /// Create a CLI error
+    pub fn cli(message: &str) -> Self {
+        Self::Cli(message.to_string())
+    }
+    
+    /// Create a text unit error
+    pub fn text_unit(message: &str) -> Self {
+        Self::TextUnit(message.to_string())
+    }
+    
+    /// Determine if this error is recoverable
+    pub fn is_recoverable(&self) -> bool {
+        match self {
+            Self::Parse { .. } | Self::Lexical { .. } | Self::Syntax { .. } => false,
+            _ => true,
+        }
+    }
+}
+
 /// Error reporter for detailed error reporting
 pub struct ErrorReporter {
     source: Option<String>,
@@ -150,11 +220,8 @@ impl ErrorReporter {
     
     /// Try to recover from errors with a best-effort approach
     pub fn recover(&self) -> bool {
-        // Only attempt recovery for non-critical errors
-        self.errors.iter().all(|e| match e {
-            Error::Parse { .. } | Error::Lexical { .. } | Error::Syntax { .. } => false,
-            _ => true,
-        })
+        // Only attempt recovery if all errors are recoverable
+        self.errors.iter().all(|e| e.is_recoverable())
     }
 }
 
