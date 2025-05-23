@@ -10,6 +10,8 @@ pub mod chemistry;
 pub mod pattern;
 pub mod evidence;
 pub mod error;
+pub mod visualization;
+pub mod external_apis;
 
 // Re-export important modules
 pub use turbulance::run;

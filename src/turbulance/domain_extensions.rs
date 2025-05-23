@@ -9,6 +9,9 @@ use crate::pattern::prelude::*;
 use crate::turbulance::interpreter::{Interpreter, Value, RuntimeError, ObjectRef, Function};
 use std::collections::HashMap;
 use std::sync::Arc;
+use crate::error::{Error, Result};
+use crate::turbulance::ast::Node;
+use crate::turbulance::context::Context;
 
 /// Register all domain extensions with the interpreter
 pub fn register_domain_extensions(interpreter: &mut Interpreter) -> Result<(), RuntimeError> {
@@ -157,4 +160,116 @@ struct PatternAnalyzerConstructor;
 
 /// OrthographicAnalyzer constructor
 #[derive(Debug)]
-struct OrthographicAnalyzerConstructor; 
+struct OrthographicAnalyzerConstructor;
+
+/// Implements advanced domain-specific language features for the Turbulance language
+pub struct DomainExtensions {
+    // ... existing code ...
+    
+    /// Domain-specific keyword registry for custom syntax
+    pub domain_keywords: HashMap<String, DomainKeywordHandler>,
+    
+    /// Custom type definitions for domain-specific types
+    pub domain_types: HashMap<String, DomainTypeDefinition>,
+}
+
+/// Represents a domain-specific type with validation and operations
+#[derive(Clone)]
+pub struct DomainTypeDefinition {
+    /// Name of the domain type
+    pub name: String,
+    
+    /// Validation function for checking if a value is of this type
+    pub validator: Arc<dyn Fn(&Value) -> bool + Send + Sync>,
+    
+    /// Type-specific operations
+    pub operations: HashMap<String, DomainOperation>,
+    
+    /// Documentation for the type
+    pub documentation: String,
+}
+
+/// Represents a domain-specific operation on a type
+#[derive(Clone)]
+pub struct DomainOperation {
+    /// Name of the operation
+    pub name: String,
+    
+    /// Function implementing the operation
+    pub implementation: Arc<dyn Fn(&mut Context, &[Value]) -> Result<Value> + Send + Sync>,
+    
+    /// Parameter information
+    pub parameters: Vec<ParameterInfo>,
+    
+    /// Documentation for the operation
+    pub documentation: String,
+}
+
+/// Information about operation parameters
+#[derive(Clone)]
+pub struct ParameterInfo {
+    /// Name of the parameter
+    pub name: String,
+    
+    /// Whether the parameter is optional
+    pub optional: bool,
+    
+    /// Expected type of the parameter
+    pub expected_type: String,
+    
+    /// Default value for optional parameters
+    pub default_value: Option<Value>,
+}
+
+/// Function type for handling domain-specific keywords
+pub type DomainKeywordHandler = Arc<dyn Fn(&mut Context, &[Node]) -> Result<Value> + Send + Sync>;
+
+impl DomainExtensions {
+    // ... existing code ...
+    
+    /// Registers a new domain-specific type
+    pub fn register_domain_type(&mut self, type_def: DomainTypeDefinition) {
+        self.domain_types.insert(type_def.name.clone(), type_def);
+    }
+    
+    /// Registers a new domain-specific keyword
+    pub fn register_domain_keyword(&mut self, keyword: String, handler: DomainKeywordHandler) {
+        self.domain_keywords.insert(keyword, handler);
+    }
+    
+    /// Validates if a value matches a domain-specific type
+    pub fn validate_domain_type(&self, type_name: &str, value: &Value) -> bool {
+        if let Some(type_def) = self.domain_types.get(type_name) {
+            return (type_def.validator)(value);
+        }
+        false
+    }
+    
+    /// Executes a domain-specific operation on a value
+    pub fn execute_domain_operation(
+        &self,
+        ctx: &mut Context,
+        type_name: &str,
+        operation: &str,
+        value: &Value,
+        args: &[Value]
+    ) -> Result<Value> {
+        if let Some(type_def) = self.domain_types.get(type_name) {
+            if let Some(op) = type_def.operations.get(operation) {
+                let mut all_args = vec![value.clone()];
+                all_args.extend_from_slice(args);
+                return (op.implementation)(ctx, &all_args);
+            }
+            return Err(Error::turbulance(format!("Operation '{}' not found for domain type '{}'", operation, type_name)));
+        }
+        Err(Error::turbulance(format!("Domain type '{}' not registered", type_name)))
+    }
+    
+    /// Handles domain-specific keyword usage in the AST
+    pub fn handle_domain_keyword(&self, ctx: &mut Context, keyword: &str, args: &[Node]) -> Result<Value> {
+        if let Some(handler) = self.domain_keywords.get(keyword) {
+            return handler(ctx, args);
+        }
+        Err(Error::turbulance(format!("Domain keyword '{}' not registered", keyword)))
+    }
+} 

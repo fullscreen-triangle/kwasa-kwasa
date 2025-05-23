@@ -72,6 +72,18 @@ pub enum Error {
 
     #[error("{0}")]
     Custom(String),
+
+    /// Pattern analysis errors
+    #[error("Pattern error: {0}")]
+    Pattern(String),
+    
+    /// Visualization errors
+    #[error("Visualization error: {0}")]
+    Visualization(String),
+
+    /// External API errors
+    #[error("External API error: {0}")]
+    ExternalApi(String),
 }
 
 impl Error {
@@ -133,6 +145,21 @@ impl Error {
     /// Create a text unit error
     pub fn text_unit(message: &str) -> Self {
         Self::TextUnit(message.to_string())
+    }
+    
+    /// Create a pattern error
+    pub fn pattern(msg: impl Into<String>) -> Self {
+        Self::Pattern(msg.into())
+    }
+    
+    /// Create a visualization error
+    pub fn visualization(msg: impl Into<String>) -> Self {
+        Self::Visualization(msg.into())
+    }
+    
+    /// Create an external API error
+    pub fn external_api(msg: impl Into<String>) -> Self {
+        Self::ExternalApi(msg.into())
     }
     
     /// Determine if this error is recoverable

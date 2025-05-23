@@ -48,6 +48,12 @@ pub struct Pattern {
     pub source: Option<String>,
     /// Tags associated with this pattern
     pub tags: Vec<String>,
+    /// Pattern type
+    pub pattern_type: String,
+    /// Supporting evidence for this pattern
+    pub supporting_evidence: Vec<String>,
+    /// Additional metadata
+    pub metadata: HashMap<String, String>,
 }
 
 impl Pattern {
@@ -62,6 +68,9 @@ impl Pattern {
             significance: 0.0,
             source: None,
             tags: Vec::new(),
+            pattern_type: "general".to_string(),
+            supporting_evidence: Vec::new(),
+            metadata: HashMap::new(),
         }
     }
     
@@ -93,6 +102,92 @@ impl Pattern {
     pub fn with_tags(mut self, tags: Vec<String>) -> Self {
         self.tags = tags;
         self
+    }
+    
+    /// Set the pattern type
+    pub fn with_pattern_type(mut self, pattern_type: impl Into<String>) -> Self {
+        self.pattern_type = pattern_type.into();
+        self
+    }
+    
+    /// Add supporting evidence
+    pub fn with_evidence(mut self, evidence: Vec<String>) -> Self {
+        self.supporting_evidence = evidence;
+        self
+    }
+    
+    /// Add metadata
+    pub fn with_metadata(mut self, metadata: HashMap<String, String>) -> Self {
+        self.metadata = metadata;
+        self
+    }
+    
+    /// Check if this pattern is similar to another pattern
+    pub fn is_similar_to(&self, other: &Pattern) -> bool {
+        // Check if patterns have significant overlap in elements
+        let common_elements = self.elements.iter()
+            .filter(|e| other.elements.contains(e))
+            .count();
+        
+        let max_elements = self.elements.len().max(other.elements.len());
+        if max_elements == 0 {
+            return false;
+        }
+        
+        let similarity_ratio = common_elements as f64 / max_elements as f64;
+        
+        // Also check if they have the same pattern type and similar descriptions
+        let same_type = self.pattern_type == other.pattern_type;
+        let similar_description = self.description.len() > 0 && other.description.len() > 0 &&
+            self.description.to_lowercase().contains(&other.description.to_lowercase().split_whitespace().next().unwrap_or(""));
+        
+        similarity_ratio > 0.7 || (same_type && similar_description)
+    }
+    
+    /// Check if this pattern complements another pattern
+    pub fn complements(&self, other: &Pattern) -> bool {
+        // Patterns complement if they have different types but share some evidence or elements
+        if self.pattern_type == other.pattern_type {
+            return false;
+        }
+        
+        // Check for shared evidence
+        let shared_evidence = self.supporting_evidence.iter()
+            .any(|e| other.supporting_evidence.contains(e));
+        
+        // Check for complementary elements (no overlap but related domains)
+        let related_domains = self.tags.iter().any(|tag| other.tags.contains(tag));
+        
+        shared_evidence || related_domains
+    }
+    
+    /// Check if this pattern contradicts another pattern
+    pub fn contradicts(&self, other: &Pattern) -> bool {
+        // Look for contradictory metadata or conflicting evidence
+        if let (Some(my_outcome), Some(other_outcome)) = 
+            (self.metadata.get("outcome"), other.metadata.get("outcome")) {
+            if my_outcome != other_outcome && 
+               self.elements.iter().any(|e| other.elements.contains(e)) {
+                return true;
+            }
+        }
+        
+        // Check for contradictory tags
+        let contradictory_tags = [
+            ("positive", "negative"),
+            ("increase", "decrease"),
+            ("valid", "invalid"),
+            ("present", "absent"),
+        ];
+        
+        for (tag1, tag2) in &contradictory_tags {
+            if (self.tags.contains(&tag1.to_string()) && other.tags.contains(&tag2.to_string())) ||
+               (self.tags.contains(&tag2.to_string()) && other.tags.contains(&tag1.to_string())) {
+                return true;
+            }
+        }
+        
+        false
     }
 }
 

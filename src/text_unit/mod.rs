@@ -4,11 +4,14 @@ pub mod registry;
 pub mod hierarchy;
 pub mod utils;
 pub mod transform;
+pub mod advanced_processing;
 
 // Re-export common types for convenience
-pub use boundary::{BoundaryType, TextUnit};
-pub use operations::{TextOperations, TextTransform};
-pub use hierarchy::{DocumentHierarchy, HierarchyNode, NodeType};
+pub use boundary::{UnitBoundary, BoundaryType};
+pub use operations::{Operation, FilterPredicate};
+pub use hierarchy::{HierarchyNode, HierarchyNodeType};
+pub use transform::{TransformationPipeline, PipelineStage, TransformationMetrics};
+pub use advanced_processing::{AdvancedTextProcessor, SemanticAnalysis, StyleAnalysis, ReadabilityMetrics};
 pub use registry::TextUnitRegistry;
 
 use std::collections::HashMap;
@@ -136,6 +139,11 @@ impl TextUnit {
             content: self.content.clone(),
             metadata: self.metadata.clone(),
         }
+    }
+    
+    /// Create a new text unit from a string with a specific type
+    pub fn from_string_with_type(content: String, unit_type: TextUnitType) -> Self {
+        Self::new(content, 0, 0, unit_type, 0)
     }
     
     /// Calculate the text unit's complexity
