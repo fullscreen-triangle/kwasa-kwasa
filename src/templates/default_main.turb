@@ -1,0 +1,54 @@
+// Welcome to your new Kwasa-Kwasa project!
+// This is the main entry point for your Turbulance application.
+
+project "my-project":
+    // Define your data sources
+    source sample_text: "This is a sample text for processing. It contains multiple sentences. Some are simple, others are more complex with various punctuation marks!"
+    
+    // Define helper functions
+    funxn analyze_text(text):
+        // Split text into different units
+        let words = text / word
+        let sentences = text / sentence
+        let paragraphs = text / paragraph
+        
+        // Perform basic analysis
+        let word_count = len(words)
+        let sentence_count = len(sentences)
+        let avg_words_per_sentence = word_count / sentence_count
+        
+        return {
+            "words": word_count,
+            "sentences": sentence_count,
+            "paragraphs": len(paragraphs),
+            "avg_words_per_sentence": avg_words_per_sentence,
+            "readability": readability_score(text)
+        }
+    
+    funxn process_text(text):
+        // Example text processing operations
+        let simplified = text.simplify()
+        let formalized = text.formalize()
+        
+        return {
+            "original": text,
+            "simplified": simplified,
+            "formalized": formalized
+        }
+    
+    // Main execution
+    funxn main():
+        print("Starting text analysis...")
+        
+        // Analyze the sample text
+        let analysis = analyze_text(sample_text)
+        print("Analysis results:", analysis)
+        
+        // Process the text
+        let processed = process_text(sample_text)
+        print("Processed text:", processed)
+        
+        print("Processing complete!")
+    
+    // Execute main function
+    main() 

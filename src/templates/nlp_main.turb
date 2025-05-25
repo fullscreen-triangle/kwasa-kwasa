@@ -1,0 +1,203 @@
+// Natural Language Processing Project Template
+// Designed for advanced NLP and linguistic analysis workflows
+
+project "nlp-project":
+    // NLP data sources
+    source corpus: """
+    Natural language processing is a subfield of artificial intelligence that focuses on the interaction between computers and human language. It involves developing algorithms and models that can understand, interpret, and generate human language in a valuable way. Modern NLP techniques leverage machine learning and deep learning approaches to achieve state-of-the-art performance on various tasks including sentiment analysis, named entity recognition, machine translation, and text summarization.
+    """
+    
+    source linguistics_config: {
+        "analyze_syntax": true,
+        "extract_entities": true,
+        "perform_sentiment": true,
+        "identify_topics": true,
+        "analyze_discourse": true
+    }
+    
+    // Core NLP functions
+    funxn tokenize_advanced(text):
+        // Advanced tokenization with linguistic features
+        let tokens = text / word
+        let sentences = text / sentence
+        let paragraphs = text / paragraph
+        
+        let linguistic_tokens = []
+        within tokens considering all:
+            let token_info = {
+                "text": this,
+                "length": len(this),
+                "is_capitalized": contains(this, r"^[A-Z]"),
+                "is_numeric": contains(this, r"^\d+$"),
+                "has_punctuation": contains(this, r"[.,;:!?]")
+            }
+            linguistic_tokens = linguistic_tokens + [token_info]
+        
+        return {
+            "tokens": linguistic_tokens,
+            "sentence_count": len(sentences),
+            "paragraph_count": len(paragraphs),
+            "avg_tokens_per_sentence": len(tokens) / len(sentences)
+        }
+    
+    funxn extract_named_entities(text):
+        // Extract named entities and classify them
+        let proper_nouns = extract_patterns(text, r"\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\b")
+        let technical_terms = extract_patterns(text, r"\b[a-z]+ learning\b|\b[a-z]+ intelligence\b|\b[a-z]+ processing\b")
+        let acronyms = extract_patterns(text, r"\b[A-Z]{2,}\b")
+        
+        return {
+            "proper_nouns": proper_nouns,
+            "technical_terms": technical_terms,
+            "acronyms": acronyms,
+            "entity_density": (len(proper_nouns) + len(technical_terms)) / len(text / word)
+        }
+    
+    funxn analyze_syntactic_structure(text):
+        // Analyze syntactic patterns and complexity
+        let sentences = text / sentence
+        let syntactic_analysis = []
+        
+        within sentences considering all:
+            let words = this / word
+            let complex_indicators = extract_patterns(this, r"\b(which|that|because|although|however|therefore)\b")
+            let passive_voice = extract_patterns(this, r"\b(is|are|was|were)\s+\w+ed\b")
+            
+            let sentence_analysis = {
+                "sentence": this,
+                "word_count": len(words),
+                "complexity_score": len(complex_indicators),
+                "has_passive_voice": len(passive_voice) > 0,
+                "sentence_type": if len(complex_indicators) > 2 then "complex" 
+                               else if len(words) > 15 then "compound" 
+                               else "simple"
+            }
+            syntactic_analysis = syntactic_analysis + [sentence_analysis]
+        
+        return {
+            "sentence_analysis": syntactic_analysis,
+            "avg_complexity": (sum(map(syntactic_analysis, s => s.complexity_score)) / len(syntactic_analysis)),
+            "passive_voice_ratio": len(filter(syntactic_analysis, s => s.has_passive_voice)) / len(syntactic_analysis)
+        }
+    
+    funxn perform_discourse_analysis(text):
+        // Analyze discourse structure and coherence
+        let sentences = text / sentence
+        let discourse_markers = extract_patterns(text, r"\b(first|second|next|then|finally|however|therefore|moreover|furthermore)\b")
+        let referential_expressions = extract_patterns(text, r"\b(this|that|these|those|it|they)\b")
+        
+        let coherence_score = (len(discourse_markers) + len(referential_expressions)) / len(sentences)
+        
+        return {
+            "discourse_markers": discourse_markers,
+            "referential_expressions": referential_expressions,
+            "coherence_score": coherence_score,
+            "discourse_quality": if coherence_score > 0.5 then "high" 
+                               else if coherence_score > 0.2 then "medium" 
+                               else "low"
+        }
+    
+    funxn extract_semantic_features(text):
+        // Extract semantic features and relationships
+        let sentences = text / sentence
+        let semantic_fields = {
+            "technology": extract_patterns(text, r"\b(algorithm|model|computer|digital|software|system)\b"),
+            "cognition": extract_patterns(text, r"\b(understand|interpret|analyze|recognize|process|learn)\b"),
+            "performance": extract_patterns(text, r"\b(performance|accuracy|efficiency|optimization|state-of-the-art)\b")
+        }
+        
+        let semantic_density = []
+        within sentences considering all:
+            let tech_count = len(extract_patterns(this, r"\b(algorithm|model|computer|digital|software|system)\b"))
+            let cog_count = len(extract_patterns(this, r"\b(understand|interpret|analyze|recognize|process|learn)\b"))
+            let perf_count = len(extract_patterns(this, r"\b(performance|accuracy|efficiency|optimization|state-of-the-art)\b"))
+            
+            semantic_density = semantic_density + [{
+                "sentence": this,
+                "technology_density": tech_count / len(this / word),
+                "cognition_density": cog_count / len(this / word),
+                "performance_density": perf_count / len(this / word)
+            }]
+        
+        return {
+            "semantic_fields": semantic_fields,
+            "sentence_semantics": semantic_density,
+            "dominant_field": if len(semantic_fields.technology) > len(semantic_fields.cognition) then "technology" else "cognition"
+        }
+    
+    funxn calculate_linguistic_complexity(text):
+        // Calculate comprehensive linguistic complexity metrics
+        let tokenization = tokenize_advanced(text)
+        let syntax = analyze_syntactic_structure(text)
+        let discourse = perform_discourse_analysis(text)
+        let semantics = extract_semantic_features(text)
+        
+        let complexity_metrics = {
+            "lexical_diversity": tokenization.tokens.unique_ratio,
+            "syntactic_complexity": syntax.avg_complexity,
+            "discourse_coherence": discourse.coherence_score,
+            "semantic_richness": len(semantics.semantic_fields.technology) + len(semantics.semantic_fields.cognition),
+            "overall_complexity": (syntax.avg_complexity + discourse.coherence_score) / 2
+        }
+        
+        return complexity_metrics
+    
+    // Main NLP analysis pipeline
+    funxn run_nlp_analysis():
+        print("=== Advanced NLP Analysis Pipeline ===")
+        
+        // Step 1: Tokenization and basic analysis
+        let tokenization = tokenize_advanced(corpus)
+        print("Tokenization complete:", tokenization)
+        
+        // Step 2: Named entity recognition
+        let entities = extract_named_entities(corpus)
+        print("Named entities extracted:", entities)
+        
+        // Step 3: Syntactic analysis
+        let syntax = analyze_syntactic_structure(corpus)
+        print("Syntactic analysis complete:", syntax)
+        
+        // Step 4: Discourse analysis
+        let discourse = perform_discourse_analysis(corpus)
+        print("Discourse analysis complete:", discourse)
+        
+        // Step 5: Semantic analysis
+        let semantics = extract_semantic_features(corpus)
+        print("Semantic analysis complete:", semantics)
+        
+        // Step 6: Comprehensive complexity analysis
+        let complexity = calculate_linguistic_complexity(corpus)
+        print("Linguistic complexity calculated:", complexity)
+        
+        // Step 7: Generate NLP report
+        let nlp_report = {
+            "corpus_stats": {
+                "total_tokens": len(corpus / word),
+                "unique_tokens": len(unique(corpus / word)),
+                "sentences": len(corpus / sentence),
+                "readability": readability_score(corpus)
+            },
+            "linguistic_features": {
+                "entities": entities,
+                "syntax": syntax,
+                "discourse": discourse,
+                "semantics": semantics
+            },
+            "complexity_analysis": complexity,
+            "nlp_insights": {
+                "dominant_semantic_field": semantics.dominant_field,
+                "discourse_quality": discourse.discourse_quality,
+                "text_sophistication": if complexity.overall_complexity > 0.7 then "high" 
+                                     else if complexity.overall_complexity > 0.4 then "medium" 
+                                     else "low"
+            }
+        }
+        
+        print("=== Final NLP Report ===")
+        print(nlp_report)
+        
+        return nlp_report
+    
+    // Execute NLP analysis
+    run_nlp_analysis() 

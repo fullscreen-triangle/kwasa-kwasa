@@ -1,0 +1,94 @@
+// Research Project Template
+// Designed for academic research and analysis workflows
+
+project "research-project":
+    // Research data sources
+    source research_data: "Machine learning has revolutionized artificial intelligence in recent years. Deep learning models, particularly neural networks, have shown remarkable performance improvements across various domains including natural language processing, computer vision, and speech recognition."
+    
+    source citations: [
+        "Smith, J. (2023). Advances in Neural Networks. Journal of AI Research.",
+        "Johnson, A. & Brown, B. (2022). Deep Learning Applications. Tech Review."
+    ]
+    
+    // Research analysis functions
+    funxn extract_key_concepts(text):
+        // Extract important concepts and terms
+        let concepts = extract_patterns(text, r"\b[A-Z][a-z]+ [a-z]+\b")
+        let technical_terms = extract_patterns(text, r"\b[a-z]+ learning\b|\b[a-z]+ networks?\b")
+        
+        return {
+            "concepts": concepts,
+            "technical_terms": technical_terms
+        }
+    
+    funxn analyze_research_quality(text):
+        // Analyze text for research quality indicators
+        let readability = readability_score(text)
+        let complexity = text.complexity()
+        let contains_citations = contains(text, r"\([0-9]{4}\)|et al\.")
+        
+        return {
+            "readability_score": readability,
+            "complexity_score": complexity,
+            "has_citations": contains_citations,
+            "academic_level": if readability < 0.3 then "graduate" else "undergraduate"
+        }
+    
+    funxn generate_research_summary(text):
+        // Generate research-focused summary
+        let summary = text.summarize()
+        let key_findings = extract_key_concepts(text)
+        
+        return {
+            "summary": summary,
+            "key_concepts": key_findings.concepts,
+            "technical_terms": key_findings.technical_terms,
+            "word_count": len(text / word)
+        }
+    
+    funxn validate_research_standards(text):
+        // Ensure research standards are met
+        within text considering all:
+            ensure contains(this, r"[A-Z][a-z]+ et al\.|[A-Z][a-z]+, [A-Z]\.")
+            ensure readability_score(this) < 0.5  // Academic level
+        
+        return "Research standards validated"
+    
+    // Research workflow
+    funxn conduct_research_analysis():
+        print("=== Research Analysis Workflow ===")
+        
+        // 1. Extract key concepts
+        let concepts = extract_key_concepts(research_data)
+        print("Key concepts identified:", concepts)
+        
+        // 2. Analyze research quality
+        let quality = analyze_research_quality(research_data)
+        print("Research quality analysis:", quality)
+        
+        // 3. Generate summary
+        let summary = generate_research_summary(research_data)
+        print("Research summary:", summary)
+        
+        // 4. Validate standards
+        given quality.has_citations:
+            let validation = validate_research_standards(research_data)
+            print("Validation:", validation)
+        
+        // 5. Generate research report
+        let report = {
+            "project": "research-project",
+            "analysis_date": "2024-01-01",
+            "concepts": concepts,
+            "quality_metrics": quality,
+            "summary": summary,
+            "citations": citations
+        }
+        
+        print("=== Final Research Report ===")
+        print(report)
+        
+        return report
+    
+    // Execute research analysis
+    conduct_research_analysis() 

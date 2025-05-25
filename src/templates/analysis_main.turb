@@ -1,0 +1,163 @@
+// Data Analysis Project Template  
+// Designed for text mining and data analysis workflows
+
+project "analysis-project":
+    // Analysis data sources
+    source dataset: """
+    Customer feedback analysis report for Q4 2023.
+    
+    Positive feedback: "Great product quality and excellent customer service. Fast delivery and easy returns process."
+    
+    Negative feedback: "Product arrived damaged. Customer service was slow to respond. Return process was confusing."
+    
+    Neutral feedback: "Average product. Nothing special but meets basic requirements. Price is reasonable."
+    """
+    
+    source analysis_config: {
+        "sentiment_threshold": 0.6,
+        "min_word_length": 3,
+        "exclude_stopwords": true,
+        "confidence_level": 0.95
+    }
+    
+    // Analysis functions
+    funxn extract_sentiment_data(text):
+        // Extract sentiment indicators
+        let positive_patterns = extract_patterns(text, r"\b(great|excellent|good|fast|easy)\b")
+        let negative_patterns = extract_patterns(text, r"\b(damaged|slow|confusing|bad|poor)\b") 
+        let neutral_patterns = extract_patterns(text, r"\b(average|reasonable|basic|nothing)\b")
+        
+        return {
+            "positive_indicators": positive_patterns,
+            "negative_indicators": negative_patterns,
+            "neutral_indicators": neutral_patterns
+        }
+    
+    funxn calculate_sentiment_score(text):
+        // Calculate numerical sentiment score
+        let sentiment_data = extract_sentiment_data(text)
+        let positive_count = len(sentiment_data.positive_indicators)
+        let negative_count = len(sentiment_data.negative_indicators)
+        let total_indicators = positive_count + negative_count
+        
+        let score = if total_indicators > 0 then
+            (positive_count - negative_count) / total_indicators
+        else
+            0.0
+        
+        return {
+            "score": score,
+            "classification": if score > 0.3 then "positive" 
+                            else if score < -0.3 then "negative" 
+                            else "neutral",
+            "confidence": if total_indicators > 5 then "high" else "low"
+        }
+    
+    funxn perform_frequency_analysis(text):
+        // Analyze word and phrase frequencies
+        let words = text / word
+        let filtered_words = []
+        
+        within words considering all:
+            given len(this) >= analysis_config.min_word_length:
+                filtered_words = filtered_words + [this]
+        
+        return {
+            "total_words": len(words),
+            "filtered_words": len(filtered_words),
+            "unique_words": len(unique(filtered_words)),
+            "word_diversity": len(unique(filtered_words)) / len(filtered_words)
+        }
+    
+    funxn extract_key_topics(text):
+        // Extract main topics and themes
+        let sentences = text / sentence
+        let topics = []
+        
+        within sentences considering all:
+            let sentence_words = this / word
+            given len(sentence_words) > 5:
+                let topic_indicators = extract_patterns(this, r"\b(product|service|delivery|return|price|quality)\b")
+                given len(topic_indicators) > 0:
+                    topics = topics + [{
+                        "sentence": this,
+                        "topics": topic_indicators,
+                        "sentiment": calculate_sentiment_score(this)
+                    }]
+        
+        return topics
+    
+    funxn generate_analysis_report(text):
+        // Generate comprehensive analysis report
+        let sentiment_analysis = calculate_sentiment_score(text)
+        let frequency_analysis = perform_frequency_analysis(text)
+        let topic_analysis = extract_key_topics(text)
+        
+        return {
+            "overall_sentiment": sentiment_analysis,
+            "frequency_metrics": frequency_analysis,
+            "topic_breakdown": topic_analysis,
+            "summary_stats": {
+                "total_sentences": len(text / sentence),
+                "total_paragraphs": len(text / paragraph),
+                "readability": readability_score(text)
+            }
+        }
+    
+    funxn validate_analysis_quality(analysis_result):
+        // Validate analysis results
+        within analysis_result considering all:
+            ensure this.overall_sentiment.confidence != "unknown"
+            ensure this.frequency_metrics.word_diversity > 0.1
+            ensure len(this.topic_breakdown) > 0
+        
+        return "Analysis quality validated"
+    
+    // Main analysis workflow
+    funxn run_analysis_pipeline():
+        print("=== Starting Data Analysis Pipeline ===")
+        
+        // Step 1: Generate comprehensive analysis
+        let analysis = generate_analysis_report(dataset)
+        print("Analysis complete:", analysis)
+        
+        // Step 2: Validate results
+        let validation = validate_analysis_quality(analysis)
+        print("Validation:", validation)
+        
+        // Step 3: Extract insights
+        let insights = {
+            "dominant_sentiment": analysis.overall_sentiment.classification,
+            "confidence_level": analysis.overall_sentiment.confidence,
+            "key_topics": len(analysis.topic_breakdown),
+            "text_complexity": analysis.summary_stats.readability,
+            "vocabulary_richness": analysis.frequency_metrics.word_diversity
+        }
+        
+        print("=== Key Insights ===")
+        print(insights)
+        
+        // Step 4: Generate recommendations
+        let recommendations = []
+        
+        given analysis.overall_sentiment.score < -0.2:
+            recommendations = recommendations + ["Focus on addressing negative feedback patterns"]
+        
+        given analysis.frequency_metrics.word_diversity < 0.3:
+            recommendations = recommendations + ["Consider collecting more diverse feedback"]
+        
+        given len(analysis.topic_breakdown) < 3:
+            recommendations = recommendations + ["Expand topic coverage in data collection"]
+        
+        print("=== Recommendations ===")
+        within recommendations considering all:
+            print("- " + this)
+        
+        return {
+            "analysis": analysis,
+            "insights": insights,
+            "recommendations": recommendations
+        }
+    
+    // Execute analysis pipeline
+    run_analysis_pipeline() 
