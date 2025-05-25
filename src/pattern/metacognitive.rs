@@ -22,7 +22,7 @@ pub struct MetaNode {
 }
 
 /// Types of metacognitive nodes
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum MetaNodeType {
     /// Represents a fundamental concept
     Concept,

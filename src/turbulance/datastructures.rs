@@ -368,6 +368,7 @@ pub enum EdgeType {
     Catalyzes { rate: f64 },
     Transforms,
     BindsTo { affinity: f64 },
+    PreconditionFor { necessity: f64 },
 }
 
 /// Quantifier for uncertainty in evidence relationships
@@ -495,6 +496,15 @@ impl EvidenceNetwork {
                         EdgeType::BindsTo { affinity } => {
                             // Binding increases correlation between beliefs
                             (current_belief + affinity * from_belief) / (1.0 + affinity)
+                        },
+                        EdgeType::PreconditionFor { necessity } => {
+                            // PreconditionFor relationship affects belief
+                            // If the precondition is met, the condition is more likely
+                            if necessity <= current_belief {
+                                current_belief
+                            } else {
+                                necessity
+                            }
                         },
                     };
                     

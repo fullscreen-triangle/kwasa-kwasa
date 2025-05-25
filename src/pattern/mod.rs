@@ -5,7 +5,7 @@
 
 use std::fmt::Debug;
 use std::{collections::HashMap, marker::PhantomData};
-use std::hash::Hash;
+use std::hash::{Hash, Hasher, DefaultHasher};
 
 pub mod metacognitive;
 
@@ -120,6 +120,31 @@ impl Pattern {
     pub fn with_metadata(mut self, metadata: HashMap<String, String>) -> Self {
         self.metadata = metadata;
         self
+    }
+    
+    /// Create a pattern with specific occurrence count
+    pub fn with_occurrences(content: Vec<u8>, count: usize) -> Self {
+        let content_str = String::from_utf8_lossy(&content).to_string();
+        let mut hasher = DefaultHasher::new();
+        hasher.write(&content);
+        let id = format!("pattern_{:x}", hasher.finish());
+        
+        Self {
+            id,
+            name: format!("Pattern ({})", content_str),
+            description: format!("Recurring pattern found {} times", count),
+            confidence: (count as f64).log10().min(1.0).max(0.1),
+            elements: vec![content_str.clone()],
+            significance: if count > 1 { (count as f64).log2() / 10.0 } else { 0.0 },
+            source: Some("Pattern analysis".to_string()),
+            tags: vec!["auto_detected".to_string()],
+            pattern_type: "sequence".to_string(),
+            supporting_evidence: vec![format!("Found {} occurrences", count)],
+            metadata: [
+                ("occurrences".to_string(), count.to_string()),
+                ("content".to_string(), content_str)
+            ].into_iter().collect(),
+        }
     }
     
     /// Check if this pattern is similar to another pattern
@@ -443,7 +468,7 @@ impl PatternAnalyzer<Vec<u8>> {
         
         let mut compressed_content = Vec::new();
         let mut pattern_indices = Vec::new();
-        let patterns: Vec<_> = significant_patterns.iter().map(|p| p.pattern.clone()).collect();
+        let patterns: Vec<_> = significant_patterns.iter().map(|p| p.elements[0].as_bytes().to_vec()).collect();
         
         let mut i = 0;
         while i < content.len() {

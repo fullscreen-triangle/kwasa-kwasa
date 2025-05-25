@@ -101,6 +101,16 @@ pub fn run_with_context(source: &str, context: &mut Context) -> Result<String> {
     Ok(result)
 }
 
+impl TurbulanceError {
+    /// Determine if this error is recoverable
+    pub fn is_recoverable(&self) -> bool {
+        match self {
+            Self::LexicalError { .. } | Self::SyntaxError { .. } => false,
+            _ => true,
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

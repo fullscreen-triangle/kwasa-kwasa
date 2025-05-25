@@ -73,10 +73,6 @@ pub enum Error {
     #[error("{0}")]
     Custom(String),
 
-    /// Pattern analysis errors
-    #[error("Pattern error: {0}")]
-    Pattern(String),
-    
     /// Visualization errors
     #[error("Visualization error: {0}")]
     Visualization(String),
@@ -138,18 +134,13 @@ impl Error {
     }
     
     /// Create a CLI error
-    pub fn cli(message: &str) -> Self {
-        Self::Cli(message.to_string())
+    pub fn cli(message: impl Into<String>) -> Self {
+        Self::Cli(message.into())
     }
     
     /// Create a text unit error
     pub fn text_unit(message: &str) -> Self {
         Self::TextUnit(message.to_string())
-    }
-    
-    /// Create a pattern error
-    pub fn pattern(msg: impl Into<String>) -> Self {
-        Self::Pattern(msg.into())
     }
     
     /// Create a visualization error
@@ -168,6 +159,12 @@ impl Error {
             Self::Parse { .. } | Self::Lexical { .. } | Self::Syntax { .. } => false,
             _ => true,
         }
+    }
+}
+
+impl From<serde_json::Error> for Error {
+    fn from(err: serde_json::Error) -> Self {
+        Self::Custom(format!("JSON serialization error: {}", err))
     }
 }
 
