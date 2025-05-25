@@ -470,7 +470,7 @@ project "example-analysis":
     fn format_turbulance_code(&self, content: &str) -> Result<String> {
         // Simple formatter - this would be expanded with proper AST-based formatting
         let mut formatted = String::new();
-        let mut indent_level = 0;
+        let mut indent_level: usize = 0;
         let indent_str = if self.config.editor.use_spaces {
             " ".repeat(self.config.editor.tab_width as usize)
         } else {

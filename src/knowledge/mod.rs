@@ -73,7 +73,10 @@ impl KnowledgeDatabase {
     pub fn new(db_path: &Path) -> Result<Self> {
         // Ensure the directory exists
         if let Some(parent) = db_path.parent() {
-            fs::create_dir_all(parent)?;
+            fs::create_dir_all(parent).map_err(|e| rusqlite::Error::SqliteFailure(
+                rusqlite::ffi::Error::new(rusqlite::ffi::SQLITE_IOERR),
+                Some(format!("Failed to create directory: {}", e))
+            ))?;
         }
         
         let conn = Connection::open(db_path)?;

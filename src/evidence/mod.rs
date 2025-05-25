@@ -45,12 +45,12 @@ impl EvidenceIntegration {
             let id = format!("genomic_{}", idx);
             
             // Create a Motion object with the sequence content
-            let content = String::from_utf8_lossy(&sequence.content).to_string();
+            let content = String::from_utf8_lossy(sequence.content()).to_string();
             let motion = TurbulanceMotion::new(&content, TextUnitType::Paragraph);
             
             // Add to network
             network.add_node(&id, EvidenceNode::GenomicFeature { 
-                sequence: sequence.content.to_vec(), 
+                sequence: sequence.content().to_vec(), 
                 position: sequence.metadata().position.as_ref().map(|p| 
                     format!("{}:{}-{}", p.reference, p.start, p.end)
                 ),
@@ -333,6 +333,7 @@ fn get_edge_weight(edge_type: &EdgeType) -> f64 {
         EdgeType::Catalyzes { rate } => *rate,
         EdgeType::Transforms => 0.6,
         EdgeType::BindsTo { affinity } => *affinity,
+        EdgeType::PreconditionFor { necessity } => *necessity,
     }
 }
 

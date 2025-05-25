@@ -119,8 +119,8 @@ impl Error {
     }
     
     /// Create a pattern recognition error
-    pub fn pattern(message: &str) -> Self {
-        Self::Pattern(message.to_string())
+    pub fn pattern(message: impl Into<String>) -> Self {
+        Self::Pattern(message.into())
     }
     
     /// Create a knowledge error
@@ -165,6 +165,12 @@ impl Error {
 impl From<serde_json::Error> for Error {
     fn from(err: serde_json::Error) -> Self {
         Self::Custom(format!("JSON serialization error: {}", err))
+    }
+}
+
+impl From<rustyline::error::ReadlineError> for Error {
+    fn from(err: rustyline::error::ReadlineError) -> Self {
+        Self::Cli(format!("Readline error: {}", err))
     }
 }
 

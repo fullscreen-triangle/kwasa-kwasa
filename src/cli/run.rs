@@ -13,8 +13,8 @@ pub fn run_script(path: &Path) -> Result<()> {
         .with_context(|| format!("Failed to read script file: {}", path.display()))?;
     
     // Parse the script
-    let tokens = Lexer::tokenize(&content)
-        .with_context(|| "Failed to tokenize script")?;
+    let mut lexer = Lexer::new(&content);
+    let tokens = lexer.tokenize();
     
     let mut parser = Parser::new(tokens);
     let ast = parser.parse()
@@ -31,8 +31,8 @@ pub fn run_script(path: &Path) -> Result<()> {
 /// Executes a Turbulance script string directly
 pub fn run_script_string(script: &str) -> Result<()> {
     // Parse the script
-    let tokens = Lexer::tokenize(script)
-        .with_context(|| "Failed to tokenize script")?;
+    let mut lexer = Lexer::new(script);
+    let tokens = lexer.tokenize();
     
     let mut parser = Parser::new(tokens);
     let ast = parser.parse()
@@ -53,8 +53,8 @@ pub fn validate_script(path: &Path) -> Result<()> {
         .with_context(|| format!("Failed to read script file: {}", path.display()))?;
     
     // Parse the script
-    let tokens = Lexer::tokenize(&content)
-        .with_context(|| "Failed to tokenize script")?;
+    let mut lexer = Lexer::new(&content);
+    let tokens = lexer.tokenize();
     
     let mut parser = Parser::new(tokens);
     parser.parse()

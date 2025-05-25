@@ -22,7 +22,7 @@ pub mod prelude {
 }
 
 /// Metadata for genomic units
-#[derive(Debug, Clone, Eq, Hash, PartialEq)]
+#[derive(Debug, Clone, Eq, PartialEq)]
 pub struct GenomicMetadata {
     /// Source of the sequence (e.g., organism, database)
     pub source: Option<String>,
@@ -346,7 +346,7 @@ impl Unit for GeneUnit {
 //------------------------------------------------------------------------------
 
 /// A recurring pattern unit
-#[derive(Debug, Clone, Eq, Hash, PartialEq)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct MotifUnit {
     /// The motif sequence
     content: Vec<u8>,

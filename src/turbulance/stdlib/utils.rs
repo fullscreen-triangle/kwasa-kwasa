@@ -26,34 +26,33 @@ pub fn print(args: Vec<Value>) -> Result<Value> {
                 }
             },
             Value::Boolean(b) => print!("{}", b),
-            Value::Function(_) => print!("<function>"),
-            Value::NativeFunction(_) => print!("<native function>"),
+            Value::Function(_) => print!("[Function]"),
+            Value::NativeFunction(_) => print!("[Native Function]"),
             Value::Array(arr) => {
                 print!("[");
-                for (j, item) in arr.iter().enumerate() {
-                    if j > 0 {
+                for (i, item) in arr.iter().enumerate() {
+                    if i > 0 {
                         print!(", ");
                     }
-                    // Recursive call to handle nested values, but don't print
-                    let _ = print(vec![item.clone()]);
+                    print(vec![item.clone()])?;
                 }
                 print!("]");
             },
             Value::Object(obj) => {
                 print!("{{");
                 let mut first = true;
-                for (key, val) in obj {
+                for (key, value) in obj {
                     if !first {
                         print!(", ");
                     }
                     print!("{}: ", key);
-                    // Recursive call for the value
-                    let _ = print(vec![val.clone()]);
+                    print(vec![value.clone()])?;
                     first = false;
                 }
                 print!("}}");
             },
             Value::Null => print!("null"),
+            Value::Module(_) => print!("[Module]"),
         }
     }
     
@@ -104,6 +103,7 @@ pub fn typeof_fn(args: Vec<Value>) -> Result<Value> {
         Value::Array(_) => "array",
         Value::Object(_) => "object",
         Value::Null => "null",
+        Value::Module(_) => "module",
     };
     
     Ok(Value::String(type_name.to_string()))

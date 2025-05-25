@@ -441,7 +441,7 @@ impl TextVisualization {
 
     fn analyze_topic_distribution(&self, text_units: &[TextUnit]) -> Result<HashMap<String, f64>> {
         // Simplified topic analysis - in practice, this would use more sophisticated NLP
-        let mut topic_keywords = HashMap::new();
+        let mut topic_keywords: HashMap<String, Vec<String>> = HashMap::new();
         
         // Define some basic topic categories with keywords
         let topics = vec![

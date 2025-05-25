@@ -489,41 +489,41 @@ impl Repl {
             
             "load" if parts.len() >= 2 => {
                 let filename = parts[1].trim();
-                self.load_file(filename)?;
+                return self.load_file(filename);
             }
             
             "save" if parts.len() >= 3 => {
                 let filename = parts[1].trim();
                 let code = parts[2];
-                self.save_to_file(filename, code)?;
+                return self.save_to_file(filename, code);
             }
             
             "cd" if parts.len() >= 2 => {
                 let path = parts[1].trim();
-                self.change_directory(path)?;
+                return self.change_directory(path);
             }
             
-            "ls" => self.list_directory()?,
+            "ls" => return self.list_directory(),
             
-            "pwd" => self.print_working_directory(),
+            "pwd" => return self.print_working_directory(),
             
             "run" if parts.len() >= 2 => {
                 let filename = parts[1].trim();
-                self.run_file(filename)?;
+                return self.run_file(filename);
             }
             
             "debug" if parts.len() >= 2 => {
                 let filename = parts[1].trim();
-                self.debug_file(filename)?;
+                return self.debug_file(filename);
             }
             
-            "vars" => self.show_variables(),
+            "vars" => return self.show_variables(),
             
-            "funcs" => self.show_functions(),
+            "funcs" => return self.show_functions(),
             
             "time" if parts.len() >= 2 => {
                 let code = parts[1];
-                self.time_execution(code)?;
+                return self.time_execution(code);
             }
             
             _ => {

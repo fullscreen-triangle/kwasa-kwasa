@@ -69,14 +69,13 @@ impl HighThroughputSpectrometry {
         filtered_peaks
     }
     
-    /// Extract chromatograms for multiple m/z values in parallel from LC-MS data
+    /// Extract chromatograms for specific m/z values in parallel
     /// 
-    /// For each m/z value in the input vector, extract an extracted ion chromatogram (XIC)
-    /// from a series of spectra (representing an LC-MS run)
+    /// Returns a map of m/z values to their corresponding chromatograms (RT, intensity pairs)
     pub fn extract_chromatograms_parallel(&self, 
                                          spectra: &[MassSpectrum], 
                                          mz_values: &[f64], 
-                                         tolerance: f64) -> BTreeMap<f64, Vec<(f64, f64)>> {
+                                         tolerance: f64) -> HashMap<String, Vec<(f64, f64)>> {
         // Process each m/z value in parallel
         let chromatograms: Vec<(f64, Vec<(f64, f64)>)> = mz_values.par_iter()
             .map(|&mz| {
@@ -86,9 +85,9 @@ impl HighThroughputSpectrometry {
             .collect();
         
         // Convert to BTreeMap instead of HashMap for f64 keys
-        let mut result = BTreeMap::new();
+        let mut result = HashMap::new();
         for (mz, chromatogram) in chromatograms {
-            result.insert(mz, chromatogram);
+            result.insert(format!("{:.2}", mz), chromatogram);
         }
         
         result

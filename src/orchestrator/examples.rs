@@ -26,7 +26,8 @@ pub fn create_custom_orchestrator() -> MetacognitiveOrchestrator {
         
         // Store in metadata
         data.with_metadata("concepts", &concepts.join(","))
-            .with_confidence(0.6)
+            .with_confidence(0.6);
+        data
     });
     
     // Reasoning layer: Apply logical rules

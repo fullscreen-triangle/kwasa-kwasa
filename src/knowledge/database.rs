@@ -189,12 +189,14 @@ impl KnowledgeDatabase {
         
         let tx = self.conn.transaction()?;
         
-        let entry_id = tx.execute(
+        tx.execute(
             "INSERT INTO knowledge_entries 
              (topic, content, domain, source, confidence, last_verified, created_at) 
              VALUES (?, ?, ?, ?, ?, ?, ?)",
             params![topic, content, domain_str, source, confidence, now, now],
         )?;
+        
+        let entry_id = tx.last_insert_rowid();
         
         // Add citation if provided
         if let Some(citation) = citation {
