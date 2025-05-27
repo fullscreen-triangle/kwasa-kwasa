@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use crate::turbulance::ast::{Node, BinaryOp, UnaryOp, TextOp, Value};
+use crate::turbulance::ast::{Node, BinaryOp, UnaryOp, TextOp, Value as AstValue};
 use crate::turbulance::TurbulanceError;
 use crate::text_unit::boundary::TextUnit;
 use crate::turbulance::stdlib::StdLib;

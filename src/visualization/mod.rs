@@ -554,7 +554,7 @@ impl SvgRenderer {
                 let y = visualization.config.height - height - 50;
                 
                 bars.push_str(&format!(
-                    r#"<rect x="{}" y="{}" width="{}" height="{}" fill="#69b3a2"/>"#,
+                    r#"<rect x="{}" y="{}" width="{}" height="{}", fill="#69b3a2"/>"#,
                     x, y, bar_width, height
                 ));
                 

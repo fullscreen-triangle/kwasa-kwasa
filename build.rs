@@ -6,6 +6,20 @@ use std::fs::{self, File};
 use std::io::{self, Write};
 use std::path::{Path, PathBuf};
 
+fn generate_prelude(out_dir: &Path) -> io::Result<()> {
+    let prelude_path = out_dir.join("prelude.rs");
+    let mut file = File::create(&prelude_path)?;
+    
+    writeln!(file, "// Auto-generated prelude for Turbulance generated code")?;
+    writeln!(file, "// DO NOT EDIT MANUALLY")?;
+    writeln!(file, "")?;
+    writeln!(file, "pub use std::collections::HashMap;")?;
+    writeln!(file, "pub use crate::turbulance::{{TokenKind, Result, TurbulanceError}};")?;
+    writeln!(file, "pub use crate::turbulance::interpreter::{{Value, NativeFunction}};")?;
+    
+    Ok(())
+}
+
 fn main() -> io::Result<()> {
     // Track dependencies for rebuild
     println!("cargo:rerun-if-changed=src/");
@@ -19,6 +33,9 @@ fn main() -> io::Result<()> {
     // Create necessary directories
     let generated_dir = out_dir.join("generated");
     fs::create_dir_all(&generated_dir)?;
+    
+    // Generate prelude first
+    generate_prelude(&generated_dir)?;
     
     // Generate parser tables from grammar definitions
     generate_parser_tables(&generated_dir)?;
@@ -51,7 +68,7 @@ fn generate_parser_tables(out_dir: &Path) -> io::Result<()> {
     writeln!(file, "// Auto-generated parser tables for Turbulance language")?;
     writeln!(file, "// DO NOT EDIT MANUALLY")?;
     writeln!(file, "")?;
-    writeln!(file, "use std::collections::HashMap;")?;
+    writeln!(file, "use super::prelude::*;")?;
     writeln!(file, "")?;
     
     // Keywords table
@@ -104,11 +121,7 @@ fn generate_stdlib_bindings(out_dir: &Path) -> io::Result<()> {
     writeln!(file, "// Auto-generated standard library bindings for Turbulance")?;
     writeln!(file, "// DO NOT EDIT MANUALLY")?;
     writeln!(file, "")?;
-    writeln!(file, "use std::collections::HashMap;")?;
-    writeln!(file, "use crate::turbulance::interpreter::Value;")?;
-    writeln!(file, "use crate::turbulance::interpreter::NativeFunction;")?;
-    writeln!(file, "use crate::turbulance::Result;")?;
-    writeln!(file, "use crate::turbulance::TurbulanceError;")?;
+    writeln!(file, "use super::prelude::*;")?;
     writeln!(file, "")?;
     writeln!(file, "// Define standard function type for consistent casting")?;
     writeln!(file, "type StdlibFnType = fn(Vec<Value>) -> Result<Value>;")?;

@@ -39,10 +39,10 @@ impl CliCommands {
         
         // Create main Turbulance file
         let main_content = match template {
-            Some("research") => include_str!("../../templates/research_main.turb"),
-            Some("analysis") => include_str!("../../templates/analysis_main.turb"), 
-            Some("nlp") => include_str!("../../templates/nlp_main.turb"),
-            _ => include_str!("../../templates/default_main.turb"),
+            Some("research") => include_str!("../templates/research_main.turb"),
+            Some("analysis") => include_str!("../templates/analysis_main.turb"), 
+            Some("nlp") => include_str!("../templates/nlp_main.turb"),
+            _ => include_str!("../templates/default_main.turb"),
         };
         
         fs::write(project_path.join("src/main.turb"), main_content)?;

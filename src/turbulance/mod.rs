@@ -15,11 +15,20 @@ pub use context::Context;
 pub use context::Value;
 pub use context::Function;
 
-// Include generated code from build.rs
-include!(concat!(env!("TURBULANCE_GENERATED_DIR"), "/parser_tables.rs"));
-include!(concat!(env!("TURBULANCE_GENERATED_DIR"), "/stdlib_bindings.rs"));
-include!(concat!(env!("TURBULANCE_GENERATED_DIR"), "/token_definitions.rs"));
-include!(concat!(env!("TURBULANCE_GENERATED_DIR"), "/ast_serialization.rs"));
+// Include generated code
+#[path = "generated/mod.rs"]
+mod generated {
+    #[path = "prelude.rs"]
+    pub(crate) mod prelude;
+    pub(crate) use prelude::*;
+    
+    include!(concat!(env!("OUT_DIR"), "/generated/parser_tables.rs"));
+    include!(concat!(env!("OUT_DIR"), "/generated/stdlib_bindings.rs"));
+    include!(concat!(env!("OUT_DIR"), "/generated/token_definitions.rs"));
+}
+
+// Re-export generated types
+pub use generated::*;
 
 /// Error types for the Turbulance language
 #[derive(Debug, thiserror::Error)]

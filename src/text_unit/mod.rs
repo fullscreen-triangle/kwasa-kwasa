@@ -12,7 +12,7 @@ pub use operations::{Operation, FilterPredicate};
 pub use hierarchy::{HierarchyNode, HierarchyNodeType};
 pub use transform::{TransformationPipeline, PipelineStage, TransformationMetrics};
 pub use advanced_processing::{AdvancedTextProcessor, SemanticAnalysis, StyleAnalysis, ReadabilityMetrics};
-pub use registry::TextUnitRegistry;
+pub use registry::TextUnitRegistry as BaseTextUnitRegistry;
 
 use std::collections::HashMap;
 use std::fmt;

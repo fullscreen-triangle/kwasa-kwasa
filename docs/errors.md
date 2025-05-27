@@ -433,6 +433,38 @@ Self {
 }
 ```
 
+## 8. ✅ String Formatting and Multiple Definition Issues
+
+### ✅ Error: Expected `,` found `69b3a2` in visualization/mod.rs
+**Solution:** Fixed string formatting by adding missing comma in SVG rect template
+```rust
+// Change from
+r#"<rect x="{}" y="{}" width="{}" height="{}" fill="#69b3a2"/>"#
+// To
+r#"<rect x="{}" y="{}" width="{}" height="{}", fill="#69b3a2"/>"#
+```
+
+### ✅ Error: The name `Value` is defined multiple times in turbulance/interpreter.rs
+**Solution:** Renamed imported Value to avoid name conflict
+```rust
+// Change from
+use crate::turbulance::ast::{Node, BinaryOp, UnaryOp, TextOp, Value};
+// To
+use crate::turbulance::ast::{Node, BinaryOp, UnaryOp, TextOp, Value as AstValue};
+```
+
+### ✅ Error: The name `TextUnitRegistry` is defined multiple times in text_unit/mod.rs
+**Solution:** Renamed imported TextUnitRegistry to avoid name conflict
+```rust
+// Change from
+pub use registry::TextUnitRegistry;
+// To
+pub use registry::TextUnitRegistry as BaseTextUnitRegistry;
+```
+
+### ❌ Error: The name `HashMap` is defined multiple times in generated code
+**Solution:** This error occurs in generated code. Need to modify the code generator to avoid multiple HashMap imports.
+
 ## Next Steps for Framework Completion
 
 After addressing these errors, the following steps are required to complete the framework development:
