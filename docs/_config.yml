@@ -1,0 +1,10 @@
+theme: jekyll-theme-cayman
+title: Kwasa-Kwasa Documentation
+description: Documentation for the Kwasa-Kwasa scientific computing framework
+show_downloads: true
+google_analytics:
+plugins:
+  - jekyll-relative-links
+relative_links:
+  enabled: true
+  collections: true 

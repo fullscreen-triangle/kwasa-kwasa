@@ -989,6 +989,10 @@ impl Parser {
             message: message.to_string(),
         }
     }
+
+    fn cause_declaration(&mut self) -> Result<Node, TurbulanceError> {
+        // Implementation
+    }
 }
 
 impl Node {
@@ -1036,27 +1040,6 @@ impl Node {
             _ => None,
         }
     }
-}
-
-/// Parse a cause declaration (replaces variable declaration)
-fn cause_declaration(&mut self) -> Result<Node, TurbulanceError> {
-    let start_span = self.previous().span.clone();
-    
-    let name = self.consume(TokenKind::Identifier, "Expected cause name after 'cause'")?
-        .lexeme.clone();
-    
-    self.consume(TokenKind::Assign, "Expected '=' after cause name")?;
-    
-    let value = self.expression()?;
-    
-    let end_span = self.previous().span.clone();
-    
-    let span = Span::new(
-        Position::new(0, 0, start_span.start),
-        Position::new(0, 0, end_span.end),
-    );
-    
-    Ok(ast::cause_decl(name, value, span))
 }
 
 /// Parse a motion declaration (like a class or function)

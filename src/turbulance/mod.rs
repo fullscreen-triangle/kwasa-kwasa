@@ -16,10 +16,18 @@ pub use context::Value;
 pub use context::Function;
 
 // Include generated code
-#[path = "generated/mod.rs"]
 mod generated {
-    #[path = "prelude.rs"]
-    pub(crate) mod prelude;
+    pub(crate) mod prelude {
+        // Common imports for generated code
+        use std::collections::HashMap;
+        use crate::turbulance::{TokenKind, Result, TurbulanceError};
+        use crate::turbulance::interpreter::{Value, NativeFunction};
+
+        // Re-export common types
+        pub use std::collections::HashMap;
+        pub use crate::turbulance::{TokenKind, Result, TurbulanceError};
+        pub use crate::turbulance::interpreter::{Value, NativeFunction};
+    }
     pub(crate) use prelude::*;
     
     include!(concat!(env!("OUT_DIR"), "/generated/parser_tables.rs"));

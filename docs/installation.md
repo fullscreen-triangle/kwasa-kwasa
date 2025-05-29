@@ -1,82 +1,67 @@
-# Kwasa-Kwasa Installation Guide
-
-This document provides comprehensive instructions for installing, building, and running the Kwasa-Kwasa metacognitive text processing framework.
+# Installation Guide
 
 ## Prerequisites
 
-Before installing Kwasa-Kwasa, ensure you have the following dependencies:
+Before installing Kwasa-Kwasa, ensure you have the following prerequisites:
 
-1. **Rust (1.65.0+)** - The core programming language
-   ```bash
-   # Check if Rust is installed
-   rustc --version
-   
-   # If not installed, use rustup (recommended)
-   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-   # Or visit https://www.rust-lang.org/tools/install for other options
-   ```
-
-2. **Cargo** - Rust's package manager (comes with Rust installation)
-   ```bash
-   # Verify Cargo installation
-   cargo --version
-   ```
-
-3. **SQLite3** - Required for the knowledge database component
-   ```bash
-   # On Ubuntu/Debian
-   sudo apt install sqlite3 libsqlite3-dev
-   
-   # On macOS with Homebrew
-   brew install sqlite
-   
-   # On Windows
-   # Download from https://www.sqlite.org/download.html
-   ```
-
-4. **Git** - For cloning the repository
-   ```bash
-   # Install Git if needed
-   # Ubuntu/Debian
-   sudo apt install git
-   
-   # macOS
-   brew install git
-   
-   # Windows
-   # Download from https://git-scm.com/download/win
-   ```
+- Rust (latest stable version)
+- Cargo (comes with Rust)
+- Git
 
 ## Installation Steps
 
-1. **Clone the repository**
+1. Clone the repository:
    ```bash
    git clone https://github.com/yourusername/kwasa-kwasa.git
    cd kwasa-kwasa
    ```
 
-2. **Configure environment variables**
-   
-   Create a `.env` file in the project root with the following content:
-   ```
-   KWASA_LOG_LEVEL=debug
-   KWASA_DB_PATH=./data/knowledge.db
-   KWASA_CACHE_DIR=./data/cache
-   ```
-
-3. **Build the project**
+2. Build the project:
    ```bash
-   # Build in debug mode
-   cargo build
-   
-   # Or build with optimizations for better performance
    cargo build --release
    ```
 
-4. **Run tests to verify installation**
+3. Run the tests to ensure everything is working:
    ```bash
    cargo test
    ```
+
+## Using as a Dependency
+
+To use Kwasa-Kwasa in your own Rust project, add it to your `Cargo.toml`:
+
+```toml
+[dependencies]
+kwasa-kwasa = { git = "https://github.com/yourusername/kwasa-kwasa" }
+```
+
+## Development Setup
+
+For development, you might want to install additional tools:
+
+1. Install recommended VS Code extensions (if using VS Code)
+2. Set up pre-commit hooks:
+   ```bash
+   git config core.hooksPath .github/hooks
+   ```
+
+## Troubleshooting
+
+If you encounter any issues during installation:
+
+1. Make sure you have the latest stable Rust version:
+   ```bash
+   rustup update stable
+   ```
+
+2. Clear your Cargo cache if needed:
+   ```bash
+   cargo clean
+   ```
+
+3. Check the [Issue Tracker](https://github.com/yourusername/kwasa-kwasa/issues) for known problems
+
+For additional help, please [open an issue](https://github.com/yourusername/kwasa-kwasa/issues/new).
 
 ## Running Kwasa-Kwasa
 
