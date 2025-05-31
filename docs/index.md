@@ -14,6 +14,7 @@ Welcome to the Kwasa-Kwasa documentation! This scientific computing framework is
 - [Language Overview](turbulance-language.md)
 - [Hybrid Imperative Model](hybrid-imperative.md)
 - [Four-Sided Triangle](four-sided-triangle.md)
+- [Special Language Features](language/special_features.md)
 
 ### Domain Extensions
 - [Domain Extensions Overview](domain-extensions.md)

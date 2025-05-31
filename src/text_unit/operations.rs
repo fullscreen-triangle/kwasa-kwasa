@@ -149,10 +149,11 @@ pub fn divide(
                 current.push(c);
                 
                 if sentence_endings.contains(&c) && !current.trim().is_empty() {
+                    let current_len = current.len();
                     let sentence_unit = TextUnit::new(
-                        current.clone(),
+                        current,
                         offset,
-                        offset + current.len(),
+                        offset + current_len,
                         TextUnitType::Sentence,
                         registry.next_available_id(),
                     );
@@ -161,17 +162,18 @@ pub fn divide(
                     registry.set_parent_child(unit.id, id);
                     
                     sentences.push(sentence_unit);
-                    offset += current.len();
+                    offset += current_len;
                     current.clear();
                 }
             }
             
             // Add the last part if not empty
             if !current.trim().is_empty() {
+                let current_len = current.len();
                 let sentence_unit = TextUnit::new(
                     current,
                     offset,
-                    offset + current.len(),
+                    offset + current_len,
                     TextUnitType::Sentence,
                     registry.next_available_id(),
                 );

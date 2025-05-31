@@ -482,8 +482,14 @@ fn detect_semantic_boundaries(
     
     // First, detect paragraph boundaries as a starting point
     let paragraph_ids = detect_paragraph_boundaries(content, registry, options);
-    let paragraphs: Vec<&TextUnit> = paragraph_ids.iter()
-        .filter_map(|id| registry.get_unit(*id))
+    
+    // Collect paragraph data to avoid borrowing conflicts
+    let paragraphs: Vec<(String, usize, usize)> = paragraph_ids.iter()
+        .filter_map(|id| {
+            registry.get_unit(*id).map(|unit| {
+                (unit.content.clone(), unit.start, unit.end)
+            })
+        })
         .collect();
     
     if paragraphs.is_empty() {
@@ -492,15 +498,15 @@ fn detect_semantic_boundaries(
     
     // Group paragraphs into semantic units
     let mut current_unit = String::new();
-    let mut current_start = paragraphs[0].start;
+    let mut current_start = paragraphs[0].1; // start position
     let mut current_end;
     
     for i in 0..paragraphs.len() {
-        let para = paragraphs[i];
+        let (para_content, para_start, para_end) = &paragraphs[i];
         
         // Check for topic shift indicators
         let contains_shift_indicator = config.topic_shift_indicators.iter()
-            .any(|indicator| para.content.to_lowercase().contains(&indicator.to_lowercase()));
+            .any(|indicator| para_content.to_lowercase().contains(&indicator.to_lowercase()));
         
         // Start a new semantic unit if:
         // 1. Current paragraph contains a topic shift indicator
@@ -508,12 +514,12 @@ fn detect_semantic_boundaries(
         // 3. This is the first paragraph
         let should_start_new_unit = 
             contains_shift_indicator || 
-            current_unit.len() + para.content.len() > config.max_length ||
+            current_unit.len() + para_content.len() > config.max_length ||
             i == 0;
         
         if should_start_new_unit && !current_unit.is_empty() {
             // Save the current unit before starting a new one
-            current_end = para.start;
+            current_end = *para_start;
             
             if current_unit.len() >= config.min_length {
                 let semantic_unit = TextUnit::new(
@@ -529,20 +535,20 @@ fn detect_semantic_boundaries(
             }
             
             // Start a new unit
-            current_unit = para.content.clone();
-            current_start = para.start;
+            current_unit = para_content.clone();
+            current_start = *para_start;
         } else {
             // Add to the current unit with a space in between
             if !current_unit.is_empty() {
                 current_unit.push(' ');
             }
-            current_unit.push_str(&para.content);
+            current_unit.push_str(para_content);
         }
     }
     
     // Add the last semantic unit if not empty
     if !current_unit.is_empty() && current_unit.len() >= config.min_length {
-        current_end = paragraphs.last().unwrap().end;
+        current_end = paragraphs.last().unwrap().2; // end position
         
         let semantic_unit = TextUnit::new(
             current_unit,

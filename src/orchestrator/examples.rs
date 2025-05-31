@@ -25,7 +25,7 @@ pub fn create_custom_orchestrator() -> MetacognitiveOrchestrator {
         let concepts = extract_concepts(&data.content);
         
         // Store in metadata
-        data.with_metadata("concepts", &concepts.join(","))
+        data = data.with_metadata("concepts", &concepts.join(","))
             .with_confidence(0.6);
         data
     });

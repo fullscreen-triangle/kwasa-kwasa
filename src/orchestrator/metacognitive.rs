@@ -170,7 +170,7 @@ impl StreamProcessor for ContextLayerProcessor {
                     let kb = knowledge.lock().unwrap();
                     // Use kb here if needed
                 }
-                data.with_metadata("layer", "context");
+                data = data.with_metadata("layer", "context");
                 
                 // Send enriched data
                 let _ = tx.send(data).await;
@@ -216,7 +216,7 @@ impl StreamProcessor for ReasoningLayerProcessor {
         tokio::spawn(async move {
             while let Some(mut data) = processed.recv().await {
                 // Add reasoning layer annotations
-                data.with_metadata("layer", "reasoning");
+                data = data.with_metadata("layer", "reasoning");
                 
                 // Send enriched data
                 let _ = tx.send(data).await;
@@ -262,7 +262,7 @@ impl StreamProcessor for IntuitionLayerProcessor {
         tokio::spawn(async move {
             while let Some(mut data) = processed.recv().await {
                 // Add intuition layer annotations
-                data.with_metadata("layer", "intuition");
+                data = data.with_metadata("layer", "intuition");
                 
                 // Finalize result
                 data.is_final = true;
@@ -300,7 +300,7 @@ impl StreamProcessor for DefaultContextLayer {
                 // Simple context processing - analyze the content
                 if !data.content.is_empty() {
                     // Partial processing example
-                    data.with_confidence(0.5)
+                    data = data.with_confidence(0.5)
                         .with_metadata("context_processed", "true");
                     
                     let _ = tx.send(data).await;
@@ -333,7 +333,7 @@ impl StreamProcessor for DefaultReasoningLayer {
         tokio::spawn(async move {
             while let Some(mut data) = input.recv().await {
                 // Simple reasoning - enhance confidence
-                data.with_confidence(0.8)
+                data = data.with_confidence(0.8)
                     .with_metadata("reasoning_processed", "true");
                 
                 let _ = tx.send(data).await;
@@ -365,7 +365,7 @@ impl StreamProcessor for DefaultIntuitionLayer {
         tokio::spawn(async move {
             while let Some(mut data) = input.recv().await {
                 // Simple intuition - finalize the process
-                data.with_confidence(1.0)
+                data = data.with_confidence(1.0)
                     .with_metadata("intuition_processed", "true");
                 
                 data.is_final = true;

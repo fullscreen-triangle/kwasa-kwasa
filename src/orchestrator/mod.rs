@@ -32,7 +32,7 @@ pub struct Orchestrator {
     goal: Goal,
     
     /// The current context of the writing
-    context: Context,
+    context: Arc<Mutex<Context>>,
     
     /// The text units registry
     units: Arc<Mutex<TextUnitRegistry>>,
@@ -53,7 +53,7 @@ pub struct Orchestrator {
 impl Orchestrator {
     /// Create a new orchestrator
     pub fn new(goal: Goal, knowledge_db: Arc<Mutex<KnowledgeDatabase>>) -> Self {
-        let context = Context::new();
+        let context = Arc::new(Mutex::new(Context::new()));
         let units = Arc::new(Mutex::new(TextUnitRegistry::new()));
         
         // Built-in interventions
@@ -90,7 +90,7 @@ impl Orchestrator {
     pub fn set_goal(&mut self, goal: Goal) {
         info!("Setting new goal: {}", goal.description());
         self.goal = goal;
-        self.context.update_goal_state(&self.goal);
+        self.context.lock().unwrap().update_goal_state(&self.goal);
     }
     
     /// Get the current goal
@@ -124,7 +124,7 @@ impl Orchestrator {
             // Add relevant keywords from the unit to the context
             let keywords = extract_keywords(&unit.content);
             for keyword in keywords {
-                self.context.add_keyword(keyword);
+                self.context.lock().unwrap().add_keyword(keyword);
             }
             
             // Check if unit relates to goal
@@ -155,8 +155,8 @@ impl Orchestrator {
         
         // Let each intervention process the text
         for intervention in &self.interventions {
-            if intervention.should_intervene(&self.goal, &self.context) {
-                match intervention.process_text(text, &self.goal, &self.context) {
+            if intervention.should_intervene(&self.goal, &self.context.lock().unwrap()) {
+                match intervention.process_text(text, &self.goal, &self.context.lock().unwrap()) {
                     Ok(processed) => {
                         if processed != text {
                             info!("Intervention {} modified the text", intervention.name());
@@ -188,7 +188,7 @@ impl Orchestrator {
         info!("Researching topic: {}", topic);
         
         // Add to context
-        self.context.add_research_term(topic);
+        self.context.lock().unwrap().add_research_term(topic);
         
         // Query knowledge DB
         let db = self.knowledge_db.lock().unwrap();

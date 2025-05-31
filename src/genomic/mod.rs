@@ -346,7 +346,7 @@ impl Unit for GeneUnit {
 //------------------------------------------------------------------------------
 
 /// A recurring pattern unit
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct MotifUnit {
     /// The motif sequence
     content: Vec<u8>,

@@ -247,7 +247,7 @@ impl DreamingModule {
                     }
                     
                     scenario.content = content;
-                    scenario.with_metadata("source", "dreaming_module")
+                    scenario = scenario.with_metadata("source", "dreaming_module")
                            .with_metadata("type", "synthetic_edge_case");
                     
                     let mut scenario_queue = scenarios.lock().unwrap();

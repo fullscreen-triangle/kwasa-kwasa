@@ -509,25 +509,13 @@ impl DocumentHierarchy {
     
     /// Helper function to find a node by ID and get a mutable reference
     fn find_node_by_id_mut_helper(node: &mut HierarchyNode, id: usize) -> Option<&mut HierarchyNode> {
-        // Store the IDs of children to prevent multiple mutable borrows
-        let mut child_ids = Vec::new();
-        {
-            // Scope to limit the borrow of children_mut
-            let children = node.children_mut();
-            
-            // First pass: check direct children and collect their indices
-            for (i, child) in children.iter().enumerate() {
-                if child.id() == id {
-                    return Some(&mut children[i]);
-                }
-                child_ids.push(i);
-            }
+        // Check if this is the node we're looking for
+        if node.id() == id {
+            return Some(node);
         }
         
-        // Second pass: check children's subtrees
-        for i in child_ids {
-            // This gets a fresh mutable borrow each time
-            let child = &mut node.children_mut()[i];
+        // Check children recursively
+        for child in node.children_mut() {
             if let Some(found) = Self::find_node_by_id_mut_helper(child, id) {
                 return Some(found);
             }
