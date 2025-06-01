@@ -599,7 +599,7 @@ test "empty data handling":
 Now that you understand the basics, explore:
 
 1. [Special Language Features](language/special_features.md) - Advanced constructs like propositions and metacognitive analysis
-2. [Domain Extensions](domain-extensions.md) - Specialized modules for genomics, chemistry, etc.
+2. [Domain Extensions](examples/domain-extensions.md) - Specialized modules for genomics, chemistry, etc.
 3. [Examples](examples/index.md) - Complete examples showing real-world usage
 4. [API Reference](spec/index.md) - Detailed API documentation
 
