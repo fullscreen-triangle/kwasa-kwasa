@@ -632,4 +632,1101 @@ impl UnitOperations<MassSpectrum> for SpectrumOperations {
             id: UnitId::new(format!("{}_minus_{}", source.id().0, to_remove.id().0)),
         }
     }
+}
+
+// Spectrometry processing module for analytical chemistry
+pub mod mass_spec;
+pub mod nmr;
+pub mod ir;
+pub mod uv_vis;
+pub mod analysis;
+pub mod peak;
+pub mod calibration;
+pub mod database;
+
+pub use mass_spec::{MassSpectrum, MassSpecAnalyzer, FragmentationPattern};
+pub use nmr::{NMRSpectrum, NMRAnalyzer, ChemicalShift, Coupling};
+pub use ir::{IRSpectrum, IRAnalyzer, Vibration, FunctionalGroupID};
+pub use uv_vis::{UVVisSpectrum, UVVisAnalyzer, Transition, ChromophoreID};
+pub use analysis::{SpectrometryAnalyzer, AnalysisResult, PeakIdentification};
+pub use peak::{Peak, PeakList, PeakPicking, BaselineCorrection};
+pub use calibration::{Calibration, CalibrationCurve, StandardReference};
+pub use database::{SpectralDatabase, DatabaseSearch, ReferenceSpectrum};
+
+use serde::{Deserialize, Serialize};
+use thiserror::Error;
+
+/// Main spectrometry processor
+pub struct SpectrometryProcessor {
+    /// Mass spectrometry analyzer
+    mass_spec_analyzer: MassSpecAnalyzer,
+    
+    /// NMR analyzer
+    nmr_analyzer: NMRAnalyzer,
+    
+    /// IR analyzer
+    ir_analyzer: IRAnalyzer,
+    
+    /// UV-Vis analyzer
+    uv_vis_analyzer: UVVisAnalyzer,
+    
+    /// Peak picking engine
+    peak_picker: PeakPicking,
+    
+    /// Calibration manager
+    calibration_manager: CalibrationManager,
+    
+    /// Spectral database
+    database: SpectralDatabase,
+    
+    /// Configuration
+    config: SpectrometryConfig,
+}
+
+/// Configuration for spectrometry processing
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SpectrometryConfig {
+    /// Enable mass spectrometry
+    pub enable_mass_spec: bool,
+    
+    /// Enable NMR
+    pub enable_nmr: bool,
+    
+    /// Enable IR
+    pub enable_ir: bool,
+    
+    /// Enable UV-Vis
+    pub enable_uv_vis: bool,
+    
+    /// Peak picking parameters
+    pub peak_picking: PeakPickingConfig,
+    
+    /// Calibration settings
+    pub calibration_settings: CalibrationSettings,
+    
+    /// Database settings
+    pub database_settings: DatabaseSettings,
+}
+
+/// Peak picking configuration
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PeakPickingConfig {
+    /// Signal-to-noise threshold
+    pub snr_threshold: f64,
+    
+    /// Minimum peak height
+    pub min_peak_height: f64,
+    
+    /// Peak width tolerance
+    pub peak_width_tolerance: f64,
+    
+    /// Baseline correction method
+    pub baseline_method: BaselineMethod,
+    
+    /// Smoothing parameters
+    pub smoothing: SmoothingConfig,
+}
+
+/// Baseline correction methods
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum BaselineMethod {
+    /// Linear baseline
+    Linear,
+    
+    /// Polynomial baseline
+    Polynomial(usize),
+    
+    /// Asymmetric least squares
+    AsLS,
+    
+    /// Rolling ball
+    RollingBall(f64),
+    
+    /// None
+    None,
+}
+
+/// Smoothing configuration
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SmoothingConfig {
+    /// Enable smoothing
+    pub enabled: bool,
+    
+    /// Smoothing method
+    pub method: SmoothingMethod,
+    
+    /// Window size
+    pub window_size: usize,
+}
+
+/// Smoothing methods
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum SmoothingMethod {
+    /// Moving average
+    MovingAverage,
+    
+    /// Savitzky-Golay
+    SavitzkyGolay(usize),
+    
+    /// Gaussian
+    Gaussian(f64),
+    
+    /// Median filter
+    Median,
+}
+
+/// Calibration settings
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CalibrationSettings {
+    /// Auto-calibration enabled
+    pub auto_calibration: bool,
+    
+    /// Calibration standards database
+    pub standards_database: Option<String>,
+    
+    /// Mass accuracy tolerance (ppm)
+    pub mass_accuracy_ppm: f64,
+    
+    /// Retention time tolerance (minutes)
+    pub rt_tolerance_min: f64,
+}
+
+/// Database settings
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DatabaseSettings {
+    /// NIST database enabled
+    pub nist_enabled: bool,
+    
+    /// Local database path
+    pub local_database: Option<String>,
+    
+    /// Online search enabled
+    pub online_search: bool,
+    
+    /// Cache settings
+    pub cache_settings: CacheSettings,
+}
+
+/// Cache settings
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CacheSettings {
+    /// Enable caching
+    pub enable_cache: bool,
+    
+    /// Cache size (MB)
+    pub cache_size_mb: usize,
+    
+    /// Cache TTL (seconds)
+    pub cache_ttl: u64,
+}
+
+/// Calibration manager
+pub struct CalibrationManager {
+    /// Mass calibration curves
+    mass_calibrations: HashMap<String, CalibrationCurve>,
+    
+    /// Chemical shift calibrations
+    chemical_shift_calibrations: HashMap<String, CalibrationCurve>,
+    
+    /// Wavelength calibrations
+    wavelength_calibrations: HashMap<String, CalibrationCurve>,
+    
+    /// Standard references
+    standard_references: Vec<StandardReference>,
+}
+
+/// Spectrometry analysis result
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SpectrometryAnalysisResult {
+    /// Mass spectrometry results
+    pub mass_spec_results: Vec<MassSpecResult>,
+    
+    /// NMR results
+    pub nmr_results: Vec<NMRResult>,
+    
+    /// IR results
+    pub ir_results: Vec<IRResult>,
+    
+    /// UV-Vis results
+    pub uv_vis_results: Vec<UVVisResult>,
+    
+    /// Compound identification
+    pub compound_identification: CompoundIdentification,
+    
+    /// Quality metrics
+    pub quality_metrics: SpectrometryQualityMetrics,
+    
+    /// Analysis metadata
+    pub metadata: AnalysisMetadata,
+}
+
+/// Mass spectrometry result
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct MassSpecResult {
+    /// Spectrum identifier
+    pub spectrum_id: String,
+    
+    /// Molecular ion peak
+    pub molecular_ion: Option<MolecularIon>,
+    
+    /// Fragment peaks
+    pub fragments: Vec<Fragment>,
+    
+    /// Base peak
+    pub base_peak: Peak,
+    
+    /// Total ion current
+    pub total_ion_current: f64,
+    
+    /// Isotope patterns
+    pub isotope_patterns: Vec<IsotopePattern>,
+    
+    /// Elemental composition
+    pub elemental_composition: Option<ElementalComposition>,
+}
+
+/// Molecular ion
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct MolecularIon {
+    /// Mass-to-charge ratio
+    pub mz: f64,
+    
+    /// Intensity
+    pub intensity: f64,
+    
+    /// Charge state
+    pub charge: i32,
+    
+    /// Exact mass
+    pub exact_mass: f64,
+    
+    /// Mass error (ppm)
+    pub mass_error_ppm: f64,
+}
+
+/// Fragment ion
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Fragment {
+    /// Mass-to-charge ratio
+    pub mz: f64,
+    
+    /// Intensity
+    pub intensity: f64,
+    
+    /// Fragment formula
+    pub formula: Option<String>,
+    
+    /// Loss from molecular ion
+    pub neutral_loss: Option<NeutralLoss>,
+    
+    /// Fragment type
+    pub fragment_type: FragmentType,
+}
+
+/// Neutral loss
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct NeutralLoss {
+    /// Mass of neutral loss
+    pub mass: f64,
+    
+    /// Formula of neutral loss
+    pub formula: String,
+    
+    /// Loss type
+    pub loss_type: NeutralLossType,
+}
+
+/// Types of neutral losses
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum NeutralLossType {
+    /// Water loss
+    Water,
+    
+    /// Ammonia loss
+    Ammonia,
+    
+    /// Carbon monoxide loss
+    CarbonMonoxide,
+    
+    /// Carbon dioxide loss
+    CarbonDioxide,
+    
+    /// Methyl loss
+    Methyl,
+    
+    /// Custom loss
+    Custom(String),
+}
+
+/// Types of fragment ions
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum FragmentType {
+    /// a-type ion
+    AType,
+    
+    /// b-type ion
+    BType,
+    
+    /// c-type ion
+    CType,
+    
+    /// x-type ion
+    XType,
+    
+    /// y-type ion
+    YType,
+    
+    /// z-type ion
+    ZType,
+    
+    /// Immonium ion
+    Immonium,
+    
+    /// Internal fragment
+    Internal,
+    
+    /// Unknown fragment
+    Unknown,
+}
+
+/// Isotope pattern
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct IsotopePattern {
+    /// Monoisotopic peak
+    pub monoisotopic_peak: Peak,
+    
+    /// Isotope peaks
+    pub isotope_peaks: Vec<IsotopePeak>,
+    
+    /// Pattern quality score
+    pub quality_score: f64,
+}
+
+/// Isotope peak
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct IsotopePeak {
+    /// Mass-to-charge ratio
+    pub mz: f64,
+    
+    /// Relative intensity
+    pub relative_intensity: f64,
+    
+    /// Isotope number
+    pub isotope_number: usize,
+}
+
+/// Elemental composition
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ElementalComposition {
+    /// Element counts
+    pub elements: HashMap<String, usize>,
+    
+    /// Molecular formula
+    pub molecular_formula: String,
+    
+    /// Exact mass
+    pub exact_mass: f64,
+    
+    /// Unsaturation index
+    pub unsaturation_index: f64,
+}
+
+/// NMR result
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct NMRResult {
+    /// Spectrum identifier
+    pub spectrum_id: String,
+    
+    /// NMR nucleus
+    pub nucleus: NMRNucleus,
+    
+    /// Chemical shifts
+    pub chemical_shifts: Vec<ChemicalShiftPeak>,
+    
+    /// Coupling patterns
+    pub coupling_patterns: Vec<CouplingPattern>,
+    
+    /// Integration values
+    pub integrations: Vec<Integration>,
+    
+    /// Multipicity analysis
+    pub multiplicities: Vec<Multiplicity>,
+}
+
+/// NMR nucleus
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum NMRNucleus {
+    /// Proton (1H)
+    Proton,
+    
+    /// Carbon-13 (13C)
+    Carbon13,
+    
+    /// Nitrogen-15 (15N)
+    Nitrogen15,
+    
+    /// Phosphorus-31 (31P)
+    Phosphorus31,
+    
+    /// Fluorine-19 (19F)
+    Fluorine19,
+    
+    /// Custom nucleus
+    Custom(String),
+}
+
+/// Chemical shift peak
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ChemicalShiftPeak {
+    /// Chemical shift (ppm)
+    pub chemical_shift: f64,
+    
+    /// Peak intensity
+    pub intensity: f64,
+    
+    /// Peak width
+    pub width: f64,
+    
+    /// Assignment
+    pub assignment: Option<String>,
+    
+    /// Environment type
+    pub environment: EnvironmentType,
+}
+
+/// Chemical environment types
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum EnvironmentType {
+    /// Aliphatic
+    Aliphatic,
+    
+    /// Aromatic
+    Aromatic,
+    
+    /// Vinyl
+    Vinyl,
+    
+    /// Carbonyl
+    Carbonyl,
+    
+    /// Heteroatom
+    Heteroatom,
+    
+    /// Unknown
+    Unknown,
+}
+
+/// Coupling pattern
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CouplingPattern {
+    /// Coupled nuclei
+    pub coupled_nuclei: Vec<String>,
+    
+    /// Coupling constant (Hz)
+    pub coupling_constant: f64,
+    
+    /// Coupling type
+    pub coupling_type: CouplingType,
+    
+    /// Number of bonds
+    pub bond_count: usize,
+}
+
+/// Types of coupling
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum CouplingType {
+    /// Scalar coupling
+    Scalar,
+    
+    /// Dipolar coupling
+    Dipolar,
+    
+    /// Quadrupolar coupling
+    Quadrupolar,
+    
+    /// NOE
+    NOE,
+}
+
+/// Integration
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Integration {
+    /// Integration range
+    pub range: (f64, f64),
+    
+    /// Integrated area
+    pub area: f64,
+    
+    /// Relative integration
+    pub relative_integration: f64,
+    
+    /// Number of protons
+    pub proton_count: Option<usize>,
+}
+
+/// Multiplicity
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Multiplicity {
+    /// Chemical shift center
+    pub center: f64,
+    
+    /// Multiplicity type
+    pub multiplicity_type: MultiplicityType,
+    
+    /// Coupling constants
+    pub coupling_constants: Vec<f64>,
+}
+
+/// Types of multiplicities
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum MultiplicityType {
+    /// Singlet
+    Singlet,
+    
+    /// Doublet
+    Doublet,
+    
+    /// Triplet
+    Triplet,
+    
+    /// Quartet
+    Quartet,
+    
+    /// Quintet
+    Quintet,
+    
+    /// Sextet
+    Sextet,
+    
+    /// Septet
+    Septet,
+    
+    /// Multiplet
+    Multiplet,
+    
+    /// Doublet of doublets
+    DoubletOfDoublets,
+    
+    /// Doublet of triplets
+    DoubletOfTriplets,
+    
+    /// Triplet of doublets
+    TripletOfDoublets,
+}
+
+/// IR result
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct IRResult {
+    /// Spectrum identifier
+    pub spectrum_id: String,
+    
+    /// Vibrational bands
+    pub vibrational_bands: Vec<VibrationalBand>,
+    
+    /// Functional group identifications
+    pub functional_groups: Vec<FunctionalGroupIdentification>,
+    
+    /// Fingerprint region analysis
+    pub fingerprint_analysis: FingerprintAnalysis,
+}
+
+/// Vibrational band
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct VibrationalBand {
+    /// Wavenumber (cm⁻¹)
+    pub wavenumber: f64,
+    
+    /// Intensity
+    pub intensity: f64,
+    
+    /// Band width
+    pub width: f64,
+    
+    /// Vibration type
+    pub vibration_type: VibrationType,
+    
+    /// Assignment
+    pub assignment: Option<String>,
+}
+
+/// Types of vibrations
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum VibrationType {
+    /// Stretching
+    Stretching,
+    
+    /// Bending
+    Bending,
+    
+    /// Rocking
+    Rocking,
+    
+    /// Wagging
+    Wagging,
+    
+    /// Twisting
+    Twisting,
+    
+    /// Out-of-plane
+    OutOfPlane,
+}
+
+/// Functional group identification
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct FunctionalGroupIdentification {
+    /// Group name
+    pub group_name: String,
+    
+    /// Confidence score
+    pub confidence: f64,
+    
+    /// Supporting bands
+    pub supporting_bands: Vec<f64>,
+    
+    /// Expected bands
+    pub expected_bands: Vec<f64>,
+}
+
+/// Fingerprint region analysis
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct FingerprintAnalysis {
+    /// Fingerprint region (typically 500-1500 cm⁻¹)
+    pub region: (f64, f64),
+    
+    /// Characteristic peaks
+    pub characteristic_peaks: Vec<Peak>,
+    
+    /// Pattern similarity to references
+    pub similarity_scores: HashMap<String, f64>,
+}
+
+/// UV-Vis result
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct UVVisResult {
+    /// Spectrum identifier
+    pub spectrum_id: String,
+    
+    /// Electronic transitions
+    pub transitions: Vec<ElectronicTransition>,
+    
+    /// Chromophore identifications
+    pub chromophores: Vec<ChromophoreIdentification>,
+    
+    /// Extinction coefficients
+    pub extinction_coefficients: Vec<ExtinctionCoefficient>,
+    
+    /// Band gap analysis
+    pub band_gap: Option<BandGap>,
+}
+
+/// Electronic transition
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ElectronicTransition {
+    /// Wavelength (nm)
+    pub wavelength: f64,
+    
+    /// Absorbance
+    pub absorbance: f64,
+    
+    /// Molar absorptivity
+    pub molar_absorptivity: Option<f64>,
+    
+    /// Transition type
+    pub transition_type: TransitionType,
+    
+    /// Assignment
+    pub assignment: Option<String>,
+}
+
+/// Types of electronic transitions
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum TransitionType {
+    /// π → π* transition
+    PiToPiStar,
+    
+    /// n → π* transition
+    NToPiStar,
+    
+    /// n → σ* transition
+    NToSigmaStar,
+    
+    /// σ → σ* transition
+    SigmaToSigmaStar,
+    
+    /// Charge transfer
+    ChargeTransfer,
+    
+    /// d-d transition
+    DDTransition,
+    
+    /// f-f transition
+    FFTransition,
+}
+
+/// Chromophore identification
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ChromophoreIdentification {
+    /// Chromophore name
+    pub chromophore_name: String,
+    
+    /// Confidence score
+    pub confidence: f64,
+    
+    /// Expected wavelength range
+    pub wavelength_range: (f64, f64),
+    
+    /// Observed transitions
+    pub observed_transitions: Vec<f64>,
+}
+
+/// Extinction coefficient
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ExtinctionCoefficient {
+    /// Wavelength (nm)
+    pub wavelength: f64,
+    
+    /// Extinction coefficient (M⁻¹cm⁻¹)
+    pub coefficient: f64,
+    
+    /// Uncertainty
+    pub uncertainty: f64,
+}
+
+/// Band gap analysis
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct BandGap {
+    /// Band gap energy (eV)
+    pub energy: f64,
+    
+    /// Band gap type
+    pub gap_type: BandGapType,
+    
+    /// Tauc plot analysis
+    pub tauc_analysis: TaucAnalysis,
+}
+
+/// Types of band gaps
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum BandGapType {
+    /// Direct band gap
+    Direct,
+    
+    /// Indirect band gap
+    Indirect,
+    
+    /// Unknown
+    Unknown,
+}
+
+/// Tauc plot analysis
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct TaucAnalysis {
+    /// Tauc plot data points
+    pub data_points: Vec<TaucPoint>,
+    
+    /// Linear fit parameters
+    pub linear_fit: LinearFit,
+    
+    /// Extracted band gap
+    pub extracted_band_gap: f64,
+}
+
+/// Tauc plot data point
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct TaucPoint {
+    /// Photon energy (eV)
+    pub photon_energy: f64,
+    
+    /// (αhν)^n
+    pub alpha_hv_n: f64,
+}
+
+/// Linear fit parameters
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct LinearFit {
+    /// Slope
+    pub slope: f64,
+    
+    /// Intercept
+    pub intercept: f64,
+    
+    /// R-squared
+    pub r_squared: f64,
+}
+
+/// Compound identification result
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CompoundIdentification {
+    /// Identified compounds
+    pub compounds: Vec<IdentifiedCompound>,
+    
+    /// Combined confidence score
+    pub overall_confidence: f64,
+    
+    /// Identification method
+    pub identification_method: IdentificationMethod,
+}
+
+/// Identified compound
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct IdentifiedCompound {
+    /// Compound name
+    pub name: String,
+    
+    /// CAS number
+    pub cas_number: Option<String>,
+    
+    /// Molecular formula
+    pub molecular_formula: String,
+    
+    /// Confidence scores by technique
+    pub confidence_scores: HashMap<String, f64>,
+    
+    /// Overall confidence
+    pub overall_confidence: f64,
+    
+    /// Supporting evidence
+    pub supporting_evidence: Vec<String>,
+}
+
+/// Identification methods
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum IdentificationMethod {
+    /// Single technique
+    SingleTechnique(String),
+    
+    /// Multiple techniques combined
+    MultiTechnique(Vec<String>),
+    
+    /// Database search
+    DatabaseSearch,
+    
+    /// Machine learning
+    MachineLearning,
+    
+    /// Expert system
+    ExpertSystem,
+}
+
+/// Spectrometry quality metrics
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SpectrometryQualityMetrics {
+    /// Overall quality score
+    pub overall_quality: f64,
+    
+    /// Signal-to-noise ratios
+    pub signal_to_noise: HashMap<String, f64>,
+    
+    /// Resolution metrics
+    pub resolution_metrics: HashMap<String, f64>,
+    
+    /// Calibration accuracy
+    pub calibration_accuracy: HashMap<String, f64>,
+    
+    /// Baseline quality
+    pub baseline_quality: f64,
+}
+
+/// Analysis metadata
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct AnalysisMetadata {
+    /// Analysis timestamp
+    pub timestamp: u64,
+    
+    /// Analysis duration (seconds)
+    pub duration: f64,
+    
+    /// Instrument information
+    pub instrument_info: HashMap<String, String>,
+    
+    /// Processing parameters
+    pub processing_parameters: HashMap<String, String>,
+    
+    /// Warnings generated
+    pub warnings: Vec<String>,
+}
+
+/// Spectrometry processing errors
+#[derive(Debug, Error)]
+pub enum SpectrometryError {
+    #[error("Invalid spectrum format: {0}")]
+    InvalidSpectrumFormat(String),
+    
+    #[error("Peak picking failed: {0}")]
+    PeakPickingFailed(String),
+    
+    #[error("Calibration failed: {0}")]
+    CalibrationFailed(String),
+    
+    #[error("Database search failed: {0}")]
+    DatabaseSearchFailed(String),
+    
+    #[error("Analysis failed: {0}")]
+    AnalysisFailed(String),
+    
+    #[error("I/O error: {0}")]
+    IoError(#[from] std::io::Error),
+    
+    #[error("Configuration error: {0}")]
+    ConfigError(String),
+}
+
+impl Default for SpectrometryConfig {
+    fn default() -> Self {
+        Self {
+            enable_mass_spec: true,
+            enable_nmr: true,
+            enable_ir: true,
+            enable_uv_vis: true,
+            peak_picking: PeakPickingConfig {
+                snr_threshold: 3.0,
+                min_peak_height: 0.01,
+                peak_width_tolerance: 0.1,
+                baseline_method: BaselineMethod::Linear,
+                smoothing: SmoothingConfig {
+                    enabled: true,
+                    method: SmoothingMethod::SavitzkyGolay(5),
+                    window_size: 5,
+                },
+            },
+            calibration_settings: CalibrationSettings {
+                auto_calibration: true,
+                standards_database: None,
+                mass_accuracy_ppm: 5.0,
+                rt_tolerance_min: 0.1,
+            },
+            database_settings: DatabaseSettings {
+                nist_enabled: true,
+                local_database: None,
+                online_search: true,
+                cache_settings: CacheSettings {
+                    enable_cache: true,
+                    cache_size_mb: 512,
+                    cache_ttl: 3600,
+                },
+            },
+        }
+    }
+}
+
+impl SpectrometryProcessor {
+    /// Create a new spectrometry processor
+    pub fn new(config: SpectrometryConfig) -> Self {
+        Self {
+            mass_spec_analyzer: MassSpecAnalyzer::new(),
+            nmr_analyzer: NMRAnalyzer::new(),
+            ir_analyzer: IRAnalyzer::new(),
+            uv_vis_analyzer: UVVisAnalyzer::new(),
+            peak_picker: PeakPicking::new(),
+            calibration_manager: CalibrationManager::new(),
+            database: SpectralDatabase::new(),
+            config,
+        }
+    }
+    
+    /// Process spectrometry data
+    pub async fn process(&self, input: SpectrometryInput) -> Result<SpectrometryAnalysisResult, SpectrometryError> {
+        let result = SpectrometryAnalysisResult {
+            mass_spec_results: Vec::new(),
+            nmr_results: Vec::new(),
+            ir_results: Vec::new(),
+            uv_vis_results: Vec::new(),
+            compound_identification: CompoundIdentification {
+                compounds: Vec::new(),
+                overall_confidence: 0.0,
+                identification_method: IdentificationMethod::MultiTechnique(vec!["MS".to_string(), "NMR".to_string()]),
+            },
+            quality_metrics: SpectrometryQualityMetrics {
+                overall_quality: 0.8,
+                signal_to_noise: HashMap::new(),
+                resolution_metrics: HashMap::new(),
+                calibration_accuracy: HashMap::new(),
+                baseline_quality: 0.9,
+            },
+            metadata: AnalysisMetadata {
+                timestamp: std::time::SystemTime::now()
+                    .duration_since(std::time::UNIX_EPOCH)
+                    .unwrap()
+                    .as_secs(),
+                duration: 0.0,
+                instrument_info: HashMap::new(),
+                processing_parameters: HashMap::new(),
+                warnings: Vec::new(),
+            },
+        };
+        
+        // Placeholder implementation
+        Ok(result)
+    }
+}
+
+impl CalibrationManager {
+    fn new() -> Self {
+        Self {
+            mass_calibrations: HashMap::new(),
+            chemical_shift_calibrations: HashMap::new(),
+            wavelength_calibrations: HashMap::new(),
+            standard_references: Vec::new(),
+        }
+    }
+}
+
+/// Input for spectrometry processing
+#[derive(Debug, Clone)]
+pub enum SpectrometryInput {
+    /// Mass spectrum file
+    MassSpecFile(String),
+    
+    /// NMR spectrum file
+    NMRFile(String),
+    
+    /// IR spectrum file
+    IRFile(String),
+    
+    /// UV-Vis spectrum file
+    UVVisFile(String),
+    
+    /// Multiple spectrum files
+    MultipleFiles(Vec<String>),
+    
+    /// Raw spectrum data
+    RawData(SpectrumData),
+}
+
+/// Spectrum data
+#[derive(Debug, Clone)]
+pub struct SpectrumData {
+    /// X-axis data (m/z, ppm, wavenumber, wavelength)
+    pub x_data: Vec<f64>,
+    
+    /// Y-axis data (intensity, absorbance)
+    pub y_data: Vec<f64>,
+    
+    /// Spectrum type
+    pub spectrum_type: SpectrumType,
+    
+    /// Metadata
+    pub metadata: HashMap<String, String>,
+}
+
+/// Types of spectra
+#[derive(Debug, Clone)]
+pub enum SpectrumType {
+    /// Mass spectrum
+    MassSpectrum,
+    
+    /// NMR spectrum
+    NMRSpectrum(NMRNucleus),
+    
+    /// IR spectrum
+    IRSpectrum,
+    
+    /// UV-Vis spectrum
+    UVVisSpectrum,
+    
+    /// Raman spectrum
+    RamanSpectrum,
+    
+    /// Custom spectrum
+    Custom(String),
 } 
