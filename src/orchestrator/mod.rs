@@ -9,6 +9,7 @@ pub mod examples;
 pub mod goal;
 pub mod context;
 pub mod intervention;
+pub mod config;
 
 // Re-export main components
 pub use metacognitive::MetacognitiveOrchestrator;
@@ -16,12 +17,19 @@ pub use stream::StreamProcessor;
 pub use types::StreamData;
 pub use examples::{create_default_orchestrator, create_custom_orchestrator};
 
+// Re-export main types for easy access
+pub use goal::{Goal, GoalType, GoalMetrics, SuccessCriterion, Strategy, GoalStatus};
+pub use intervention::{InterventionSystem, InterventionType, ActiveIntervention, InterventionOutcome};
+pub use context::{Context, ContextPattern, WritingPattern};
+pub use config::KwasaConfig as Config;
+pub use stream::{StreamProcessor, StreamError, ProcessingPipeline};
+
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use log::{info, warn, debug};
 use crate::turbulance::ast::Value;
 use crate::knowledge::KnowledgeDatabase;
-use crate::text_unit::{TextUnit, TextUnitRegistry};
+use crate::text_unit::{TextUnit, TextUnitRegistry, TextUnitId, TextUnitType};
 use goal::Goal;
 use context::Context;
 use intervention::Intervention;
@@ -48,6 +56,12 @@ pub struct Orchestrator {
     
     /// Tracking state
     is_tracking: bool,
+    
+    /// Current processing configuration
+    config: Config,
+    
+    /// Processing pipelines
+    pipelines: std::collections::HashMap<String, ProcessingPipeline>,
 }
 
 impl Orchestrator {
@@ -71,6 +85,8 @@ impl Orchestrator {
             interventions,
             variables: HashMap::new(),
             is_tracking: false,
+            config: Config::default(),
+            pipelines: std::collections::HashMap::new(),
         }
     }
     
@@ -99,7 +115,7 @@ impl Orchestrator {
     }
     
     /// Add a text unit to the orchestrator
-    pub fn add_text_unit(&self, unit: TextUnit) -> usize {
+    pub fn add_text_unit(&self, unit: TextUnit) -> TextUnitId {
         let mut units = self.units.lock().unwrap();
         let id = units.add_unit(unit);
         
@@ -111,13 +127,13 @@ impl Orchestrator {
     }
     
     /// Get a text unit by ID
-    pub fn get_text_unit(&self, id: usize) -> Option<TextUnit> {
+    pub fn get_text_unit(&self, id: TextUnitId) -> Option<TextUnit> {
         let units = self.units.lock().unwrap();
         units.get_unit(id).cloned()
     }
     
     /// Update the context with a text unit
-    fn update_context_with_unit(&self, unit_id: usize) {
+    fn update_context_with_unit(&self, unit_id: TextUnitId) {
         let units = self.units.lock().unwrap();
         
         if let Some(unit) = units.get_unit(unit_id) {
@@ -145,10 +161,9 @@ impl Orchestrator {
         // Add the text as a unit
         let unit = TextUnit::new(
             text.to_string(),
+            TextUnitType::Paragraph,
             0,
             text.len(),
-            crate::text_unit::TextUnitType::Paragraph,
-            0, // Temporary ID
         );
         
         let unit_id = self.add_text_unit(unit);
@@ -207,6 +222,37 @@ impl Orchestrator {
     pub fn register_intervention(&mut self, intervention: Box<dyn Intervention>) {
         info!("Registering new intervention: {}", intervention.name());
         self.interventions.push(intervention);
+    }
+    
+    /// Get current configuration
+    pub fn config(&self) -> &Config {
+        &self.config
+    }
+    
+    /// Update configuration
+    pub fn update_config(&mut self, config: Config) {
+        self.config = config;
+    }
+    
+    /// Add a processing pipeline
+    pub fn add_pipeline(&mut self, name: String, pipeline: ProcessingPipeline) {
+        self.pipelines.insert(name, pipeline);
+    }
+    
+    /// Get a processing pipeline
+    pub fn get_pipeline(&self, name: &str) -> Option<&ProcessingPipeline> {
+        self.pipelines.get(name)
+    }
+    
+    /// Get all pipeline names
+    pub fn pipeline_names(&self) -> Vec<&String> {
+        self.pipelines.keys().collect()
+    }
+}
+
+impl Default for Orchestrator {
+    fn default() -> Self {
+        Self::new(Goal::new("Default Goal", 0.5), Arc::new(Mutex::new(KnowledgeDatabase::new())))
     }
 }
 

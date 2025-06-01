@@ -34,6 +34,15 @@ pub struct GenomicMetadata {
     pub annotations: HashMap<String, String>,
 }
 
+impl std::hash::Hash for GenomicMetadata {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.source.hash(state);
+        self.strand.hash(state);
+        self.position.hash(state);
+        self.annotations.hash(state);
+    }
+}
+
 /// Strand direction
 #[derive(Debug, Clone, Eq, Hash, PartialEq)]
 pub enum Strand {
@@ -346,7 +355,7 @@ impl Unit for GeneUnit {
 //------------------------------------------------------------------------------
 
 /// A recurring pattern unit
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct MotifUnit {
     /// The motif sequence
     content: Vec<u8>,
@@ -370,6 +379,17 @@ impl MotifUnit {
             name: None,
             pwm: None,
         }
+    }
+}
+
+impl Eq for MotifUnit {}
+
+impl std::hash::Hash for MotifUnit {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.content.hash(state);
+        self.id.hash(state);
+        self.name.hash(state);
+        // Skip pwm field since f64 doesn't implement Hash
     }
 }
 

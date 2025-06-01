@@ -560,7 +560,11 @@ Kwasa-Kwasa's core philosophy of arbitrarily defined boundaries and semantic uni
 
 #### Hybrid Evidence Analysis
 
-The hybrid system enables advanced evidence integration and analysis across domains:
+Kwasa-Kwasa's hybrid evidence analysis capabilities represent one of its most powerful features, combining logical programming, fuzzy logic, and imperative processing to handle complex, multi-domain evidence evaluation scenarios.
+
+#### Cross-Domain Evidence Integration
+
+The framework excels at integrating evidence from disparate scientific domains:
 
 ```turbulance
 import evidence
@@ -568,36 +572,142 @@ import logic
 import fuzzy
 import hybrid
 
-// Create hybrid reasoning system
-var hybrid_system = hybrid.HybridReasoningSystem.new()
+// Create a comprehensive evidence network
+var evidence_network = evidence.EvidenceNetwork.new()
 
-// Define logical rules
-hybrid_system.add_logical_rules([
-    "protein_coding_gene(Gene) :- gene(Gene), has_exon(Gene, _)",
-    "protein_present(Gene, Sample) :- protein_coding_gene(Gene), peptide_detected(Sample, Peptide), derives_from(Peptide, Gene)",
-    "protein_absent(Gene, Sample) :- protein_coding_gene(Gene), not protein_present(Gene, Sample)"
-])
-
-// Define fuzzy variables
-hybrid_system.add_fuzzy_variable(fuzzy_variable gene_expression(0.0, 100.0) {
-    term low: trapezoidal(0, 0, 20, 40)
-    term medium: triangular(30, 50, 70)
-    term high: trapezoidal(60, 80, 100, 100)
+// Add genomic evidence
+evidence_network.add_genomic_evidence("BRCA1_mutation", {
+    chromosome: "chr17",
+    position: "43044295",
+    variant_type: "missense",
+    confidence: 0.95,
+    motion: Motion("Pathogenic variant in BRCA1 gene associated with breast cancer risk")
 })
 
-// Define fuzzy rules
-hybrid_system.add_fuzzy_rule("if gene_expression is high and protein_present is true " +
-                           "then evidence_consistency is supporting")
+// Add proteomic evidence
+evidence_network.add_proteomic_evidence("BRCA1_protein_absence", {
+    detection_method: "western_blot",
+    expression_level: 0.15,  // Relative to normal
+    confidence: 0.88,
+    motion: Motion("Significantly reduced BRCA1 protein expression in tumor sample")
+})
 
-// Apply hybrid reasoning
-hybrid_system.apply_logical_rules()
-hybrid_system.apply_fuzzy_rules()
+// Add clinical evidence
+evidence_network.add_clinical_evidence("family_history", {
+    relatives_affected: 3,
+    inheritance_pattern: "autosomal_dominant",
+    confidence: 0.92,
+    motion: Motion("Strong family history consistent with hereditary breast cancer syndrome")
+})
 
-// Find contradictions in the evidence
-var contradictions = hybrid_system.query(
-    "gene(Gene), fuzzy_belief(Gene, 'evidence_consistency', 'contradictory', Degree), Degree > 0.7"
+// Define logical relationships between evidence types
+evidence_network.add_logical_rule(
+    "pathogenic_variant(Gene, Position) and reduced_expression(Gene, Sample) " +
+    "implies functional_impact(Gene, Sample, high)"
 )
+
+// Apply fuzzy reasoning for uncertainty handling
+evidence_network.add_fuzzy_rule(
+    "if genomic_confidence is high and proteomic_confidence is high " +
+    "then overall_evidence_strength is very_strong"
+)
+
+// Perform hybrid analysis
+var analysis_result = evidence_network.hybrid_analysis()
+print("Evidence strength: " + analysis_result.overall_strength)
+print("Recommendation: " + analysis_result.clinical_recommendation)
 ```
+
+#### Bayesian Evidence Networks
+
+The framework implements sophisticated Bayesian reasoning for evidence evaluation:
+
+```turbulance
+// Create Bayesian evidence network
+var bayesian_net = evidence.BayesianNetwork.new()
+
+// Define conditional dependencies
+bayesian_net.add_node("genetic_predisposition", ["low", "moderate", "high"])
+bayesian_net.add_node("environmental_exposure", ["minimal", "moderate", "high"])
+bayesian_net.add_node("disease_outcome", ["negative", "positive"])
+
+// Set conditional probability tables
+bayesian_net.set_conditional_probability("disease_outcome", {
+    parents: ["genetic_predisposition", "environmental_exposure"],
+    probabilities: {
+        ("low", "minimal"): {"negative": 0.95, "positive": 0.05},
+        ("high", "high"): {"negative": 0.20, "positive": 0.80},
+        // ... additional probability combinations
+    }
+})
+
+// Update beliefs based on new evidence
+bayesian_net.observe("genetic_predisposition", "high")
+bayesian_net.update_beliefs()
+
+// Query for disease probability
+var disease_probability = bayesian_net.query("disease_outcome", "positive")
+print("Disease probability given evidence: " + disease_probability)
+```
+
+#### Contradiction Detection and Resolution
+
+The hybrid system automatically detects and helps resolve contradictory evidence:
+
+```turbulance
+// Define contradictory evidence detection
+evidence_network.add_contradiction_rule(
+    "contradiction detected when genomic_evidence suggests pathogenic " +
+    "but functional_assay suggests benign with confidence > 0.8"
+)
+
+// Analyze for contradictions
+var contradictions = evidence_network.detect_contradictions()
+
+considering contradictions:
+    print("Contradiction found: " + contradiction.description)
+    
+    // Propose resolution strategies
+    var strategies = contradiction.resolution_strategies()
+    considering strategies:
+        print("Resolution option: " + strategy.description)
+        print("Required actions: " + strategy.required_actions)
+```
+
+#### Multi-Modal Evidence Fusion
+
+The framework supports sophisticated evidence fusion across multiple data modalities:
+
+```turbulance
+// Create multi-modal evidence fusion system
+var fusion_system = evidence.MultiModalFusion.new()
+
+// Add different evidence modalities
+fusion_system.add_modality("genomic", weight=0.35)
+fusion_system.add_modality("transcriptomic", weight=0.25)
+fusion_system.add_modality("proteomic", weight=0.20)
+fusion_system.add_modality("clinical", weight=0.20)
+
+// Define fusion rules
+fusion_system.add_fusion_rule("weighted_consensus", {
+    method: "bayesian_averaging",
+    conflict_resolution: "evidence_strength_weighted"
+})
+
+// Perform evidence fusion
+var fused_result = fusion_system.fuse_evidence(evidence_network)
+
+// Generate comprehensive report
+var report = fusion_system.generate_evidence_report(fused_result, {
+    include_uncertainty: true,
+    include_sensitivity_analysis: true,
+    format: "clinical_summary"
+})
+
+print(report)
+```
+
+This hybrid approach enables Kwasa-Kwasa to handle the complexity of real-world evidence evaluation, where multiple types of data must be integrated, uncertainties must be quantified, and contradictions must be resolved systematically.
 
 ## Using Kwasa-Kwasa
 

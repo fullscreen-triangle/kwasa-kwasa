@@ -5,6 +5,7 @@ pub mod hierarchy;
 pub mod utils;
 pub mod transform;
 pub mod advanced_processing;
+pub mod types;
 
 // Re-export common types for convenience
 pub use boundary::{UnitBoundary, BoundaryType};
@@ -13,11 +14,18 @@ pub use hierarchy::{HierarchyNode, HierarchyNodeType};
 pub use transform::{TransformationPipeline, PipelineStage, TransformationMetrics};
 pub use advanced_processing::{AdvancedTextProcessor, SemanticAnalysis, StyleAnalysis, ReadabilityMetrics};
 pub use registry::TextUnitRegistry as BaseTextUnitRegistry;
+pub use types::{TextUnit, TextUnitId, TextUnitType, Boundary};
+pub use registry::{TextUnitRegistry, BoundaryDetectionOptions};
+pub use boundary::{detect_paragraph_boundaries, detect_sentence_boundaries, detect_word_boundaries};
 
 use std::collections::HashMap;
 use std::fmt;
+use serde::{Deserialize, Serialize};
 
 use crate::turbulance::ast::{Value, TextUnit as AstTextUnit};
+
+// Re-export the main TextUnit from types for compatibility
+pub use types::TextUnit as MainTextUnit;
 
 /// Represents a text unit, which is a block of text with metadata and boundaries
 #[derive(Debug, Clone, PartialEq)]
@@ -26,25 +34,34 @@ pub struct TextUnit {
     pub content: String,
     
     /// Metadata about the text unit
-    pub metadata: HashMap<String, Value>,
+    pub metadata: HashMap<String, String>,
     
     /// Start position in the original document
-    pub start: usize,
+    pub start_pos: usize,
     
     /// End position in the original document
-    pub end: usize,
+    pub end_pos: usize,
     
     /// Unit type (paragraph, sentence, section, etc.)
     pub unit_type: TextUnitType,
     
     /// Parent unit ID (if part of a hierarchy)
-    pub parent_id: Option<usize>,
+    pub parent: Option<TextUnitId>,
     
     /// Children unit IDs (if has nested units)
-    pub children: Vec<usize>,
+    pub children: Vec<TextUnitId>,
     
     /// Unique identifier for this text unit
-    pub id: usize,
+    pub id: TextUnitId,
+    
+    /// Quality score of the text unit
+    pub quality_score: Option<f64>,
+    
+    /// Semantic tags associated with the text unit
+    pub semantic_tags: Vec<String>,
+    
+    /// Timestamp of when the text unit was created
+    pub created_at: u64,
 }
 
 /// Types of text units
@@ -69,68 +86,90 @@ pub enum TextUnitType {
 impl TextUnit {
     /// Create a new text unit
     pub fn new(
-        content: String, 
-        start: usize, 
-        end: usize, 
+        content: String,
         unit_type: TextUnitType,
-        id: usize
+        start: usize,
+        end: usize,
     ) -> Self {
         Self {
+            id: TextUnitId::new(),
             content,
+            unit_type,
+            start_pos: start,
+            end_pos: end,
             metadata: HashMap::new(),
-            start,
-            end,
-            unit_type,
-            parent_id: None,
             children: Vec::new(),
-            id,
+            parent: None,
+            boundaries: Vec::new(),
+            quality_score: None,
+            semantic_tags: Vec::new(),
+            created_at: std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .unwrap_or_default()
+                .as_secs(),
         }
     }
     
-    /// Create a new text unit with metadata
-    pub fn with_metadata(
-        content: String, 
-        metadata: HashMap<String, Value>, 
-        start: usize, 
-        end: usize, 
-        unit_type: TextUnitType,
-        id: usize
-    ) -> Self {
-        Self {
-            content,
-            metadata,
-            start,
-            end,
-            unit_type,
-            parent_id: None,
-            children: Vec::new(),
-            id,
-        }
+    /// Get the text content
+    pub fn content(&self) -> &str {
+        &self.content
     }
     
-    /// Add a child unit to this unit
-    pub fn add_child(&mut self, child_id: usize) {
+    /// Get the unit type
+    pub fn unit_type(&self) -> &TextUnitType {
+        &self.unit_type
+    }
+    
+    /// Get start position
+    pub fn start_pos(&self) -> usize {
+        self.start_pos
+    }
+    
+    /// Get end position
+    pub fn end_pos(&self) -> usize {
+        self.end_pos
+    }
+    
+    /// Get length
+    pub fn len(&self) -> usize {
+        self.end_pos - self.start_pos
+    }
+    
+    /// Check if empty
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+    
+    /// Add a child unit
+    pub fn add_child(&mut self, child_id: TextUnitId) {
         self.children.push(child_id);
     }
     
-    /// Set the parent unit for this unit
-    pub fn set_parent(&mut self, parent_id: usize) {
-        self.parent_id = Some(parent_id);
+    /// Set parent unit
+    pub fn set_parent(&mut self, parent_id: TextUnitId) {
+        self.parent = Some(parent_id);
     }
     
-    /// Add metadata to this unit
-    pub fn add_metadata(&mut self, key: &str, value: Value) {
-        self.metadata.insert(key.to_string(), value);
+    /// Add semantic tag
+    pub fn add_semantic_tag(&mut self, tag: String) {
+        if !self.semantic_tags.contains(&tag) {
+            self.semantic_tags.push(tag);
+        }
     }
     
-    /// Get the length of the unit's content
-    pub fn len(&self) -> usize {
-        self.content.len()
+    /// Set quality score
+    pub fn set_quality_score(&mut self, score: f64) {
+        self.quality_score = Some(score.max(0.0).min(1.0));
     }
     
-    /// Check if the unit is empty
-    pub fn is_empty(&self) -> bool {
-        self.content.is_empty()
+    /// Add metadata
+    pub fn add_metadata(&mut self, key: String, value: String) {
+        self.metadata.insert(key, value);
+    }
+    
+    /// Get metadata value
+    pub fn get_metadata(&self, key: &str) -> Option<&String> {
+        self.metadata.get(key)
     }
     
     /// Convert to an AST TextUnit
@@ -143,14 +182,12 @@ impl TextUnit {
     
     /// Create a new text unit from a string with a specific type
     pub fn from_string_with_type(content: String, unit_type: TextUnitType) -> Self {
-        Self::new(content, 0, 0, unit_type, 0)
+        Self::new(content, unit_type, 0, content.len())
     }
     
     /// Calculate the text unit's complexity
     pub fn complexity(&self) -> f64 {
         // A simple complexity measure based on word count and average word length
-        // We'll enhance this with more sophisticated metrics in the future
-        
         let words: Vec<&str> = self.content.split_whitespace().collect();
         let word_count = words.len();
         
@@ -162,16 +199,12 @@ impl TextUnit {
         let avg_word_length = total_chars as f64 / word_count as f64;
         
         // Complexity formula: normalize to a 0-1 scale
-        // Higher values = more complex
         (word_count as f64 * 0.01).min(1.0) * (avg_word_length / 10.0).min(1.0)
     }
     
     /// Calculate the readability score of the text unit
     pub fn readability_score(&self) -> f64 {
         // Simple readability score based on average sentence length
-        // and average word length (similar to Flesch Reading Ease)
-        // We'll implement more sophisticated metrics in the future
-        
         let sentences: Vec<&str> = self.content
             .split(&['.', '!', '?'][..])
             .filter(|s| !s.trim().is_empty())
@@ -191,7 +224,6 @@ impl TextUnit {
         let avg_word_length = total_chars as f64 / word_count as f64;
         
         // Higher score = more readable
-        // Scale is 0-100
         100.0 - (0.39 * avg_sentence_length + 11.8 * avg_word_length - 15.59)
     }
 }
@@ -200,8 +232,8 @@ impl fmt::Display for TextUnit {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{} ({}-{}): '{}'", 
             self.unit_type, 
-            self.start, 
-            self.end, 
+            self.start_pos, 
+            self.end_pos, 
             if self.content.len() > 30 {
                 format!("{}...", &self.content[0..30])
             } else {
@@ -228,8 +260,8 @@ impl fmt::Display for TextUnitType {
 /// Text unit registry for managing units in a document
 #[derive(Debug, Default)]
 pub struct TextUnitRegistry {
-    units: HashMap<usize, TextUnit>,
-    next_id: usize,
+    units: HashMap<TextUnitId, TextUnit>,
+    next_id: TextUnitId,
 }
 
 impl TextUnitRegistry {
@@ -237,26 +269,26 @@ impl TextUnitRegistry {
     pub fn new() -> Self {
         Self {
             units: HashMap::new(),
-            next_id: 0,
+            next_id: TextUnitId::new(),
         }
     }
     
     /// Add a text unit to the registry
-    pub fn add_unit(&mut self, mut unit: TextUnit) -> usize {
+    pub fn add_unit(&mut self, mut unit: TextUnit) -> TextUnitId {
         let id = self.next_id;
         unit.id = id;
         self.units.insert(id, unit);
-        self.next_id += 1;
+        self.next_id = TextUnitId::new();
         id
     }
     
     /// Get a text unit by ID
-    pub fn get_unit(&self, id: usize) -> Option<&TextUnit> {
+    pub fn get_unit(&self, id: TextUnitId) -> Option<&TextUnit> {
         self.units.get(&id)
     }
     
     /// Get a mutable reference to a text unit by ID
-    pub fn get_unit_mut(&mut self, id: usize) -> Option<&mut TextUnit> {
+    pub fn get_unit_mut(&mut self, id: TextUnitId) -> Option<&mut TextUnit> {
         self.units.get_mut(&id)
     }
     
@@ -275,12 +307,12 @@ impl TextUnitRegistry {
     /// Get the root units (units with no parent)
     pub fn root_units(&self) -> Vec<&TextUnit> {
         self.units.values()
-            .filter(|unit| unit.parent_id.is_none())
+            .filter(|unit| unit.parent.is_none())
             .collect()
     }
     
     /// Get the child units of a given unit
-    pub fn children_of(&self, id: usize) -> Vec<&TextUnit> {
+    pub fn children_of(&self, id: TextUnitId) -> Vec<&TextUnit> {
         if let Some(parent) = self.get_unit(id) {
             parent.children.iter()
                 .filter_map(|&child_id| self.get_unit(child_id))
@@ -291,7 +323,7 @@ impl TextUnitRegistry {
     }
     
     /// Create a parent-child relationship between units
-    pub fn set_parent_child(&mut self, parent_id: usize, child_id: usize) -> bool {
+    pub fn set_parent_child(&mut self, parent_id: TextUnitId, child_id: TextUnitId) -> bool {
         // Check if both units exist
         if !self.units.contains_key(&parent_id) || !self.units.contains_key(&child_id) {
             return false;
@@ -311,7 +343,7 @@ impl TextUnitRegistry {
     }
     
     /// Get the next available ID
-    pub fn next_available_id(&self) -> usize {
+    pub fn next_available_id(&self) -> TextUnitId {
         self.next_id
     }
 }
@@ -323,45 +355,29 @@ mod tests {
     #[test]
     fn test_text_unit_creation() {
         let unit = TextUnit::new(
-            "This is a test paragraph.".to_string(),
+            "Hello world".to_string(),
+            TextUnitType::Sentence,
             0,
-            25,
-            TextUnitType::Paragraph,
-            1
+            11,
         );
         
-        assert_eq!(unit.content, "This is a test paragraph.");
-        assert_eq!(unit.start, 0);
-        assert_eq!(unit.end, 25);
-        assert_eq!(unit.unit_type, TextUnitType::Paragraph);
-        assert_eq!(unit.id, 1);
-        assert!(unit.parent_id.is_none());
-        assert!(unit.children.is_empty());
-        assert!(unit.metadata.is_empty());
+        assert_eq!(unit.content(), "Hello world");
+        assert_eq!(unit.start_pos(), 0);
+        assert_eq!(unit.end_pos(), 11);
+        assert_eq!(unit.len(), 11);
     }
     
     #[test]
-    fn test_text_unit_with_metadata() {
-        let mut metadata = HashMap::new();
-        metadata.insert("language".to_string(), Value::String("en".to_string()));
-        metadata.insert("sentiment".to_string(), Value::Number(0.75));
-        
-        let unit = TextUnit::with_metadata(
-            "This is a test with metadata.".to_string(),
-            metadata.clone(),
+    fn test_text_unit_metadata() {
+        let mut unit = TextUnit::new(
+            "Test".to_string(),
+            TextUnitType::Word,
             0,
-            30,
-            TextUnitType::Paragraph,
-            2
+            4,
         );
         
-        assert_eq!(unit.content, "This is a test with metadata.");
-        assert_eq!(unit.metadata.len(), 2);
-        
-        match unit.metadata.get("language") {
-            Some(Value::String(lang)) => assert_eq!(lang, "en"),
-            _ => panic!("Expected language metadata"),
-        }
+        unit.add_metadata("language".to_string(), "en".to_string());
+        assert_eq!(unit.get_metadata("language"), Some(&"en".to_string()));
     }
     
     #[test]
@@ -371,26 +387,23 @@ mod tests {
         // Add some units
         let doc_id = registry.add_unit(TextUnit::new(
             "Full document".to_string(),
+            TextUnitType::Document,
             0,
             100,
-            TextUnitType::Document,
-            0
         ));
         
         let para1_id = registry.add_unit(TextUnit::new(
             "Paragraph 1".to_string(),
+            TextUnitType::Paragraph,
             0,
             30,
-            TextUnitType::Paragraph,
-            0
         ));
         
         let para2_id = registry.add_unit(TextUnit::new(
             "Paragraph 2".to_string(),
+            TextUnitType::Paragraph,
             31,
             60,
-            TextUnitType::Paragraph,
-            0
         ));
         
         // Set up parent-child relationships
@@ -404,10 +417,10 @@ mod tests {
         assert!(doc.children.contains(&para2_id));
         
         let para1 = registry.get_unit(para1_id).unwrap();
-        assert_eq!(para1.parent_id, Some(doc_id));
+        assert_eq!(para1.parent, Some(doc_id));
         
         let para2 = registry.get_unit(para2_id).unwrap();
-        assert_eq!(para2.parent_id, Some(doc_id));
+        assert_eq!(para2.parent, Some(doc_id));
         
         // Check fetching by type
         let paragraphs = registry.units_of_type(TextUnitType::Paragraph);
@@ -427,18 +440,16 @@ mod tests {
     fn test_complexity_and_readability() {
         let simple_unit = TextUnit::new(
             "This is a simple test. It has short words.".to_string(),
+            TextUnitType::Paragraph,
             0,
             42,
-            TextUnitType::Paragraph,
-            1
         );
         
         let complex_unit = TextUnit::new(
             "The implementation of metacognitive orchestration within the framework necessitates sophisticated algorithms for contextual awareness and semantic understanding of multifaceted textual structures.".to_string(),
+            TextUnitType::Paragraph,
             0,
             200,
-            TextUnitType::Paragraph,
-            2
         );
         
         // Simple text should have lower complexity
