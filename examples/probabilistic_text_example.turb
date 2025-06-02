@@ -1,0 +1,192 @@
+// Probabilistic Text Operations Example
+// Demonstrates the new "Points" and "Resolution Functions" concept
+
+project DemonstrateProbabilisticText:
+    sources: [
+        "Probabilistic text processing demonstration",
+        "Handling uncertainty in natural language"
+    ]
+
+funxn explore_probabilistic_length():
+    print("=== Probabilistic Length Analysis ===")
+    
+    // Traditional deterministic approach
+    var text = "Hello world"
+    var traditional_length = len(text)
+    print("Traditional length: {}", traditional_length)
+    
+    // NEW: Probabilistic approach with TextPoints
+    var text_point = point("Hello world", confidence: 0.9)
+    var length_resolution = resolve probabilistic_len(text_point) given context("informal")
+    
+    print("Probabilistic length analysis:")
+    print("- Character count: {} (confidence: {})", 
+          length_resolution.character_count.value,
+          length_resolution.character_count.confidence)
+    print("- Word count: {} (confidence: {})",
+          length_resolution.word_count.value, 
+          length_resolution.word_count.confidence)
+    print("- Semantic units: {} (confidence: {})",
+          length_resolution.semantic_units.value,
+          length_resolution.semantic_units.confidence)
+    
+    return length_resolution
+
+funxn explore_ambiguous_text():
+    print("=== Handling Ambiguous Text ===")
+    
+    // Example with inherently ambiguous text
+    var ambiguous_point = point("bank", confidence: 0.7)
+    
+    // Add multiple interpretations
+    ambiguous_point.add_interpretation({
+        meaning: "financial institution",
+        probability: 0.6,
+        evidence: ["context suggests financial transaction"],
+        features: ["business_context"]
+    })
+    
+    ambiguous_point.add_interpretation({
+        meaning: "river bank", 
+        probability: 0.4,
+        evidence: ["context mentions water flow"],
+        features: ["nature_context"]
+    })
+    
+    // Calculate interpretation entropy
+    var entropy = ambiguous_point.interpretation_entropy()
+    print("Interpretation entropy: {:.3f}", entropy)
+    
+    // Get the most likely interpretation
+    var primary = ambiguous_point.primary_interpretation()
+    print("Primary interpretation: {} (probability: {:.2f})", 
+          primary.meaning, primary.probability)
+    
+    return {
+        "point": ambiguous_point,
+        "entropy": entropy,
+        "primary_meaning": primary.meaning
+    }
+
+funxn context_dependent_analysis():
+    print("=== Context-Dependent Analysis ===")
+    
+    var tweet_text = "This is amazing!"
+    
+    // Same text, different contexts
+    var twitter_point = point(tweet_text, confidence: 0.85)
+    var academic_point = point(tweet_text, confidence: 0.85)
+    
+    // Resolution in different contexts
+    var twitter_length = resolve probabilistic_len(twitter_point) given context("twitter")
+    var academic_length = resolve probabilistic_len(academic_point) given context("academic")
+    
+    print("Twitter context:")
+    print("- Contextual length rating: {:.2f}", twitter_length.contextual.relative_length)
+    
+    print("Academic context:")  
+    print("- Contextual length rating: {:.2f}", academic_length.contextual.relative_length)
+    
+    return {
+        "twitter_analysis": twitter_length,
+        "academic_analysis": academic_length
+    }
+
+funxn demonstrate_uncertainty_propagation():
+    print("=== Uncertainty Propagation ===")
+    
+    // Start with uncertain text
+    var uncertain_text = point("The result is roughly accurate", confidence: 0.6)
+    
+    // Chain probabilistic operations
+    var length_result = resolve probabilistic_len(uncertain_text) given context("scientific")
+    var sentiment_result = resolve probabilistic_sentiment(uncertain_text) given context("scientific")
+    
+    // Combine results with uncertainty propagation
+    var combined_uncertainty = propagate_uncertainty([
+        length_result.aggregated_confidence,
+        sentiment_result.aggregated_confidence,
+        uncertain_text.confidence
+    ])
+    
+    print("Individual confidences:")
+    print("- Original text: {:.3f}", uncertain_text.confidence)
+    print("- Length analysis: {:.3f}", length_result.aggregated_confidence) 
+    print("- Sentiment analysis: {:.3f}", sentiment_result.aggregated_confidence)
+    print("Combined uncertainty: {:.3f}", combined_uncertainty)
+    
+    return {
+        "original_confidence": uncertain_text.confidence,
+        "combined_uncertainty": combined_uncertainty,
+        "uncertainty_reduction": uncertain_text.confidence - combined_uncertainty
+    }
+
+funxn compare_resolution_strategies():
+    print("=== Resolution Strategy Comparison ===")
+    
+    var ambiguous_point = point("The solution is optimal", confidence: 0.8)
+    
+    // Add multiple interpretations
+    ambiguous_point.add_interpretation({
+        meaning: "mathematically optimal solution",
+        probability: 0.4,
+        context: {"domain": "mathematics"}
+    })
+    
+    ambiguous_point.add_interpretation({
+        meaning: "best practical choice",
+        probability: 0.6, 
+        context: {"domain": "business"}
+    })
+    
+    // Try different resolution strategies
+    var max_likelihood = resolve probabilistic_meaning(ambiguous_point) 
+                        given context("general") 
+                        with strategy("maximum_likelihood")
+    
+    var conservative = resolve probabilistic_meaning(ambiguous_point)
+                      given context("general")
+                      with strategy("conservative_min")
+    
+    var bayesian = resolve probabilistic_meaning(ambiguous_point)
+                  given context("general") 
+                  with strategy("bayesian_weighted")
+    
+    print("Maximum Likelihood: {}", max_likelihood.result)
+    print("Conservative: {}", conservative.result)
+    print("Bayesian Weighted: {}", bayesian.result)
+    
+    return {
+        "strategies": {
+            "max_likelihood": max_likelihood,
+            "conservative": conservative, 
+            "bayesian": bayesian
+        }
+    }
+
+// Main demonstration function
+funxn main():
+    print("Probabilistic Text Processing Demonstration")
+    print("==========================================")
+    
+    var length_demo = explore_probabilistic_length()
+    var ambiguity_demo = explore_ambiguous_text()
+    var context_demo = context_dependent_analysis()
+    var uncertainty_demo = demonstrate_uncertainty_propagation()
+    var strategy_demo = compare_resolution_strategies()
+    
+    print("\n=== Summary ===")
+    print("This demonstration shows how probabilistic text operations")
+    print("handle the inherent uncertainty in natural language:")
+    print("1. Multiple interpretation possibilities")
+    print("2. Context-dependent meaning")
+    print("3. Uncertainty propagation through operations")
+    print("4. Different resolution strategies for ambiguity")
+    
+    return {
+        "length_analysis": length_demo,
+        "ambiguity_handling": ambiguity_demo,
+        "context_sensitivity": context_demo,
+        "uncertainty_propagation": uncertainty_demo,
+        "strategy_comparison": strategy_demo
+    } 

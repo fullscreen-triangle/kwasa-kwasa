@@ -2,6 +2,7 @@ pub mod text_analysis;
 pub mod text_transform;
 pub mod research;
 pub mod utils;
+pub mod cross_domain_analysis;
 
 use crate::turbulance::interpreter::Value;
 use crate::turbulance::Result;

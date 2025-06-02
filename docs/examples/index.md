@@ -6,6 +6,7 @@ This section contains practical examples of using the Kwasa-Kwasa framework and 
 
 - [Basic Usage](basic_example.md) - A simple introduction to Turbulance syntax and concepts
 - [Propositions and Motions](proposition_example.md) - Working with propositions and motions
+-[Domain Extension](domain-extension.md) Methods on extending writing domain.
 
 ## Domain-Specific Examples
 

@@ -137,6 +137,41 @@ fn generate_stdlib_bindings(out_dir: &Path) -> io::Result<()> {
     writeln!(file, "    functions.insert(\"readability_score\", Box::new(crate::turbulance::stdlib::text_analysis::readability_score as StdlibFnType));")?;
     writeln!(file, "    functions.insert(\"sentiment_analysis\", Box::new(crate::turbulance::stdlib::text_analysis::sentiment_analysis as StdlibFnType));")?;
     writeln!(file, "    functions.insert(\"extract_keywords\", Box::new(crate::turbulance::stdlib::text_analysis::extract_keywords as StdlibFnType));")?;
+    writeln!(file, "    functions.insert(\"contains\", Box::new(crate::turbulance::stdlib::text_analysis::contains as StdlibFnType));")?;
+    writeln!(file, "    functions.insert(\"extract_patterns\", Box::new(crate::turbulance::stdlib::text_analysis::extract_patterns as StdlibFnType));")?;
+    
+    // Statistical analysis functions
+    writeln!(file, "")?;
+    writeln!(file, "    // Statistical analysis functions")?;
+    writeln!(file, "    functions.insert(\"ngram_probability\", Box::new(crate::turbulance::stdlib::text_analysis::ngram_probability as StdlibFnType));")?;
+    writeln!(file, "    functions.insert(\"conditional_probability\", Box::new(crate::turbulance::stdlib::text_analysis::conditional_probability as StdlibFnType));")?;
+    writeln!(file, "    functions.insert(\"positional_distribution\", Box::new(crate::turbulance::stdlib::text_analysis::positional_distribution as StdlibFnType));")?;
+    writeln!(file, "    functions.insert(\"entropy_measure\", Box::new(crate::turbulance::stdlib::text_analysis::entropy_measure as StdlibFnType));")?;
+    writeln!(file, "    functions.insert(\"sequence_significance\", Box::new(crate::turbulance::stdlib::text_analysis::sequence_significance as StdlibFnType));")?;
+    writeln!(file, "    functions.insert(\"markov_transition\", Box::new(crate::turbulance::stdlib::text_analysis::markov_transition as StdlibFnType));")?;
+    writeln!(file, "    functions.insert(\"zipf_analysis\", Box::new(crate::turbulance::stdlib::text_analysis::zipf_analysis as StdlibFnType));")?;
+    writeln!(file, "    functions.insert(\"positional_entropy\", Box::new(crate::turbulance::stdlib::text_analysis::positional_entropy as StdlibFnType));")?;
+    writeln!(file, "    functions.insert(\"contextual_uniqueness\", Box::new(crate::turbulance::stdlib::text_analysis::contextual_uniqueness as StdlibFnType));")?;
+    
+    // Cross-domain statistical analysis functions
+    writeln!(file, "")?;
+    writeln!(file, "    // Cross-domain statistical analysis functions")?;
+    writeln!(file, "    functions.insert(\"motif_enrichment\", Box::new(crate::turbulance::stdlib::cross_domain_analysis::motif_enrichment as StdlibFnType));")?;
+    writeln!(file, "    functions.insert(\"spectral_correlation\", Box::new(crate::turbulance::stdlib::cross_domain_analysis::spectral_correlation as StdlibFnType));")?;
+    writeln!(file, "    functions.insert(\"evidence_likelihood\", Box::new(crate::turbulance::stdlib::cross_domain_analysis::evidence_likelihood as StdlibFnType));")?;
+    writeln!(file, "    functions.insert(\"uncertainty_propagation\", Box::new(crate::turbulance::stdlib::cross_domain_analysis::uncertainty_propagation as StdlibFnType));")?;
+    writeln!(file, "    functions.insert(\"bayesian_update\", Box::new(crate::turbulance::stdlib::cross_domain_analysis::bayesian_update as StdlibFnType));")?;
+    writeln!(file, "    functions.insert(\"confidence_interval\", Box::new(crate::turbulance::stdlib::cross_domain_analysis::confidence_interval as StdlibFnType));")?;
+    writeln!(file, "    functions.insert(\"cross_domain_correlation\", Box::new(crate::turbulance::stdlib::cross_domain_analysis::cross_domain_correlation as StdlibFnType));")?;
+    writeln!(file, "    functions.insert(\"false_discovery_rate\", Box::new(crate::turbulance::stdlib::cross_domain_analysis::false_discovery_rate as StdlibFnType));")?;
+    writeln!(file, "    functions.insert(\"permutation_significance\", Box::new(crate::turbulance::stdlib::cross_domain_analysis::permutation_significance as StdlibFnType));")?;
+    
+    // Positional importance analysis functions
+    writeln!(file, "")?;
+    writeln!(file, "    // Positional importance analysis functions")?;
+    writeln!(file, "    functions.insert(\"positional_importance\", Box::new(crate::turbulance::stdlib::cross_domain_analysis::positional_importance as StdlibFnType));")?;
+    writeln!(file, "    functions.insert(\"section_weight_map\", Box::new(crate::turbulance::stdlib::cross_domain_analysis::section_weight_map as StdlibFnType));")?;
+    writeln!(file, "    functions.insert(\"structural_prominence\", Box::new(crate::turbulance::stdlib::cross_domain_analysis::structural_prominence as StdlibFnType));")?;
     
     // Text transformation functions
     writeln!(file, "")?;

@@ -672,7 +672,134 @@ impl KnowledgeProvider for NullKnowledgeProvider {
 
 /// Create a new knowledge provider based on configuration
 pub fn create_knowledge_provider() -> Box<dyn KnowledgeProvider> {
-    // TODO: Implement real knowledge provider based on configuration
-    // For now, return the null provider
-    Box::new(NullKnowledgeProvider)
+    // Try to create a database-backed knowledge provider
+    match std::env::temp_dir().join("kwasa_knowledge.db") {
+        db_path => {
+            match DatabaseKnowledgeProvider::new(&db_path) {
+                Ok(provider) => Box::new(provider),
+                Err(_) => Box::new(NullKnowledgeProvider),
+            }
+        }
+    }
+}
+
+/// A knowledge provider backed by the local SQLite database
+pub struct DatabaseKnowledgeProvider {
+    database: DatabaseImpl,
+}
+
+impl DatabaseKnowledgeProvider {
+    /// Create a new database-backed knowledge provider
+    pub fn new(db_path: &std::path::Path) -> Result<Self, String> {
+        let database = DatabaseImpl::new(db_path)
+            .map_err(|e| format!("Failed to create knowledge database: {}", e))?;
+        
+        Ok(DatabaseKnowledgeProvider { database })
+    }
+    
+    /// Add a knowledge entry to the database
+    pub fn add_knowledge(&mut self, content: &str, source: &str, tags: Vec<String>, confidence: f64) -> Result<i64, String> {
+        let mut entry = KnowledgeEntry::new(content, source, tags, confidence);
+        self.database.add_entry(&mut entry)
+            .map_err(|e| format!("Failed to add knowledge entry: {}", e))
+    }
+    
+    /// Search for knowledge entries
+    pub fn search_knowledge(&self, query: &str) -> Result<Vec<KnowledgeEntry>, String> {
+        // First try searching by content
+        let content_results = self.database.search(query)
+            .map_err(|e| format!("Search failed: {}", e))?;
+        
+        // Also search by tag
+        let tag_results = self.database.search_by_tag(query)
+            .map_err(|e| format!("Tag search failed: {}", e))?;
+        
+        // Combine results and deduplicate
+        let mut all_results = tag_results;
+        
+        // For now, return the tag results as they are more specific
+        // In a real implementation, we would merge and rank results
+        Ok(all_results)
+    }
+}
+
+impl KnowledgeProvider for DatabaseKnowledgeProvider {
+    fn query(&self, topic: &str, domain: KnowledgeDomain) -> Vec<KnowledgeResult> {
+        // Search for entries related to the topic
+        let search_query = match domain {
+            KnowledgeDomain::General => topic.to_string(),
+            _ => format!("{} {}", domain, topic),
+        };
+        
+        match self.database.search(&search_query) {
+            Ok(_content_matches) => {
+                // Also search by tag to get more structured results
+                match self.database.search_by_tag(topic) {
+                    Ok(entries) => {
+                        entries.into_iter().map(|entry| {
+                            KnowledgeResult {
+                                content: entry.content,
+                                source: entry.source,
+                                confidence: entry.confidence,
+                                citation: Some(Citation::new(
+                                    &entry.source,
+                                    &format!("Retrieved from Kwasa-Kwasa knowledge base, ID: {}", entry.id),
+                                    chrono::Utc::now(),
+                                    research::CitationType::Database,
+                                )),
+                                last_verified: chrono::DateTime::from_timestamp(entry.last_accessed, 0)
+                                    .unwrap_or_else(|| chrono::Utc::now()),
+                            }
+                        }).collect()
+                    },
+                    Err(_) => Vec::new(),
+                }
+            },
+            Err(_) => Vec::new(),
+        }
+    }
+    
+    fn verify_statement(&self, statement: &str) -> Option<FactVerification> {
+        // Simple fact verification by checking if we have supporting knowledge
+        let results = self.query(statement, KnowledgeDomain::General);
+        
+        if results.is_empty() {
+            return Some(FactVerification {
+                is_factual: false,
+                confidence: 0.1,
+                evidence: None,
+                source: "No supporting evidence found in knowledge base".to_string(),
+            });
+        }
+        
+        // Calculate average confidence from matching results
+        let avg_confidence = results.iter()
+            .map(|r| r.confidence)
+            .sum::<f64>() / results.len() as f64;
+        
+        let supporting_evidence = results.iter()
+            .take(3)  // Take up to 3 results
+            .map(|r| format!("• {} (source: {})", r.content, r.source))
+            .collect::<Vec<_>>()
+            .join("\n");
+        
+        Some(FactVerification {
+            is_factual: avg_confidence > 0.6,
+            confidence: avg_confidence,
+            evidence: Some(supporting_evidence),
+            source: "Kwasa-Kwasa Knowledge Database".to_string(),
+        })
+    }
+    
+    fn get_citation(&self, result: &KnowledgeResult) -> Option<Citation> {
+        result.citation.clone()
+    }
+    
+    fn update_database(&mut self, topic: &str, content: &str, source: &str) -> Result<(), String> {
+        let tags = vec![topic.to_string()];
+        let confidence = 0.8; // Default confidence for manually added entries
+        
+        self.add_knowledge(content, source, tags, confidence)
+            .map(|_| ())
+    }
 } 

@@ -87,7 +87,12 @@ impl MetacognitiveOrchestrator {
                 
                 // If successful, add to results
                 if !retry_results.is_empty() {
-                    // TODO: add retry results to final results
+                    // Add retry results to final results with retry metadata
+                    for mut retry_result in retry_results {
+                        retry_result = retry_result.with_metadata("retry_id", &id);
+                        retry_result = retry_result.with_metadata("retry_completion", &completion.to_string());
+                        results.push(retry_result);
+                    }
                 }
             }
         }

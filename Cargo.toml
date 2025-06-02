@@ -45,6 +45,7 @@ urlencoding = "2.1.3"
 
 # Concurrency
 tokio = { version = "1.28.2", features = ["full"] }
+tokio-stream = "0.1.14"
 rayon = "1.7.0"
 async-trait = "0.1.68"
 num_cpus = "1.16.0"

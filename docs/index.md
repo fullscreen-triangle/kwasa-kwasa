@@ -14,6 +14,17 @@ Welcome to the complete documentation for Kwasa-Kwasa, a revolutionary text proc
 - **Quick Install**: `cargo install --path .` after cloning the repository
 - **Verification**: `kwasa-kwasa --version`
 
+## Language Reference
+
+### Complete Language Documentation
+- **[Turbulance Language Overview](language/turbulance-language.md)** - Complete language reference with syntax, features, and examples
+- **[Special Language Features](language/special_features.md)** - Advanced constructs like Propositions, Motions, Evidence structures, Metacognitive structures
+- **[Goal System](language/goal.md)** - Comprehensive goal definition, tracking, and achievement system
+
+### Technical Specifications
+- **[Operations Specification](spec/operations.md)** - Complete specification of all text operations, mathematical functions, and specialized operations
+- **[Turbulance Syntax Specification](spec/turbulance-syntax.md)** - Formal grammar, syntax rules, and language structure specification
+
 ## Core Concepts
 
 ### Text Units - The Foundation
@@ -44,12 +55,6 @@ var paragraph = sentence1 * sentence2 // Multiplication combines units
 - `considering all` - Iteration over collections
 - `allow`/`cause` - Variable declarations
 - `proposition`/`motion` - Hypothesis-driven processing
-
-## Language Reference
-
-### Comprehensive Language Documentation
-- **[Turbulance Language Overview](language/turbulance-language.md)** - Complete language reference with syntax, features, and examples
-- **[Special Language Features](language/special_features.md)** - Advanced constructs like Propositions, Motions, Evidence structures
 
 ### Syntax Examples
 
@@ -103,6 +108,27 @@ var processed = raw_text |>
 1. **Context Layer**: Domain understanding and knowledge base
 2. **Reasoning Layer**: Logical processing and rule application  
 3. **Intuition Layer**: Pattern recognition and heuristic analysis
+
+### Goal-Oriented Writing
+The Goal System enables intelligent, objective-driven text processing:
+
+**Goal Features:**
+- **Progress Tracking**: Automatic evaluation of writing objectives
+- **Adaptive Guidance**: Dynamic suggestions based on goal alignment
+- **Hierarchical Goals**: Complex goals with sub-objectives and dependencies
+- **Real-Time Feedback**: Continuous assessment and recommendations
+
+```turbulance
+var tutorial_goal = Goal.new("Create beginner-friendly tutorial") {
+    success_threshold: 0.85,
+    keywords: ["tutorial", "beginner", "step-by-step"],
+    domain: "education",
+    metrics: {
+        readability_score: 65,
+        explanation_coverage: 0.9
+    }
+}
+```
 
 ## Practical Examples
 
@@ -194,93 +220,118 @@ proposition DrugLikeness:
 - `detect_boundaries(text, boundary_type)` - Find text unit boundaries
 - `extract_structure(text)` - Analyze document structure
 
+**Goal Management:**
+- `Goal.new(description, threshold)` - Create new writing goals
+- `track_progress(goal, text)` - Monitor goal achievement
+- `evaluate_alignment(text, goal)` - Assess text-goal alignment
+- `generate_suggestions(goal, gaps)` - Get improvement recommendations
+
 ### Domain Extension APIs
 
 **Genomic Extension:**
 ```turbulance
 import genomic
-genomic.NucleotideSequence.new(sequence, id)
-genomic.calculate_gc_content(sequence)
-genomic.find_orfs(sequence)
-genomic.translate_to_protein(sequence)
+var sequence = genomic.NucleotideSequence.new("ATGC...", "gene_id")
+var codons = sequence / codon
+var gc_content = sequence.gc_content()
 ```
 
 **Chemistry Extension:**
 ```turbulance
 import chemistry
-chemistry.Molecule.from_smiles(smiles_string)
-chemistry.calculate_molecular_weight(molecule)
-chemistry.find_functional_groups(molecule)
-chemistry.predict_properties(molecule)
+var molecule = chemistry.Molecule.from_smiles("CCO")
+var molecular_weight = molecule.molecular_weight()
+var fragments = molecule / functional_group
 ```
 
-## Configuration and Deployment
-
-### Configuration File (kwasa.toml)
-```toml
-[general]
-readability_target = 70
-debug = false
-
-[research]
-enabled = true
-default_depth = "medium"
-sources = ["wikipedia", "academic_papers"]
-
-[extensions]
-genomic = true
-chemistry = true
-mass_spec = false
-
-[processing]
-threads = 4
-memory_limit = 1024
-cache_enabled = true
+**Mass Spectrometry Extension:**
+```turbulance
+import mass_spec
+var spectrum = mass_spec.Spectrum.from_file("data.mzML")
+var peaks = spectrum / peak
+var base_peak = spectrum.base_peak()
 ```
 
-### Command Line Interface
+## Mathematical Operations Reference
+
+### Text Unit Arithmetic
+```turbulance
+// Division - Split text into smaller components
+var sentences = paragraph / sentence
+var words = sentence / word
+var characters = word / character
+
+// Multiplication - Intelligent combination
+var paragraph = sentence1 * sentence2 * sentence3
+var document = section1 * section2
+
+// Addition - Semantic concatenation  
+var extended = text + " additional content"
+var clarified = term + " (explanation)"
+
+// Subtraction - Content removal
+var cleaned = text - "unwanted phrase"
+var formal = text - informal_expressions
+```
+
+### Statistical Functions
+```turbulance
+// Probability analysis
+ngram_probability(text, "ing", 3)
+conditional_probability(text, "word", "previous_word")
+entropy_measure(text, window_size=50)
+
+// Pattern analysis
+positional_distribution(text, "keyword")
+sequence_significance(text, "pattern")
+markov_transition(text, order=2)
+```
+
+### Cross-Domain Analysis
+```turbulance
+// Genomic analysis
+motif_enrichment(dna_sequence, "TATAAA")
+sequence_alignment(seq1, seq2)
+
+// Chemical analysis
+spectral_correlation(spectrum1, spectrum2)
+chemical_similarity(molecule1, molecule2)
+
+// Evidence networks
+evidence_likelihood(network, hypothesis)
+bayesian_update(prior, evidence)
+```
+
+## Contributing
+
+### Development Setup
 ```bash
-# Run a Turbulance script
-kwasa-kwasa run script.turb
+# Clone repository
+git clone https://github.com/your-org/kwasa-kwasa.git
+cd kwasa-kwasa
 
-# Start interactive mode
-kwasa-kwasa repl
+# Build project
+cargo build --release
 
-# Validate syntax
-kwasa-kwasa check script.turb
+# Run tests
+cargo test
 
-# Show version information
-kwasa-kwasa --version
+# Install development tools
+cargo install --path .
 ```
 
-## Contributing and Community
+### Architecture Overview
+- **Core Engine**: Rust-based text processing engine
+- **Language Parser**: Turbulance language interpreter
+- **Metacognitive Layer**: Goal management and orchestration
+- **Domain Extensions**: Pluggable scientific computing modules
+- **API Layer**: Interface for external integrations
 
-### Development Status
-- **[Implementation Status](implementation_status.md)** - Current development progress and roadmap
+## License and Credits
 
-### How to Contribute
-1. Fork the repository
-2. Create a feature branch
-3. Add comprehensive tests
-4. Submit a pull request
+Kwasa-Kwasa is open source software. See LICENSE file for details.
 
-### Community Resources
-- GitHub Issues for bug reports and feature requests
-- Documentation improvements welcome
-- Extension development encouraged
-
-## Philosophy and Vision
-
-Kwasa-Kwasa represents a fundamental shift in text processing philosophy. Traditional approaches treat text as strings to be manipulated. Kwasa-Kwasa treats text as a rich, semantic medium that can be mathematically manipulated while preserving meaning.
-
-**Core Principles:**
-- **Semantic Preservation**: Operations maintain meaning
-- **Hierarchical Structure**: Respect natural text boundaries
-- **Mathematical Operations**: Apply mathematical thinking to text
-- **Metacognitive Awareness**: Self-reflective processing
-- **Domain Extensibility**: Extend beyond traditional text
-
-**Vision**: Create a computational environment where text becomes as manipulable as data structures in programming languages, while maintaining semantic richness and meaning.
+**Philosophy**: *"There is no reason for your soul to be misunderstood"* - The driving principle behind making meaning computationally accessible.
 
 ---
 

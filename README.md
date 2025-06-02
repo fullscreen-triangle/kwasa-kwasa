@@ -52,6 +52,10 @@ Kwasa-Kwasa is a specialized framework designed for writers who need programmati
   - [Proposition and Motion System](#proposition-and-motion-system)
   - [Text Unit System](#text-unit-system)
   - [Hybrid Imperative-Logical-Fuzzy Programming](#hybrid-imperative-logical-fuzzy-programming)
+  - [Points and Resolutions Paradigm](#points-and-resolutions-paradigm)
+  - [Positional Semantics](#positional-semantics)
+  - [Perturbation Validation](#perturbation-validation)
+  - [Hybrid Processing with Probabilistic Loops](#hybrid-processing-with-probabilistic-loops)
 - [System Architecture](#system-architecture)
   - [Core Components](#core-components)
   - [Domain Extensions](#domain-extensions)
@@ -469,6 +473,600 @@ The hybrid system introduces several advanced concepts:
 
 5. **Fuzzy Data Structures**: All data structures can be represented with fuzzy characteristics, including fuzzy containers, maps, graphs, and trees.
 
+## Revolutionary Paradigms
+
+### Points and Resolutions Paradigm
+
+Kwasa-Kwasa introduces a fundamental paradigm shift from deterministic functions to **Points** and **Resolutions**—a probabilistic approach that acknowledges the inherent uncertainty in human language and reasoning.
+
+#### Theoretical Foundation
+
+The traditional approach of deterministic functions assumes binary, absolute outcomes. However, human language and reasoning operate in probabilistic space where "no point is 100%" certain. This paradigm recognizes that:
+
+1. **Epistemic Uncertainty**: All semantic units carry inherent uncertainty about their meaning and validity
+2. **Aleatoric Variability**: Natural language has irreducible randomness in interpretation
+3. **Contextual Dependency**: Meaning emerges from probabilistic interactions between linguistic elements
+
+#### Points: Variables with Inherent Uncertainty
+
+A **Point** is not a traditional variable but a semantic unit that encapsulates:
+
+```turbulance
+// Define a point with inherent uncertainty
+point thesis_statement = {
+    content: "Machine learning improves medical diagnosis",
+    certainty: 0.73,
+    evidence_strength: 0.68,
+    contextual_relevance: 0.84,
+    semantic_clarity: 0.91
+}
+
+// Points automatically propagate uncertainty
+point supporting_evidence = extract_from_corpus(medical_literature, thesis_statement)
+// supporting_evidence inherits and compounds uncertainty
+```
+
+**Point Properties:**
+- **Probabilistic State**: Every point maintains a probability distribution over possible interpretations
+- **Uncertainty Propagation**: Operations on points automatically handle uncertainty propagation using formal methods
+- **Semantic Coherence**: Points maintain semantic relationships with other points in the discourse space
+- **Temporal Evolution**: Point certainty can evolve as more evidence becomes available
+
+#### Resolutions: Debate Platforms for Meaning
+
+**Resolutions** replace traditional functions with structured debate platforms that process **affirmations** and **contentions**:
+
+```turbulance
+// Define a resolution as a debate platform
+resolution evaluate_claim(point: Point) -> ResolutionOutcome {
+    // Collect affirmations (supporting evidence)
+    affirmations = [
+        Affirmation {
+            content: "Peer-reviewed studies show 15% improvement in diagnostic accuracy",
+            evidence_type: EvidenceType::Empirical,
+            strength: 0.89,
+            relevance: 0.76
+        },
+        Affirmation {
+            content: "FDA approval indicates clinical validation",
+            evidence_type: EvidenceType::Regulatory,
+            strength: 0.92,
+            relevance: 0.83
+        }
+    ]
+    
+    // Collect contentions (challenging evidence)
+    contentions = [
+        Contention {
+            content: "Limited sample sizes in validation studies",
+            evidence_type: EvidenceType::Methodological,
+            strength: 0.67,
+            impact: 0.71
+        },
+        Contention {
+            content: "Potential bias in algorithm training data",
+            evidence_type: EvidenceType::Systematic,
+            strength: 0.78,
+            impact: 0.84
+        }
+    ]
+    
+    // Resolution strategies for different confidence requirements
+    strategy = match required_confidence {
+        High => ResolutionStrategy::Bayesian,           // Rigorous statistical inference
+        Moderate => ResolutionStrategy::MaximumLikelihood,  // Best available evidence
+        Exploratory => ResolutionStrategy::Conservative     // Err on side of caution
+    }
+    
+    return resolve_debate(affirmations, contentions, strategy)
+}
+```
+
+#### Resolution Strategies
+
+The framework implements multiple resolution strategies based on the epistemological requirements:
+
+1. **Bayesian Resolution**: Uses formal Bayesian inference to combine prior beliefs with new evidence
+2. **Maximum Likelihood**: Selects the most probable interpretation given available evidence
+3. **Conservative Resolution**: Applies precautionary principles when uncertainty is high
+4. **Exploratory Resolution**: Maintains multiple hypotheses for further investigation
+
+#### Probabilistic Discourse Networks
+
+Points and Resolutions form **Probabilistic Discourse Networks** (PDNs) where:
+
+```turbulance
+// Create a discourse network
+var discourse_network = DiscourseNetwork::new()
+
+// Add interconnected points
+discourse_network.add_point(thesis_statement)
+discourse_network.add_point(supporting_evidence)
+discourse_network.add_causal_link(supporting_evidence, thesis_statement, 0.73)
+
+// Network-wide resolution
+var network_resolution = discourse_network.global_resolution()
+print(f"Network coherence: {network_resolution.coherence_score}")
+print(f"Overall confidence: {network_resolution.confidence_interval}")
+```
+
+### Positional Semantics
+
+Kwasa-Kwasa recognizes that **"the sequence of letters has order"** and **"the location of a word is the whole point behind its probable meaning"**. This revolutionary approach treats word position as a primary semantic feature rather than a secondary consideration.
+
+#### Theoretical Framework
+
+Positional semantics is grounded in several linguistic and cognitive principles:
+
+1. **Sequential Dependency**: The meaning of linguistic units depends critically on their position within sequences
+2. **Positional Information Theory**: Different positions in text carry different amounts of semantic information
+3. **Contextual Gradient**: Semantic influence decreases with distance following power-law distributions
+4. **Structural Prominence**: Certain positions (sentence-initial, document-final) carry enhanced semantic weight
+
+#### Positional Word Representation
+
+Every word is represented with rich positional metadata:
+
+```turbulance
+// Enhanced word representation with positional semantics
+struct PositionalWord {
+    lexeme: String,
+    semantic_role: SemanticRole,        // Subject, Predicate, Object, Modifier, etc.
+    position_weight: f64,               // Importance based on structural position
+    local_context: Vec<PositionalWord>, // Immediate linguistic neighbors
+    order_dependency: f64,              // How much meaning depends on word order
+    positional_entropy: f64,            // Information content at this position
+    structural_depth: usize,            // Nesting level in syntactic structure
+}
+
+enum SemanticRole {
+    Determiner,      // "the", "a", "an"
+    Subject,         // Primary actor or topic
+    Predicate,       // Main action or state
+    Object,          // Recipient of action
+    Modifier,        // Adjectives, adverbs
+    Connector,       // Conjunctions, prepositions
+    Intensifier,     // "very", "extremely"
+    Temporal,        // Time-related expressions
+    Spatial,         // Location-related expressions
+    Epistemic,       // Certainty markers ("probably", "certainly")
+}
+```
+
+#### Positional Analysis Engine
+
+The framework implements sophisticated positional analysis:
+
+```turbulance
+// Analyze positional semantics
+var analyzer = PositionalAnalyzer::new()
+
+// Extract positional relationships
+var sentence = "The innovative machine learning algorithm significantly improves diagnostic accuracy."
+var analysis = analyzer.analyze(sentence)
+
+// Results include position-dependent interpretations
+for word in analysis.words {
+    print(f"{word.lexeme}: role={word.semantic_role}, weight={word.position_weight}")
+    print(f"  Order dependency: {word.order_dependency}")
+    print(f"  Structural prominence: {word.structural_prominence}")
+}
+
+// Example output:
+// "The": role=Determiner, weight=0.23
+//   Order dependency: 0.15
+//   Structural prominence: 0.67 (sentence-initial position)
+//
+// "algorithm": role=Subject, weight=0.89
+//   Order dependency: 0.84
+//   Structural prominence: 0.45
+//
+// "significantly": role=Intensifier, weight=0.71
+//   Order dependency: 0.92 (modifies following verb)
+//   Structural prominence: 0.33
+```
+
+#### Position-Weighted Semantic Operations
+
+All text operations account for positional semantics:
+
+```turbulance
+// Position-aware text similarity
+funxn positional_similarity(text1, text2) -> SimilarityScore {
+    var analysis1 = PositionalAnalyzer::analyze(text1)
+    var analysis2 = PositionalAnalyzer::analyze(text2)
+    
+    // Weight similarity by positional importance
+    var weighted_similarity = 0.0
+    var total_weight = 0.0
+    
+    for (word1, word2) in align_sequences(analysis1.words, analysis2.words) {
+        var semantic_sim = semantic_similarity(word1.lexeme, word2.lexeme)
+        var position_weight = min(word1.position_weight, word2.position_weight)
+        var role_alignment = role_compatibility(word1.semantic_role, word2.semantic_role)
+        
+        weighted_similarity += semantic_sim * position_weight * role_alignment
+        total_weight += position_weight
+    }
+    
+    return SimilarityScore {
+        positional_similarity: weighted_similarity / total_weight,
+        role_coherence: calculate_role_coherence(analysis1, analysis2),
+        structural_alignment: calculate_structural_alignment(analysis1, analysis2)
+    }
+}
+```
+
+#### Position-Dependent Word Embeddings
+
+The framework generates position-aware embeddings that capture how word meaning varies with position:
+
+```turbulance
+// Generate position-dependent embeddings
+var embedding_model = PositionalEmbeddingModel::new()
+
+// Same word, different positions, different embeddings
+var word_beginning = embedding_model.embed("important", Position::SentenceInitial)
+var word_middle = embedding_model.embed("important", Position::MidSentence)  
+var word_end = embedding_model.embed("important", Position::SentenceFinal)
+
+// Embeddings differ based on positional semantics
+var similarity_beg_mid = cosine_similarity(word_beginning, word_middle)  // ~0.73
+var similarity_mid_end = cosine_similarity(word_middle, word_end)        // ~0.81
+var similarity_beg_end = cosine_similarity(word_beginning, word_end)     // ~0.65
+```
+
+### Perturbation Validation
+
+Since **"everything is probabilistic, there still should be a way to disentangle these seemingly fleeting quantities."** Perturbation validation provides systematic methods for testing the stability and reliability of resolutions by systematically perturbing the input text.
+
+#### Theoretical Basis
+
+Perturbation validation draws from several mathematical and linguistic theories:
+
+1. **Stability Theory**: Robust semantic interpretations should be stable under small perturbations
+2. **Linguistic Stress Testing**: Natural language processing benefits from adversarial testing
+3. **Information Theory**: Perturbations reveal which elements carry the most semantic information
+4. **Sensitivity Analysis**: Understanding how changes in input affect output interpretations
+
+#### Perturbation Types
+
+The framework implements eight distinct types of perturbations:
+
+```turbulance
+enum PerturbationType {
+    WordRemoval,         // Systematically remove words to test necessity
+    Rearrangement,       // Reorder words within grammatical constraints  
+    Substitution,        // Replace words with synonyms or related terms
+    Negation,           // Add/remove negation markers
+    NoiseAddition,      // Insert linguistic noise (typos, filler words)
+    Grammatical,        // Vary grammatical structures while preserving meaning
+    Punctuation,        // Modify punctuation to test structural dependency
+    CaseVariation,      // Change capitalization patterns
+}
+```
+
+#### Perturbation Validation Engine
+
+```turbulance
+// Create a perturbation validator
+var validator = PerturbationValidator::new()
+
+// Original resolution
+var original_text = "Machine learning algorithms demonstrate significant improvements in diagnostic accuracy across multiple clinical studies."
+var original_resolution = evaluate_claim(extract_point(original_text))
+
+// Apply systematic perturbations
+var validation_results = validator.validate_stability(original_text, original_resolution)
+
+// Results provide detailed stability analysis
+for perturbation in validation_results.perturbations {
+    print(f"Perturbation: {perturbation.type}")
+    print(f"  Modified text: {perturbation.modified_text}")
+    print(f"  Stability score: {perturbation.stability_score}")
+    print(f"  Resolution drift: {perturbation.resolution_drift}")
+    print(f"  Semantic preservation: {perturbation.semantic_preservation}")
+}
+
+// Overall stability assessment
+var overall_stability = validation_results.overall_stability_score()
+var reliability_category = match overall_stability {
+    score if score > 0.85 => ReliabilityCategory::HighlyReliable,
+    score if score > 0.70 => ReliabilityCategory::Reliable,
+    score if score > 0.55 => ReliabilityCategory::ModeratelyReliable,
+    _ => ReliabilityCategory::RequiresReview
+}
+```
+
+#### Specific Perturbation Strategies
+
+**Word Removal Perturbation:**
+```turbulance
+// Test which words are essential for meaning preservation
+var removal_results = validator.word_removal_analysis(original_text)
+
+// Results show semantic contribution of each word
+for word_analysis in removal_results {
+    print(f"Removing '{word_analysis.word}': impact = {word_analysis.semantic_impact}")
+    if word_analysis.semantic_impact > 0.8 {
+        print(f"  Critical word for meaning preservation")
+    }
+}
+```
+
+**Positional Rearrangement:**
+```turbulance
+// Test sensitivity to word order changes
+var rearrangement_results = validator.positional_rearrangement(original_text)
+
+// Find optimal and suboptimal arrangements
+var most_stable = rearrangement_results.most_stable_arrangement()
+var least_stable = rearrangement_results.least_stable_arrangement()
+
+print(f"Most stable: {most_stable.text} (stability: {most_stable.score})")
+print(f"Least stable: {least_stable.text} (stability: {least_stable.score})")
+```
+
+**Semantic Substitution Testing:**
+```turbulance
+// Replace words with semantically similar alternatives
+var substitution_results = validator.synonym_substitution(original_text)
+
+// Analyze how substitutions affect resolution stability
+for substitution in substitution_results {
+    print(f"'{substitution.original}' → '{substitution.replacement}'")
+    print(f"  Semantic distance: {substitution.semantic_distance}")
+    print(f"  Resolution stability: {substitution.resolution_stability}")
+    print(f"  Acceptable substitution: {substitution.is_acceptable()}")
+}
+```
+
+#### Stability Metrics
+
+The framework provides comprehensive stability metrics:
+
+```turbulance
+struct StabilityMetrics {
+    resolution_consistency: f64,     // How consistent resolutions are across perturbations
+    semantic_preservation: f64,      // How well original meaning is preserved
+    structural_robustness: f64,      // Resilience to structural changes
+    lexical_sensitivity: f64,        // Sensitivity to word choice variations
+    positional_stability: f64,       // Stability under word reordering
+    noise_tolerance: f64,           // Robustness to linguistic noise
+    confidence_intervals: ConfidenceIntervals,  // Statistical confidence bounds
+}
+```
+
+### Hybrid Processing with Probabilistic Loops
+
+The most revolutionary aspect of Kwasa-Kwasa is its **hybrid processing system** that implements **"weird loops"** where **"the whole probabilistic system can be tucked inside probabilistic processes"** with **"probabilistic looping"** that can dynamically switch between binary and probabilistic modes.
+
+#### Theoretical Foundation
+
+Hybrid processing draws from several computational and mathematical paradigms:
+
+1. **Strange Loop Theory**: Self-referential systems that can reason about their own reasoning processes
+2. **Probabilistic Computing**: Computation that explicitly handles uncertainty at every level
+3. **Multi-Modal Processing**: Different types of computation (deterministic, probabilistic, fuzzy) coexisting and interacting
+4. **Adaptive Control Flow**: Control structures that adapt their behavior based on confidence levels
+
+#### Probabilistic Floor
+
+The foundation of hybrid processing is the **Probabilistic Floor**—a collection of points with associated uncertainty and probability weights:
+
+```turbulance
+// Create a probabilistic floor
+var floor = ProbabilisticFloor::new()
+
+// Add points with varying certainty levels
+floor.add_point("thesis_claim", certainty: 0.73, weight: 0.85)
+floor.add_point("supporting_evidence", certainty: 0.68, weight: 0.72)
+floor.add_point("counterargument", certainty: 0.81, weight: 0.63)
+floor.add_point("methodology", certainty: 0.92, weight: 0.78)
+
+// Floor automatically manages probability distributions
+var point_distribution = floor.sample_weighted(count: 3)
+// Returns points selected based on combined certainty and weight
+```
+
+#### Hybrid Loop Types
+
+Kwasa-Kwasa implements four specialized loop types that can switch between deterministic and probabilistic modes:
+
+**1. Cycle Loop - Basic Iteration with Confidence Tracking**
+```turbulance
+// Cycle through items with confidence-based continuation
+cycle item over floor: 
+    var result = resolution.analyze(item)
+    
+    // Continue if confidence is above threshold
+    if result.confidence > 0.7:
+        continue_deterministic()
+    else:
+        switch_to_probabilistic_mode()
+        
+    resolution.process(item, mode)
+```
+
+**2. Drift Loop - Probabilistic Exploration**
+```turbulance
+// Drift through text corpus with probabilistic selection
+drift text in corpus:
+    var analysis_result = resolution.analyze(text)
+    
+    // Probability of continuing depends on result quality
+    var continue_probability = calculate_drift_probability(analysis_result)
+    
+    if random() < continue_probability:
+        resolution.deep_analyze(text)
+    else:
+        resolution.skip_to_next_cluster(text)
+```
+
+**3. Flow Loop - Streaming Processing**
+```turbulance
+// Flow through streaming data with adaptive processing
+flow line on floor:
+    var processing_mode = determine_mode(line.complexity, line.certainty)
+    
+    match processing_mode {
+        ProcessingMode::Deterministic => {
+            resolution.fast_parse(line)
+        },
+        ProcessingMode::Probabilistic => {
+            resolution.probabilistic_parse(line)
+        },
+        ProcessingMode::Hybrid => {
+            var partial_result = resolution.fast_parse(line)
+            if partial_result.confidence < threshold {
+                resolution.probabilistic_refine(partial_result)
+            }
+        }
+    }
+```
+
+**4. Roll Until Settled Loop - Iterative Convergence**
+```turbulance
+// Roll until the resolution settles on a stable interpretation
+roll until settled:
+    var current_resolution = resolution.guess_next()
+    
+    // Check if resolution has converged
+    if current_resolution.is_settled(tolerance: 0.05) {
+        break settled(current_resolution)
+    }
+    
+    // Update affirmations and contentions based on new information
+    resolution.update_affirmations(current_resolution.evidence)
+    resolution.update_contentions(current_resolution.counterevidence)
+    
+    // Adjust confidence threshold for next iteration
+    adjust_convergence_criteria(current_resolution.stability)
+```
+
+#### Hybrid Function Implementation
+
+The complete Turbulance syntax for hybrid functions:
+
+```turbulance
+// Full hybrid function with probabilistic control flow
+funxn hybrid_analysis(paragraph, confidence_threshold=0.75):
+    // Initialize probabilistic floor
+    var floor = ProbabilisticFloor::from_text(paragraph)
+    
+    considering sentence in paragraph:
+        // Extract points from sentence
+        var points = extract_points(sentence)
+        
+        // Conditional probabilistic operations
+        if sentence.contains_points():
+            // Switch to probabilistic mode for complex reasoning
+            switch_to_probabilistic_mode()
+            
+            // Create resolution for each point
+            for point in points:
+                var resolution = create_resolution(point)
+                
+                // Probabilistic loop until resolution confidence is sufficient
+                roll until settled:
+                    var current_assessment = resolution.assess(point)
+                    
+                    if current_assessment.confidence > confidence_threshold:
+                        accept_resolution(current_assessment)
+                        break settled(current_assessment)
+                    else:
+                        // Update evidence base and try again
+                        resolution.gather_more_evidence(point)
+                        resolution.update_affirmations_and_contentions()
+        else:
+            // Use deterministic mode for simple processing
+            switch_to_deterministic_mode()
+            simple_parse(sentence)
+    
+    // Return hybrid result with confidence metrics
+    return HybridResult {
+        processed_text: paragraph,
+        resolution_outcomes: collect_resolutions(),
+        confidence_distribution: calculate_confidence_distribution(),
+        processing_mode_history: get_mode_switches(),
+        overall_stability: calculate_overall_stability()
+    }
+```
+
+#### Dynamic Mode Switching
+
+The hybrid processor can dynamically switch between processing modes based on confidence levels and complexity:
+
+```turbulance
+struct HybridProcessor {
+    current_mode: ProcessingMode,
+    confidence_threshold: f64,
+    complexity_threshold: f64,
+    mode_history: Vec<ModeTransition>,
+}
+
+impl HybridProcessor {
+    // Determine optimal processing mode for current context
+    fn determine_processing_mode(&self, context: &ProcessingContext) -> ProcessingMode {
+        let complexity_score = context.calculate_complexity()
+        let uncertainty_level = context.calculate_uncertainty()
+        let available_evidence = context.evidence_strength()
+        
+        match (complexity_score, uncertainty_level, available_evidence) {
+            // High complexity, high uncertainty, weak evidence -> Full Probabilistic
+            (c, u, e) if c > 0.8 && u > 0.7 && e < 0.5 => ProcessingMode::FullProbabilistic,
+            
+            // Moderate complexity, moderate uncertainty -> Hybrid
+            (c, u, e) if c > 0.4 && u > 0.4 => ProcessingMode::Hybrid,
+            
+            // Low complexity, low uncertainty, strong evidence -> Deterministic
+            (c, u, e) if c < 0.3 && u < 0.3 && e > 0.8 => ProcessingMode::Deterministic,
+            
+            // Default to adaptive hybrid mode
+            _ => ProcessingMode::AdaptiveHybrid
+        }
+    }
+}
+```
+
+#### Probabilistic Loop Convergence
+
+The system implements sophisticated convergence detection for probabilistic loops:
+
+```turbulance
+// Convergence detection for "roll until settled"
+struct SettlementDetector {
+    convergence_window: usize,
+    stability_threshold: f64,
+    oscillation_detector: OscillationDetector,
+}
+
+impl SettlementDetector {
+    fn is_settled(&self, resolution_history: &[ResolutionState]) -> bool {
+        // Check multiple convergence criteria
+        let variance_settled = self.check_variance_convergence(resolution_history)
+        let trend_settled = self.check_trend_convergence(resolution_history)
+        let oscillation_settled = !self.oscillation_detector.detect_oscillation(resolution_history)
+        
+        // Require all criteria for settlement
+        variance_settled && trend_settled && oscillation_settled
+    }
+    
+    fn check_variance_convergence(&self, history: &[ResolutionState]) -> bool {
+        if history.len() < self.convergence_window {
+            return false
+        }
+        
+        let recent_window = &history[history.len() - self.convergence_window..];
+        let variance = calculate_confidence_variance(recent_window)
+        
+        variance < self.stability_threshold
+    }
+}
+```
+
+This hybrid processing system represents a fundamental advancement in computational text processing, where the system can reason about its own reasoning processes and adapt its computational approach based on the epistemological requirements of the task at hand.
+
 ## System Architecture
 
 ```
@@ -529,26 +1127,61 @@ The hybrid system introduces several advanced concepts:
    - Knowledge database for storing domain information
    - Citation and reference management
    - Fact verification system
-   
-5. **Domain Extensions**
+
+5. **Points and Resolutions Engine**
+   - Probabilistic point management with uncertainty propagation
+   - Debate platform system for evidence-based resolution
+   - Affirmations and contentions processing
+   - Multiple resolution strategies (Bayesian, Maximum Likelihood, Conservative, Exploratory)
+   - Probabilistic Discourse Networks (PDNs) for complex reasoning
+
+6. **Positional Semantics Engine**
+   - Position-aware word representation with semantic roles
+   - Positional analysis with order dependency tracking
+   - Position-weighted semantic operations
+   - Positional entropy and structural prominence calculation
+   - Position-dependent word embeddings
+
+7. **Perturbation Validation System**
+   - Eight systematic perturbation types (removal, rearrangement, substitution, etc.)
+   - Stability scoring and reliability categorization
+   - Comprehensive stability metrics
+   - Sensitivity analysis for semantic robustness
+   - Impact assessment with confidence intervals
+
+8. **Hybrid Processing System**
+   - Probabilistic Floor for point management
+   - Dynamic mode switching between deterministic and probabilistic processing
+   - Four specialized loop types (cycle, drift, flow, roll-until-settled)
+   - Convergence detection and settlement analysis
+   - Adaptive control flow based on confidence levels
+
+9. **Streaming Processing Engine**
+   - Sentence-level processing stages
+   - Context window management
+   - Boundary detection modes
+   - Point extraction with multiple strategies
+   - Theme and discourse marker analysis
+
+10. **Domain Extensions**
    - Genomic sequence analysis for DNA/RNA data
    - Mass spectrometry analysis for experimental data
    - Cheminformatics for molecular structure processing
    - Pattern-based meaning extraction across domains
 
-6. **Logical Programming Engine**
+11. **Logical Programming Engine**
    - Parser for logical facts and rules
    - Unification and pattern matching system
    - Query solver and inference engine
    - Integration with evidence network
 
-7. **Fuzzy Logic Engine**
+12. **Fuzzy Logic Engine**
    - Linguistic variable framework
    - Membership function implementations
    - Fuzzy inference algorithms
    - Defuzzification methods
 
-8. **Hybrid Reasoning System**
+13. **Hybrid Reasoning System**
    - Combined reasoning across paradigms
    - Domain bridges for different data types
    - Unified query interface
@@ -823,6 +1456,257 @@ Kwasa-Kwasa is built with modern, high-performance technologies:
 
 ## Real-World Use Cases
 
+### Scientific Paper Analysis with Hybrid Processing
+
+This example demonstrates how Kwasa-Kwasa's revolutionary features work together to analyze a scientific paper:
+
+```turbulance
+import hybrid_processing
+import positional_semantics
+import perturbation_validation
+import points_resolutions
+
+// Create hybrid processor for scientific text
+var processor = HybridProcessor::new(confidence_threshold: 0.75)
+var scientific_paper = load_document("research_paper.txt")
+
+// Initialize probabilistic floor from paper content
+var floor = ProbabilisticFloor::from_document(scientific_paper)
+
+// Stream through the paper with adaptive processing
+flow section on floor:
+    var complexity = calculate_section_complexity(section)
+    
+    // Switch processing mode based on section complexity
+    var mode = processor.determine_processing_mode(complexity)
+    
+    considering sentence in section:
+        // Extract points with positional semantics
+        var points = extract_points_with_position(sentence)
+        
+        for point in points:
+            // Create resolution for each scientific claim
+            var resolution = create_scientific_resolution(point)
+            
+            // Use probabilistic loop to gather evidence
+            roll until settled:
+                var assessment = resolution.assess_scientific_validity(point)
+                
+                if assessment.confidence > 0.8:
+                    // Validate with perturbation testing
+                    var validation = perturbation_validate(point, assessment)
+                    
+                    if validation.reliability == "HighlyReliable":
+                        accept_scientific_claim(assessment)
+                        break settled(assessment)
+                    else:
+                        // Gather more evidence if validation fails
+                        resolution.expand_evidence_search(point)
+                else:
+                    // Update evidence and continue iteration
+                    resolution.gather_additional_evidence(point)
+                    resolution.update_peer_review_data()
+
+// Generate comprehensive analysis report
+var analysis_report = processor.generate_scientific_report()
+print(f"Paper reliability score: {analysis_report.overall_reliability}")
+print(f"Evidence strength distribution: {analysis_report.evidence_distribution}")
+print(f"Key findings validation: {analysis_report.validated_claims}")
+```
+
+### Legal Document Review with Points and Resolutions
+
+This example shows how the Points and Resolutions paradigm handles complex legal reasoning:
+
+```turbulance
+// Legal document analysis with debate platform resolution
+var legal_document = load_document("contract.txt")
+var legal_analyzer = LegalAnalyzer::new()
+
+// Extract legal points from document
+var legal_points = legal_analyzer.extract_legal_points(legal_document)
+
+for point in legal_points:
+    // Create legal resolution platform
+    resolution legal_evaluation(point: LegalPoint) -> LegalOutcome {
+        // Gather affirmations (supporting legal precedents)
+        affirmations = [
+            Affirmation {
+                content: "Supreme Court ruling in Case v. Example (2019) supports this interpretation",
+                evidence_type: EvidenceType::LegalPrecedent,
+                strength: 0.94,
+                relevance: 0.87
+            },
+            Affirmation {
+                content: "Contract law statute §123.45 explicitly permits this clause",
+                evidence_type: EvidenceType::Statutory,
+                strength: 0.91,
+                relevance: 0.93
+            }
+        ]
+        
+        // Gather contentions (legal challenges)
+        contentions = [
+            Contention {
+                content: "Ambiguous language may void enforceability",
+                evidence_type: EvidenceType::LegalRisk,
+                strength: 0.73,
+                impact: 0.68
+            },
+            Contention {
+                content: "Jurisdiction conflicts with state law provisions",
+                evidence_type: EvidenceType::JurisdictionalConflict,
+                strength: 0.82,
+                impact: 0.79
+            }
+        ]
+        
+        // Apply conservative resolution strategy for legal certainty
+        return resolve_legal_debate(affirmations, contentions, ResolutionStrategy::Conservative)
+    }
+    
+    // Execute legal resolution
+    var outcome = legal_evaluation(point)
+    
+    // Apply perturbation validation to test legal robustness
+    var legal_validation = perturbation_validate_legal(point, outcome)
+    
+    print(f"Legal point: {point.content}")
+    print(f"Resolution confidence: {outcome.confidence}")
+    print(f"Legal stability: {legal_validation.legal_stability}")
+    print(f"Enforceability likelihood: {outcome.enforceability_probability}")
+```
+
+### Medical Diagnosis with Positional Semantics
+
+This example demonstrates how positional semantics improves medical text analysis:
+
+```turbulance
+// Medical record analysis with position-aware processing
+var medical_record = load_document("patient_chart.txt")
+var position_analyzer = PositionalAnalyzer::new()
+
+// Analyze medical text with positional awareness
+var positional_analysis = position_analyzer.analyze(medical_record)
+
+// Medical terms have different meanings based on position
+considering symptom_description in medical_record:
+    var words = positional_analysis.extract_words(symptom_description)
+    
+    for word in words:
+        // Position determines clinical significance
+        if word.semantic_role == SemanticRole::Subject {
+            // Primary symptoms carry high diagnostic weight
+            var diagnostic_weight = word.position_weight * 1.2
+            record_primary_symptom(word.lexeme, diagnostic_weight)
+        }
+        
+        else if word.semantic_role == SemanticRole::Modifier {
+            // Qualifiers modify symptom interpretation
+            var qualifier_impact = calculate_modifier_impact(word)
+            apply_symptom_qualifier(word.lexeme, qualifier_impact)
+        }
+        
+        else if word.semantic_role == SemanticRole::Temporal {
+            // Temporal position affects urgency assessment
+            var urgency_factor = calculate_temporal_urgency(word.position_weight)
+            update_urgency_assessment(urgency_factor)
+        }
+
+// Generate position-weighted diagnostic suggestions
+var diagnostic_ai = PositionalDiagnosticAI::new()
+var diagnosis_candidates = diagnostic_ai.generate_candidates(positional_analysis)
+
+for candidate in diagnosis_candidates:
+    print(f"Diagnosis: {candidate.condition}")
+    print(f"  Positional confidence: {candidate.positional_confidence}")
+    print(f"  Key positional evidence: {candidate.key_positional_markers}")
+    print(f"  Position-weighted probability: {candidate.weighted_probability}")
+```
+
+### Research Paper Evaluation with Comprehensive Framework
+
+This example shows the complete framework integration for research evaluation:
+
+```turbulance
+// Comprehensive research paper evaluation
+var research_paper = load_document("research_submission.txt")
+var comprehensive_evaluator = ComprehensiveEvaluator::new()
+
+// Create probabilistic floor from paper
+var floor = ProbabilisticFloor::from_research_paper(research_paper)
+
+// Multi-stage evaluation process
+funxn evaluate_research_paper(paper, floor) -> ResearchEvaluation {
+    var evaluation_stages = []
+    
+    // Stage 1: Positional analysis of key claims
+    var positional_analysis = analyze_research_claims_positionally(paper)
+    evaluation_stages.push(positional_analysis)
+    
+    // Stage 2: Extract and resolve research points
+    drift claim in research_claims:
+        var research_point = extract_research_point(claim)
+        
+        // Create scientific resolution
+        resolution evaluate_research_claim(point: ResearchPoint) -> ResearchOutcome {
+            // Collect peer review affirmations
+            affirmations = gather_peer_review_support(point)
+            
+            // Collect methodological contentions
+            contentions = identify_methodological_concerns(point)
+            
+            // Apply Bayesian resolution for scientific rigor
+            return resolve_scientific_debate(affirmations, contentions, ResolutionStrategy::Bayesian)
+        }
+        
+        var outcome = evaluate_research_claim(research_point)
+        evaluation_stages.push(outcome)
+    
+    // Stage 3: Perturbation validation of key findings
+    var key_findings = extract_key_findings(paper)
+    
+    for finding in key_findings:
+        var validation_results = comprehensive_perturbation_validate(finding)
+        
+        if validation_results.reliability < ReliabilityCategory::Reliable {
+            flag_finding_for_review(finding, validation_results)
+        }
+        
+        evaluation_stages.push(validation_results)
+    
+    // Stage 4: Hybrid processing for overall assessment
+    cycle stage over evaluation_stages:
+        var stage_confidence = stage.calculate_confidence()
+        
+        if stage_confidence > 0.8:
+            continue_deterministic()
+        else:
+            switch_to_probabilistic_mode()
+            refine_stage_analysis(stage)
+    
+    // Generate final evaluation
+    return ResearchEvaluation {
+        overall_score: calculate_weighted_score(evaluation_stages),
+        methodological_soundness: assess_methodology(evaluation_stages),
+        claim_reliability: assess_claim_stability(evaluation_stages),
+        positional_coherence: assess_positional_consistency(evaluation_stages),
+        recommendation: generate_peer_review_recommendation(evaluation_stages)
+    }
+}
+
+// Execute comprehensive evaluation
+var final_evaluation = evaluate_research_paper(research_paper, floor)
+
+print(f"Research Paper Evaluation Report")
+print(f"================================")
+print(f"Overall Score: {final_evaluation.overall_score}/100")
+print(f"Methodological Soundness: {final_evaluation.methodological_soundness}")
+print(f"Claim Reliability: {final_evaluation.claim_reliability}")
+print(f"Positional Coherence: {final_evaluation.positional_coherence}")
+print(f"Recommendation: {final_evaluation.recommendation}")
+```
+
 ### Genomic Sequence Analysis with Logical Rules
 
 ```turbulance
@@ -881,10 +1765,6 @@ var results = ht_spec.process_spectra_parallel(spectra, (spectrum) => {
     }
 })
 ```
-
-### Hybrid Evidence Analysis
-
-// ... existing content about evidence analysis...
 
 ## Contributing
 

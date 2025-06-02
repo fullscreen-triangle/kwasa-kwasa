@@ -7,6 +7,14 @@ pub mod proposition;
 pub mod datastructures;
 pub mod domain_extensions;
 pub mod context;
+pub mod probabilistic;
+pub mod positional_semantics;
+pub mod streaming;
+pub mod perturbation_validation;
+pub mod debate_platform;
+pub mod integration;
+pub mod hybrid_processing;
+pub mod turbulance_syntax;
 
 pub use lexer::{Lexer, Token, TokenKind};
 pub use proposition::{Proposition, Motion};
@@ -14,6 +22,14 @@ pub use datastructures::{TextGraph, ConceptChain, IdeaHierarchy, ArgMap};
 pub use context::Context;
 pub use context::Value;
 pub use context::Function;
+pub use probabilistic::{TextPoint, ResolutionResult, ResolutionManager, ResolutionContext, point, context as prob_context};
+pub use positional_semantics::{PositionalSentence, PositionalAnalyzer, PositionalWord, SemanticRole};
+pub use streaming::{TextStream, StreamConfig, StreamResult, StreamState, PointExtractor};
+pub use perturbation_validation::{PerturbationValidator, ValidationResult, ValidationConfig, validate_resolution_quality};
+pub use debate_platform::{DebatePlatform, DebatePlatformManager, Affirmation, Contention, Evidence};
+pub use integration::{KwasaKwasaPipeline, PipelineConfig, ProcessingResult, demonstrate_complete_framework};
+pub use hybrid_processing::{HybridProcessor, ProbabilisticFloor, HybridConfig, HybridResult, ProcessingMode, demonstrate_hybrid_processing};
+pub use turbulance_syntax::{TurbulanceProcessor, TurbulanceFunction, TurbulanceOperation, demonstrate_turbulance_syntax};
 
 // Include generated code
 mod generated {
@@ -55,6 +71,12 @@ pub enum TurbulanceError {
     
     #[error("IO error: {0}")]
     IoError(#[from] std::io::Error),
+    
+    #[error("Invalid input: {0}")]
+    InvalidInput(String),
+    
+    #[error("Processing timeout exceeded")]
+    ProcessingTimeout,
 }
 
 /// Result type for Turbulance operations
