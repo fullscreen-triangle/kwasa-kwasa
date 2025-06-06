@@ -55,7 +55,7 @@ mod generated {
 pub use generated::*;
 
 /// Error types for the Turbulance language
-#[derive(Debug, thiserror::Error)]
+#[derive(Debug, Clone, thiserror::Error)]
 pub enum TurbulanceError {
     #[error("Lexical error at position {position}: {message}")]
     LexicalError { position: usize, message: String },
@@ -69,8 +69,8 @@ pub enum TurbulanceError {
     #[error("Runtime error: {message}")]
     RuntimeError { message: String },
     
-    #[error("IO error: {0}")]
-    IoError(#[from] std::io::Error),
+    #[error("IO error: {message}")]
+    IoError { message: String },
     
     #[error("Invalid input: {0}")]
     InvalidInput(String),
@@ -147,6 +147,12 @@ impl TurbulanceError {
             Self::LexicalError { .. } | Self::SyntaxError { .. } => false,
             _ => true,
         }
+    }
+}
+
+impl From<std::io::Error> for TurbulanceError {
+    fn from(error: std::io::Error) -> Self {
+        Self::IoError { message: error.to_string() }
     }
 }
 

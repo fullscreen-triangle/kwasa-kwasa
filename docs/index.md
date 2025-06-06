@@ -10,12 +10,13 @@ Welcome to the complete documentation for Kwasa-Kwasa, a revolutionary text proc
 3. [Turbulance Language](language/turbulance-language.md) - Language reference
 
 **Revolutionary Paradigms:**
-- [Revolutionary Framework Overview](paradigms/REVOLUTIONARY_FRAMEWORK_OVERVIEW.md) - **START HERE** - Comprehensive guide to all four revolutionary paradigms
+- [Revolutionary Framework Overview](paradigms/REVOLUTIONARY_FRAMEWORK_OVERVIEW.md) - **START HERE** - Comprehensive guide to all four paradigms working together
 - [Theoretical Foundations: Points and Resolutions](paradigms/THEORETICAL_FOUNDATIONS_POINTS_RESOLUTIONS.md) - Probabilistic language processing theory
 - [Positional Semantics and Streaming](paradigms/POSITIONAL_SEMANTICS_AND_STREAMING.md) - Position as primary meaning
 - [Resolution Validation Through Perturbation](paradigms/RESOLUTION_VALIDATION_THROUGH_PERTURBATION.md) - Testing probabilistic robustness
 - [Points as Debate Platforms](paradigms/POINTS_AS_DEBATE_PLATFORMS.md) - Technical implementation of debate systems
 - [Probabilistic Text Operations](paradigms/PROBABILISTIC_TEXT_OPERATIONS.md) - Hybrid processing with probabilistic loops
+- [Formal Specification: Probabilistic Points](paradigms/FORMAL_SPECIFICATION_PROBABILISTIC_POINTS.md) - Mathematical foundations
 
 **Advanced Topics:**
 - [Domain Extensions](examples/domain-extensions.md) - Specialized applications
@@ -24,7 +25,7 @@ Welcome to the complete documentation for Kwasa-Kwasa, a revolutionary text proc
 
 **For Developers:**
 - [Implementation Status](implementation_status.md) - Development progress
-- [Scientific Extensions](SCIENTIFIC_DATA_EXTENSIONS.md) - Scientific computing
+- [Scientific Extensions](examples/SCIENTIFIC_DATA_EXTENSIONS.md) - Scientific computing
 - [Pattern Analysis](DOMAIN_EXPANSION.md) - Advanced techniques
 
 ## Getting Started
@@ -116,7 +117,9 @@ var processed = raw_text |>
 
 ## Revolutionary Paradigms
 
-**📖 [Revolutionary Framework Overview](REVOLUTIONARY_FRAMEWORK_OVERVIEW.md) - Complete guide to all four paradigms working together**
+**📖 [Revolutionary Framework Overview](paradigms/REVOLUTIONARY_FRAMEWORK_OVERVIEW.md) - Complete guide to all four paradigms working together**
+
+**📁 [Browse All Revolutionary Paradigms →](paradigms/) - Complete directory of revolutionary concepts**
 
 ### Fundamental Breakthrough: Moving Beyond Deterministic Text Processing
 
@@ -126,9 +129,9 @@ Kwasa-Kwasa introduces four revolutionary paradigms that fundamentally change ho
 
 **"No point is 100% certain"** - Kwasa-Kwasa replaces deterministic functions with probabilistic debate platforms.
 
-- **[Theoretical Foundations: Points and Resolutions](THEORETICAL_FOUNDATIONS_POINTS_RESOLUTIONS.md)** - Deep theoretical grounding in epistemic uncertainty, Bayesian epistemology, and pragmatic semantics
-- **[Points as Debate Platforms](POINTS_AS_DEBATE_PLATFORMS.md)** - Complete technical specification of the Points and Resolutions system
-- **[Formal Specification: Probabilistic Points](FORMAL_SPECIFICATION_PROBABILISTIC_POINTS.md)** - Mathematical foundations and formal definitions
+- **[Theoretical Foundations: Points and Resolutions](paradigms/THEORETICAL_FOUNDATIONS_POINTS_RESOLUTIONS.md)** - Deep theoretical grounding in epistemic uncertainty, Bayesian epistemology, and pragmatic semantics
+- **[Points as Debate Platforms](paradigms/POINTS_AS_DEBATE_PLATFORMS.md)** - Complete technical specification of the Points and Resolutions system
+- **[Formal Specification: Probabilistic Points](paradigms/FORMAL_SPECIFICATION_PROBABILISTIC_POINTS.md)** - Mathematical foundations and formal definitions
 
 **Key Innovation**: Instead of functions that return definitive answers, **Resolutions** are debate platforms that process **affirmations** (supporting evidence) and **contentions** (challenges) to reach probabilistic consensus.
 
@@ -136,7 +139,7 @@ Kwasa-Kwasa introduces four revolutionary paradigms that fundamentally change ho
 
 **"The location of a word is the whole point behind its probable meaning"** - Word position becomes a first-class semantic feature.
 
-- **[Positional Semantics and Streaming](POSITIONAL_SEMANTICS_AND_STREAMING.md)** - Complete theory of position-dependent meaning in text processing
+- **[Positional Semantics and Streaming](paradigms/POSITIONAL_SEMANTICS_AND_STREAMING.md)** - Complete theory of position-dependent meaning in text processing
 
 **Key Innovation**: Every word is analyzed with positional metadata including semantic role, position weight, order dependency, and structural prominence. Text similarity and analysis operations are weighted by positional importance.
 
@@ -144,7 +147,7 @@ Kwasa-Kwasa introduces four revolutionary paradigms that fundamentally change ho
 
 **"Since everything is probabilistic, there still should be a way to disentangle these seemingly fleeting quantities"** - Systematic testing validates the stability of probabilistic resolutions.
 
-- **[Resolution Validation Through Perturbation](RESOLUTION_VALIDATION_THROUGH_PERTURBATION.md)** - Comprehensive methodology for testing resolution stability through linguistic manipulation
+- **[Resolution Validation Through Perturbation](paradigms/RESOLUTION_VALIDATION_THROUGH_PERTURBATION.md)** - Comprehensive methodology for testing resolution stability through linguistic manipulation
 
 **Key Innovation**: Eight types of systematic perturbations (word removal, rearrangement, substitution, etc.) test whether probabilistic resolutions are robust or fragile, with reliability categorization from HighlyReliable to RequiresReview.
 
@@ -152,7 +155,7 @@ Kwasa-Kwasa introduces four revolutionary paradigms that fundamentally change ho
 
 **"The whole probabilistic system can be tucked inside probabilistic processes"** - Dynamic switching between deterministic and probabilistic processing modes.
 
-- **[Probabilistic Text Operations](PROBABILISTIC_TEXT_OPERATIONS.md)** - Technical implementation of hybrid processing systems
+- **[Probabilistic Text Operations](paradigms/PROBABILISTIC_TEXT_OPERATIONS.md)** - Technical implementation of hybrid processing systems
 
 **Key Innovation**: Four specialized loop types (cycle, drift, flow, roll-until-settled) that can dynamically switch between binary and probabilistic modes based on confidence levels, with "weird loops" enabling probabilistic processes to contain other probabilistic processes.
 

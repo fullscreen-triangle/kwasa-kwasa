@@ -76,7 +76,7 @@ impl KnowledgeDatabase {
     }
     
     /// Query the database for knowledge on a specific topic
-    pub fn query(&self, topic: &str, domain: KnowledgeDomain) -> Vec<KnowledgeResult> {
+    pub fn query(&mut self, topic: &str, domain: KnowledgeDomain) -> Vec<KnowledgeResult> {
         // Check cache first
         let cache_key = format!("{}:{}", topic, domain);
         if let Some(cached) = self.cache.get(&cache_key) {
