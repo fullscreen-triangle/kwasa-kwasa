@@ -644,44 +644,21 @@ pub mod peak;
 pub mod calibration;
 pub mod database;
 
-pub use mass_spec::{MassSpectrum, MassSpecAnalyzer, FragmentationPattern};
-pub use nmr::{NMRSpectrum, NMRAnalyzer, ChemicalShift, Coupling};
-pub use ir::{IRSpectrum, IRAnalyzer, Vibration, FunctionalGroupID};
-pub use uv_vis::{UVVisSpectrum, UVVisAnalyzer, Transition, ChromophoreID};
-pub use analysis::{SpectrometryAnalyzer, AnalysisResult, PeakIdentification};
-pub use peak::{Peak, PeakList, PeakPicking, BaselineCorrection};
-pub use calibration::{Calibration, CalibrationCurve, StandardReference};
-pub use database::{SpectralDatabase, DatabaseSearch, ReferenceSpectrum};
+// Re-export main types from each module
+pub use mass_spec::{MassSpecAnalyzer, MassSpecConfig, MassSpecAnalysisResult};
+pub use nmr::{NMRAnalyzer, NMRConfig};
+pub use ir::{IRAnalyzer, IRConfig};
+pub use uv_vis::{UVVisAnalyzer, UVVisConfig};
+pub use analysis::{SpectrometryAnalyzer, AnalysisConfig};
+pub use peak::{PeakPicking, PeakPickingConfig};
+pub use calibration::{CalibrationManager, CalibrationCurve, StandardReference};
+pub use database::{SpectralDatabase, DatabaseConfig};
 
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
+use std::collections::HashMap;
 
-/// Main spectrometry processor
-pub struct SpectrometryProcessor {
-    /// Mass spectrometry analyzer
-    mass_spec_analyzer: MassSpecAnalyzer,
-    
-    /// NMR analyzer
-    nmr_analyzer: NMRAnalyzer,
-    
-    /// IR analyzer
-    ir_analyzer: IRAnalyzer,
-    
-    /// UV-Vis analyzer
-    uv_vis_analyzer: UVVisAnalyzer,
-    
-    /// Peak picking engine
-    peak_picker: PeakPicking,
-    
-    /// Calibration manager
-    calibration_manager: CalibrationManager,
-    
-    /// Spectral database
-    database: SpectralDatabase,
-    
-    /// Configuration
-    config: SpectrometryConfig,
-}
+// Main spectrometry processor is defined later in the file
 
 /// Configuration for spectrometry processing
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -820,20 +797,7 @@ pub struct CacheSettings {
     pub cache_ttl: u64,
 }
 
-/// Calibration manager
-pub struct CalibrationManager {
-    /// Mass calibration curves
-    mass_calibrations: HashMap<String, CalibrationCurve>,
-    
-    /// Chemical shift calibrations
-    chemical_shift_calibrations: HashMap<String, CalibrationCurve>,
-    
-    /// Wavelength calibrations
-    wavelength_calibrations: HashMap<String, CalibrationCurve>,
-    
-    /// Standard references
-    standard_references: Vec<StandardReference>,
-}
+// CalibrationManager is imported from calibration module
 
 /// Spectrometry analysis result
 #[derive(Debug, Clone, Serialize, Deserialize)]

@@ -355,6 +355,94 @@ impl KnowledgeDatabase {
         
         results
     }
+    
+    /// Search for knowledge entries by content
+    pub fn search(&self, query: &str) -> SqliteResult<Vec<String>> {
+        let mut stmt = self.conn.prepare(
+            "SELECT content FROM knowledge_entries WHERE content LIKE ? ORDER BY confidence DESC"
+        )?;
+        
+        let results: Result<Vec<String>, _> = stmt.query_map(
+            params![format!("%{}%", query)],
+            |row| {
+                let content: String = row.get(0)?;
+                Ok(content)
+            }
+        )?.collect();
+        
+        Ok(results?)
+    }
+    
+    /// Search for knowledge entries by tag
+    pub fn search_by_tag(&self, tag: &str) -> SqliteResult<Vec<super::KnowledgeEntry>> {
+        let mut stmt = self.conn.prepare(
+            "SELECT id, topic, content, domain, source, confidence, last_verified, created_at 
+             FROM knowledge_entries 
+             WHERE topic LIKE ? OR content LIKE ?
+             ORDER BY confidence DESC"
+        )?;
+        
+        let entries: Result<Vec<super::KnowledgeEntry>, _> = stmt.query_map(
+            params![format!("%{}%", tag), format!("%{}%", tag)],
+            |row| {
+                let id: i64 = row.get(0)?;
+                let topic: String = row.get(1)?;
+                let content: String = row.get(2)?;
+                let _domain: String = row.get(3)?;
+                let source: String = row.get(4)?;
+                let confidence: f64 = row.get(5)?;
+                let _last_verified: String = row.get(6)?;
+                let created_at: String = row.get(7)?;
+                
+                let created_timestamp = DateTime::parse_from_rfc3339(&created_at)
+                    .map(|dt| dt.timestamp())
+                    .unwrap_or(0);
+                
+                Ok(super::KnowledgeEntry {
+                    id,
+                    content,
+                    source,
+                    tags: vec![topic],
+                    confidence,
+                    created_at: created_timestamp,
+                    last_accessed: created_timestamp,
+                    access_count: 0,
+                })
+            }
+        )?.collect();
+        
+        Ok(entries?)
+    }
+    
+    /// Add a knowledge entry (compatible with main module interface)
+    pub fn add_entry_compat(&self, entry: &mut super::KnowledgeEntry) -> SqliteResult<i64> {
+        let now = Utc::now().to_rfc3339();
+        let domain_str = "General"; // Default domain
+        
+        let tx = self.conn.transaction()?;
+        
+        tx.execute(
+            "INSERT INTO knowledge_entries 
+             (topic, content, domain, source, confidence, last_verified, created_at) 
+             VALUES (?, ?, ?, ?, ?, ?, ?)",
+            params![
+                entry.tags.first().unwrap_or(&"General".to_string()),
+                entry.content,
+                domain_str,
+                entry.source,
+                entry.confidence,
+                now,
+                now
+            ],
+        )?;
+        
+        let entry_id = tx.last_insert_rowid();
+        entry.id = entry_id;
+        
+        tx.commit()?;
+        
+        Ok(entry_id)
+    }
 }
 
 #[cfg(test)]

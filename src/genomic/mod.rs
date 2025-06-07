@@ -647,14 +647,15 @@ pub mod annotation;
 pub mod quality;
 pub mod database;
 
-pub use sequence::{Sequence, SequenceType, Nucleotide, AminoAcid};
-pub use analysis::{SequenceAnalyzer, AnalysisResult, GenePredictor};
-pub use variants::{Variant, VariantType, VariantCaller, VCFParser};
-pub use phylogeny::{PhylogeneticTree, TreeNode, PhylogeneticAnalyzer};
-pub use alignment::{Alignment, AlignmentScorer, PairwiseAligner, MultipleAligner};
-pub use annotation::{Gene, Transcript, Exon, Annotation, AnnotationDatabase};
-pub use quality::{QualityControl, QualityMetrics, QualityScore};
-pub use database::{GenomicDatabase, DatabaseQuery, SearchResult};
+// Re-export main types from each module  
+pub use sequence::{SequenceAnalyzer, AnalysisConfig as SequenceConfig};
+pub use analysis::{GenomicAnalyzer, AnalysisConfig};
+pub use variants::{VariantCaller, VariantConfig};
+pub use phylogeny::{PhylogeneticAnalyzer, PhylogeneticConfig};
+pub use alignment::{AlignmentEngine, PairwiseAligner, MultipleAligner};
+pub use annotation::{AnnotationConfig, Gene};
+pub use quality::{QualityControl};
+pub use database::{GenomicDatabase, DatabaseConfig};
 
 use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
@@ -1535,12 +1536,12 @@ impl GenomicProcessor {
     /// Create a new genomic processor
     pub fn new(config: GenomicConfig) -> Self {
         Self {
-            sequence_analyzer: SequenceAnalyzer::new(),
-            variant_caller: VariantCaller::new(),
-            phylogenetic_analyzer: PhylogeneticAnalyzer::new(),
+            sequence_analyzer: SequenceAnalyzer::new(SequenceConfig::default()),
+            variant_caller: VariantCaller::new(VariantConfig::default()),
+            phylogenetic_analyzer: PhylogeneticAnalyzer::new(PhylogeneticConfig::default()),
             alignment_engine: AlignmentEngine::new(),
             annotation_db: AnnotationDatabase::new(),
-            quality_control: QualityControl::new(),
+            quality_control: QualityControl::default(),
             config,
         }
     }

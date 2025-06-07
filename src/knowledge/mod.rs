@@ -685,13 +685,13 @@ pub fn create_knowledge_provider() -> Box<dyn KnowledgeProvider> {
 
 /// A knowledge provider backed by the local SQLite database
 pub struct DatabaseKnowledgeProvider {
-    database: DatabaseImpl,
+    database: database::KnowledgeDatabase,
 }
 
 impl DatabaseKnowledgeProvider {
     /// Create a new database-backed knowledge provider
     pub fn new(db_path: &std::path::Path) -> Result<Self, String> {
-        let database = DatabaseImpl::new(db_path)
+        let database = database::KnowledgeDatabase::new(db_path.to_path_buf())
             .map_err(|e| format!("Failed to create knowledge database: {}", e))?;
         
         Ok(DatabaseKnowledgeProvider { database })
@@ -700,7 +700,7 @@ impl DatabaseKnowledgeProvider {
     /// Add a knowledge entry to the database
     pub fn add_knowledge(&mut self, content: &str, source: &str, tags: Vec<String>, confidence: f64) -> Result<i64, String> {
         let mut entry = KnowledgeEntry::new(content, source, tags, confidence);
-        self.database.add_entry(&mut entry)
+        self.database.add_entry_compat(&mut entry)
             .map_err(|e| format!("Failed to add knowledge entry: {}", e))
     }
     
@@ -742,10 +742,13 @@ impl KnowledgeProvider for DatabaseKnowledgeProvider {
                                 source: entry.source,
                                 confidence: entry.confidence,
                                 citation: Some(Citation::new(
-                                    &entry.source,
-                                    &format!("Retrieved from Kwasa-Kwasa knowledge base, ID: {}", entry.id),
-                                    chrono::Utc::now(),
-                                    research::CitationType::Database,
+                                    "database",
+                                    Some(&entry.source),
+                                    Some(&format!("Retrieved from Kwasa-Kwasa knowledge base, ID: {}", entry.id)),
+                                    Some("Kwasa-Kwasa Knowledge Database"),
+                                    None,
+                                    Some(&chrono::Utc::now().to_rfc3339()),
+                                    None,
                                 )),
                                 last_verified: chrono::DateTime::from_timestamp(entry.last_accessed, 0)
                                     .unwrap_or_else(|| chrono::Utc::now()),

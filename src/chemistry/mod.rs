@@ -500,52 +500,15 @@ impl UnitOperations<Molecule> for MoleculeOperations {
 
 // Chemistry processing module for chemical informatics
 pub mod molecule;
-pub mod reaction;
-pub mod properties;
-pub mod analysis;
-pub mod structure;
-pub mod descriptors;
-pub mod similarity;
-pub mod database;
 
-pub use molecule::{Molecule, Atom, Bond, MolecularFormula, SMILES};
-pub use reaction::{Reaction, ReactionType, ReactionPredictor, Catalyst};
-pub use properties::{MolecularProperties, PropertyCalculator, PhysicalProperties};
-pub use analysis::{ChemicalAnalyzer, AnalysisResult, StructureAnalyzer};
-pub use structure::{Structure3D, Conformer, StructureOptimizer};
-pub use descriptors::{MolecularDescriptors, DescriptorCalculator};
-pub use similarity::{SimilarityCalculator, SimilarityMetric, Fingerprint};
-pub use database::{ChemicalDatabase, CompoundSearch, DatabaseEntry};
+// Re-export main types from molecule module
+pub use molecule::{MolecularAnalyzer, MolecularAnalysisConfig, MolecularAnalysisResult, FunctionalGroup};
 
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
+use std::collections::HashMap;
 
-/// Main chemical processor that coordinates all chemistry analysis
-pub struct ChemicalProcessor {
-    /// Chemical analyzer
-    analyzer: ChemicalAnalyzer,
-    
-    /// Reaction predictor
-    reaction_predictor: ReactionPredictor,
-    
-    /// Property calculator
-    property_calculator: PropertyCalculator,
-    
-    /// Structure optimizer
-    structure_optimizer: StructureOptimizer,
-    
-    /// Descriptor calculator
-    descriptor_calculator: DescriptorCalculator,
-    
-    /// Similarity calculator
-    similarity_calculator: SimilarityCalculator,
-    
-    /// Chemical database
-    database: ChemicalDatabase,
-    
-    /// Configuration
-    config: ChemicalConfig,
-}
+// ChemicalProcessor is defined later in the file
 
 /// Configuration for chemical processing
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -1852,13 +1815,7 @@ impl ChemicalProcessor {
     /// Create a new chemical processor
     pub fn new(config: ChemicalConfig) -> Self {
         Self {
-            analyzer: ChemicalAnalyzer::new(),
-            reaction_predictor: ReactionPredictor::new(),
-            property_calculator: PropertyCalculator::new(),
-            structure_optimizer: StructureOptimizer::new(),
-            descriptor_calculator: DescriptorCalculator::new(),
-            similarity_calculator: SimilarityCalculator::new(),
-            database: ChemicalDatabase::new(),
+            molecular_analyzer: MolecularAnalyzer::new(MolecularAnalysisConfig::default()),
             config,
         }
     }
