@@ -4,11 +4,8 @@
 //! pattern recognition, scientific data, and metacognitive reasoning results.
 
 use std::collections::HashMap;
-use std::fmt;
 use serde::{Serialize, Deserialize};
 use crate::error::{Error, Result};
-use crate::text_unit::TextUnit;
-use crate::pattern::{Pattern, MetaNode, MetaEdge};
 
 pub mod charts;
 pub mod graphs;

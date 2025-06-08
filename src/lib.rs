@@ -45,12 +45,8 @@ pub mod visualization;
 pub mod external_apis;
 
 // Re-export important modules
-pub use turbulance::run;
-pub use turbulance::validate;
 pub use orchestrator::Orchestrator;
 pub use text_unit::{TextUnit, TextUnitId, TextUnitType, TextUnitRegistry, BoundaryDetectionOptions};
-// Remove broad wildcard imports to avoid conflicts
-pub use pattern::prelude::*;
 pub use error::{Error, Result, ErrorReporter};
 
 // Import orchestrator types
@@ -63,14 +59,13 @@ pub use orchestrator::{
 
 // Prelude for easy imports
 pub mod prelude {
-    pub use crate::turbulance::prelude::*;
     pub use crate::error::{Error, Result, ErrorReporter};
     pub use crate::{KwasaSystem, Config, Goal, Context, InterventionSystem};
 }
 
 use std::sync::Arc;
 use tokio::sync::Mutex;
-use log::{info, warn, error};
+use log::info;
 
 /// Main system that coordinates all Kwasa-Kwasa functionality
 pub struct KwasaSystem {

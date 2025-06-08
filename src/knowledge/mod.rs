@@ -1,6 +1,5 @@
 use rusqlite::{Connection, Result, params};
 use std::path::Path;
-use std::fs;
 use log::{info, error};
 use serde::{Serialize, Deserialize};
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -74,7 +73,7 @@ impl KnowledgeDatabase {
     pub fn new(db_path: &Path) -> Result<Self> {
         // Ensure the directory exists
         if let Some(parent) = db_path.parent() {
-            fs::create_dir_all(parent).map_err(|e| rusqlite::Error::SqliteFailure(
+            std::fs::create_dir_all(parent).map_err(|e| rusqlite::Error::SqliteFailure(
                 rusqlite::ffi::Error::new(rusqlite::ffi::SQLITE_IOERR),
                 Some(format!("Failed to create directory: {}", e))
             ))?;
@@ -560,19 +559,10 @@ pub mod tests {
     }
 }
 
-// Knowledge database and integration module
-
 // Export public sub-modules
-pub mod database;
 pub mod citation;
 pub mod research;
 pub mod verification;
-
-// Re-export common types
-pub use database::KnowledgeDatabase as DatabaseImpl;
-pub use citation::Citation;
-pub use research::ResearchQuery;
-pub use verification::FactVerifier;
 
 /// Represents the result of a knowledge query
 #[derive(Debug, Clone)]
@@ -686,13 +676,13 @@ pub fn create_knowledge_provider() -> Box<dyn KnowledgeProvider> {
 
 /// A knowledge provider backed by the local SQLite database
 pub struct DatabaseKnowledgeProvider {
-    database: database::KnowledgeDatabase,
+    database: KnowledgeDatabase,
 }
 
 impl DatabaseKnowledgeProvider {
     /// Create a new database-backed knowledge provider
     pub fn new(db_path: &std::path::Path) -> Result<Self, String> {
-        let database = database::KnowledgeDatabase::new(db_path.to_path_buf())
+        let database = KnowledgeDatabase::new(db_path)
             .map_err(|e| format!("Failed to create knowledge database: {}", e))?;
         
         Ok(DatabaseKnowledgeProvider { database })
@@ -701,7 +691,7 @@ impl DatabaseKnowledgeProvider {
     /// Add a knowledge entry to the database
     pub fn add_knowledge(&mut self, content: &str, source: &str, tags: Vec<String>, confidence: f64) -> Result<i64, String> {
         let mut entry = KnowledgeEntry::new(content, source, tags, confidence);
-        self.database.add_entry_compat(&mut entry)
+        self.database.add_entry(&mut entry)
             .map_err(|e| format!("Failed to add knowledge entry: {}", e))
     }
     

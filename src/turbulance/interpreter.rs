@@ -18,7 +18,7 @@ type Statement = Node;
 pub type NativeFunction = Box<dyn Fn(Vec<Value>) -> Result<Value> + Send + Sync>;
 
 /// Value types in the Turbulance language
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug)]
 pub enum Value {
     Number(f64),
     String(String),
@@ -28,14 +28,50 @@ pub enum Value {
     Array(Vec<Value>),
     Object(std::collections::HashMap<String, Value>),
     Module(ObjectRef),
+    TextUnit(TextUnit),
+    List(Vec<Value>),
+    Map(std::collections::HashMap<String, Value>),
     Null,
 }
 
 // Adding implementations for Value comparison
-impl Eq for Value {
-    // Note: This is a simplification - floats typically don't implement Eq
-    // For production code, you might want a more sophisticated implementation
+impl PartialEq for Value {
+    fn eq(&self, other: &Self) -> bool {
+        match (self, other) {
+            (Value::Number(a), Value::Number(b)) => {
+                // Handle NaN cases: NaN == NaN is true for our purposes
+                if a.is_nan() && b.is_nan() {
+                    true
+                } else {
+                    a == b
+                }
+            },
+            (Value::String(a), Value::String(b)) => a == b,
+            (Value::Boolean(a), Value::Boolean(b)) => a == b,
+            (Value::Function(a), Value::Function(b)) => a == b,
+            (Value::NativeFunction(_), Value::NativeFunction(_)) => {
+                // NativeFunctions are compared by pointer equality (they're Box<dyn Fn>)
+                // For our purposes, we'll consider them never equal unless they're the same instance
+                false
+            },
+            (Value::Array(a), Value::Array(b)) => a == b,
+            (Value::Object(a), Value::Object(b)) => a == b,
+            (Value::Module(_), Value::Module(_)) => {
+                // Module references are compared by identity
+                false
+            },
+            (Value::TextUnit(a), Value::TextUnit(b)) => a == b,
+            (Value::List(a), Value::List(b)) => a == b,
+            (Value::Map(a), Value::Map(b)) => a == b,
+            (Value::Null, Value::Null) => true,
+            _ => false, // Different variants are never equal
+        }
+    }
 }
+
+// Note: We implement Eq for Value even though it contains f64
+// We treat NaN as equal to NaN for our use case, which is consistent with our PartialEq impl
+impl Eq for Value {}
 
 // Implement Hash for Value
 impl std::hash::Hash for Value {
@@ -71,6 +107,22 @@ impl std::hash::Hash for Value {
                 // Module references aren't hashable directly
                 // Use type ID as a stand-in
                 std::any::TypeId::of::<ObjectRef>().hash(state);
+            },
+            Value::TextUnit(tu) => {
+                tu.content.hash(state);
+            },
+            Value::List(list) => {
+                // Hash each element
+                for v in list {
+                    v.hash(state);
+                }
+            },
+            Value::Map(map) => {
+                // Hash each key-value pair
+                for (k, v) in map {
+                    k.hash(state);
+                    v.hash(state);
+                }
             },
             Value::Null => 0.hash(state),
         }
@@ -344,8 +396,8 @@ impl Interpreter {
             BinaryOp::Subtract => self.evaluate_subtract(left_val, right_val),
             BinaryOp::Multiply => self.evaluate_multiply(left_val, right_val),
             BinaryOp::Divide => self.evaluate_divide(left_val, right_val),
-            BinaryOp::Equal => Ok(Value::Bool(left_val == right_val)),
-            BinaryOp::NotEqual => Ok(Value::Bool(left_val != right_val)),
+            BinaryOp::Equal => Ok(Value::Boolean(left_val == right_val)),
+            BinaryOp::NotEqual => Ok(Value::Boolean(left_val != right_val)),
             BinaryOp::LessThan => self.evaluate_less_than(left_val, right_val),
             BinaryOp::GreaterThan => self.evaluate_greater_than(left_val, right_val),
             BinaryOp::LessThanEqual => self.evaluate_less_than_equal(left_val, right_val),
@@ -404,8 +456,41 @@ impl Interpreter {
         
         match function_value {
             Value::Function(func) => {
-                // Call the user-defined function
-                self.execute_call(&func.name, &evaluated_args)
+                // Check argument count
+                if evaluated_args.len() != func.params.len() {
+                    return Err(TurbulanceError::RuntimeError { 
+                        message: format!(
+                            "Expected {} arguments but got {}.", 
+                            func.params.len(), 
+                            evaluated_args.len()
+                        ) 
+                    });
+                }
+                
+                // Create new environment with function's closure as parent
+                let closure_env = Rc::new(RefCell::new(func.closure.clone()));
+                let mut env = Environment::with_enclosing(closure_env);
+                
+                // Define parameters in the new environment
+                for (param, value) in func.params.iter().zip(evaluated_args.iter()) {
+                    env.define(param.clone(), value.clone());
+                }
+                
+                // Execute the function body with the new environment
+                let previous_env = self.environment.clone();
+                self.environment = Rc::new(RefCell::new(env));
+                
+                let result = self.evaluate(&func.body)?;
+                
+                // Restore the previous environment
+                self.environment = previous_env;
+                
+                Ok(result)
+            },
+            
+            Value::NativeFunction(f) => {
+                // Call native function directly
+                f(evaluated_args)
             },
             
             Value::String(name) => {
@@ -646,7 +731,7 @@ impl Interpreter {
         // Evaluate the target
         let target_value = self.evaluate(target)?;
         
-        // Ensure the target is a TextUnit
+        // Ensure the target is a TextUnit or String
         let text_unit = match &target_value {
             Value::TextUnit(unit) => unit.clone(),
             Value::String(text) => TextUnit::new(text.clone()),
@@ -683,38 +768,120 @@ impl Interpreter {
             Value::Boolean(b) => *b,
             Value::Number(n) => *n != 0.0,
             Value::String(s) => !s.is_empty(),
+            Value::Array(l) => !l.is_empty(),
+            Value::Object(m) => !m.is_empty(),
+            Value::TextUnit(tu) => !tu.content.is_empty(),
             Value::List(l) => !l.is_empty(),
             Value::Map(m) => !m.is_empty(),
-            Value::TextUnit(tu) => !tu.content.is_empty(),
             Value::Function(_) => true,
+            Value::NativeFunction(_) => true,
+            Value::Module(_) => true,
             Value::Null => false,
         }
     }
     
-    // Text operation implementations (placeholders)
+    // Text operation implementations
     fn apply_simplify(&self, text_unit: TextUnit, args: &[Value]) -> Result<Value> {
-        // Placeholder implementation
-        let simplified = format!("[Simplified] {}", text_unit.content);
-        Ok(Value::TextUnit(TextUnit::new(simplified)))
+        // Implement text simplification logic
+        let simplified = text_unit.content
+            .split_whitespace()
+            .collect::<Vec<&str>>()
+            .join(" "); // Remove extra whitespace
+        
+        let simplified = simplified
+            .replace("very ", "")
+            .replace("really ", "")
+            .replace("quite ", "")
+            .replace("extremely ", "")
+            .replace("in order to", "to")
+            .replace("due to the fact that", "because")
+            .replace("it is important to note that", "")
+            .replace("it should be mentioned that", "");
+        
+        let mut result_unit = text_unit;
+        result_unit.content = simplified;
+        result_unit.metadata.insert("operation".to_string(), Value::String("simplified".to_string()));
+        
+        Ok(Value::TextUnit(result_unit))
     }
     
     fn apply_expand(&self, text_unit: TextUnit, args: &[Value]) -> Result<Value> {
-        // Placeholder implementation
-        let expanded = format!("{}\n\n[Additional details and explanations would be added here.]", text_unit.content);
-        Ok(Value::TextUnit(TextUnit::new(expanded)))
+        // Implement text expansion logic
+        let mut expanded = text_unit.content.clone();
+        
+        // Add elaborative phrases
+        expanded = expanded.replace(".", ". This is significant because it demonstrates the underlying principles.");
+        expanded = expanded.replace("!", "! This point cannot be overstated in its importance.");
+        expanded = expanded.replace("?", "? This question raises several important considerations.");
+        
+        // Add a concluding paragraph
+        expanded.push_str("\n\nIn conclusion, these points collectively illustrate the complexity and nuance of the subject matter, requiring careful consideration of multiple perspectives and factors.");
+        
+        let mut result_unit = text_unit;
+        result_unit.content = expanded;
+        result_unit.metadata.insert("operation".to_string(), Value::String("expanded".to_string()));
+        
+        Ok(Value::TextUnit(result_unit))
     }
     
     fn apply_formalize(&self, text_unit: TextUnit, args: &[Value]) -> Result<Value> {
-        // Placeholder implementation
-        let formalized = text_unit.content.replace("I ", "one ").replace("we ", "one ");
-        let formalized = format!("[Formalized] {}", formalized);
-        Ok(Value::TextUnit(TextUnit::new(formalized)))
+        // Implement text formalization logic
+        let formalized = text_unit.content
+            .replace("I think", "It is proposed that")
+            .replace("I believe", "It is hypothesized that")
+            .replace("we", "one")
+            .replace("you", "one")
+            .replace("can't", "cannot")
+            .replace("won't", "will not")
+            .replace("don't", "do not")
+            .replace("isn't", "is not")
+            .replace("aren't", "are not")
+            .replace("wasn't", "was not")
+            .replace("weren't", "were not")
+            .replace("haven't", "have not")
+            .replace("hasn't", "has not")
+            .replace("hadn't", "had not")
+            .replace("wouldn't", "would not")
+            .replace("shouldn't", "should not")
+            .replace("couldn't", "could not")
+            .replace("mustn't", "must not");
+        
+        let mut result_unit = text_unit;
+        result_unit.content = formalized;
+        result_unit.metadata.insert("operation".to_string(), Value::String("formalized".to_string()));
+        
+        Ok(Value::TextUnit(result_unit))
     }
     
     fn apply_informalize(&self, text_unit: TextUnit, args: &[Value]) -> Result<Value> {
-        // Placeholder implementation
-        let informalized = format!("[Informalized] {}", text_unit.content);
-        Ok(Value::TextUnit(TextUnit::new(informalized)))
+        // Implement text informalization logic
+        let informalized = text_unit.content
+            .replace("It is proposed that", "I think")
+            .replace("It is hypothesized that", "I believe")
+            .replace("one must", "you should")
+            .replace("one should", "you should")
+            .replace("one can", "you can")
+            .replace("one may", "you might")
+            .replace("cannot", "can't")
+            .replace("will not", "won't")
+            .replace("do not", "don't")
+            .replace("is not", "isn't")
+            .replace("are not", "aren't")
+            .replace("was not", "wasn't")
+            .replace("were not", "weren't")
+            .replace("have not", "haven't")
+            .replace("has not", "hasn't")
+            .replace("had not", "hadn't")
+            .replace("would not", "wouldn't")
+            .replace("should not", "shouldn't")
+            .replace("could not", "couldn't")
+            .replace("must not", "mustn't");
+        
+        let mut result_unit = text_unit;
+        result_unit.content = informalized;
+        result_unit.metadata.insert("operation".to_string(), Value::String("informalized".to_string()));
+        
+        Ok(Value::TextUnit(result_unit))
     }
     
     fn apply_rewrite(&self, text_unit: TextUnit, args: &[Value]) -> Result<Value> {
@@ -728,9 +895,29 @@ impl Interpreter {
             "default".to_string()
         };
         
-        // Placeholder implementation
-        let rewritten = format!("[Rewritten in {} style] {}", style, text_unit.content);
-        Ok(Value::TextUnit(TextUnit::new(rewritten)))
+        // Implement style-specific rewriting
+        let rewritten = match style.as_str() {
+            "academic" => {
+                format!("In the context of scholarly discourse, {}. This analysis provides significant insights into the underlying mechanisms and theoretical frameworks that govern such phenomena.", text_unit.content)
+            },
+            "conversational" => {
+                format!("So here's the thing: {}. Pretty interesting stuff, right? It really makes you think about how all of this fits together.", text_unit.content)
+            },
+            "technical" => {
+                format!("System analysis indicates: {}. Implementation parameters must be configured according to specification requirements and operational constraints.", text_unit.content)
+            },
+            "creative" => {
+                format!("Imagine, if you will, a world where {}. The implications ripple outward like stones cast into still water, each creating ever-widening circles of possibility.", text_unit.content)
+            },
+            _ => text_unit.content.clone()
+        };
+        
+        let mut result_unit = text_unit;
+        result_unit.content = rewritten;
+        result_unit.metadata.insert("operation".to_string(), Value::String("rewritten".to_string()));
+        result_unit.metadata.insert("style".to_string(), Value::String(style));
+        
+        Ok(Value::TextUnit(result_unit))
     }
     
     fn apply_translate(&self, text_unit: TextUnit, args: &[Value]) -> Result<Value> {
@@ -748,9 +935,31 @@ impl Interpreter {
             })
         };
         
-        // Placeholder implementation
-        let translated = format!("[Translated to {}] {}", language, text_unit.content);
-        Ok(Value::TextUnit(TextUnit::new(translated)))
+        // Mock translation (in real implementation, this would call a translation service)
+        let translated = match language.as_str() {
+            "spanish" | "es" => {
+                format!("[Traducido al español] {}", text_unit.content)
+            },
+            "french" | "fr" => {
+                format!("[Traduit en français] {}", text_unit.content)
+            },
+            "german" | "de" => {
+                format!("[Ins Deutsche übersetzt] {}", text_unit.content)
+            },
+            "japanese" | "ja" => {
+                format!("[日本語に翻訳] {}", text_unit.content)
+            },
+            _ => {
+                format!("[Translated to {}] {}", language, text_unit.content)
+            }
+        };
+        
+        let mut result_unit = text_unit;
+        result_unit.content = translated;
+        result_unit.metadata.insert("operation".to_string(), Value::String("translated".to_string()));
+        result_unit.metadata.insert("target_language".to_string(), Value::String(language));
+        
+        Ok(Value::TextUnit(result_unit))
     }
     
     fn apply_extract(&self, text_unit: TextUnit, args: &[Value]) -> Result<Value> {
@@ -768,25 +977,81 @@ impl Interpreter {
             })
         };
         
-        // Placeholder implementation - just extract anything that contains the pattern
-        // In a real implementation, this would use more sophisticated pattern matching
-        if text_unit.content.contains(&pattern) {
-            let extracted = format!("[Extracted by pattern '{}'] {}", pattern, &pattern);
-            Ok(Value::TextUnit(TextUnit::new(extracted)))
+        // Implement pattern extraction logic
+        let extracted_parts: Vec<String> = text_unit.content
+            .split_whitespace()
+            .filter(|word| word.to_lowercase().contains(&pattern.to_lowercase()))
+            .map(|word| word.to_string())
+            .collect();
+        
+        if !extracted_parts.is_empty() {
+            let extracted_content = extracted_parts.join(" ");
+            let mut result_unit = text_unit;
+            result_unit.content = extracted_content;
+            result_unit.metadata.insert("operation".to_string(), Value::String("extracted".to_string()));
+            result_unit.metadata.insert("pattern".to_string(), Value::String(pattern));
+            
+            Ok(Value::TextUnit(result_unit))
         } else {
-            Ok(Value::Null)
+            // Return a list of all sentences containing the pattern
+            let sentences: Vec<String> = text_unit.content
+                .split(&['.', '!', '?'][..])
+                .filter(|sentence| sentence.to_lowercase().contains(&pattern.to_lowercase()))
+                .map(|sentence| sentence.trim().to_string())
+                .filter(|sentence| !sentence.is_empty())
+                .collect();
+            
+            let result: Vec<Value> = sentences.into_iter()
+                .map(|sentence| Value::TextUnit(TextUnit::new(sentence)))
+                .collect();
+            
+            Ok(Value::List(result))
         }
     }
     
     fn apply_summarize(&self, text_unit: TextUnit, args: &[Value]) -> Result<Value> {
-        // Placeholder implementation - just take the first sentence
-        let first_sentence = text_unit.content.split('.')
-            .next()
-            .unwrap_or(&text_unit.content)
-            .trim();
+        // Check for length argument (optional)
+        let target_length = if !args.is_empty() {
+            match &args[0] {
+                Value::Number(n) => *n as usize,
+                _ => 100 // default word count
+            }
+        } else {
+            100 // default word count
+        };
         
-        let summary = format!("[Summary] {}", first_sentence);
-        Ok(Value::TextUnit(TextUnit::new(summary)))
+        // Implement summarization logic
+        let sentences: Vec<&str> = text_unit.content
+            .split(&['.', '!', '?'][..])
+            .filter(|s| !s.trim().is_empty())
+            .collect();
+        
+        let summary = if sentences.len() <= 3 {
+            // If already short, just return the first sentence
+            sentences.get(0).unwrap_or(&"").trim().to_string()
+        } else {
+            // Take first and last sentences, plus one from the middle
+            let first = sentences.get(0).unwrap_or(&"").trim();
+            let middle = sentences.get(sentences.len() / 2).unwrap_or(&"").trim();
+            let last = sentences.get(sentences.len() - 1).unwrap_or(&"").trim();
+            
+            format!("{}. {}. {}.", first, middle, last)
+        };
+        
+        // Trim to target length if specified
+        let words: Vec<&str> = summary.split_whitespace().collect();
+        let final_summary = if words.len() > target_length {
+            words[..target_length].join(" ") + "..."
+        } else {
+            summary
+        };
+        
+        let mut result_unit = text_unit;
+        result_unit.content = final_summary;
+        result_unit.metadata.insert("operation".to_string(), Value::String("summarized".to_string()));
+        result_unit.metadata.insert("target_length".to_string(), Value::Number(target_length as f64));
+        
+        Ok(Value::TextUnit(result_unit))
     }
     
     fn evaluate_function_decl(&mut self, name: &str, parameters: &[crate::turbulance::ast::Parameter], body: &Node) -> Result<Value> {
@@ -899,6 +1164,37 @@ impl Interpreter {
                 Ok(Value::TextUnit(r))
             },
             
+            // TextUnit + TextUnit = Combined TextUnit with proper connectives
+            (Value::TextUnit(l), Value::TextUnit(r)) => {
+                let combined_content = format!("{} {}", l.content, r.content);
+                let mut combined_metadata = l.metadata.clone();
+                
+                // Merge metadata
+                for (key, value) in r.metadata {
+                    combined_metadata.insert(key, value);
+                }
+                
+                Ok(Value::TextUnit(TextUnit::with_metadata(combined_content, combined_metadata)))
+            },
+            
+            // TextUnit + String = TextUnit with appended string
+            (Value::TextUnit(mut l), Value::String(r)) => {
+                l.content = format!("{} {}", l.content, r);
+                Ok(Value::TextUnit(l))
+            },
+            
+            // String + TextUnit = TextUnit with prepended string
+            (Value::String(l), Value::TextUnit(mut r)) => {
+                r.content = format!("{} {}", l, r.content);
+                Ok(Value::TextUnit(r))
+            },
+
+            // Arrays can be concatenated
+            (Value::Array(mut l), Value::Array(r)) => {
+                l.extend(r);
+                Ok(Value::Array(l))
+            },
+            
             // Lists can be concatenated
             (Value::List(mut l), Value::List(r)) => {
                 l.extend(r);
@@ -921,6 +1217,14 @@ impl Interpreter {
             (Value::TextUnit(mut l), Value::String(r)) => {
                 l.content = l.content.replace(&r, "").replace("  ", " ").trim().to_string();
                 Ok(Value::TextUnit(l))
+            },
+            
+            // Subtracting elements from an array
+            (Value::Array(l), Value::Array(r)) => {
+                let result: Vec<Value> = l.into_iter()
+                    .filter(|item| !r.contains(item))
+                    .collect();
+                Ok(Value::Array(result))
             },
             
             // Subtracting elements from a list
@@ -1035,8 +1339,8 @@ impl Interpreter {
     
     fn evaluate_less_than(&mut self, left: Value, right: Value) -> Result<Value> {
         match (left, right) {
-            (Value::Number(l), Value::Number(r)) => Ok(Value::Bool(l < r)),
-            (Value::String(l), Value::String(r)) => Ok(Value::Bool(l < r)),
+            (Value::Number(l), Value::Number(r)) => Ok(Value::Boolean(l < r)),
+            (Value::String(l), Value::String(r)) => Ok(Value::Boolean(l < r)),
             (l, r) => Err(TurbulanceError::RuntimeError { 
                 message: format!("Cannot compare values of these types: {:?} and {:?}", l, r) 
             }),
@@ -1045,8 +1349,8 @@ impl Interpreter {
     
     fn evaluate_greater_than(&mut self, left: Value, right: Value) -> Result<Value> {
         match (left, right) {
-            (Value::Number(l), Value::Number(r)) => Ok(Value::Bool(l > r)),
-            (Value::String(l), Value::String(r)) => Ok(Value::Bool(l > r)),
+            (Value::Number(l), Value::Number(r)) => Ok(Value::Boolean(l > r)),
+            (Value::String(l), Value::String(r)) => Ok(Value::Boolean(l > r)),
             (l, r) => Err(TurbulanceError::RuntimeError { 
                 message: format!("Cannot compare values of these types: {:?} and {:?}", l, r) 
             }),
@@ -1055,8 +1359,8 @@ impl Interpreter {
     
     fn evaluate_less_than_equal(&mut self, left: Value, right: Value) -> Result<Value> {
         match (left, right) {
-            (Value::Number(l), Value::Number(r)) => Ok(Value::Bool(l <= r)),
-            (Value::String(l), Value::String(r)) => Ok(Value::Bool(l <= r)),
+            (Value::Number(l), Value::Number(r)) => Ok(Value::Boolean(l <= r)),
+            (Value::String(l), Value::String(r)) => Ok(Value::Boolean(l <= r)),
             (l, r) => Err(TurbulanceError::RuntimeError { 
                 message: format!("Cannot compare values of these types: {:?} and {:?}", l, r) 
             }),
@@ -1065,8 +1369,8 @@ impl Interpreter {
     
     fn evaluate_greater_than_equal(&mut self, left: Value, right: Value) -> Result<Value> {
         match (left, right) {
-            (Value::Number(l), Value::Number(r)) => Ok(Value::Bool(l >= r)),
-            (Value::String(l), Value::String(r)) => Ok(Value::Bool(l >= r)),
+            (Value::Number(l), Value::Number(r)) => Ok(Value::Boolean(l >= r)),
+            (Value::String(l), Value::String(r)) => Ok(Value::Boolean(l >= r)),
             (l, r) => Err(TurbulanceError::RuntimeError { 
                 message: format!("Cannot compare values of these types: {:?} and {:?}", l, r) 
             }),
@@ -1092,36 +1396,143 @@ impl Interpreter {
     }
     
     fn evaluate_pipe(&mut self, left: Value, right: Value) -> Result<Value> {
-        // The pipe operator (|) is for creating a pipeline by applying right to left
-        // For example: "text" | filter_function
-        // This requires that the right value be a function
+        // The pipe operator (|) applies the right function to the left value
+        // For example: "text" | simplify_function
         match right {
             Value::Function(f) => {
-                // Call the function with left as its argument
-                Err(TurbulanceError::RuntimeError { 
-                    message: "Pipe operator not yet fully implemented".to_string() 
-                })
+                // Create a new environment for function execution
+                let previous_env = self.environment.clone();
+                self.environment = Rc::new(RefCell::new(f.closure.clone()));
+                
+                // Define parameters (assuming single parameter for pipe)
+                if f.params.len() != 1 {
+                    return Err(TurbulanceError::RuntimeError { 
+                        message: format!("Pipe function must have exactly 1 parameter, got {}", f.params.len()) 
+                    });
+                }
+                
+                self.environment.borrow_mut().define(f.params[0].clone(), left);
+                
+                // Execute function body
+                let result = self.evaluate(&f.body)?;
+                
+                // Restore previous environment
+                self.environment = previous_env;
+                
+                Ok(result)
+            },
+            Value::NativeFunction(f) => {
+                // Call native function with left as argument
+                f(vec![left])
+            },
+            Value::String(function_name) => {
+                // Try to call a built-in text operation by name
+                match function_name.as_str() {
+                    "simplify" => {
+                        match left {
+                            Value::TextUnit(tu) => self.apply_simplify(tu, &[]),
+                            Value::String(s) => self.apply_simplify(TextUnit::new(s), &[]),
+                            _ => Err(TurbulanceError::RuntimeError {
+                                message: "Simplify operation requires TextUnit or String".to_string()
+                            })
+                        }
+                    },
+                    "expand" => {
+                        match left {
+                            Value::TextUnit(tu) => self.apply_expand(tu, &[]),
+                            Value::String(s) => self.apply_expand(TextUnit::new(s), &[]),
+                            _ => Err(TurbulanceError::RuntimeError {
+                                message: "Expand operation requires TextUnit or String".to_string()
+                            })
+                        }
+                    },
+                    "formalize" => {
+                        match left {
+                            Value::TextUnit(tu) => self.apply_formalize(tu, &[]),
+                            Value::String(s) => self.apply_formalize(TextUnit::new(s), &[]),
+                            _ => Err(TurbulanceError::RuntimeError {
+                                message: "Formalize operation requires TextUnit or String".to_string()
+                            })
+                        }
+                    },
+                    "summarize" => {
+                        match left {
+                            Value::TextUnit(tu) => self.apply_summarize(tu, &[]),
+                            Value::String(s) => self.apply_summarize(TextUnit::new(s), &[]),
+                            _ => Err(TurbulanceError::RuntimeError {
+                                message: "Summarize operation requires TextUnit or String".to_string()
+                            })
+                        }
+                    },
+                    _ => Err(TurbulanceError::RuntimeError {
+                        message: format!("Unknown text operation: {}", function_name)
+                    })
+                }
             },
             _ => Err(TurbulanceError::RuntimeError { 
-                message: "Pipe operator requires a function as its right operand".to_string() 
+                message: "Pipe operator requires a function, native function, or operation name as its right operand".to_string() 
             }),
         }
     }
     
     fn evaluate_pipe_forward(&mut self, left: Value, right: Value) -> Result<Value> {
-        // The forward pipe operator (|>) is like the pipe but with specialized pipeline semantics
-        // It's intended for chaining multiple operations
-        Err(TurbulanceError::RuntimeError { 
-            message: "Pipe forward operator not yet implemented".to_string() 
-        })
+        // The forward pipe operator (|>) is specialized for chaining text operations
+        // It preserves the TextUnit structure through the pipeline
+        match (left, right) {
+            (Value::TextUnit(tu), Value::String(operation)) => {
+                // Apply the named operation to the TextUnit
+                match operation.as_str() {
+                    "simplify" => self.apply_simplify(tu, &[]),
+                    "expand" => self.apply_expand(tu, &[]),
+                    "formalize" => self.apply_formalize(tu, &[]),
+                    "informalize" => self.apply_informalize(tu, &[]),
+                    "summarize" => self.apply_summarize(tu, &[]),
+                    _ => Err(TurbulanceError::RuntimeError {
+                        message: format!("Unknown text operation: {}", operation)
+                    })
+                }
+            },
+            (Value::String(s), Value::String(operation)) => {
+                // Convert string to TextUnit and apply operation
+                let tu = TextUnit::new(s);
+                match operation.as_str() {
+                    "simplify" => self.apply_simplify(tu, &[]),
+                    "expand" => self.apply_expand(tu, &[]),
+                    "formalize" => self.apply_formalize(tu, &[]),
+                    "informalize" => self.apply_informalize(tu, &[]),
+                    "summarize" => self.apply_summarize(tu, &[]),
+                    _ => Err(TurbulanceError::RuntimeError {
+                        message: format!("Unknown text operation: {}", operation)
+                    })
+                }
+            },
+            (left_val, Value::Function(f)) => {
+                // Chain with a function
+                self.evaluate_pipe(left_val, Value::Function(f))
+            },
+            _ => Err(TurbulanceError::RuntimeError {
+                message: "Pipe forward operator requires compatible operands".to_string()
+            })
+        }
     }
     
     fn evaluate_arrow(&mut self, left: Value, right: Value) -> Result<Value> {
-        // The arrow operator (=>) is used for transformation result assignment
-        // For example: division_operation => result_variable
-        Err(TurbulanceError::RuntimeError { 
-            message: "Arrow operator not yet implemented".to_string() 
-        })
+        // The arrow operator (=>) creates a transformation mapping
+        // It can be used to assign transformation results or create mappings
+        match right {
+            Value::String(variable_name) => {
+                // Assign the left value to the named variable
+                self.define_variable(variable_name, left.clone());
+                Ok(left)
+            },
+            Value::Function(f) => {
+                // Apply the function to the left value (similar to pipe)
+                self.evaluate_pipe(left, Value::Function(f))
+            },
+            _ => Err(TurbulanceError::RuntimeError {
+                message: "Arrow operator requires a variable name or function as its right operand".to_string()
+            })
+        }
     }
     
     // Helper function to call a user-defined function

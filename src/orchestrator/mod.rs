@@ -22,7 +22,7 @@ pub use goal::{Goal, GoalType, GoalMetrics, SuccessCriterion, Strategy, GoalStat
 pub use intervention::{InterventionSystem, InterventionType, ActiveIntervention, InterventionOutcome};
 pub use context::{Context, ContextPattern, WritingPattern};
 pub use config::KwasaConfig as Config;
-pub use stream::{StreamProcessor, StreamError, ProcessingPipeline};
+pub use stream::{StreamError, ProcessingPipeline};
 
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
@@ -30,8 +30,6 @@ use log::{info, warn, debug};
 use crate::turbulance::ast::Value;
 use crate::knowledge::KnowledgeDatabase;
 use crate::text_unit::{TextUnit, TextUnitRegistry, TextUnitId, TextUnitType};
-use goal::Goal;
-use context::Context;
 use intervention::Intervention;
 
 /// Represents the Metacognitive Orchestrator that manages the writing process
@@ -61,7 +59,7 @@ pub struct Orchestrator {
     config: Config,
     
     /// Processing pipelines
-    pipelines: std::collections::HashMap<String, ProcessingPipeline>,
+    pipelines: HashMap<String, ProcessingPipeline>,
 }
 
 impl Orchestrator {
@@ -86,7 +84,7 @@ impl Orchestrator {
             variables: HashMap::new(),
             is_tracking: false,
             config: Config::default(),
-            pipelines: std::collections::HashMap::new(),
+            pipelines: HashMap::new(),
         }
     }
     

@@ -2,7 +2,6 @@ use std::collections::{HashMap, HashSet, VecDeque};
 use std::fmt;
 
 use crate::text_unit::boundary::{BoundaryType, TextUnit, detect_boundaries};
-use crate::text_unit::operations::TextOperations;
 use crate::text_unit::TextUnitRegistry;
 use crate::text_unit::utils::string_similarity;
 

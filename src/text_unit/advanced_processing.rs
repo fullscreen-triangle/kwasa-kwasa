@@ -4,11 +4,7 @@
 //! that go beyond basic operations to include semantic understanding, style analysis,
 //! and intelligent text generation.
 
-use std::collections::{HashMap, HashSet};
-use regex::Regex;
-use crate::error::{Error, Result};
-use crate::text_unit::TextUnit;
-use crate::pattern::{Pattern, MetaCognitive, MetaNode, MetaNodeType};
+use std::collections::HashMap;
 use super::types::{TextUnit, TextUnitId, TextUnitType};
 use super::registry::TextUnitRegistry;
 use serde::{Deserialize, Serialize};
