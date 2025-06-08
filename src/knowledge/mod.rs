@@ -4,6 +4,7 @@ use std::fs;
 use log::{info, error};
 use serde::{Serialize, Deserialize};
 use std::time::{SystemTime, UNIX_EPOCH};
+use crate::knowledge::citation::Citation;
 
 /// Knowledge entry representing a piece of information
 #[derive(Debug, Clone, Serialize, Deserialize)]

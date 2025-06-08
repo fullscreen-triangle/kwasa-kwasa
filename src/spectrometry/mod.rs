@@ -4,7 +4,7 @@
 //! using the same powerful abstractions as text processing.
 
 use std::fmt::Debug;
-use std::{collections::HashMap, marker::PhantomData};
+use std::collections::HashMap;
 
 // Add the high-throughput module
 pub mod high_throughput;
@@ -656,9 +656,33 @@ pub use database::{SpectralDatabase, DatabaseConfig};
 
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
-use std::collections::HashMap;
 
-// Main spectrometry processor is defined later in the file
+/// Main spectrometry processor that coordinates all spectral analysis
+pub struct SpectrometryProcessor {
+    /// Mass spectrometry analyzer
+    mass_spec_analyzer: MassSpecAnalyzer,
+    
+    /// NMR analyzer
+    nmr_analyzer: NMRAnalyzer,
+    
+    /// IR analyzer
+    ir_analyzer: IRAnalyzer,
+    
+    /// UV-Vis analyzer
+    uv_vis_analyzer: UVVisAnalyzer,
+    
+    /// Peak picking system
+    peak_picker: PeakPicking,
+    
+    /// Calibration manager
+    calibration_manager: CalibrationManager,
+    
+    /// Spectral database
+    database: SpectralDatabase,
+    
+    /// Configuration
+    config: SpectrometryConfig,
+}
 
 /// Configuration for spectrometry processing
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -1624,16 +1648,7 @@ impl SpectrometryProcessor {
     }
 }
 
-impl CalibrationManager {
-    fn new() -> Self {
-        Self {
-            mass_calibrations: HashMap::new(),
-            chemical_shift_calibrations: HashMap::new(),
-            wavelength_calibrations: HashMap::new(),
-            standard_references: Vec::new(),
-        }
-    }
-}
+
 
 /// Input for spectrometry processing
 #[derive(Debug, Clone)]

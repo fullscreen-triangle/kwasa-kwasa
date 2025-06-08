@@ -4,8 +4,9 @@
 //! fundamental character/symbol patterns, regardless of semantic content.
 
 use std::fmt::Debug;
-use std::{collections::HashMap, marker::PhantomData};
+use std::collections::HashMap;
 use std::hash::{Hash, Hasher, DefaultHasher};
+use std::marker::PhantomData;
 
 pub mod metacognitive;
 

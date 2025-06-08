@@ -4,7 +4,8 @@
 //! using the same powerful abstractions as text processing.
 
 use std::fmt::Debug;
-use std::{collections::HashMap, marker::PhantomData};
+use std::collections::HashMap;
+use std::marker::PhantomData;
 
 // Add the high-throughput module
 pub mod high_throughput;
@@ -657,23 +658,8 @@ pub use annotation::{AnnotationConfig, Gene};
 pub use quality::{QualityControl};
 pub use database::{GenomicDatabase, DatabaseConfig};
 
-use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
-
-/// Prelude for easy imports
-pub mod prelude {
-    pub use super::{
-        Sequence, SequenceType, Nucleotide, AminoAcid,
-        SequenceAnalyzer, AnalysisResult, GenePredictor,
-        Variant, VariantType, VariantCaller,
-        PhylogeneticTree, PhylogeneticAnalyzer,
-        Alignment, AlignmentScorer,
-        Gene, Transcript, Annotation,
-        QualityControl, QualityMetrics,
-        GenomicDatabase, GenomicProcessor,
-    };
-}
 
 /// Main genomic processor that coordinates all genomic analysis
 pub struct GenomicProcessor {

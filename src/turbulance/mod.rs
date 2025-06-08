@@ -40,9 +40,8 @@ mod generated {
         use crate::turbulance::interpreter::{Value, NativeFunction};
 
         // Re-export common types
-        pub use std::collections::HashMap;
-        pub use crate::turbulance::{TokenKind, Result, TurbulanceError};
-        pub use crate::turbulance::interpreter::{Value, NativeFunction};
+        pub use super::super::{TokenKind, Result, TurbulanceError};
+        pub use super::super::interpreter::{Value, NativeFunction};
     }
     pub(crate) use prelude::*;
     

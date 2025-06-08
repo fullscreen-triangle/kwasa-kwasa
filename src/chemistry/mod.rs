@@ -4,7 +4,7 @@
 //! using the same powerful abstractions as text processing.
 
 use std::fmt::Debug;
-use std::{collections::{HashMap, HashSet}, marker::PhantomData};
+use std::collections::HashMap;
 
 /// Re-exports from this module
 pub mod prelude {
@@ -501,12 +501,11 @@ impl UnitOperations<Molecule> for MoleculeOperations {
 // Chemistry processing module for chemical informatics
 pub mod molecule;
 
-// Re-export main types from molecule module
-pub use molecule::{MolecularAnalyzer, MolecularAnalysisConfig, MolecularAnalysisResult, FunctionalGroup};
+// Re-export main types from molecule module  
+pub use molecule::{MolecularAnalyzer, MolecularAnalysisConfig, MolecularAnalysisResult};
 
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
-use std::collections::HashMap;
 
 // ChemicalProcessor is defined later in the file
 
@@ -1881,18 +1880,4 @@ pub enum ChemicalInput {
     
     /// Multiple molecules
     MoleculeSet(Vec<String>),
-}
-
-/// Prelude for easy imports
-pub mod prelude {
-    pub use super::{
-        Molecule, Atom, Bond, MolecularFormula, SMILES,
-        Reaction, ReactionType, ReactionPredictor,
-        MolecularProperties, PropertyCalculator,
-        ChemicalAnalyzer, AnalysisResult,
-        Structure3D, StructureOptimizer,
-        MolecularDescriptors, DescriptorCalculator,
-        SimilarityCalculator, SimilarityMetric,
-        ChemicalDatabase, ChemicalProcessor,
-    };
 } 
