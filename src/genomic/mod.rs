@@ -654,12 +654,14 @@ pub use analysis::{GenomicAnalyzer, AnalysisConfig};
 pub use variants::{VariantCaller, VariantConfig};
 pub use phylogeny::{PhylogeneticAnalyzer, PhylogeneticConfig};
 pub use alignment::{AlignmentEngine, PairwiseAligner, MultipleAligner};
+// unresolved import for Gene
 pub use annotation::{AnnotationConfig, Gene};
 pub use quality::{QualityControl};
 pub use database::{GenomicDatabase, DatabaseConfig};
 
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
+use crate::genomic::annotation::AnnotationDatabase;
 
 /// Main genomic processor that coordinates all genomic analysis
 pub struct GenomicProcessor {
@@ -775,16 +777,7 @@ pub struct CacheSettings {
 }
 
 /// Alignment engine for sequence alignment
-pub struct AlignmentEngine {
-    /// Pairwise aligner
-    pairwise_aligner: PairwiseAligner,
-    
-    /// Multiple sequence aligner
-    multiple_aligner: MultipleAligner,
-    
-    /// Alignment parameters
-    parameters: AlignmentParameters,
-}
+
 
 /// Parameters for sequence alignment
 #[derive(Debug, Clone)]
@@ -1592,7 +1585,8 @@ pub enum GenomicInput {
 impl AlignmentEngine {
     fn new() -> Self {
         Self {
-            pairwise_aligner: PairwiseAligner::new(),
+            pairwise_aligner: PairwiseAligner::new(Default::default()),
+            // no function associated with new structure below
             multiple_aligner: MultipleAligner::new(),
             parameters: AlignmentParameters {
                 match_score: 2,

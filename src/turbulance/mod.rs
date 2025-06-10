@@ -16,35 +16,23 @@ pub mod integration;
 pub mod hybrid_processing;
 pub mod turbulance_syntax;
 
-pub use lexer::{Lexer, Token, TokenKind};
-pub use proposition::{Proposition, Motion};
-pub use datastructures::{TextGraph, ConceptChain, IdeaHierarchy, ArgMap};
 pub use context::Context;
-pub use context::Value;
-pub use context::Function;
-pub use probabilistic::{TextPoint, ResolutionResult, ResolutionManager, ResolutionContext, point, context as prob_context};
-pub use positional_semantics::{PositionalSentence, PositionalAnalyzer, PositionalWord, SemanticRole};
-pub use streaming::{TextStream, StreamConfig, StreamResult, StreamState, PointExtractor};
-pub use perturbation_validation::{PerturbationValidator, ValidationResult, ValidationConfig, validate_resolution_quality};
-pub use debate_platform::{DebatePlatform, DebatePlatformManager, Affirmation, Contention, Evidence};
-pub use integration::{KwasaKwasaPipeline, PipelineConfig, ProcessingResult, demonstrate_complete_framework};
-pub use hybrid_processing::{HybridProcessor, ProbabilisticFloor, HybridConfig, HybridResult, ProcessingMode, demonstrate_hybrid_processing};
-pub use turbulance_syntax::{TurbulanceProcessor, TurbulanceFunction, TurbulanceOperation, demonstrate_turbulance_syntax};
+pub use debate_platform::{Affirmation, Contention, DebatePlatform, DebatePlatformManager};
+pub use lexer::TokenKind;
+pub use perturbation_validation::{PerturbationValidator, ValidationConfig, ValidationResult};
+pub use positional_semantics::{PositionalAnalyzer, PositionalSentence};
+pub use probabilistic::{ResolutionResult, TextPoint};
+pub use streaming::{StreamConfig, StreamState, TextStream};
 
 // Include generated code
 mod generated {
     pub(crate) mod prelude {
-        // Common imports for generated code
-        use std::collections::HashMap;
-        use crate::turbulance::{TokenKind, Result, TurbulanceError};
-        use crate::turbulance::interpreter::{Value, NativeFunction};
-
+        pub use super::super::interpreter::{NativeFunction, Value};
         // Re-export common types
-        pub use super::super::{TokenKind, Result, TurbulanceError};
-        pub use super::super::interpreter::{Value, NativeFunction};
+        pub use super::super::{Result, TokenKind, TurbulanceError};
     }
     pub(crate) use prelude::*;
-    
+
     include!(concat!(env!("OUT_DIR"), "/generated/parser_tables.rs"));
     include!(concat!(env!("OUT_DIR"), "/generated/stdlib_bindings.rs"));
     include!(concat!(env!("OUT_DIR"), "/generated/token_definitions.rs"));

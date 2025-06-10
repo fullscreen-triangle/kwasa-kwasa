@@ -1111,6 +1111,8 @@ impl Node {
         body: Box::new(body),
         span,
     })
+}
+
     /// Parse a considering statement (replaces for each)
     fn considering_statement(&mut self) -> Result<Node, TurbulanceError> {
         let start_span = self.previous().span.clone();
@@ -1152,6 +1154,8 @@ impl Node {
     );
     
     Ok(ast::considering_all(iterable, variable, body, span))
+}
+
     /// Parse a "considering these X" statement
     fn considering_these_statement(&mut self, start_span: crate::turbulance::lexer::Span) -> Result<Node, TurbulanceError> {
     let variable = self.consume(TokenKind::Identifier, "Expected variable name after 'these'")?
@@ -1177,6 +1181,8 @@ impl Node {
     );
     
     Ok(ast::considering_these(iterable, variable, body, span))
+}
+
     /// Parse a "considering item X" statement
     fn considering_item_statement(&mut self, start_span: crate::turbulance::lexer::Span) -> Result<Node, TurbulanceError> {
     let variable = self.consume(TokenKind::Identifier, "Expected variable name after 'item'")?
@@ -1202,6 +1208,8 @@ impl Node {
     );
     
     Ok(ast::considering_item(item, variable, body, span))
+}
+
     /// Parse an "allow" statement (replaces "let")
     fn allow_statement(&mut self) -> Result<Node, TurbulanceError> {
     let start_span = self.previous().span.clone();
@@ -1216,7 +1224,7 @@ impl Node {
     );
     
     Ok(ast::allow_stmt(value, span))
-    }
+}
 }
 
 #[cfg(test)]

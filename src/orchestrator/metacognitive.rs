@@ -76,20 +76,20 @@ impl MetacognitiveOrchestrator {
             .add_processor(IntuitionLayerProcessor::new(self.intuition_layer.clone(), self.knowledge.clone()));
         
         // Execute the pipeline
-        let results = pipeline.execute(input).await;
+        let mut results = pipeline.execute(input).await;
         
         // Process incomplete tasks from lactate cycle
         for (id, data, completion) in self.lactate_cycle.get_all() {
             // If resources available, retry incomplete tasks
             if completion > 0.5 { // Retry if more than 50% done
-                let mut retry_input = vec![data];
+                let retry_input = vec![data];
                 let retry_results = pipeline.execute(retry_input).await;
                 
                 // If successful, add to results
                 if !retry_results.is_empty() {
                     // Add retry results to final results with retry metadata
-                    for mut retry_result in retry_results {
-                        retry_result = retry_result.with_metadata("retry_id", &id);
+                    for retry_result in retry_results {
+                        let mut retry_result = retry_result.with_metadata("retry_id", &id);
                         retry_result = retry_result.with_metadata("retry_completion", &completion.to_string());
                         results.push(retry_result);
                     }

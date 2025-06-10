@@ -4,7 +4,7 @@
 /// are resolved through affirmations and contentions, with probabilistic
 /// scoring based on evidence quality and logical consistency.
 
-use std::collections::{HashMap, BTreeMap};
+use std::collections::HashMap;
 use serde::{Serialize, Deserialize};
 use uuid::Uuid;
 use chrono::{DateTime, Utc};

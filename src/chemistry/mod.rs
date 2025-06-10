@@ -502,7 +502,7 @@ impl UnitOperations<Molecule> for MoleculeOperations {
 pub mod molecule;
 
 // Re-export main types from molecule module  
-pub use molecule::{MolecularAnalyzer, MolecularAnalysisConfig, MolecularAnalysisResult};
+pub use molecule::{MolecularAnalyzer, MolecularAnalysisConfig};
 
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
@@ -1809,7 +1809,7 @@ impl Default for ChemicalConfig {
         }
     }
 }
-
+/// can't find type in this scope
 impl ChemicalProcessor {
     /// Create a new chemical processor
     pub fn new(config: ChemicalConfig) -> Self {

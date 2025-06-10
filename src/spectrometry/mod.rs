@@ -650,7 +650,7 @@ pub use nmr::{NMRAnalyzer, NMRConfig};
 pub use ir::{IRAnalyzer, IRConfig};
 pub use uv_vis::{UVVisAnalyzer, UVVisConfig};
 pub use analysis::{SpectrometryAnalyzer, AnalysisConfig};
-pub use peak::{PeakPicking, PeakPickingConfig};
+pub use peak::{PeakPicking};
 pub use calibration::{CalibrationManager, CalibrationCurve, StandardReference};
 pub use database::{SpectralDatabase, DatabaseConfig};
 
@@ -1601,13 +1601,13 @@ impl SpectrometryProcessor {
     /// Create a new spectrometry processor
     pub fn new(config: SpectrometryConfig) -> Self {
         Self {
-            mass_spec_analyzer: MassSpecAnalyzer::new(),
-            nmr_analyzer: NMRAnalyzer::new(),
-            ir_analyzer: IRAnalyzer::new(),
-            uv_vis_analyzer: UVVisAnalyzer::new(),
-            peak_picker: PeakPicking::new(),
+            mass_spec_analyzer: MassSpecAnalyzer::new(Default::default()),
+            nmr_analyzer: NMRAnalyzer::new(Default::default()),
+            ir_analyzer: IRAnalyzer::new(Default::default()),
+            uv_vis_analyzer: UVVisAnalyzer::new(Default::default()),
+            peak_picker: PeakPicking::new(Default::default()),
             calibration_manager: CalibrationManager::new(),
-            database: SpectralDatabase::new(),
+            database: SpectralDatabase::new(Default::default()),
             config,
         }
     }

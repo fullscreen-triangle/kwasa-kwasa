@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use crate::turbulance::ast::{Node, BinaryOp, UnaryOp, TextOp};
 use crate::turbulance::TurbulanceError;
-use crate::text_unit::boundary::TextUnit;
+use crate::turbulance::ast::TextUnit;
 use crate::turbulance::stdlib::StdLib;
 use std::rc::Rc;
 use std::cell::RefCell;
@@ -497,7 +497,7 @@ impl Interpreter {
                 // Try to call a standard library function by name
                 if let Some(stdlib) = self.get_stdlib() {
                     if stdlib.has_function(&name) {
-                        return stdlib.call(&name, evaluated_args);
+                        return stdlib.call(&name);
                     }
                 }
                 
@@ -571,7 +571,7 @@ impl Interpreter {
                 self.define_variable(name.clone(), value.clone());
                 Ok(value)
             },
-            
+            // unresolved reference below 
             Node::MemberAccess { object, property, span } => {
                 // Object property assignment (e.g., obj.prop = value)
                 let mut object_value = self.evaluate(object)?;
@@ -584,8 +584,9 @@ impl Interpreter {
                     },
                     
                     (Value::TextUnit(text_unit), Node::Identifier(key, _)) => {
-                        // TextUnit metadata assignment
-                        text_unit.metadata.insert(key.clone(), value.clone());
+                        // TextUnit metadata assignment - need to convert Value to ast::Value
+                        let ast_value = self.interpreter_value_to_ast_value(value.clone())?;
+                        text_unit.metadata.insert(key.clone(), ast_value);
                         Ok(value)
                     },
                     
@@ -594,7 +595,7 @@ impl Interpreter {
                     })
                 }
             },
-            
+            // unresolved reference, need to create enum variant
             Node::IndexAccess { object, index, span } => {
                 // Array/list index assignment (e.g., arr[0] = value)
                 let mut object_value = self.evaluate(object)?;
@@ -800,7 +801,7 @@ impl Interpreter {
         
         let mut result_unit = text_unit;
         result_unit.content = simplified;
-        result_unit.metadata.insert("operation".to_string(), Value::String("simplified".to_string()));
+        result_unit.metadata.insert("operation".to_string(), crate::turbulance::ast::Value::String("simplified".to_string()));
         
         Ok(Value::TextUnit(result_unit))
     }
@@ -819,7 +820,7 @@ impl Interpreter {
         
         let mut result_unit = text_unit;
         result_unit.content = expanded;
-        result_unit.metadata.insert("operation".to_string(), Value::String("expanded".to_string()));
+        result_unit.metadata.insert("operation".to_string(), crate::turbulance::ast::Value::String("expanded".to_string()));
         
         Ok(Value::TextUnit(result_unit))
     }
@@ -848,7 +849,7 @@ impl Interpreter {
         
         let mut result_unit = text_unit;
         result_unit.content = formalized;
-        result_unit.metadata.insert("operation".to_string(), Value::String("formalized".to_string()));
+        result_unit.metadata.insert("operation".to_string(), crate::turbulance::ast::Value::String("formalized".to_string()));
         
         Ok(Value::TextUnit(result_unit))
     }
@@ -879,7 +880,7 @@ impl Interpreter {
         
         let mut result_unit = text_unit;
         result_unit.content = informalized;
-        result_unit.metadata.insert("operation".to_string(), Value::String("informalized".to_string()));
+        result_unit.metadata.insert("operation".to_string(), crate::turbulance::ast::Value::String("informalized".to_string()));
         
         Ok(Value::TextUnit(result_unit))
     }
@@ -914,8 +915,8 @@ impl Interpreter {
         
         let mut result_unit = text_unit;
         result_unit.content = rewritten;
-        result_unit.metadata.insert("operation".to_string(), Value::String("rewritten".to_string()));
-        result_unit.metadata.insert("style".to_string(), Value::String(style));
+        result_unit.metadata.insert("operation".to_string(), crate::turbulance::ast::Value::String("rewritten".to_string()));
+        result_unit.metadata.insert("style".to_string(), crate::turbulance::ast::Value::String(style));
         
         Ok(Value::TextUnit(result_unit))
     }
@@ -956,8 +957,8 @@ impl Interpreter {
         
         let mut result_unit = text_unit;
         result_unit.content = translated;
-        result_unit.metadata.insert("operation".to_string(), Value::String("translated".to_string()));
-        result_unit.metadata.insert("target_language".to_string(), Value::String(language));
+        result_unit.metadata.insert("operation".to_string(), crate::turbulance::ast::Value::String("translated".to_string()));
+        result_unit.metadata.insert("target_language".to_string(), crate::turbulance::ast::Value::String(language));
         
         Ok(Value::TextUnit(result_unit))
     }
@@ -988,8 +989,8 @@ impl Interpreter {
             let extracted_content = extracted_parts.join(" ");
             let mut result_unit = text_unit;
             result_unit.content = extracted_content;
-            result_unit.metadata.insert("operation".to_string(), Value::String("extracted".to_string()));
-            result_unit.metadata.insert("pattern".to_string(), Value::String(pattern));
+            result_unit.metadata.insert("operation".to_string(), crate::turbulance::ast::Value::String("extracted".to_string()));
+            result_unit.metadata.insert("pattern".to_string(), crate::turbulance::ast::Value::String(pattern));
             
             Ok(Value::TextUnit(result_unit))
         } else {
@@ -1048,8 +1049,8 @@ impl Interpreter {
         
         let mut result_unit = text_unit;
         result_unit.content = final_summary;
-        result_unit.metadata.insert("operation".to_string(), Value::String("summarized".to_string()));
-        result_unit.metadata.insert("target_length".to_string(), Value::Number(target_length as f64));
+        result_unit.metadata.insert("operation".to_string(), crate::turbulance::ast::Value::String("summarized".to_string()));
+        result_unit.metadata.insert("target_length".to_string(), crate::turbulance::ast::Value::Number(target_length as f64));
         
         Ok(Value::TextUnit(result_unit))
     }
@@ -1111,6 +1112,7 @@ impl Interpreter {
             let mut source_map = HashMap::new();
             
             // Add the source path
+            // no field source type
             source_map.insert("path".to_string(), Value::String(source.path.clone()));
             
             // Add the source type if present
@@ -1148,7 +1150,6 @@ impl Interpreter {
                 for (key, value) in r.metadata {
                     combined_metadata.insert(key, value);
                 }
-                
                 Ok(Value::TextUnit(TextUnit::with_metadata(combined_content, combined_metadata)))
             },
             
@@ -1173,7 +1174,6 @@ impl Interpreter {
                 for (key, value) in r.metadata {
                     combined_metadata.insert(key, value);
                 }
-                
                 Ok(Value::TextUnit(TextUnit::with_metadata(combined_content, combined_metadata)))
             },
             
@@ -1276,7 +1276,6 @@ impl Interpreter {
                 for (key, value) in r.metadata {
                     combined_metadata.insert(key, value);
                 }
-                
                 Ok(Value::TextUnit(TextUnit::with_metadata(combined_content, combined_metadata)))
             },
             
@@ -1322,6 +1321,7 @@ impl Interpreter {
                 let result: Vec<Value> = parts.into_iter()
                     .filter(|s| !s.is_empty())
                     .map(|s| {
+                        // no associated function
                         let unit = TextUnit::new(s);
                         Value::TextUnit(unit)
                     })
@@ -1494,6 +1494,7 @@ impl Interpreter {
             },
             (Value::String(s), Value::String(operation)) => {
                 // Convert string to TextUnit and apply operation
+                // no associated function
                 let tu = TextUnit::new(s);
                 match operation.as_str() {
                     "simplify" => self.apply_simplify(tu, &[]),
@@ -1610,6 +1611,33 @@ impl Interpreter {
     // Get access to the standard library
     fn get_stdlib(&self) -> Option<&StdLib> {
         Some(&self.stdlib)
+    }
+    
+    /// Convert interpreter Value to AST Value
+    fn interpreter_value_to_ast_value(&self, value: Value) -> Result<crate::turbulance::ast::Value> {
+        match value {
+            Value::String(s) => Ok(crate::turbulance::ast::Value::String(s)),
+            Value::Number(n) => Ok(crate::turbulance::ast::Value::Number(n)),
+            Value::Boolean(b) => Ok(crate::turbulance::ast::Value::Bool(b)),
+            Value::List(list) => {
+                let ast_list: Result<Vec<crate::turbulance::ast::Value>> = list.into_iter()
+                    .map(|v| self.interpreter_value_to_ast_value(v))
+                    .collect();
+                Ok(crate::turbulance::ast::Value::List(ast_list?))
+            },
+            Value::Map(map) => {
+                let mut ast_map = std::collections::HashMap::new();
+                for (k, v) in map {
+                    ast_map.insert(k, self.interpreter_value_to_ast_value(v)?);
+                }
+                Ok(crate::turbulance::ast::Value::Map(ast_map))
+            },
+            Value::TextUnit(tu) => Ok(crate::turbulance::ast::Value::TextUnit(tu)),
+            Value::Null => Ok(crate::turbulance::ast::Value::None),
+            _ => Err(TurbulanceError::RuntimeError {
+                message: format!("Cannot convert value to AST value: {:?}", value)
+            })
+        }
     }
     
     /// Set a global variable

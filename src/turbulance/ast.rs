@@ -207,6 +207,20 @@ pub enum Node {
     
     // Error node
     Error(String, Span),
+    
+    // Member access (obj.property)
+    MemberAccess {
+        object: Box<Node>,
+        property: Box<Node>,
+        span: Span,
+    },
+    
+    // Index access (obj[index])
+    IndexAccess {
+        object: Box<Node>,
+        index: Box<Node>,
+        span: Span,
+    },
 }
 
 /// Represents a function definition
@@ -227,11 +241,9 @@ pub struct Parameter {
 
 /// Represents a source declaration
 #[derive(Debug, Clone, PartialEq)]
-pub enum Source {
-    Local(String),
-    WebSearch { engines: Vec<String> },
-    KnowledgeBase(String),
-    DomainExperts(Vec<String>),
+pub struct Source {
+    pub path: String,
+    pub source_type: Option<String>,
 }
 
 /// Represents binary operations
@@ -264,6 +276,14 @@ pub enum UnaryOp {
 /// Represents text operations
 #[derive(Debug, Clone, PartialEq)]
 pub enum TextOp {
+    Simplify,
+    Expand,
+    Formalize,
+    Informalize,
+    Rewrite,
+    Translate,
+    Extract,
+    Summarize,
     Divide,
     Multiply,
     Add,
