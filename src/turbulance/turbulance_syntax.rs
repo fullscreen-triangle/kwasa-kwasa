@@ -561,7 +561,7 @@ pub async fn demonstrate_turbulance_syntax() -> Result<()> {
     println!("3. 🔀 Considering Loop with Probabilistic Processing:");
     println!("   Turbulance:");
     println!("   considering sentence in paragraph:");
-    println!("       if resolution is within x percentage, continue or");
+    println!("       given resolution is within x percentage, continue or");
     println!("       either change affirmations and contentions till resolved");
     
     let considering_operation = TurbulanceOperation::Considering {
@@ -597,8 +597,8 @@ pub async fn demonstrate_turbulance_syntax() -> Result<()> {
     println!("4. 🎯 Complete Hybrid Function:");
     println!("   funxn hybrid_analysis(paragraph):");
     println!("       considering sentence in paragraph:");
-    println!("           if sentence contains points, probabilistic operations");
-    println!("           if resolution is within x percentage, continue or");
+    println!("           given sentence contains points, probabilistic operations");
+    println!("           given resolution is within x percentage, continue or");
     println!("           either change affirmations and contentions till resolved");
     
     let hybrid_function = TurbulanceFunction {

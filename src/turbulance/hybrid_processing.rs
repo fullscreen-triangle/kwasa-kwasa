@@ -441,7 +441,7 @@ impl HybridProcessor {
             let stream_result = self.text_stream.process_chunk(sentence).await?;
             
             for point in stream_result.points {
-                // Check if resolution is within threshold for probabilistic processing
+                // Check given resolution is within threshold for probabilistic processing
                 if point.confidence < confidence_threshold {
                     // Switch to probabilistic mode - iterative resolution loop
                     let mut current_confidence = point.confidence;
