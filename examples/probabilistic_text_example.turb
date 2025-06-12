@@ -11,13 +11,13 @@ funxn explore_probabilistic_length():
     print("=== Probabilistic Length Analysis ===")
     
     // Traditional deterministic approach
-    var text = "Hello world"
-    var traditional_length = len(text)
+    item text = "Hello world"
+    item traditional_length = len(text)
     print("Traditional length: {}", traditional_length)
     
     // NEW: Probabilistic approach with TextPoints
-    var text_point = point("Hello world", confidence: 0.9)
-    var length_resolution = resolve probabilistic_len(text_point) given context("informal")
+    item text_point = point("Hello world", confidence: 0.9)
+    item length_resolution = resolve probabilistic_len(text_point) given context("informal")
     
     print("Probabilistic length analysis:")
     print("- Character count: {} (confidence: {})", 
@@ -36,7 +36,7 @@ funxn explore_ambiguous_text():
     print("=== Handling Ambiguous Text ===")
     
     // Example with inherently ambiguous text
-    var ambiguous_point = point("bank", confidence: 0.7)
+    item ambiguous_point = point("bank", confidence: 0.7)
     
     // Add multiple interpretations
     ambiguous_point.add_interpretation({

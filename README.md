@@ -187,7 +187,7 @@ The framework doesn't just process text; it understands your goals and guides th
 
 ```turbulance
 // Setting up a writing goal
-var goal = new Goal("Write a technical tutorial for beginners", 0.4)
+item goal = new Goal("Write a technical tutorial for beginners", 0.4)
 goal.add_keywords(["tutorial", "beginner", "step-by-step", "explanation"])
 
 // Track progress towards the goal
@@ -195,8 +195,8 @@ goal.update_progress(0.3)  // 30% complete
 goal.is_complete()         // Returns false
 
 // Evaluating alignment with goals
-var alignment = orchestrator.evaluate_alignment(text)
-if alignment < 0.3:
+item alignment = orchestrator.evaluate_alignment(text)
+given alignment < 0.3:
     suggest_improvements()
 ```
 
@@ -577,7 +577,7 @@ Points and Resolutions form **Probabilistic Discourse Networks** (PDNs) where:
 
 ```turbulance
 // Create a discourse network
-var discourse_network = DiscourseNetwork::new()
+item discourse_network = DiscourseNetwork::new()
 
 // Add interconnected points
 discourse_network.add_point(thesis_statement)
@@ -585,7 +585,7 @@ discourse_network.add_point(supporting_evidence)
 discourse_network.add_causal_link(supporting_evidence, thesis_statement, 0.73)
 
 // Network-wide resolution
-var network_resolution = discourse_network.global_resolution()
+item network_resolution = discourse_network.global_resolution()
 print(f"Network coherence: {network_resolution.coherence_score}")
 print(f"Overall confidence: {network_resolution.confidence_interval}")
 ```
@@ -639,14 +639,14 @@ The framework implements sophisticated positional analysis:
 
 ```turbulance
 // Analyze positional semantics
-var analyzer = PositionalAnalyzer::new()
+item analyzer = PositionalAnalyzer::new()
 
 // Extract positional relationships
-var sentence = "The innovative machine learning algorithm significantly improves diagnostic accuracy."
-var analysis = analyzer.analyze(sentence)
+item sentence = "The innovative machine learning algorithm significantly improves diagnostic accuracy."
+item analysis = analyzer.analyze(sentence)
 
 // Results include position-dependent interpretations
-for word in analysis.words {
+considering word in analysis.words {
     print(f"{word.lexeme}: role={word.semantic_role}, weight={word.position_weight}")
     print(f"  Order dependency: {word.order_dependency}")
     print(f"  Structural prominence: {word.structural_prominence}")
@@ -673,17 +673,17 @@ All text operations account for positional semantics:
 ```turbulance
 // Position-aware text similarity
 funxn positional_similarity(text1, text2) -> SimilarityScore {
-    var analysis1 = PositionalAnalyzer::analyze(text1)
-    var analysis2 = PositionalAnalyzer::analyze(text2)
+    item analysis1 = PositionalAnalyzer::analyze(text1)
+    item analysis2 = PositionalAnalyzer::analyze(text2)
     
     // Weight similarity by positional importance
-    var weighted_similarity = 0.0
-    var total_weight = 0.0
+    item weighted_similarity = 0.0
+    item total_weight = 0.0
     
-    for (word1, word2) in align_sequences(analysis1.words, analysis2.words) {
-        var semantic_sim = semantic_similarity(word1.lexeme, word2.lexeme)
-        var position_weight = min(word1.position_weight, word2.position_weight)
-        var role_alignment = role_compatibility(word1.semantic_role, word2.semantic_role)
+    considering (word1, word2) in align_sequences(analysis1.words, analysis2.words) {
+        item semantic_sim = semantic_similarity(word1.lexeme, word2.lexeme)
+        item position_weight = min(word1.position_weight, word2.position_weight)
+        item role_alignment = role_compatibility(word1.semantic_role, word2.semantic_role)
         
         weighted_similarity += semantic_sim * position_weight * role_alignment
         total_weight += position_weight
@@ -703,17 +703,17 @@ The framework generates position-aware embeddings that capture how word meaning 
 
 ```turbulance
 // Generate position-dependent embeddings
-var embedding_model = PositionalEmbeddingModel::new()
+item embedding_model = PositionalEmbeddingModel::new()
 
 // Same word, different positions, different embeddings
-var word_beginning = embedding_model.embed("important", Position::SentenceInitial)
-var word_middle = embedding_model.embed("important", Position::MidSentence)  
-var word_end = embedding_model.embed("important", Position::SentenceFinal)
+item word_beginning = embedding_model.embed("important", Position::SentenceInitial)
+item word_middle = embedding_model.embed("important", Position::MidSentence)  
+item word_end = embedding_model.embed("important", Position::SentenceFinal)
 
 // Embeddings differ based on positional semantics
-var similarity_beg_mid = cosine_similarity(word_beginning, word_middle)  // ~0.73
-var similarity_mid_end = cosine_similarity(word_middle, word_end)        // ~0.81
-var similarity_beg_end = cosine_similarity(word_beginning, word_end)     // ~0.65
+item similarity_beg_mid = cosine_similarity(word_beginning, word_middle)  // ~0.73
+item similarity_mid_end = cosine_similarity(word_middle, word_end)        // ~0.81
+item similarity_beg_end = cosine_similarity(word_beginning, word_end)     // ~0.65
 ```
 
 ### Perturbation Validation
@@ -750,17 +750,17 @@ enum PerturbationType {
 
 ```turbulance
 // Create a perturbation validator
-var validator = PerturbationValidator::new()
+item validator = PerturbationValidator::new()
 
 // Original resolution
-var original_text = "Machine learning algorithms demonstrate significant improvements in diagnostic accuracy across multiple clinical studies."
-var original_resolution = evaluate_claim(extract_point(original_text))
+item original_text = "Machine learning algorithms demonstrate significant improvements in diagnostic accuracy across multiple clinical studies."
+item original_resolution = evaluate_claim(extract_point(original_text))
 
 // Apply systematic perturbations
-var validation_results = validator.validate_stability(original_text, original_resolution)
+item validation_results = validator.validate_stability(original_text, original_resolution)
 
 // Results provide detailed stability analysis
-for perturbation in validation_results.perturbations {
+considering perturbation in validation_results.perturbations {
     print(f"Perturbation: {perturbation.type}")
     print(f"  Modified text: {perturbation.modified_text}")
     print(f"  Stability score: {perturbation.stability_score}")
@@ -769,11 +769,11 @@ for perturbation in validation_results.perturbations {
 }
 
 // Overall stability assessment
-var overall_stability = validation_results.overall_stability_score()
-var reliability_category = match overall_stability {
-    score if score > 0.85 => ReliabilityCategory::HighlyReliable,
-    score if score > 0.70 => ReliabilityCategory::Reliable,
-    score if score > 0.55 => ReliabilityCategory::ModeratelyReliable,
+item overall_stability = validation_results.overall_stability_score()
+item reliability_category = match overall_stability {
+    score given score > 0.85 => ReliabilityCategory::HighlyReliable,
+    score given score > 0.70 => ReliabilityCategory::Reliable,
+    score given score > 0.55 => ReliabilityCategory::ModeratelyReliable,
     _ => ReliabilityCategory::RequiresReview
 }
 ```
@@ -783,12 +783,12 @@ var reliability_category = match overall_stability {
 **Word Removal Perturbation:**
 ```turbulance
 // Test which words are essential for meaning preservation
-var removal_results = validator.word_removal_analysis(original_text)
+item removal_results = validator.word_removal_analysis(original_text)
 
 // Results show semantic contribution of each word
-for word_analysis in removal_results {
+considering word_analysis in removal_results {
     print(f"Removing '{word_analysis.word}': impact = {word_analysis.semantic_impact}")
-    if word_analysis.semantic_impact > 0.8 {
+    given word_analysis.semantic_impact > 0.8 {
         print(f"  Critical word for meaning preservation")
     }
 }
@@ -797,11 +797,11 @@ for word_analysis in removal_results {
 **Positional Rearrangement:**
 ```turbulance
 // Test sensitivity to word order changes
-var rearrangement_results = validator.positional_rearrangement(original_text)
+item rearrangement_results = validator.positional_rearrangement(original_text)
 
 // Find optimal and suboptimal arrangements
-var most_stable = rearrangement_results.most_stable_arrangement()
-var least_stable = rearrangement_results.least_stable_arrangement()
+item most_stable = rearrangement_results.most_stable_arrangement()
+item least_stable = rearrangement_results.least_stable_arrangement()
 
 print(f"Most stable: {most_stable.text} (stability: {most_stable.score})")
 print(f"Least stable: {least_stable.text} (stability: {least_stable.score})")
@@ -810,10 +810,10 @@ print(f"Least stable: {least_stable.text} (stability: {least_stable.score})")
 **Semantic Substitution Testing:**
 ```turbulance
 // Replace words with semantically similar alternatives
-var substitution_results = validator.synonym_substitution(original_text)
+item substitution_results = validator.synonym_substitution(original_text)
 
 // Analyze how substitutions affect resolution stability
-for substitution in substitution_results {
+considering substitution in substitution_results {
     print(f"'{substitution.original}' → '{substitution.replacement}'")
     print(f"  Semantic distance: {substitution.semantic_distance}")
     print(f"  Resolution stability: {substitution.resolution_stability}")
@@ -856,7 +856,7 @@ The foundation of hybrid processing is the **Probabilistic Floor**—a collectio
 
 ```turbulance
 // Create a probabilistic floor
-var floor = ProbabilisticFloor::new()
+item floor = ProbabilisticFloor::new()
 
 // Add points with varying certainty levels
 floor.add_point("thesis_claim", certainty: 0.73, weight: 0.85)
@@ -865,7 +865,7 @@ floor.add_point("counterargument", certainty: 0.81, weight: 0.63)
 floor.add_point("methodology", certainty: 0.92, weight: 0.78)
 
 // Floor automatically manages probability distributions
-var point_distribution = floor.sample_weighted(count: 3)
+item point_distribution = floor.sample_weighted(count: 3)
 // Returns points selected based on combined certainty and weight
 ```
 
@@ -877,12 +877,12 @@ Kwasa-Kwasa implements four specialized loop types that can switch between deter
 ```turbulance
 // Cycle through items with confidence-based continuation
 cycle item over floor: 
-    var result = resolution.analyze(item)
+    item result = resolution.analyze(item)
     
-    // Continue if confidence is above threshold
-    if result.confidence > 0.7:
+    // Continue given confidence is above threshold
+    given result.confidence > 0.7:
         continue_deterministic()
-    else:
+    alternatively:
         switch_to_probabilistic_mode()
         
     resolution.process(item, mode)
@@ -892,14 +892,14 @@ cycle item over floor:
 ```turbulance
 // Drift through text corpus with probabilistic selection
 drift text in corpus:
-    var analysis_result = resolution.analyze(text)
+    item analysis_result = resolution.analyze(text)
     
     // Probability of continuing depends on result quality
-    var continue_probability = calculate_drift_probability(analysis_result)
+    item continue_probability = calculate_drift_probability(analysis_result)
     
-    if random() < continue_probability:
+    given random() < continue_probability:
         resolution.deep_analyze(text)
-    else:
+    alternatively:
         resolution.skip_to_next_cluster(text)
 ```
 
@@ -907,7 +907,7 @@ drift text in corpus:
 ```turbulance
 // Flow through streaming data with adaptive processing
 flow line on floor:
-    var processing_mode = determine_mode(line.complexity, line.certainty)
+    item processing_mode = determine_mode(line.complexity, line.certainty)
     
     match processing_mode {
         ProcessingMode::Deterministic => {
@@ -917,8 +917,8 @@ flow line on floor:
             resolution.probabilistic_parse(line)
         },
         ProcessingMode::Hybrid => {
-            var partial_result = resolution.fast_parse(line)
-            if partial_result.confidence < threshold {
+            item partial_result = resolution.fast_parse(line)
+            given partial_result.confidence < threshold {
                 resolution.probabilistic_refine(partial_result)
             }
         }
@@ -929,10 +929,10 @@ flow line on floor:
 ```turbulance
 // Roll until the resolution settles on a stable interpretation
 roll until settled:
-    var current_resolution = resolution.guess_next()
+    item current_resolution = resolution.guess_next()
     
-    // Check if resolution has converged
-    if current_resolution.is_settled(tolerance: 0.05) {
+    // Check given resolution has converged
+    given current_resolution.is_settled(tolerance: 0.05) {
         break settled(current_resolution)
     }
     
@@ -952,33 +952,33 @@ The complete Turbulance syntax for hybrid functions:
 // Full hybrid function with probabilistic control flow
 funxn hybrid_analysis(paragraph, confidence_threshold=0.75):
     // Initialize probabilistic floor
-    var floor = ProbabilisticFloor::from_text(paragraph)
+    item floor = ProbabilisticFloor::from_text(paragraph)
     
     considering sentence in paragraph:
         // Extract points from sentence
-        var points = extract_points(sentence)
+        item points = extract_points(sentence)
         
         // Conditional probabilistic operations
-        if sentence.contains_points():
+        given sentence.contains_points():
             // Switch to probabilistic mode for complex reasoning
             switch_to_probabilistic_mode()
             
             // Create resolution for each point
-            for point in points:
-                var resolution = create_resolution(point)
+            considering point in points:
+                item resolution = create_resolution(point)
                 
                 // Probabilistic loop until resolution confidence is sufficient
                 roll until settled:
-                    var current_assessment = resolution.assess(point)
+                    item current_assessment = resolution.assess(point)
                     
-                    if current_assessment.confidence > confidence_threshold:
+                    given current_assessment.confidence > confidence_threshold:
                         accept_resolution(current_assessment)
                         break settled(current_assessment)
-                    else:
+                    alternatively:
                         // Update evidence base and try again
                         resolution.gather_more_evidence(point)
                         resolution.update_affirmations_and_contentions()
-        else:
+        alternatively:
             // Use deterministic mode for simple processing
             switch_to_deterministic_mode()
             simple_parse(sentence)
@@ -1014,13 +1014,13 @@ impl HybridProcessor {
         
         match (complexity_score, uncertainty_level, available_evidence) {
             // High complexity, high uncertainty, weak evidence -> Full Probabilistic
-            (c, u, e) if c > 0.8 && u > 0.7 && e < 0.5 => ProcessingMode::FullProbabilistic,
+            (c, u, e) given c > 0.8 && u > 0.7 && e < 0.5 => ProcessingMode::FullProbabilistic,
             
             // Moderate complexity, moderate uncertainty -> Hybrid
-            (c, u, e) if c > 0.4 && u > 0.4 => ProcessingMode::Hybrid,
+            (c, u, e) given c > 0.4 && u > 0.4 => ProcessingMode::Hybrid,
             
             // Low complexity, low uncertainty, strong evidence -> Deterministic
-            (c, u, e) if c < 0.3 && u < 0.3 && e > 0.8 => ProcessingMode::Deterministic,
+            (c, u, e) given c < 0.3 && u < 0.3 && e > 0.8 => ProcessingMode::Deterministic,
             
             // Default to adaptive hybrid mode
             _ => ProcessingMode::AdaptiveHybrid
@@ -1053,7 +1053,7 @@ impl SettlementDetector {
     }
     
     fn check_variance_convergence(&self, history: &[ResolutionState]) -> bool {
-        if history.len() < self.convergence_window {
+        given history.len() < self.convergence_window {
             return false
         }
         
@@ -1384,7 +1384,7 @@ Here's a simple example of a Turbulance script:
 
 ```turbulance
 funxn analyze_text(text):
-    var score = readability_score(text)
+    item score = readability_score(text)
     
     within text:
         given score < 60:
@@ -1401,8 +1401,8 @@ funxn analyze_text(text):
     return text
 
 // Run the analysis on a sample text
-var sample = "The technical_term is a specialized concept that requires explanation."
-var result = analyze_text(sample)
+item sample = "The technical_term is a specialized concept that requires explanation."
+item result = analyze_text(sample)
 print(result)
 ```
 
@@ -1467,48 +1467,48 @@ import perturbation_validation
 import points_resolutions
 
 // Create hybrid processor for scientific text
-var processor = HybridProcessor::new(confidence_threshold: 0.75)
-var scientific_paper = load_document("research_paper.txt")
+item processor = HybridProcessor::new(confidence_threshold: 0.75)
+item scientific_paper = load_document("research_paper.txt")
 
 // Initialize probabilistic floor from paper content
-var floor = ProbabilisticFloor::from_document(scientific_paper)
+item floor = ProbabilisticFloor::from_document(scientific_paper)
 
 // Stream through the paper with adaptive processing
 flow section on floor:
-    var complexity = calculate_section_complexity(section)
+    item complexity = calculate_section_complexity(section)
     
     // Switch processing mode based on section complexity
-    var mode = processor.determine_processing_mode(complexity)
+    item mode = processor.determine_processing_mode(complexity)
     
     considering sentence in section:
         // Extract points with positional semantics
-        var points = extract_points_with_position(sentence)
+        item points = extract_points_with_position(sentence)
         
-        for point in points:
+        considering point in points:
             // Create resolution for each scientific claim
-            var resolution = create_scientific_resolution(point)
+            item resolution = create_scientific_resolution(point)
             
             // Use probabilistic loop to gather evidence
             roll until settled:
-                var assessment = resolution.assess_scientific_validity(point)
+                item assessment = resolution.assess_scientific_validity(point)
                 
-                if assessment.confidence > 0.8:
+                given assessment.confidence > 0.8:
                     // Validate with perturbation testing
-                    var validation = perturbation_validate(point, assessment)
+                    item validation = perturbation_validate(point, assessment)
                     
-                    if validation.reliability == "HighlyReliable":
+                    given validation.reliability == "HighlyReliable":
                         accept_scientific_claim(assessment)
                         break settled(assessment)
-                    else:
-                        // Gather more evidence if validation fails
+                    alternatively:
+                        // Gather more evidence given validation fails
                         resolution.expand_evidence_search(point)
-                else:
+                alternatively:
                     // Update evidence and continue iteration
                     resolution.gather_additional_evidence(point)
                     resolution.update_peer_review_data()
 
 // Generate comprehensive analysis report
-var analysis_report = processor.generate_scientific_report()
+item analysis_report = processor.generate_scientific_report()
 print(f"Paper reliability score: {analysis_report.overall_reliability}")
 print(f"Evidence strength distribution: {analysis_report.evidence_distribution}")
 print(f"Key findings validation: {analysis_report.validated_claims}")
@@ -1520,13 +1520,13 @@ This example shows how the Points and Resolutions paradigm handles complex legal
 
 ```turbulance
 // Legal document analysis with debate platform resolution
-var legal_document = load_document("contract.txt")
-var legal_analyzer = LegalAnalyzer::new()
+item legal_document = load_document("contract.txt")
+item legal_analyzer = LegalAnalyzer::new()
 
 // Extract legal points from document
-var legal_points = legal_analyzer.extract_legal_points(legal_document)
+item legal_points = legal_analyzer.extract_legal_points(legal_document)
 
-for point in legal_points:
+considering point in legal_points:
     // Create legal resolution platform
     resolution legal_evaluation(point: LegalPoint) -> LegalOutcome {
         // Gather affirmations (supporting legal precedents)
@@ -1566,10 +1566,10 @@ for point in legal_points:
     }
     
     // Execute legal resolution
-    var outcome = legal_evaluation(point)
+    item outcome = legal_evaluation(point)
     
     // Apply perturbation validation to test legal robustness
-    var legal_validation = perturbation_validate_legal(point, outcome)
+    item legal_validation = perturbation_validate_legal(point, outcome)
     
     print(f"Legal point: {point.content}")
     print(f"Resolution confidence: {outcome.confidence}")
@@ -1583,41 +1583,38 @@ This example demonstrates how positional semantics improves medical text analysi
 
 ```turbulance
 // Medical record analysis with position-aware processing
-var medical_record = load_document("patient_chart.txt")
-var position_analyzer = PositionalAnalyzer::new()
+item medical_record = load_document("patient_chart.txt")
+item position_analyzer = PositionalAnalyzer::new()
 
 // Analyze medical text with positional awareness
-var positional_analysis = position_analyzer.analyze(medical_record)
+item positional_analysis = position_analyzer.analyze(medical_record)
 
 // Medical terms have different meanings based on position
 considering symptom_description in medical_record:
-    var words = positional_analysis.extract_words(symptom_description)
+    item words = positional_analysis.extract_words(symptom_description)
     
-    for word in words:
+    considering word in words:
         // Position determines clinical significance
-        if word.semantic_role == SemanticRole::Subject {
+        given word.semantic_role == SemanticRole::Subject:
             // Primary symptoms carry high diagnostic weight
-            var diagnostic_weight = word.position_weight * 1.2
+            item diagnostic_weight = word.position_weight * 1.2
             record_primary_symptom(word.lexeme, diagnostic_weight)
-        }
         
-        else if word.semantic_role == SemanticRole::Modifier {
+        alternatively given word.semantic_role == SemanticRole::Modifier:
             // Qualifiers modify symptom interpretation
-            var qualifier_impact = calculate_modifier_impact(word)
+            item qualifier_impact = calculate_modifier_impact(word)
             apply_symptom_qualifier(word.lexeme, qualifier_impact)
-        }
         
-        else if word.semantic_role == SemanticRole::Temporal {
+        alternatively given word.semantic_role == SemanticRole::Temporal:
             // Temporal position affects urgency assessment
-            var urgency_factor = calculate_temporal_urgency(word.position_weight)
+            item urgency_factor = calculate_temporal_urgency(word.position_weight)
             update_urgency_assessment(urgency_factor)
-        }
 
 // Generate position-weighted diagnostic suggestions
-var diagnostic_ai = PositionalDiagnosticAI::new()
-var diagnosis_candidates = diagnostic_ai.generate_candidates(positional_analysis)
+item diagnostic_ai = PositionalDiagnosticAI::new()
+item diagnosis_candidates = diagnostic_ai.generate_candidates(positional_analysis)
 
-for candidate in diagnosis_candidates:
+considering candidate in diagnosis_candidates:
     print(f"Diagnosis: {candidate.condition}")
     print(f"  Positional confidence: {candidate.positional_confidence}")
     print(f"  Key positional evidence: {candidate.key_positional_markers}")
@@ -1630,23 +1627,23 @@ This example shows the complete framework integration for research evaluation:
 
 ```turbulance
 // Comprehensive research paper evaluation
-var research_paper = load_document("research_submission.txt")
-var comprehensive_evaluator = ComprehensiveEvaluator::new()
+item research_paper = load_document("research_submission.txt")
+item comprehensive_evaluator = ComprehensiveEvaluator::new()
 
 // Create probabilistic floor from paper
-var floor = ProbabilisticFloor::from_research_paper(research_paper)
+item floor = ProbabilisticFloor::from_research_paper(research_paper)
 
 // Multi-stage evaluation process
 funxn evaluate_research_paper(paper, floor) -> ResearchEvaluation {
-    var evaluation_stages = []
+    item evaluation_stages = []
     
     // Stage 1: Positional analysis of key claims
-    var positional_analysis = analyze_research_claims_positionally(paper)
+    item positional_analysis = analyze_research_claims_positionally(paper)
     evaluation_stages.push(positional_analysis)
     
     // Stage 2: Extract and resolve research points
     drift claim in research_claims:
-        var research_point = extract_research_point(claim)
+        item research_point = extract_research_point(claim)
         
         // Create scientific resolution
         resolution evaluate_research_claim(point: ResearchPoint) -> ResearchOutcome {
@@ -1660,28 +1657,27 @@ funxn evaluate_research_paper(paper, floor) -> ResearchEvaluation {
             return resolve_scientific_debate(affirmations, contentions, ResolutionStrategy::Bayesian)
         }
         
-        var outcome = evaluate_research_claim(research_point)
+        item outcome = evaluate_research_claim(research_point)
         evaluation_stages.push(outcome)
     
     // Stage 3: Perturbation validation of key findings
-    var key_findings = extract_key_findings(paper)
+    item key_findings = extract_key_findings(paper)
     
-    for finding in key_findings:
-        var validation_results = comprehensive_perturbation_validate(finding)
+    considering finding in key_findings:
+        item validation_results = comprehensive_perturbation_validate(finding)
         
-        if validation_results.reliability < ReliabilityCategory::Reliable {
+        given validation_results.reliability < ReliabilityCategory::Reliable:
             flag_finding_for_review(finding, validation_results)
-        }
         
         evaluation_stages.push(validation_results)
     
     // Stage 4: Hybrid processing for overall assessment
     cycle stage over evaluation_stages:
-        var stage_confidence = stage.calculate_confidence()
+        item stage_confidence = stage.calculate_confidence()
         
-        if stage_confidence > 0.8:
+        given stage_confidence > 0.8:
             continue_deterministic()
-        else:
+        alternatively:
             switch_to_probabilistic_mode()
             refine_stage_analysis(stage)
     
@@ -1696,7 +1692,7 @@ funxn evaluate_research_paper(paper, floor) -> ResearchEvaluation {
 }
 
 // Execute comprehensive evaluation
-var final_evaluation = evaluate_research_paper(research_paper, floor)
+item final_evaluation = evaluate_research_paper(research_paper, floor)
 
 print(f"Research Paper Evaluation Report")
 print(f"================================")
@@ -1714,7 +1710,7 @@ import genomic.high_throughput as ht_genomic
 import logic.genomic
 
 // Set up logic for genomic analysis
-var rule_base = logic.RuleBase.new()
+item rule_base = logic.RuleBase.new()
 
 // Add genomic rules
 rule_base.add_rule("functional_region(Gene, Start, End) :- " +
@@ -1729,7 +1725,7 @@ rule_base.add_rule("functional_region(Gene, Start, End) :- " +
 rule_base.apply_rules()
 
 // Query for functional regions
-var regions = rule_base.query("functional_region(Gene, Start, End)")
+item regions = rule_base.query("functional_region(Gene, Start, End)")
 ```
 
 ### Mass Spectrometry Analysis with Fuzzy Logic
@@ -1739,28 +1735,28 @@ import spectrometry.high_throughput as ht_spec
 import fuzzy.spectrometry
 
 // Create fuzzy logic engine
-var fuzzy_engine = fuzzy.FuzzyLogicEngine.new()
+item fuzzy_engine = fuzzy.FuzzyLogicEngine.new()
 
 // Define fuzzy rules
-fuzzy_engine.add_rule("if peak_intensity is strong and mass_accuracy is high " +
+fuzzy_engine.add_rule("given peak_intensity is strong and mass_accuracy is high " +
                       "then peptide_identification is high")
 
 // Process spectra
-var results = ht_spec.process_spectra_parallel(spectra, (spectrum) => {
+item results = ht_spec.process_spectra_parallel(spectra, (spectrum) => {
     // Find peaks
-    var peaks = ht_spec.find_peaks_parallel([spectrum], 500.0, 3.0)[0]
+    item peaks = ht_spec.find_peaks_parallel([spectrum], 500.0, 3.0)[0]
     
     // Apply fuzzy inference
-    var result = fuzzy_engine.infer({
+    item result = fuzzy_engine.infer({
         "peak_intensity": fuzzy_engine.fuzzify("peak_intensity", norm_intensity),
         "mass_accuracy": fuzzy_engine.fuzzify("mass_accuracy", mass_accuracy)
     })
     
     // Get peptide identification confidence
-    var confidence = result["peptide_identification"]
+    item confidence = result["peptide_identification"]
     
     // Use confidence levels for decision-making
-    if confidence["high"] > 0.7 {
+    given confidence["high"] > 0.7 {
         // Accept identification with high confidence
     }
 })
