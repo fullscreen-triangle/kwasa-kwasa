@@ -1,5 +1,34 @@
 use std::collections::{HashMap, VecDeque, BTreeMap};
-use super::proposition::Motion;
+
+// Define Motion locally since we need Clone and Debug traits
+#[derive(Debug, Clone)]
+pub struct Motion {
+    pub content: String,
+    pub confidence: f64,
+    pub properties: HashMap<String, String>,
+}
+
+impl Motion {
+    pub fn new(content: &str) -> Self {
+        Self {
+            content: content.to_string(),
+            confidence: 1.0,
+            properties: HashMap::new(),
+        }
+    }
+    
+    pub fn with_confidence(content: &str, confidence: f64) -> Self {
+        Self {
+            content: content.to_string(),
+            confidence,
+            properties: HashMap::new(),
+        }
+    }
+    
+    pub fn content(&self) -> &str {
+        &self.content
+    }
+}
 
 /// TextGraph represents relationships between text components
 pub struct TextGraph {
