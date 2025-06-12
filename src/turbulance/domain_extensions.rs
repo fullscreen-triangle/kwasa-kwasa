@@ -2,12 +2,13 @@
 //! 
 //! This module integrates all domain extensions with the Turbulance language.
 
-use crate::turbulance::interpreter::{Interpreter, Value, ObjectRef};
+use crate::turbulance::interpreter::{Interpreter, Value, ObjectRef, Object};
 use crate::turbulance::TurbulanceError;
-use std::collections::HashMap;
-use std::sync::Arc;
+use crate::turbulance::context::Context;
 use crate::error::{Error, Result};
 use crate::turbulance::ast::Node;
+use std::collections::HashMap;
+use std::sync::Arc;
 
 /// Register all domain extensions with the interpreter
 pub fn register_domain_extensions(interpreter: &mut Interpreter) -> Result<(), TurbulanceError> {
@@ -23,9 +24,9 @@ fn register_genomic_extensions(interpreter: &mut Interpreter) -> Result<(), Turb
     let genomic_module = create_module("genomic");
     
     // Register placeholder genomic constructors
-    genomic_module.borrow().set(
+    genomic_module.borrow_mut().set(
         "NucleotideSequence", 
-        Value::Object(ObjectRef::new(NucleotideSequenceConstructor {}))
+        Value::Object(HashMap::new())
     );
     
     interpreter.set_global("genomic", Value::Module(genomic_module));
@@ -75,9 +76,17 @@ impl Module {
     }
 }
 
-// Simplified constructor for demonstration
-#[derive(Debug)]
-struct NucleotideSequenceConstructor;
+impl Object for Module {
+    fn get(&self, name: &str) -> Option<Value> {
+        self.fields.get(name).cloned()
+    }
+    
+    fn set(&mut self, name: &str, value: Value) {
+        self.fields.insert(name.to_string(), value);
+    }
+}
+
+
 
 /// Implements advanced domain-specific language features for the Turbulance language
 pub struct DomainExtensions {
@@ -142,7 +151,13 @@ pub struct ParameterInfo {
 pub type DomainKeywordHandler = Arc<dyn Fn(&mut Context, &[Node]) -> Result<Value> + Send + Sync>;
 
 impl DomainExtensions {
-    // ... existing code ...
+    /// Create a new DomainExtensions instance
+    pub fn new() -> Self {
+        Self {
+            domain_keywords: HashMap::new(),
+            domain_types: HashMap::new(),
+        }
+    }
     
     /// Registers a new domain-specific type
     pub fn register_domain_type(&mut self, type_def: DomainTypeDefinition) {
@@ -167,13 +182,13 @@ impl DomainExtensions {
         &self,
         type_name: &str,
         operation: &str,
-        value: &Value,
-        args: &[Value]
+        _value: &Value,
+        _args: &[Value]
     ) -> Result<Value> {
         // Simplified implementation
         match (type_name, operation) {
             ("string", "transform") => Ok(Value::String("transformed".to_string())),
-            _ => Err(Error::turbulance(format!("Operation '{}' not found for domain type '{}'", operation, type_name)))
+            _ => Err(Error::runtime(&format!("Operation '{}' not found for domain type '{}'", operation, type_name)))
         }
     }
 } 

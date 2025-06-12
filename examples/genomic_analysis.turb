@@ -1,19 +1,19 @@
 // Example of genomic sequence analysis using Turbulance
 
 // Define a DNA sequence
-var dna_sequence = "ATGCCCGGGTAATCGGTAACGGCTAGCATTGCATGCATCGA"
+    item dna_sequence = "ATGCCCGGGTAATCGGTAACGGCTAGCATTGCATGCATCGA"
 
 // Function to find open reading frames
 funxn find_orfs(sequence):
     // Split the sequence into codons
-    var codons = sequence / "codon"
-    var orfs = []
+    item codons = sequence / "codon"
+    item orfs = []
     
     within sequence:
         // Find start codons (ATG)
         given contains("ATG"):
-            var start_pos = index_of("ATG")
-            var orf = extract_from(start_pos)
+    item start_pos = index_of("ATG")
+    item orf = extract_from(start_pos)
             
             // Ensure it has a valid length
             given len(orf) >= 6 and len(orf) % 3 == 0:
@@ -25,7 +25,7 @@ funxn find_orfs(sequence):
 
 // Function to calculate GC content
 funxn gc_content(sequence):
-    var gc_count = 0
+    item gc_count = 0
     
     within sequence as nucleotides:
         given nucleotide in ["G", "C"]:
@@ -35,11 +35,11 @@ funxn gc_content(sequence):
 
 // Function to find motifs
 funxn find_motifs(sequence, motif_pattern):
-    var locations = []
-    var current_pos = 0
+    item locations = []
+    item current_pos = 0
     
     while current_pos < len(sequence):
-        var found_at = sequence.find(motif_pattern, current_pos)
+    item found_at = sequence.find(motif_pattern, current_pos)
         
         given found_at != -1:
             locations.append(found_at)
@@ -50,35 +50,35 @@ funxn find_motifs(sequence, motif_pattern):
     return locations
 
 // Process the sequence
-var orfs = find_orfs(dna_sequence)
+    item orfs = find_orfs(dna_sequence)
 print("Found {} open reading frames".format(len(orfs)))
 
-var gc = gc_content(dna_sequence)
+    item gc = gc_content(dna_sequence)
 print("GC content: {:.2f}%".format(gc * 100))
 
 // Find a specific motif (e.g., GGTA)
-var motif = "GGTA"
-var motif_locations = find_motifs(dna_sequence, motif)
+    item motif = "GGTA"
+    item motif_locations = find_motifs(dna_sequence, motif)
 print("Found motif {} at positions: {}".format(motif, motif_locations))
 
 // Mathematical operators example
-var exon1 = "ATGCCCGGG"
-var exon2 = "GCTAGCATT"
+    item exon1 = "ATGCCCGGG"
+    item exon2 = "GCTAGCATT"
 
 // Addition: concatenation
-var combined_exons = exon1 + exon2
+    item combined_exons = exon1 + exon2
 print("Combined exons: {}".format(combined_exons))
 
 // Division: split by pattern
-var fragments = dna_sequence / "GGT"
+    item fragments = dna_sequence / "GGT"
 print("Fragments after splitting by GGT: {}".format(fragments))
 
 // Multiplication: special joining (could represent recombination)
-var recombined = exon1 * exon2
+    item recombined = exon1 * exon2
 print("Recombined sequence: {}".format(recombined))
 
 // Subtraction: remove pattern
-var filtered = dna_sequence - "GGT"
+    item filtered = dna_sequence - "GGT"
 print("Sequence after removing GGT: {}".format(filtered))
 
 // Using propositions and motions for genomic regulatory networks
@@ -95,8 +95,8 @@ proposition GeneRegulation:
 
 // Advanced pattern analysis example
 funxn analyze_pattern_frequencies(sequence, pattern_size=3):
-    var patterns = sequence / pattern_size
-    var frequency = {}
+    item patterns = sequence / pattern_size
+    item frequency = {}
     
     for each pattern in patterns:
         given pattern in frequency:
@@ -104,11 +104,11 @@ funxn analyze_pattern_frequencies(sequence, pattern_size=3):
         given otherwise:
             frequency[pattern] = 1
     
-    var entropy = 0.0
-    var total_patterns = len(patterns)
+    item entropy = 0.0
+    item total_patterns = len(patterns)
     
     for each pattern, count in frequency:
-        var probability = count / total_patterns
+    item probability = count / total_patterns
         entropy = entropy - probability * log2(probability)
     
     return {
@@ -117,26 +117,26 @@ funxn analyze_pattern_frequencies(sequence, pattern_size=3):
     }
 
 // Analyze trinucleotide frequencies and information content
-var pattern_stats = analyze_pattern_frequencies(dna_sequence, 3)
+    item pattern_stats = analyze_pattern_frequencies(dna_sequence, 3)
 print("Sequence entropy: {:.2f} bits".format(pattern_stats.entropy))
 
 // Most common patterns
-var sorted_patterns = sort_by_value(pattern_stats.frequencies, descending=true)
+    item sorted_patterns = sort_by_value(pattern_stats.frequencies, descending=true)
 print("Top 3 most common patterns:")
 for each pattern, count in sorted_patterns[:3]:
     print("  {} occurs {} times".format(pattern, count))
 
 // Reverse complement
 funxn reverse_complement(sequence):
-    var complement_map = {
+    item complement_map = {
         "A": "T", "T": "A", "G": "C", "C": "G"
     }
-    var result = ""
+    item result = ""
     
     for each nucleotide in reversed(sequence):
         result = result + complement_map[nucleotide]
     
     return result
 
-var rev_comp = reverse_complement(dna_sequence)
+    item rev_comp = reverse_complement(dna_sequence)
 print("Reverse complement: {}".format(rev_comp)) 

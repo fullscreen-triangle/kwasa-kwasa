@@ -4,9 +4,9 @@
 import chemistry
 
 // Create molecules from SMILES strings
-var ethanol = chemistry.Molecule.from_smiles("CCO", "ethanol").with_name("Ethanol")
-var aspirin = chemistry.Molecule.from_smiles("CC(=O)OC1=CC=CC=C1C(=O)O", "aspirin").with_name("Aspirin")
-var caffeine = chemistry.Molecule.from_smiles("CN1C=NC2=C1C(=O)N(C(=O)N2C)C", "caffeine").with_name("Caffeine")
+    item ethanol = chemistry.Molecule.from_smiles("CCO", "ethanol").with_name("Ethanol")
+    item aspirin = chemistry.Molecule.from_smiles("CC(=O)OC1=CC=CC=C1C(=O)O", "aspirin").with_name("Aspirin")
+    item caffeine = chemistry.Molecule.from_smiles("CN1C=NC2=C1C(=O)N(C(=O)N2C)C", "caffeine").with_name("Caffeine")
 
 // Function to analyze a molecule
 funxn analyze_molecule(molecule):
@@ -22,7 +22,7 @@ funxn analyze_molecule(molecule):
     print("Number of bonds: {}".format(len(molecule.bonds())))
     
     // Calculate functional groups (simplified)
-    var functional_groups = identify_functional_groups(molecule)
+    item functional_groups = identify_functional_groups(molecule)
     print("Functional groups:")
     for each group, count in functional_groups:
         print("  - {}: {}".format(group, count))
@@ -31,8 +31,8 @@ funxn analyze_molecule(molecule):
 
 // Function to identify functional groups (simplified)
 funxn identify_functional_groups(molecule):
-    var groups = {}
-    var smiles = molecule.smiles()
+    item groups = {}
+    item smiles = molecule.smiles()
     
     // Check for common functional groups
     if smiles.contains("OH"):
@@ -62,33 +62,33 @@ analyze_molecule(caffeine)
 
 // Mathematical operators example
 // Create molecule operations
-var molecule_ops = chemistry.MoleculeOperations.new()
+    item molecule_ops = chemistry.MoleculeOperations.new()
 
 // Division: split by functional groups
 print("Dividing molecules by functional groups:")
-var ethanol_parts = molecule_ops.divide(ethanol, "functional_group")
+    item ethanol_parts = molecule_ops.divide(ethanol, "functional_group")
 print("Ethanol divided into {} functional groups".format(len(ethanol_parts)))
 
-var aspirin_parts = molecule_ops.divide(aspirin, "functional_group")
+    item aspirin_parts = molecule_ops.divide(aspirin, "functional_group")
 print("Aspirin divided into {} functional groups".format(len(aspirin_parts)))
 
 // Division: split by rings
 print("\nDividing molecules by rings:")
-var caffeine_rings = molecule_ops.divide(caffeine, "ring")
+    item caffeine_rings = molecule_ops.divide(caffeine, "ring")
 print("Caffeine divided into {} rings".format(len(caffeine_rings)))
 
 // Multiplication: chemical reaction (simplified)
-var reaction_product = molecule_ops.multiply(ethanol, aspirin)
+    item reaction_product = molecule_ops.multiply(ethanol, aspirin)
 print("\nSimulated reaction between ethanol and aspirin:")
 print("Result: {}".format(reaction_product.smiles()))
 
 // Addition: combine molecules
-var mixture = molecule_ops.add(caffeine, aspirin)
+    item mixture = molecule_ops.add(caffeine, aspirin)
 print("\nCombined caffeine and aspirin:")
 print("Result: {}".format(mixture.smiles()))
 
 // Subtraction: remove a functional group
-var dehydroxylated = molecule_ops.subtract(ethanol, chemistry.Molecule.from_smiles("O", "hydroxyl"))
+    item dehydroxylated = molecule_ops.subtract(ethanol, chemistry.Molecule.from_smiles("O", "hydroxyl"))
 print("\nEthanol after removing hydroxyl group:")
 print("Result: {}".format(dehydroxylated.smiles()))
 
@@ -105,8 +105,8 @@ proposition ChemicalAnalysis:
 
 // Function to calculate complexity
 funxn molecular_complexity(molecule):
-    var smiles = molecule.smiles()
-    var complexity = 0
+    item smiles = molecule.smiles()
+    item complexity = 0
     
     // Basic complexity based on molecule size
     complexity = complexity + len(smiles) * 0.5
@@ -133,18 +133,18 @@ print("Caffeine: {:.1f}".format(molecular_complexity(caffeine)))
 
 // Find similar molecules
 funxn find_similar(molecule, candidates, threshold=0.7):
-    var similarities = []
-    var target_complexity = molecular_complexity(molecule)
+    item similarities = []
+    item target_complexity = molecular_complexity(molecule)
     
     for each candidate in candidates:
-        var cand_complexity = molecular_complexity(candidate)
-        var complexity_ratio = min(target_complexity, cand_complexity) / max(target_complexity, cand_complexity)
+    item cand_complexity = molecular_complexity(candidate)
+    item complexity_ratio = min(target_complexity, cand_complexity) / max(target_complexity, cand_complexity)
         
-        var functional_similarity = 0.0
-        var target_groups = identify_functional_groups(molecule)
-        var cand_groups = identify_functional_groups(candidate)
+    item functional_similarity = 0.0
+    item target_groups = identify_functional_groups(molecule)
+    item cand_groups = identify_functional_groups(candidate)
         
-        var common_groups = 0
+    item common_groups = 0
         for each group in target_groups:
             if group in cand_groups:
                 common_groups = common_groups + 1
@@ -152,7 +152,7 @@ funxn find_similar(molecule, candidates, threshold=0.7):
         if len(target_groups) > 0 and len(cand_groups) > 0:
             functional_similarity = common_groups / ((len(target_groups) + len(cand_groups)) / 2)
         
-        var overall_similarity = (complexity_ratio + functional_similarity) / 2
+    item overall_similarity = (complexity_ratio + functional_similarity) / 2
         
         if overall_similarity >= threshold:
             similarities.append((candidate, overall_similarity))
@@ -160,12 +160,12 @@ funxn find_similar(molecule, candidates, threshold=0.7):
     return similarities
 
 // Create additional molecules for similarity comparison
-var acetaminophen = chemistry.Molecule.from_smiles("CC(=O)NC1=CC=C(C=C1)O", "acetaminophen").with_name("Acetaminophen")
-var ibuprofen = chemistry.Molecule.from_smiles("CC(C)CC1=CC=C(C=C1)C(C)C(=O)O", "ibuprofen").with_name("Ibuprofen")
+    item acetaminophen = chemistry.Molecule.from_smiles("CC(=O)NC1=CC=C(C=C1)O", "acetaminophen").with_name("Acetaminophen")
+    item ibuprofen = chemistry.Molecule.from_smiles("CC(C)CC1=CC=C(C=C1)C(C)C(=O)O", "ibuprofen").with_name("Ibuprofen")
 
 // Find molecules similar to aspirin
-var candidates = [acetaminophen, ibuprofen, caffeine, ethanol]
-var similar_to_aspirin = find_similar(aspirin, candidates)
+    item candidates = [acetaminophen, ibuprofen, caffeine, ethanol]
+    item similar_to_aspirin = find_similar(aspirin, candidates)
 
 print("\nMolecules similar to aspirin:")
 for each (molecule, similarity) in similar_to_aspirin:

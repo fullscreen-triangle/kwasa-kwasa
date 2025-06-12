@@ -150,7 +150,7 @@ cause BiasedReasoning = {
 // Create specialized data structures
 funxn demonstrate_data_structures():
     // Create a text graph for concept relationships
-    var graph = new TextGraph()
+    item graph = new TextGraph()
     graph.add_node("syntax", Motion("Syntactic analysis examines structure", "concept"))
     graph.add_node("semantics", Motion("Semantic analysis examines meaning", "concept"))
     graph.add_node("pragmatics", Motion("Pragmatic analysis examines context", "concept"))
@@ -160,7 +160,7 @@ funxn demonstrate_data_structures():
     graph.add_edge("semantics", "pragmatics", 0.8)
     
     // Create a concept chain for cause-effect relationships
-    var chain = new ConceptChain()
+    item chain = new ConceptChain()
     chain.add_concept("education", Motion("Increased language education", "factor"))
     chain.add_concept("awareness", Motion("Improved linguistic awareness", "result"))
     chain.add_concept("comprehension", Motion("Better text comprehension", "result"))
@@ -170,14 +170,14 @@ funxn demonstrate_data_structures():
     chain.add_relationship("awareness", "comprehension")
     
     // Create a hierarchy of ideas
-    var hierarchy = new IdeaHierarchy()
+    item hierarchy = new IdeaHierarchy()
     hierarchy.add_root("linguistics", Motion("Linguistics", "field"))
     hierarchy.add_child("linguistics", "phonetics", Motion("Phonetics", "subfield"))
     hierarchy.add_child("linguistics", "morphology", Motion("Morphology", "subfield"))
     hierarchy.add_child("linguistics", "syntax", Motion("Syntax", "subfield"))
     
     // Create an argument map
-    var argmap = new ArgMap()
+    item argmap = new ArgMap()
     argmap.add_claim("main", Motion("Text analysis should be taught in schools", "claim"))
     argmap.add_evidence(
         "main", 
@@ -200,7 +200,7 @@ funxn demonstrate_data_structures():
 
 // Demonstrate considering statements
 funxn analyze_text(text):
-    var paragraphs = text / "paragraph"
+    item paragraphs = text / "paragraph"
     
     // Consider all paragraphs
     considering all paragraphs:
@@ -219,17 +219,17 @@ funxn analyze_text(text):
 // Main function
 funxn main():
     // Create and analyze a proposition
-    var analysis = new TextAnalysis()
+    item analysis = new TextAnalysis()
     
     // Use the cause in analysis
     given text.contains_any(BiasedReasoning.effects):
         warn("Potential bias detected")
         
     // Set up the data structures
-    var structures = demonstrate_data_structures()
+    item structures = demonstrate_data_structures()
     
     // Evaluate the strength of the argument
-    var strength = structures.argmap.evaluate_claim("main")
+    item strength = structures.argmap.evaluate_claim("main")
     print("Argument strength: " + strength)
     
     // Return the results

@@ -4,9 +4,9 @@
 import spectrometry
 
 // Create a spectrum from m/z and intensity values
-var mz_values = [100.1, 120.2, 130.3, 145.6, 180.9, 212.4, 258.3]
-var intensities = [1050, 320, 5200, 750, 3500, 12300, 8400]
-var spectrum = spectrometry.MassSpectrum.from_numeric_data(mz_values, intensities, "sample_spectrum")
+    item mz_values = [100.1, 120.2, 130.3, 145.6, 180.9, 212.4, 258.3]
+    item intensities = [1050, 320, 5200, 750, 3500, 12300, 8400]
+    item spectrum = spectrometry.MassSpectrum.from_numeric_data(mz_values, intensities, "sample_spectrum")
 
 // Function to analyze a spectrum
 funxn analyze_spectrum(spectrum):
@@ -19,15 +19,15 @@ funxn analyze_spectrum(spectrum):
         ))
     
     // Find peaks in specific ranges
-    var low_range = spectrum.peaks_in_range(100.0, 150.0)
+    item low_range = spectrum.peaks_in_range(100.0, 150.0)
     print("Found {} peaks in the m/z range 100-150".format(len(low_range)))
     
-    var high_range = spectrum.peaks_in_range(200.0, 300.0)
+    item high_range = spectrum.peaks_in_range(200.0, 300.0)
     print("Found {} peaks in the m/z range 200-300".format(len(high_range)))
     
     // Calculate intensity statistics
-    var total_intensity = 0.0
-    var max_intensity = 0.0
+    item total_intensity = 0.0
+    item max_intensity = 0.0
     
     for each peak in spectrum.peaks():
         total_intensity = total_intensity + peak.intensity
@@ -43,35 +43,35 @@ analyze_spectrum(spectrum)
 
 // Mathematical operators example
 // Filter spectrum to only include peaks with intensity > 1000
-var filtered_spectrum = spectrum.filter_by_intensity(1000)
+    item filtered_spectrum = spectrum.filter_by_intensity(1000)
 print("\nFiltered spectrum has {} peaks".format(len(filtered_spectrum.peaks())))
 
 // Division: split by m/z ranges
-var spectrum_ops = spectrometry.SpectrumOperations.new()
-var spectrum_parts = spectrum_ops.divide(spectrum, "mz_range")
+    item spectrum_ops = spectrometry.SpectrumOperations.new()
+    item spectrum_parts = spectrum_ops.divide(spectrum, "mz_range")
 print("\nDivided spectrum into {} m/z ranges".format(len(spectrum_parts)))
 
 // Division: split by intensity ranges
-var intensity_parts = spectrum_ops.divide(spectrum, "intensity")
+    item intensity_parts = spectrum_ops.divide(spectrum, "intensity")
 print("Divided spectrum into {} intensity ranges:".format(len(intensity_parts)))
 for each part in intensity_parts:
     print("  - {} peaks".format(len(part.peaks())))
 
 // Create a second spectrum for operation examples
-var mz_values2 = [105.2, 120.2, 140.5, 190.7, 258.3]
-var intensities2 = [500, 800, 2000, 4500, 3200]
-var spectrum2 = spectrometry.MassSpectrum.from_numeric_data(mz_values2, intensities2, "second_spectrum")
+    item mz_values2 = [105.2, 120.2, 140.5, 190.7, 258.3]
+    item intensities2 = [500, 800, 2000, 4500, 3200]
+    item spectrum2 = spectrometry.MassSpectrum.from_numeric_data(mz_values2, intensities2, "second_spectrum")
 
 // Addition: combine spectra
-var combined = spectrum_ops.add(spectrum, spectrum2)
+    item combined = spectrum_ops.add(spectrum, spectrum2)
 print("\nCombined spectrum has {} peaks".format(len(combined.peaks())))
 
 // Multiplication: spectral convolution
-var convolved = spectrum_ops.multiply(spectrum, spectrum2)
+    item convolved = spectrum_ops.multiply(spectrum, spectrum2)
 print("Convolved spectrum has {} peaks".format(len(convolved.peaks())))
 
 // Subtraction: remove peaks
-var subtracted = spectrum_ops.subtract(spectrum, spectrum2)
+    item subtracted = spectrum_ops.subtract(spectrum, spectrum2)
 print("After subtraction, spectrum has {} peaks".format(len(subtracted.peaks())))
 
 // Using propositions and motions for spectral analysis
@@ -86,7 +86,7 @@ proposition SpectralAnalysis:
             print("Base peak in high m/z range suggests intact molecule")
         
 // Normalize the spectrum
-var normalized = spectrum.normalize()
+    item normalized = spectrum.normalize()
 print("\nNormalized spectrum - all intensities relative to base peak (100%)")
 for each peak in normalized.peaks():
     given peak.intensity > 50:
@@ -94,12 +94,12 @@ for each peak in normalized.peaks():
 
 // Find specific fragments
 funxn find_fragments(spectrum, fragment_masses, tolerance=0.1):
-    var fragments_found = []
+    item fragments_found = []
     
     for each target_mz in fragment_masses:
-        var min_mz = target_mz - tolerance
-        var max_mz = target_mz + tolerance
-        var peaks = spectrum.peaks_in_range(min_mz, max_mz)
+    item min_mz = target_mz - tolerance
+    item max_mz = target_mz + tolerance
+    item peaks = spectrum.peaks_in_range(min_mz, max_mz)
         
         if len(peaks) > 0:
             fragments_found.append((target_mz, peaks[0].mz, peaks[0].intensity))
@@ -107,8 +107,8 @@ funxn find_fragments(spectrum, fragment_masses, tolerance=0.1):
     return fragments_found
 
 // Search for specific fragment masses
-var fragment_masses = [130.3, 145.6, 258.3]
-var found = find_fragments(spectrum, fragment_masses)
+    item fragment_masses = [130.3, 145.6, 258.3]
+    item found = find_fragments(spectrum, fragment_masses)
 print("\nFragment search results:")
 for each (target, actual, intensity) in found:
     print("Target m/z {:.1} found at {:.4} with intensity {:.1}".format(

@@ -1,16 +1,16 @@
 // Example of pattern-based meaning extraction using Turbulance
 
 // Some example text with potentially interesting patterns
-var text = "The quick brown fox jumps over the lazy dog. How vexingly quick daft zebras jump!"
+    item text = "The quick brown fox jumps over the lazy dog. How vexingly quick daft zebras jump!"
 
 // Function to analyze letter frequency
 funxn letter_frequency(text):
-    var frequencies = {}
-    var total = 0
+    item frequencies = {}
+    item total = 0
     
     within text as characters:
         given character.is_alpha():
-            var char_lower = character.lower()
+    item char_lower = character.lower()
             
             given char_lower in frequencies:
                 frequencies[char_lower] = frequencies[char_lower] + 1
@@ -27,8 +27,8 @@ funxn letter_frequency(text):
 
 // Calculate Shannon entropy of text
 funxn calculate_entropy(text):
-    var frequencies = letter_frequency(text)
-    var entropy = 0.0
+    item frequencies = letter_frequency(text)
+    item entropy = 0.0
     
     for each letter, freq in frequencies:
         given freq > 0:
@@ -39,7 +39,7 @@ funxn calculate_entropy(text):
 // Detect recurring visual patterns
 funxn detect_visual_patterns(text, pattern_length=3):
     // Map letters to shape classes
-    var shape_classes = {
+    item shape_classes = {
         'a': 0, 'c': 0, 'e': 0, 'o': 0, 's': 0,  // round shapes
         'i': 1, 'l': 1, 'j': 1, 'f': 1, 't': 1,  // vertical strokes
         'm': 2, 'n': 2, 'h': 2, 'u': 2,          // arch shapes
@@ -47,14 +47,14 @@ funxn detect_visual_patterns(text, pattern_length=3):
         'b': 4, 'd': 4, 'p': 4, 'q': 4, 'g': 4   // circles with stems
     }
     
-    var shape_patterns = {}
+    item shape_patterns = {}
     
     for i in range(len(text) - pattern_length + 1):
-        var current_pattern = []
-        var valid_pattern = true
+    item current_pattern = []
+    item valid_pattern = true
         
         for j in range(pattern_length):
-            var char = text[i+j].lower()
+    item char = text[i+j].lower()
             
             given char in shape_classes:
                 current_pattern.append(shape_classes[char])
@@ -63,7 +63,7 @@ funxn detect_visual_patterns(text, pattern_length=3):
                 break
         
         given valid_pattern:
-            var pattern_key = tuple(current_pattern)
+    item pattern_key = tuple(current_pattern)
             
             given pattern_key in shape_patterns:
                 shape_patterns[pattern_key].append(text[i:i+pattern_length])
@@ -71,7 +71,7 @@ funxn detect_visual_patterns(text, pattern_length=3):
                 shape_patterns[pattern_key] = [text[i:i+pattern_length]]
     
     // Filter for patterns that occur multiple times
-    var recurring_patterns = {}
+    item recurring_patterns = {}
     
     for each pattern, occurrences in shape_patterns:
         given len(occurrences) > 1:
@@ -81,11 +81,11 @@ funxn detect_visual_patterns(text, pattern_length=3):
 
 // Generate a visual rhythm analysis
 funxn visual_rhythm(text):
-    var weights = []
-    var current_weight = 0.0
+    item weights = []
+    item current_weight = 0.0
     
     within text as characters:
-        var weight = 0.4  // default
+    item weight = 0.4  // default
         
         given character in "il.,':;":
             weight = 0.2  // thin
@@ -106,22 +106,22 @@ funxn visual_rhythm(text):
 
 // Extract orthographic density map
 funxn orthographic_density(text, width=40):
-    var height = ceil(len(text) / width)
-    var density_map = []
+    item height = ceil(len(text) / width)
+    item density_map = []
     
     // Create empty map
     for y in range(height):
-        var row = []
+    item row = []
         for x in range(width):
             row.append(0.0)
         density_map.append(row)
     
     // Fill the map
     for i in range(len(text)):
-        var x = i % width
-        var y = i // width
-        var char = text[i]
-        var density = 0.4  // default
+    item x = i % width
+    item y = i // width
+    item char = text[i]
+    item density = 0.4  // default
         
         given char in "il.,':;":
             density = 0.2  // thin
@@ -145,15 +145,15 @@ funxn orthographic_density(text, width=40):
 
 // Function to find unusual letter combinations
 funxn unusual_combinations(text, ngram_size=2):
-    var ngrams = {}
-    var total_ngrams = 0
+    item ngrams = {}
+    item total_ngrams = 0
     
     // Count n-grams
     for i in range(len(text) - ngram_size + 1):
-        var ngram = text[i:i+ngram_size].lower()
+    item ngram = text[i:i+ngram_size].lower()
         
         // Only consider alphabetic n-grams
-        var is_alpha = true
+    item is_alpha = true
         for each char in ngram:
             given not char.is_alpha():
                 is_alpha = false
@@ -168,7 +168,7 @@ funxn unusual_combinations(text, ngram_size=2):
             total_ngrams = total_ngrams + 1
     
     // English letter pair frequencies (approximate)
-    var expected_freqs = {
+    item expected_freqs = {
         'th': 0.0356, 'he': 0.0307, 'in': 0.0243, 'er': 0.0205,
         'an': 0.0199, 're': 0.0185, 'on': 0.0176, 'at': 0.0149,
         'en': 0.0145, 'nd': 0.0135, 'ti': 0.0134, 'es': 0.0134,
@@ -184,14 +184,14 @@ funxn unusual_combinations(text, ngram_size=2):
     }
     
     // Find unusual combinations
-    var anomalies = []
+    item anomalies = []
     
     for each ngram, count in ngrams:
-        var observed_freq = count / total_ngrams
+    item observed_freq = count / total_ngrams
         
         given ngram in expected_freqs:
-            var expected_freq = expected_freqs[ngram]
-            var ratio = observed_freq / expected_freq
+    item expected_freq = expected_freqs[ngram]
+    item ratio = observed_freq / expected_freq
             
             given ratio > 2.0 or ratio < 0.5:
                 anomalies.append({
@@ -218,31 +218,31 @@ funxn unusual_combinations(text, ngram_size=2):
 print("Analyzing text: " + text)
 
 // Calculate letter frequencies
-var freqs = letter_frequency(text)
+    item freqs = letter_frequency(text)
 print("\nLetter frequencies:")
 for each letter, freq in sorted(freqs.items()):
     print(f"  {letter}: {freq:.4f}")
 
 // Calculate entropy
-var entropy = calculate_entropy(text)
+    item entropy = calculate_entropy(text)
 print(f"\nText entropy: {entropy:.4f} bits")
 
 // Find visual patterns
-var patterns = detect_visual_patterns(text)
+    item patterns = detect_visual_patterns(text)
 print("\nRecurring visual patterns (by shape class):")
 for each pattern, examples in patterns.items():
     print(f"  Pattern {pattern}: {examples}")
 
 // Analyze visual rhythm 
-var rhythm = visual_rhythm(text)
+    item rhythm = visual_rhythm(text)
 print(f"\nVisual rhythm analysis (first 10 points):")
 print(f"  {rhythm[:10]}")
 
 // Generate orthographic density map
-var density = orthographic_density(text, 20)
+    item density = orthographic_density(text, 20)
 print("\nOrthographic density map:")
 for each row in density:
-    var line = ""
+    item line = ""
     for each value in row:
         // Convert density to character
         given value < 0.2:
@@ -258,25 +258,25 @@ for each row in density:
     print(f"  {line}")
 
 // Find unusual letter combinations
-var unusual = unusual_combinations(text)
+    item unusual = unusual_combinations(text)
 print("\nUnusual letter combinations:")
 for i in range(min(5, len(unusual))):
-    var item = unusual[i]
+    item item = unusual[i]
     print(f"  {item['ngram']}: observed={item['observed']:.4f}, expected={item['expected']:.4f}, ratio={item['ratio']:.2f}")
 
 // Mathematical operations on patterns
 // Division: Split text into visual units by shape class
-var text_parts = text / "visual_class"
+    item text_parts = text / "visual_class"
 print("\nText divided by visual classes:")
 for each part in text_parts[:5]:
     print(f"  {part}")
 
 // Multiplication: Combine text based on visual similarity
-var similar_text = "The quick brown fox" * "jumps over the lazy dog"
+    item similar_text = "The quick brown fox" * "jumps over the lazy dog"
 print(f"\nVisually combined text: {similar_text}")
 
 // Subtraction: Remove common patterns
-var uncommon_text = text - "the"
+    item uncommon_text = text - "the"
 print(f"\nText with 'the' removed: {uncommon_text}")
 
 // Using propositions and motions

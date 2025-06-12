@@ -54,11 +54,11 @@ funxn explore_ambiguous_text():
     })
     
     // Calculate interpretation entropy
-    var entropy = ambiguous_point.interpretation_entropy()
+    item entropy = ambiguous_point.interpretation_entropy()
     print("Interpretation entropy: {:.3f}", entropy)
     
     // Get the most likely interpretation
-    var primary = ambiguous_point.primary_interpretation()
+    item primary = ambiguous_point.primary_interpretation()
     print("Primary interpretation: {} (probability: {:.2f})", 
           primary.meaning, primary.probability)
     
@@ -71,15 +71,15 @@ funxn explore_ambiguous_text():
 funxn context_dependent_analysis():
     print("=== Context-Dependent Analysis ===")
     
-    var tweet_text = "This is amazing!"
+    item tweet_text = "This is amazing!"
     
     // Same text, different contexts
-    var twitter_point = point(tweet_text, confidence: 0.85)
-    var academic_point = point(tweet_text, confidence: 0.85)
+    item twitter_point = point(tweet_text, confidence: 0.85)
+    item academic_point = point(tweet_text, confidence: 0.85)
     
     // Resolution in different contexts
-    var twitter_length = resolve probabilistic_len(twitter_point) given context("twitter")
-    var academic_length = resolve probabilistic_len(academic_point) given context("academic")
+    item twitter_length = resolve probabilistic_len(twitter_point) given context("twitter")
+    item academic_length = resolve probabilistic_len(academic_point) given context("academic")
     
     print("Twitter context:")
     print("- Contextual length rating: {:.2f}", twitter_length.contextual.relative_length)
@@ -96,14 +96,14 @@ funxn demonstrate_uncertainty_propagation():
     print("=== Uncertainty Propagation ===")
     
     // Start with uncertain text
-    var uncertain_text = point("The result is roughly accurate", confidence: 0.6)
+    item uncertain_text = point("The result is roughly accurate", confidence: 0.6)
     
     // Chain probabilistic operations
-    var length_result = resolve probabilistic_len(uncertain_text) given context("scientific")
-    var sentiment_result = resolve probabilistic_sentiment(uncertain_text) given context("scientific")
+    item length_result = resolve probabilistic_len(uncertain_text) given context("scientific")
+    item sentiment_result = resolve probabilistic_sentiment(uncertain_text) given context("scientific")
     
     // Combine results with uncertainty propagation
-    var combined_uncertainty = propagate_uncertainty([
+    item combined_uncertainty = propagate_uncertainty([
         length_result.aggregated_confidence,
         sentiment_result.aggregated_confidence,
         uncertain_text.confidence
@@ -124,7 +124,7 @@ funxn demonstrate_uncertainty_propagation():
 funxn compare_resolution_strategies():
     print("=== Resolution Strategy Comparison ===")
     
-    var ambiguous_point = point("The solution is optimal", confidence: 0.8)
+    item ambiguous_point = point("The solution is optimal", confidence: 0.8)
     
     // Add multiple interpretations
     ambiguous_point.add_interpretation({
@@ -140,15 +140,15 @@ funxn compare_resolution_strategies():
     })
     
     // Try different resolution strategies
-    var max_likelihood = resolve probabilistic_meaning(ambiguous_point) 
+    item max_likelihood = resolve probabilistic_meaning(ambiguous_point) 
                         given context("general") 
                         with strategy("maximum_likelihood")
     
-    var conservative = resolve probabilistic_meaning(ambiguous_point)
+    item conservative = resolve probabilistic_meaning(ambiguous_point)
                       given context("general")
                       with strategy("conservative_min")
     
-    var bayesian = resolve probabilistic_meaning(ambiguous_point)
+    item bayesian = resolve probabilistic_meaning(ambiguous_point)
                   given context("general") 
                   with strategy("bayesian_weighted")
     
@@ -169,11 +169,11 @@ funxn main():
     print("Probabilistic Text Processing Demonstration")
     print("==========================================")
     
-    var length_demo = explore_probabilistic_length()
-    var ambiguity_demo = explore_ambiguous_text()
-    var context_demo = context_dependent_analysis()
-    var uncertainty_demo = demonstrate_uncertainty_propagation()
-    var strategy_demo = compare_resolution_strategies()
+    item length_demo = explore_probabilistic_length()
+    item ambiguity_demo = explore_ambiguous_text()
+    item context_demo = context_dependent_analysis()
+    item uncertainty_demo = demonstrate_uncertainty_propagation()
+    item strategy_demo = compare_resolution_strategies()
     
     print("\n=== Summary ===")
     print("This demonstration shows how probabilistic text operations")
