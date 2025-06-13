@@ -1,7 +1,8 @@
 use std::collections::{HashMap, HashSet, VecDeque};
 use std::fmt;
 
-use crate::text_unit::boundary::{BoundaryType, TextUnit, detect_boundaries};
+use crate::text_unit::boundary::{BoundaryType, detect_boundaries};
+use crate::text_unit::types::TextUnit;
 use crate::text_unit::TextUnitRegistry;
 use crate::text_unit::utils::string_similarity;
 
@@ -414,10 +415,16 @@ impl DocumentHierarchy {
             }
             
             // Then process sentences within paragraphs
-            let paragraphs = self.find_nodes_by_type(&NodeType::Paragraph);
-            for paragraph in &paragraphs {
-                self.extract_and_add_children(&paragraph.content, paragraph.id(), BoundaryType::Sentences);
+                    let paragraph_ids: Vec<usize> = self.find_nodes_by_type(&NodeType::Paragraph)
+            .iter()
+            .map(|p| p.id())
+            .collect();
+        for paragraph_id in paragraph_ids {
+            if let Some(paragraph) = self.find_node_by_id(paragraph_id) {
+                let content = paragraph.content().clone();
+                self.extract_and_add_children(&content, paragraph_id, BoundaryType::Sentences);
             }
+        }
             
             // Process sentences directly if no paragraphs
             if root.node_type() == &NodeType::Document && root.children().is_empty() {
@@ -425,9 +432,15 @@ impl DocumentHierarchy {
             }
             
             // Process words within sentences
-            let sentences = self.find_nodes_by_type(&NodeType::Sentence);
-            for sentence in &sentences {
-                self.extract_and_add_children(&sentence.content, sentence.id(), BoundaryType::Words);
+            let sentence_ids: Vec<usize> = self.find_nodes_by_type(&NodeType::Sentence)
+                .iter()
+                .map(|s| s.id())
+                .collect();
+            for sentence_id in sentence_ids {
+                if let Some(sentence) = self.find_node_by_id(sentence_id) {
+                    let content = sentence.content().clone();
+                    self.extract_and_add_children(&content, sentence_id, BoundaryType::Words);
+                }
             }
         }
     }
@@ -457,7 +470,7 @@ impl DocumentHierarchy {
                     let node_id = self.next_id;
                     self.next_id += 1;
                     
-                    let node_type = NodeType::from(child_boundary_type);
+                    let node_type = NodeType::from(child_boundary_type.clone());
                     let node = HierarchyNode::new(
                         node_type,
                         child_unit.clone(),
@@ -867,10 +880,10 @@ mod tests {
         assert_eq!(hierarchy.count_nodes(), 5); // 1 doc + 2 para + 2 sent
         
         // Test finding nodes by type
-        let paragraphs = hierarchy.find_nodes_by_type(&NodeType::Paragraphs);
+        let paragraphs = hierarchy.find_nodes_by_type(&NodeType::Paragraph);
         assert_eq!(paragraphs.len(), 2);
         
-        let sentences = hierarchy.find_nodes_by_type(&NodeType::Sentences);
+        let sentences = hierarchy.find_nodes_by_type(&NodeType::Sentence);
         assert_eq!(sentences.len(), 2);
         
         // Test path to node

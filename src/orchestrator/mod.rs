@@ -159,9 +159,10 @@ impl Orchestrator {
         // Add the text as a unit
         let unit = TextUnit::new(
             text.to_string(),
-            TextUnitType::Paragraph,
             0,
             text.len(),
+            TextUnitType::Paragraph,
+            0,
         );
         
         let unit_id = self.add_text_unit(unit);

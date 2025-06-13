@@ -110,7 +110,7 @@ impl Motion {
     
     /// Get the type of this text unit
     pub fn unit_type(&self) -> TextUnitType {
-        self.unit_type
+        self.unit_type.clone()
     }
     
     /// Add a property to this motion
@@ -209,13 +209,13 @@ impl Motion {
         }
     }
     
-    /// Create a new Motion with the given content
+    /// Create a new Motion with the given content (alternative constructor)
     #[cfg(not(feature = "wasm"))]
-    pub fn new(content: impl Into<String>) -> Self {
+    pub fn from_content(content: impl Into<String>) -> Self {
         let content = content.into();
         Self {
             content,
-            unit_type: TextUnitType::Unknown,
+            unit_type: TextUnitType::Custom(0),
             confidence: 1.0,
             properties: HashMap::new(),
         }
