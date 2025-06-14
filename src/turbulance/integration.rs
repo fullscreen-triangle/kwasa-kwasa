@@ -11,14 +11,15 @@
 
 use std::collections::HashMap;
 use tokio::time::{timeout, Duration};
+use kwasa_kwasa::turbulance::debate_platform::{ChallengeAspect, PlatformConfig};
+use kwasa_kwasa::turbulance::probabilistic::ResolutionStrategy;
 use crate::turbulance::{
-    TextPoint, ResolutionResult, ResolutionStrategy,
+    TextPoint, ResolutionResult,
     PositionalAnalyzer, PositionalSentence,
     TextStream, StreamConfig, StreamState,
     PerturbationValidator, ValidationConfig, ValidationResult,
     DebatePlatform, DebatePlatformManager, Affirmation, Contention,
-    ChallengeAspect, EvidenceType, EvidenceSource, SourceType,
-    PlatformConfig
+
 };
 use crate::turbulance::interpreter::Value;
 use crate::turbulance::{Result, TurbulanceError};

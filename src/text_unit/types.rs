@@ -164,6 +164,12 @@ pub struct TextUnit {
 }
 
 impl TextUnit {
+    pub(crate) fn new(p0: String, p1: i32, p2: usize, p3: TextUnitType, p4: i32) -> _ {
+        todo!()
+    }
+}
+
+impl TextUnit {
     /// Get the ID of this text unit
     pub fn id(&self) -> TextUnitId {
         self.id

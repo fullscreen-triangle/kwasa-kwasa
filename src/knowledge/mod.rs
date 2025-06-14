@@ -128,7 +128,7 @@ impl KnowledgeDatabase {
     }
     
     /// Add a new entry to the knowledge database
-    pub fn add_entry(&self, entry: &mut KnowledgeEntry) -> Result<i64> {
+    pub fn add_entry(&mut self, entry: &mut KnowledgeEntry) -> Result<i64> {
         // Begin a transaction
         let tx = self.conn.transaction()?;
         
@@ -301,7 +301,7 @@ impl KnowledgeDatabase {
     }
     
     /// Delete an entry from the database
-    pub fn delete_entry(&self, id: i64) -> Result<()> {
+    pub fn delete_entry(&mut self, id: i64) -> Result<()> {
         // Begin a transaction
         let tx = self.conn.transaction()?;
         
@@ -326,7 +326,7 @@ impl KnowledgeDatabase {
     }
     
     /// Update an entry in the database
-    pub fn update_entry(&self, entry: &KnowledgeEntry) -> Result<()> {
+    pub fn update_entry(&mut self, entry: &KnowledgeEntry) -> Result<()> {
         // Begin a transaction
         let tx = self.conn.transaction()?;
         
@@ -405,7 +405,7 @@ pub mod tests {
         let dir = tempdir().unwrap();
         let db_path = dir.path().join("test_knowledge.db");
         
-        let db = KnowledgeDatabase::new(&db_path).unwrap();
+        let mut db = KnowledgeDatabase::new(&db_path).unwrap();
         
         // Add some test entries
         let mut entry1 = KnowledgeEntry::new(
@@ -437,7 +437,7 @@ pub mod tests {
     
     #[test]
     fn test_add_and_get_entry() {
-        let db = create_test_db();
+        let mut db = create_test_db();
         
         let mut entry = KnowledgeEntry::new(
             "Test content",
@@ -485,7 +485,7 @@ pub mod tests {
     
     #[test]
     fn test_update_entry() {
-        let db = create_test_db();
+        let mut db = create_test_db();
         
         // Add a new entry
         let mut entry = KnowledgeEntry::new(
@@ -516,7 +516,7 @@ pub mod tests {
     
     #[test]
     fn test_delete_entry() {
-        let db = create_test_db();
+        let mut db = create_test_db();
         
         // Add a new entry
         let mut entry = KnowledgeEntry::new(
@@ -728,11 +728,7 @@ impl KnowledgeProvider for DatabaseKnowledgeProvider {
                 match self.database.search_by_tag(topic) {
                     Ok(entries) => {
                         entries.into_iter().map(|entry| {
-                            KnowledgeResult {
-                                content: entry.content,
-                                source: entry.source,
-                                confidence: entry.confidence,
-                                citation: Some(Citation::new(
+                            KnowledgeResult { content: entry.content, source: entry.source, confidence: entry.confidence, citation: Some(Citation::new(
                                     "database",
                                     Some(&entry.source),
                                     Some(&format!("Retrieved from Kwasa-Kwasa knowledge base, ID: {}", entry.id)),
@@ -740,10 +736,8 @@ impl KnowledgeProvider for DatabaseKnowledgeProvider {
                                     None,
                                     Some(&chrono::Utc::now().to_rfc3339()),
                                     None,
-                                )),
-                                last_verified: chrono::DateTime::from_timestamp(entry.last_accessed, 0)
-                                    .unwrap_or_else(|| chrono::Utc::now()),
-                            }
+                                )), last_verified: chrono::DateTime::from_timestamp(entry.last_accessed, 0)
+                                    .unwrap_or_else(|| chrono::Utc::now()), }
                         }).collect()
                     },
                     Err(_) => Vec::new(),

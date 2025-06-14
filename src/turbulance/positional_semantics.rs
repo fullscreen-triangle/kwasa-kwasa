@@ -292,7 +292,7 @@ impl PositionalAnalyzer {
             self.position_weights.end_weights.get(end_index).unwrap_or(&0.5)
         } else {
             // Middle of sentence
-            self.position_weights.middle_weight
+            &self.position_weights.middle_weight
         };
         
         // Adjust based on part of speech
