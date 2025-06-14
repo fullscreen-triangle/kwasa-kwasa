@@ -13,7 +13,7 @@ pub mod config;
 
 // Re-export main components
 pub use metacognitive::MetacognitiveOrchestrator;
-pub use stream::StreamProcessor;
+pub use stream::{StreamProcessor, StreamPipeline};
 pub use types::StreamData;
 pub use examples::{create_default_orchestrator, create_custom_orchestrator};
 
@@ -22,7 +22,7 @@ pub use goal::{Goal, GoalType, GoalMetrics, SuccessCriterion, Strategy, GoalStat
 pub use intervention::{InterventionSystem, InterventionType, ActiveIntervention, InterventionOutcome};
 pub use context::{Context, ContextPattern, WritingPattern};
 pub use config::KwasaConfig as Config;
-pub use stream::{StreamError, ProcessingPipeline};
+pub use stream::{StreamPipeline as ProcessingPipeline};
 
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
@@ -59,7 +59,7 @@ pub struct Orchestrator {
     config: Config,
     
     /// Processing pipelines
-    pipelines: HashMap<String, ProcessingPipeline>,
+    pipelines: HashMap<String, StreamPipeline>,
 }
 
 impl Orchestrator {
@@ -234,12 +234,12 @@ impl Orchestrator {
     }
     
     /// Add a processing pipeline
-    pub fn add_pipeline(&mut self, name: String, pipeline: ProcessingPipeline) {
+    pub fn add_pipeline(&mut self, name: String, pipeline: StreamPipeline) {
         self.pipelines.insert(name, pipeline);
     }
     
     /// Get a processing pipeline
-    pub fn get_pipeline(&self, name: &str) -> Option<&ProcessingPipeline> {
+    pub fn get_pipeline(&self, name: &str) -> Option<&StreamPipeline> {
         self.pipelines.get(name)
     }
     
