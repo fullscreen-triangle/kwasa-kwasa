@@ -5,6 +5,17 @@
   <img src="horizontal_film.gif" alt="Logo">
 </p>
 
+  
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Rust](https://img.shields.io/badge/Rust-%23000000.svg?e&logo=rust&logoColor=white)](#)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![WebAssembly](https://img.shields.io/badge/WebAssembly-654FF0?logo=webassembly&logoColor=fff)](#)
+[![Visual Studio Code](https://custom-icon-badges.demolab.com/badge/Visual%20Studio%20Code-0078d7.svg?logo=vsc&logoColor=white)](#)
+
+ 
+</div>
+
 ## The Philosophy Behind Kwasa-Kwasa
 
 Kwasa-Kwasa takes its name from the vibrant musical style that emerged in the Democratic Republic of Congo in the 1980s. During a period when many African nations had recently gained independence, kwasa-kwasa represented a pure form of self-expression that transcended language barriers. Despite lyrics often being in Lingala, the music became immensely popular across Africa because it communicated something universal.
