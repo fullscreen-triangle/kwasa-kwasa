@@ -106,16 +106,12 @@ pub fn simplify_sentences(args: Vec<Value>) -> Result<Value> {
                 // Break at any punctuation or conjunction
                 let break_points = [",", ";", ":", " and ", " but ", " or ", " so ", " because "];
                 let mut parts = Vec::new();
-                let mut current = simplified.as_str();
+                let mut current = simplified.clone();
                 
                 for point in break_points.iter() {
                     if current.contains(point) {
                         let split_parts: Vec<&str> = current.split(point).collect();
-                        if parts.is_empty() {
-                            parts.push(split_parts[0].trim().to_string());
-                        } else {
-                            parts.push(split_parts[0].trim().to_string());
-                        }
+                        parts.push(split_parts[0].trim().to_string());
                         current = split_parts[1..].join(point);
                     }
                 }

@@ -625,19 +625,19 @@ fn calculate_sequence_significance(text: &str, sequence: &str) -> f64 {
 
 fn calculate_markov_transitions(text: &str, order: usize) -> HashMap<(String, String), f64> {
     let words: Vec<&str> = text.split_whitespace().collect();
-    let mut transitions = HashMap::new();
-    let mut from_counts = HashMap::new();
+    let mut transitions: HashMap<(String, String), i32> = HashMap::new();
+    let mut from_counts: HashMap<String, i32> = HashMap::new();
     
     if words.len() <= order {
-        return transitions;
+        return HashMap::new();
     }
     
     for i in 0..words.len() - order {
         let from_state = words[i..i + order].join(" ");
         let to_state = words[i + order].to_string();
         
-        *transitions.entry((from_state.clone(), to_state)).or_insert(0) += 1;
-        *from_counts.entry(from_state).or_insert(0) += 1;
+        *transitions.entry((from_state.clone(), to_state)).or_insert(0i32) += 1i32;
+        *from_counts.entry(from_state).or_insert(0i32) += 1i32;
     }
     
     // Convert counts to probabilities

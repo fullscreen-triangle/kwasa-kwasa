@@ -53,6 +53,30 @@ pub fn print(args: Vec<Value>) -> Result<Value> {
             },
             Value::Null => print!("null"),
             Value::Module(_) => print!("[Module]"),
+            Value::TextUnit(text_unit) => print!("[TextUnit: {}]", text_unit.content),
+            Value::List(list) => {
+                print!("[");
+                for (i, item) in list.iter().enumerate() {
+                    if i > 0 {
+                        print!(", ");
+                    }
+                    print(vec![item.clone()])?;
+                }
+                print!("]");
+            },
+            Value::Map(map) => {
+                print!("{{");
+                let mut first = true;
+                for (key, value) in map {
+                    if !first {
+                        print!(", ");
+                    }
+                    print!("{}: ", key);
+                    print(vec![value.clone()])?;
+                    first = false;
+                }
+                print!("}}");
+            },
         }
     }
     
@@ -104,6 +128,9 @@ pub fn typeof_fn(args: Vec<Value>) -> Result<Value> {
         Value::Object(_) => "object",
         Value::Null => "null",
         Value::Module(_) => "module",
+        Value::TextUnit(_) => "textunit",
+        Value::List(_) => "list",
+        Value::Map(_) => "map",
     };
     
     Ok(Value::String(type_name.to_string()))
@@ -111,17 +138,17 @@ pub fn typeof_fn(args: Vec<Value>) -> Result<Value> {
 
 /// Extends standard library with additional utility functions
 pub fn register_extended_utils() -> HashMap<&'static str, fn(Vec<Value>) -> Result<Value>> {
-    let mut utils = HashMap::new();
+    let mut utils: HashMap<&'static str, fn(Vec<Value>) -> Result<Value>> = HashMap::new();
     
-    // Register core utilities
-    utils.insert("print", print);
-    utils.insert("len", len);
-    utils.insert("typeof", typeof_fn);
+    // Register core utilities - cast function items to function pointers
+    utils.insert("print", print as fn(Vec<Value>) -> Result<Value>);
+    utils.insert("len", len as fn(Vec<Value>) -> Result<Value>);
+    utils.insert("typeof", typeof_fn as fn(Vec<Value>) -> Result<Value>);
     
     // Add additional utilities
-    utils.insert("json_stringify", json_stringify);
-    utils.insert("json_parse", json_parse);
-    utils.insert("time", time_fn);
+    utils.insert("json_stringify", json_stringify as fn(Vec<Value>) -> Result<Value>);
+    utils.insert("json_parse", json_parse as fn(Vec<Value>) -> Result<Value>);
+    utils.insert("time", time_fn as fn(Vec<Value>) -> Result<Value>);
     
     utils
 }
@@ -185,6 +212,45 @@ pub fn json_stringify(args: Vec<Value>) -> Result<Value> {
         },
         Value::Function(_) | Value::NativeFunction(_) => "null".to_string(),
         Value::Null => "null".to_string(),
+        Value::Module(_) => "null".to_string(),
+        Value::TextUnit(_) => "null".to_string(),
+        Value::List(list) => {
+            let mut json = String::from("[");
+            for (i, item) in list.iter().enumerate() {
+                if i > 0 {
+                    json.push_str(", ");
+                }
+                
+                match json_stringify(vec![item.clone()]) {
+                    Ok(Value::String(s)) => json.push_str(&s),
+                    _ => json.push_str("null"),
+                }
+            }
+            json.push_str("]");
+            json
+        },
+        Value::Map(map) => {
+            let mut json = String::from("{");
+            let mut first = true;
+            for (key, val) in map {
+                if !first {
+                    json.push_str(", ");
+                }
+                
+                // Key is always a string in JSON
+                json.push_str(&format!("\"{}\":", key));
+                
+                // Recursively stringify the value
+                match json_stringify(vec![val.clone()]) {
+                    Ok(Value::String(s)) => json.push_str(&s),
+                    _ => json.push_str("null"),
+                }
+                
+                first = false;
+            }
+            json.push_str("}");
+            json
+        },
     };
     
     Ok(Value::String(json_str))
