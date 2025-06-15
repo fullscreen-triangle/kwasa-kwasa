@@ -54,7 +54,7 @@ impl Completer for ReplHelper {
         line: &str,
         pos: usize,
         _ctx: &rustyline::Context<'_>,
-    ) -> Result<(usize, Vec<Pair>), ReadlineError> {
+    ) -> rustyline::Result<(usize, Vec<Pair>)> {
         // First try command completion if the line starts with ':'
         if line.starts_with(':') {
             let commands = vec![
@@ -250,7 +250,7 @@ impl Validator for ReplHelper {
     fn validate(
         &self,
         ctx: &mut ValidationContext,
-    ) -> Result<ValidationResult, ReadlineError> {
+    ) -> rustyline::Result<ValidationResult> {
         // Simple validation for unclosed brackets
         let input = ctx.input();
         
@@ -311,7 +311,7 @@ struct ReplSession {
 /// The REPL environment for interactive Turbulance usage
 pub struct Repl {
     /// The rustyline editor
-    editor: Editor<ReplHelper>,
+    editor: Editor<ReplHelper, rustyline::history::DefaultHistory>,
     /// The REPL history
     history: Vec<String>,
     /// The execution context (persisted between commands)
@@ -554,8 +554,8 @@ impl Repl {
                 
                 // Check if there were non-fatal errors
                 if self.context.error_reporter().has_errors() {
-                    println!("{} {} (non-fatal)", "Warning:".yellow().bold(), 
-                        self.context.error_reporter().report());
+                    println!("{} {} errors found (non-fatal)", "Warning:".yellow().bold(), 
+                        self.context.error_reporter().errors().len());
                 }
             }
             Err(err) => {
@@ -576,14 +576,13 @@ impl Repl {
         Ok(())
     }
     
-    /// Print an error with fancy formatting
-    fn print_error(&self, err: &Error) {
+    /// Print an error with fancy formatting  
+    fn print_error(&self, err: &turbulance::TurbulanceError) {
         let error_type = match err {
-            Error::Parse { .. } => "Syntax Error".red().bold(),
-            Error::Lexical { .. } => "Lexical Error".red().bold(),
-            Error::Syntax { .. } => "Syntax Error".red().bold(),
-            Error::Semantic(..) => "Semantic Error".red().bold(),
-            Error::Runtime(..) => "Runtime Error".red().bold(),
+            turbulance::TurbulanceError::LexicalError { .. } => "Lexical Error".red().bold(),
+            turbulance::TurbulanceError::SyntaxError { .. } => "Syntax Error".red().bold(),
+            turbulance::TurbulanceError::SemanticError { .. } => "Semantic Error".red().bold(),
+            turbulance::TurbulanceError::RuntimeError { .. } => "Runtime Error".red().bold(),
             _ => "Error".red().bold(),
         };
         
@@ -812,8 +811,8 @@ impl Repl {
         }
         println!();
         
-        // Create error reporter with source
-        let reporter = ErrorReporter::new().with_source(content.clone());
+        // Create error reporter with source  
+        let _reporter = crate::error::ErrorReporter::new();
         
         // Begin execution tracking
         self.context.begin_execution();

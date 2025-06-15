@@ -133,6 +133,12 @@ impl UnitId {
     }
 }
 
+impl std::fmt::Display for UnitId {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.0)
+    }
+}
+
 /// Universal trait for all units of analysis
 pub trait Unit: Clone + Debug {
     /// The raw content of this unit

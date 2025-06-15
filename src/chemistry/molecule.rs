@@ -3,7 +3,7 @@
 //! This module provides advanced molecular analysis functionality.
 
 use std::collections::{HashMap, HashSet};
-use super::{Molecule, Atom, Bond, BondType};
+use super::{Molecule, Atom, Bond, BondType, Unit};
 
 /// Molecular analyzer
 #[derive(Debug, Clone)]
@@ -237,7 +237,7 @@ impl MolecularAnalyzer {
 
     /// Analyze molecule
     pub fn analyze(&self, molecule: &Molecule) -> MolecularAnalysisResult {
-        let molecule_id = molecule.id().to_string();
+        let molecule_id = format!("{}", molecule.id());
         
         // Basic properties
         let basic_properties = self.analyze_basic_properties(molecule);

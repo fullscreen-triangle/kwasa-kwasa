@@ -2,7 +2,7 @@
 //!
 //! This module provides pairwise and multiple sequence alignment functionality.
 
-use super::NucleotideSequence;
+use super::{NucleotideSequence, Unit};
 
 /// Sequence alignment engine
 #[derive(Debug, Clone)]
@@ -110,8 +110,8 @@ impl AlignmentEngine {
     }
 
     /// Create with default parameters
-    pub fn default() -> Self {
-        Self::new(AlignmentParameters::default())
+    pub fn with_defaults() -> Self {
+        Self { parameters: AlignmentParameters::default() }
     }
 
     /// Perform pairwise alignment
