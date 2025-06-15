@@ -2,7 +2,7 @@
 //!
 //! This module provides quality assessment and filtering for genomic sequences.
 
-use super::NucleotideSequence;
+use super::{NucleotideSequence, Unit};
 use std::collections::HashMap;
 
 /// Quality control system
