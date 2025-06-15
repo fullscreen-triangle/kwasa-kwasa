@@ -405,7 +405,7 @@ pub mod tests {
         let dir = tempdir().unwrap();
         let db_path = dir.path().join("test_knowledge.db");
         
-        let mut db = KnowledgeDatabase::new(&db_path).unwrap();
+        let mut db = crate::knowledge::database::KnowledgeDatabase::new(db_path).unwrap();
         
         // Add some test entries
         let mut entry1 = KnowledgeEntry::new(

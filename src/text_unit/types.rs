@@ -164,8 +164,31 @@ pub struct TextUnit {
 }
 
 impl TextUnit {
-    pub(crate) fn new(p0: String, p1: i32, p2: usize, p3: TextUnitType, p4: i32) -> _ {
-        todo!()
+    /// Create a new text unit
+    pub fn new(
+        content: String,
+        start_pos: usize,
+        end_pos: usize,
+        unit_type: TextUnitType,
+        hierarchy_level: usize,
+    ) -> Self {
+        Self {
+            id: TextUnitId::new(),
+            content,
+            unit_type,
+            start_pos,
+            end_pos,
+            metadata: HashMap::new(),
+            children: Vec::new(),
+            parent: None,
+            boundaries: Vec::new(),
+            quality_score: None,
+            semantic_tags: Vec::new(),
+            created_at: std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .unwrap()
+                .as_secs(),
+        }
     }
 }
 

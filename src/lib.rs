@@ -52,7 +52,7 @@ pub use error::{Error, Result, ErrorReporter};
 // Import orchestrator types
 pub use orchestrator::{
     Goal, GoalType, GoalMetrics, SuccessCriterion, Strategy, GoalStatus,
-    Context, ContextPattern, WritingPattern,
+    Context,  WritingPattern,
     InterventionSystem, InterventionType, ActiveIntervention, InterventionOutcome,
     Config,
 };
@@ -117,7 +117,7 @@ pub enum SystemState {
 }
 
 /// Result type for system operations
-pub type KwasaResult<T> = Result<T, KwasaError>;
+pub type KwasaResult<T> = Result<T>;
 
 /// Error types for the system
 #[derive(Debug, thiserror::Error)]
@@ -334,7 +334,7 @@ impl KwasaSystem {
         }
         
         // Initialize components
-        let knowledge_db = Arc::new(Mutex::new(knowledge::KnowledgeDatabase::new()));
+        let knowledge_db = Arc::new(Mutex::new(knowledge::KnowledgeDatabase::new(&())));
         let default_goal = Goal::new("Default Goal", 0.5);
         let orchestrator = Arc::new(Mutex::new(Orchestrator::new(default_goal, knowledge_db.clone())));
         let text_registry = Arc::new(Mutex::new(TextUnitRegistry::new()));
@@ -528,8 +528,8 @@ impl KwasaSystem {
     pub async fn search_knowledge(&self, query: &str) -> KwasaResult<Vec<knowledge::SearchResult>> {
         let knowledge_db = self.knowledge_db.lock().await;
         
-        let results = knowledge_db.search(query, 10)
-            .map_err(|e| KwasaError::Knowledge(e))?;
+        let results = knowledge_db.search(query)
+            .map_err(|e| KwasaError::Knowledge(e.to_string()))?;
         
         Ok(results)
     }

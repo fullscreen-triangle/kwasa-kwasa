@@ -20,7 +20,7 @@ pub use examples::{create_default_orchestrator, create_custom_orchestrator};
 // Re-export main types for easy access
 pub use goal::{Goal, GoalType, GoalMetrics, SuccessCriterion, Strategy, GoalStatus};
 pub use intervention::{InterventionSystem, InterventionType, ActiveIntervention, InterventionOutcome};
-pub use context::{Context, ContextPattern, WritingPattern};
+pub use context::{Context, WritingPattern};
 pub use config::KwasaConfig as Config;
 pub use stream::{StreamPipeline as ProcessingPipeline};
 
@@ -44,7 +44,7 @@ pub struct Orchestrator {
     units: Arc<Mutex<TextUnitRegistry>>,
     
     /// Connection to the knowledge database
-    knowledge_db: Arc<Mutex<KnowledgeDatabase>>,
+    knowledge_db: Arc<Mutex<Result<KnowledgeDatabase>>>,
     
     /// Available interventions
     interventions: Vec<Box<dyn Intervention>>,
@@ -64,7 +64,7 @@ pub struct Orchestrator {
 
 impl Orchestrator {
     /// Create a new orchestrator
-    pub fn new(goal: Goal, knowledge_db: Arc<Mutex<KnowledgeDatabase>>) -> Self {
+    pub fn new(goal: Goal, knowledge_db: Arc<Mutex<Result<KnowledgeDatabase>>>) -> Self {
         let context = Arc::new(Mutex::new(Context::new()));
         let units = Arc::new(Mutex::new(TextUnitRegistry::new()));
         
@@ -205,9 +205,12 @@ impl Orchestrator {
         self.context.lock().unwrap().add_research_term(topic);
         
         // Query knowledge DB
-        let db = self.knowledge_db.lock().unwrap();
-        match db.search(topic) {
-            Ok(results) => results,
+        let db_result = self.knowledge_db.lock().unwrap();
+        match db_result.as_ref() {
+            Ok(db) => match db.search(topic) {
+                Ok(results) => results,
+                Err(_) => Vec::new(),
+            },
             Err(_) => Vec::new(),
         }
     }
@@ -251,7 +254,9 @@ impl Orchestrator {
 
 impl Default for Orchestrator {
     fn default() -> Self {
-        Self::new(Goal::new("Default Goal", 0.5), Arc::new(Mutex::new(KnowledgeDatabase::new())))
+        let temp_path = std::env::temp_dir().join("kwasa_default.db");
+        let db_result = crate::knowledge::database::KnowledgeDatabase::new(temp_path);
+        Self::new(Goal::new("Default Goal", 0.5), Arc::new(Mutex::new(db_result)))
     }
 }
 
@@ -289,7 +294,7 @@ mod tests {
     
     #[test]
     fn test_orchestrator_basic() {
-        let db = Arc::new(Mutex::new(create_test_db()));
+        let db = Arc::new(Mutex::new(Ok(create_test_db())));
         let goal = Goal::new("Write about machine learning", 0.5);
         
         let orchestrator = Orchestrator::new(goal, db);
@@ -315,7 +320,7 @@ mod tests {
     
     #[test]
     fn test_orchestrator_variables() {
-        let db = Arc::new(Mutex::new(create_test_db()));
+        let db = Arc::new(Mutex::new(Ok(create_test_db())));
         let goal = Goal::new("Test variables", 0.5);
         
         let mut orchestrator = Orchestrator::new(goal, db);
