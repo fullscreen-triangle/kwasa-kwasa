@@ -529,10 +529,9 @@ impl Repl {
             _ => {
                 println!("{} Unknown command: {}", "Error:".red(), command);
                 println!("Type {} for a list of commands", ":help".cyan());
+                Ok(true)
             }
         }
-
-        Ok(true)
     }
 
     /// Execute Turbulance code

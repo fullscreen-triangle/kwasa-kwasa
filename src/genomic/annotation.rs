@@ -3,7 +3,7 @@
 //! This module provides genomic annotation functionality.
 
 use std::collections::HashMap;
-use super::NucleotideSequence;
+use super::{NucleotideSequence, Unit};
 
 /// Annotation database
 #[derive(Debug, Clone)]
