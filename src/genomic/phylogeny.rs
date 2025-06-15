@@ -3,7 +3,7 @@
 //! This module provides phylogenetic tree construction and analysis.
 
 use std::collections::HashMap;
-use super::NucleotideSequence;
+use super::{NucleotideSequence, Unit};
 
 /// Phylogenetic analyzer
 #[derive(Debug, Clone)]

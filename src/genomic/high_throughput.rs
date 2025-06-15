@@ -26,7 +26,7 @@ impl HighThroughputGenomics {
         let chunk_size = 10000; // Base pairs per chunk
         let overlap = 100;     // Overlap between chunks to avoid missing motifs at boundaries
         
-        let content = &sequence.content;
+        let content = sequence.content();
         let sequence_len = content.len();
         
         // Skip the parallel approach for short sequences
@@ -58,7 +58,7 @@ impl HighThroughputGenomics {
                 let mut chunk_hits = Vec::new();
                 
                 for motif in motifs {
-                    let motif_content = &motif.content;
+                    let motif_content = motif.content();
                     let motif_len = motif_content.len();
                     
                     // Simple sliding window for motif matching
@@ -114,11 +114,11 @@ impl HighThroughputGenomics {
                              sequence: &NucleotideSequence, 
                              motifs: &[MotifUnit], 
                              min_score: f64) -> Vec<(MotifUnit, Vec<usize>)> {
-        let content = &sequence.content;
+        let content = sequence.content();
         let mut results = HashMap::new();
         
         for motif in motifs {
-            let motif_content = &motif.content;
+            let motif_content = motif.content();
             let motif_len = motif_content.len();
             let mut positions = Vec::new();
             
@@ -165,18 +165,18 @@ impl HighThroughputGenomics {
         }
         
         if sequences.len() == 1 {
-            return vec![sequences[0].content; sequences[0].content.len()];
+            return vec![sequences[0].content().to_vec()];
         }
         
         // For simplicity, use the longest sequence as the reference
         let reference_idx = sequences.iter()
             .enumerate()
-            .max_by_key(|(_, seq)| seq.content.len())
+            .max_by_key(|(_, seq)| seq.content().len())
             .map(|(idx, _)| idx)
             .unwrap_or(0);
         
         let reference = &sequences[reference_idx];
-        let reference_content = reference.content;
+        let reference_content = reference.content();
         
         // Align each sequence to the reference in parallel
         let aligned_sequences: Vec<Vec<u8>> = sequences.par_iter()
@@ -188,7 +188,7 @@ impl HighThroughputGenomics {
                 }
                 
                 // Simple pairwise alignment (real implementation would use Needleman-Wunsch or similar)
-                self.align_to_reference(&seq.content, &reference_content, gap_penalty)
+                self.align_to_reference(seq.content(), reference_content, gap_penalty)
             })
             .collect();
         
@@ -219,7 +219,7 @@ impl HighThroughputGenomics {
     
     /// Fast k-mer counting with multithreaded processing
     pub fn count_kmers_parallel(&self, sequence: &NucleotideSequence, k: usize) -> HashMap<Vec<u8>, usize> {
-        let content = &sequence.content;
+        let content = sequence.content();
         
         // Skip parallel processing for short sequences
         if content.len() < 10000 || k > 12 {
@@ -280,8 +280,8 @@ impl HighThroughputGenomics {
     pub fn detect_snps_parallel(&self, 
                                sequence: &NucleotideSequence, 
                                reference: &NucleotideSequence) -> Vec<(usize, u8, u8)> {
-        let seq_content = &sequence.content;
-        let ref_content = &reference.content;
+        let seq_content = sequence.content();
+        let ref_content = reference.content();
         
         // Skip parallel processing for short sequences
         if seq_content.len() < 10000 || ref_content.len() < 10000 {
@@ -367,7 +367,7 @@ impl SequenceCompressor {
     /// Compress a nucleotide sequence using 2-bit encoding
     /// A: 00, C: 01, G: 10, T/U: 11
     pub fn compress(&self, sequence: &NucleotideSequence) -> CompressedSequence {
-        let content = sequence.content;
+        let content = sequence.content();
         let len = content.len();
         
         // Calculate required bytes: 2 bits per nucleotide, 4 nucleotides per byte
@@ -393,7 +393,7 @@ impl SequenceCompressor {
         CompressedSequence { 
             data: compressed, 
             length: len, 
-            id: UnitId::new(format!("compressed_{}", sequence.id)),
+            id: UnitId::new(format!("compressed_{}", sequence.id().0)),
         }
     }
     

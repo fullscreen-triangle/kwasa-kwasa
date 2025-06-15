@@ -25,6 +25,13 @@ pub struct MultipleAligner {
     parameters: AlignmentParameters,
 }
 
+impl MultipleAligner {
+    /// Create a new multiple aligner
+    pub fn new(parameters: AlignmentParameters) -> Self {
+        Self { parameters }
+    }
+}
+
 /// Alignment parameters
 #[derive(Debug, Clone)]
 pub struct AlignmentParameters {
