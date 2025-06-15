@@ -529,10 +529,10 @@ impl EvidenceNetwork {
                         EdgeType::PreconditionFor { necessity } => {
                             // PreconditionFor relationship affects belief
                             // If the precondition is met, the condition is more likely
-                            if necessity <= current_belief {
+                            if necessity <= &current_belief {
                                 current_belief
                             } else {
-                                necessity
+                                *necessity
                             }
                         },
                     };

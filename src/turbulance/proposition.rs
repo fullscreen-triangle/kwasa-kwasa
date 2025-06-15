@@ -129,7 +129,7 @@ impl Motion {
             self.content.clone(),
             0,
             self.content.len(),
-            self.unit_type,
+            self.unit_type.clone(),
             id,
         )
     }
@@ -215,7 +215,7 @@ impl Motion {
         let content = content.into();
         Self {
             content,
-            unit_type: TextUnitType::Custom(0),
+            unit_type: TextUnitType::Custom("motion".to_string()),
             confidence: 1.0,
             properties: HashMap::new(),
         }

@@ -8,7 +8,7 @@ use crate::turbulance::interpreter::Value;
 use crate::turbulance::{Result, TurbulanceError};
 
 /// A Point represents text with inherent uncertainty and multiple interpretations
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct TextPoint {
     /// The primary textual content
     pub content: String,
