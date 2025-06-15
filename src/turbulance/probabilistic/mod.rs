@@ -30,7 +30,7 @@ pub struct TextPoint {
 }
 
 /// Different ways this text could be interpreted
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct TextInterpretation {
     /// The interpreted meaning
     pub meaning: String,
@@ -49,7 +49,7 @@ pub struct TextInterpretation {
 }
 
 /// Linguistic features that influence interpretation
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub enum LinguisticFeature {
     Ambiguity { words: Vec<String>, interpretations: Vec<String> },
     Metaphor { literal: String, figurative: String },
@@ -59,7 +59,7 @@ pub enum LinguisticFeature {
 }
 
 /// Result of a resolution function - handles uncertainty in results
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub enum ResolutionResult {
     /// Certain result with high confidence
     Certain(Value),
@@ -87,7 +87,7 @@ pub enum ResolutionResult {
 }
 
 /// Strategy for resolving uncertainty in results
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub enum ResolutionStrategy {
     /// Return the most probable interpretation
     MaximumLikelihood,
@@ -124,7 +124,7 @@ pub trait ResolutionFunction {
 }
 
 /// Context for resolution operations
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct ResolutionContext {
     /// Domain context (e.g., "scientific", "informal", "legal")
     pub domain: Option<String>,
