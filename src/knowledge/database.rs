@@ -415,7 +415,7 @@ impl KnowledgeDatabase {
     }
     
     /// Add a knowledge entry (compatible with main module interface)
-    pub fn add_entry_compat(&self, entry: &mut super::KnowledgeEntry) -> SqliteResult<i64> {
+    pub fn add_entry_compat(&mut self, entry: &mut super::KnowledgeEntry) -> SqliteResult<i64> {
         let now = Utc::now().to_rfc3339();
         let domain_str = "General"; // Default domain
         

@@ -7,6 +7,7 @@ use std::rc::Rc;
 use std::cell::RefCell;
 use std::fmt;
 use crate::turbulance::context::{Context, Value as ContextValue};
+use serde;
 
 // Define Result type for Turbulance operations
 type Result<T> = std::result::Result<T, TurbulanceError>;
@@ -41,15 +42,18 @@ impl std::fmt::Debug for NativeFunction {
 }
 
 /// Value types in the Turbulance language
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub enum Value {
     Number(f64),
     String(String),
     Boolean(bool),
+    #[serde(skip)]
     Function(Function),
+    #[serde(skip)]
     NativeFunction(NativeFunction),
     Array(Vec<Value>),
     Object(std::collections::HashMap<String, Value>),
+    #[serde(skip)]
     Module(ObjectRef),
     TextUnit(TextUnit),
     List(Vec<Value>),

@@ -1809,7 +1809,16 @@ impl Default for ChemicalConfig {
         }
     }
 }
-/// can't find type in this scope
+
+/// Chemical processor for performing various chemical analyses
+pub struct ChemicalProcessor {
+    /// Molecular analyzer
+    molecular_analyzer: MolecularAnalyzer,
+    
+    /// Configuration
+    config: ChemicalConfig,
+}
+
 impl ChemicalProcessor {
     /// Create a new chemical processor
     pub fn new(config: ChemicalConfig) -> Self {
