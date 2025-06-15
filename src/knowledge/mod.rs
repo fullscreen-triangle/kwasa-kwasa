@@ -405,7 +405,7 @@ pub mod tests {
         let dir = tempdir().unwrap();
         let db_path = dir.path().join("test_knowledge.db");
         
-        let mut db = crate::knowledge::database::KnowledgeDatabase::new(db_path).unwrap();
+        let mut db = KnowledgeDatabase::new(&db_path).unwrap();
         
         // Add some test entries
         let mut entry1 = KnowledgeEntry::new(
@@ -563,6 +563,7 @@ pub mod tests {
 pub mod citation;
 pub mod research;
 pub mod verification;
+pub mod database;
 
 /// Represents the result of a knowledge query
 #[derive(Debug, Clone)]
@@ -728,16 +729,28 @@ impl KnowledgeProvider for DatabaseKnowledgeProvider {
                 match self.database.search_by_tag(topic) {
                     Ok(entries) => {
                         entries.into_iter().map(|entry| {
-                            KnowledgeResult { content: entry.content, source: entry.source, confidence: entry.confidence, citation: Some(Citation::new(
+                            let content = entry.content.clone();
+                            let source = entry.source.clone();
+                            let confidence = entry.confidence;
+                            let id = entry.id;
+                            let last_accessed = entry.last_accessed;
+                            
+                            KnowledgeResult { 
+                                content, 
+                                source: source.clone(), 
+                                confidence, 
+                                citation: Some(Citation::new(
                                     "database",
-                                    Some(&entry.source),
-                                    Some(&format!("Retrieved from Kwasa-Kwasa knowledge base, ID: {}", entry.id)),
+                                    Some(&source),
+                                    Some(&format!("Retrieved from Kwasa-Kwasa knowledge base, ID: {}", id)),
                                     Some("Kwasa-Kwasa Knowledge Database"),
                                     None,
                                     Some(&chrono::Utc::now().to_rfc3339()),
                                     None,
-                                )), last_verified: chrono::DateTime::from_timestamp(entry.last_accessed, 0)
-                                    .unwrap_or_else(|| chrono::Utc::now()), }
+                                )), 
+                                last_verified: chrono::DateTime::from_timestamp(last_accessed, 0)
+                                    .unwrap_or_else(|| chrono::Utc::now()), 
+                            }
                         }).collect()
                     },
                     Err(_) => Vec::new(),
