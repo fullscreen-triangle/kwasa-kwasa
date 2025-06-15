@@ -15,7 +15,30 @@ type Result<T> = std::result::Result<T, TurbulanceError>;
 type Statement = Node;
 
 /// Native function type that can be called from Turbulance
-pub type NativeFunction = Rc<dyn Fn(Vec<Value>) -> Result<Value> + Send + Sync>;
+#[derive(Clone)]
+pub struct NativeFunction {
+    func: Rc<dyn Fn(Vec<Value>) -> Result<Value> + Send + Sync>,
+    name: String,
+}
+
+impl NativeFunction {
+    pub fn new(name: &str, func: Rc<dyn Fn(Vec<Value>) -> Result<Value> + Send + Sync>) -> Self {
+        Self {
+            func,
+            name: name.to_string(),
+        }
+    }
+    
+    pub fn call(&self, args: Vec<Value>) -> Result<Value> {
+        (self.func)(args)
+    }
+}
+
+impl std::fmt::Debug for NativeFunction {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "NativeFunction({})", self.name)
+    }
+}
 
 /// Value types in the Turbulance language
 #[derive(Clone, Debug)]
@@ -216,9 +239,6 @@ pub struct Interpreter {
     /// Stack of local scopes for nested execution contexts
     scopes: Vec<HashMap<String, Value>>,
     
-    /// Standard library functions
-    stdlib: StdLib,
-    
     environment: Rc<RefCell<Environment>>,
     global_environment: Rc<RefCell<Environment>>,
     stdlib_loaded: bool,
@@ -231,7 +251,6 @@ impl Interpreter {
         Self {
             globals: HashMap::new(),
             scopes: vec![HashMap::new()], // Start with one scope (global)
-            stdlib: StdLib::new(),
             environment: Rc::clone(&global_env),
             global_environment: global_env,
             stdlib_loaded: false,
@@ -490,7 +509,7 @@ impl Interpreter {
             
             Value::NativeFunction(f) => {
                 // Call native function directly
-                f(evaluated_args)
+                f.call(evaluated_args)
             },
             
             Value::String(name) => {
@@ -523,7 +542,7 @@ impl Interpreter {
                         },
                         Value::NativeFunction(native_func) => {
                             // Call the native function
-                            native_func(evaluated_args)
+                            native_func.call(evaluated_args)
                         },
                         _ => Err(TurbulanceError::RuntimeError {
                             message: format!("'{}' is not a function", name)
@@ -1429,7 +1448,7 @@ impl Interpreter {
             },
             Value::NativeFunction(f) => {
                 // Call native function with left as argument
-                f(vec![left])
+                f.call(vec![left])
             },
             Value::String(function_name) => {
                 // Try to call a built-in text operation by name
@@ -1553,7 +1572,7 @@ impl Interpreter {
                 for arg in arguments {
                     args.push(arg.clone());
                 }
-                return f(args);
+                return f.call(args);
             },
             _ => return Err(TurbulanceError::RuntimeError { 
                 message: format!("'{}' is not a function.", callee) 
@@ -1614,10 +1633,7 @@ impl Interpreter {
         }
     }
     
-    // Get access to the standard library
-    fn get_stdlib(&self) -> Option<&StdLib> {
-        Some(&self.stdlib)
-    }
+    // Removed get_stdlib method - no longer needed
     
     /// Convert interpreter Value to AST Value
     fn interpreter_value_to_ast_value(&self, value: Value) -> Result<crate::turbulance::ast::Value> {
