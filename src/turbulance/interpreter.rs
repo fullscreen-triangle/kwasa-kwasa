@@ -42,18 +42,18 @@ impl std::fmt::Debug for NativeFunction {
 }
 
 /// Value types in the Turbulance language
-#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug)]
 pub enum Value {
     Number(f64),
     String(String),
     Boolean(bool),
-    #[serde(skip)]
+    #[allow(dead_code)]
     Function(Function),
-    #[serde(skip)]
+    #[allow(dead_code)]
     NativeFunction(NativeFunction),
     Array(Vec<Value>),
     Object(std::collections::HashMap<String, Value>),
-    #[serde(skip)]
+    #[allow(dead_code)]
     Module(ObjectRef),
     TextUnit(TextUnit),
     List(Vec<Value>),
@@ -500,15 +500,11 @@ impl Interpreter {
                 }
                 
                 // Execute the function body with the new environment
-                let previous_env = self.environment.clone();
+                let old_env = self.environment.clone();
                 self.environment = Rc::new(RefCell::new(env));
-                
-                let result = self.evaluate(&func.body)?;
-                
-                // Restore the previous environment
-                self.environment = previous_env;
-                
-                Ok(result)
+                let result = self.evaluate(&func.body);
+                self.environment = old_env;
+                result
             },
             
             Value::NativeFunction(f) => {
@@ -541,7 +537,6 @@ impl Interpreter {
                             self.environment = Rc::new(RefCell::new(new_env));
                             let result = self.evaluate(&func.body);
                             self.environment = old_env;
-                            
                             result
                         },
                         Value::NativeFunction(native_func) => {
@@ -624,7 +619,8 @@ impl Interpreter {
                 self.define_variable(name.clone(), value.clone());
                 Ok(value)
             },
-            // unresolved reference below 
+            // TODO: Implement MemberAccess and IndexAccess variants in AST
+            /*
             Node::MemberAccess { object, property, span } => {
                 // Object property assignment (e.g., obj.prop = value)
                 let mut object_value = self.evaluate(object)?;
@@ -648,7 +644,6 @@ impl Interpreter {
                     })
                 }
             },
-            // unresolved reference, need to create enum variant
             Node::IndexAccess { object, index, span } => {
                 // Array/list index assignment (e.g., arr[0] = value)
                 let mut object_value = self.evaluate(object)?;
@@ -678,6 +673,7 @@ impl Interpreter {
                     })
                 }
             },
+            */
             
             _ => Err(TurbulanceError::RuntimeError {
                 message: format!("Invalid assignment target: {:?}", target)

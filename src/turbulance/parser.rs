@@ -747,7 +747,10 @@ impl Parser {
                 // For now, we'll treat property access as a special kind of function call
                 expr = Node::FunctionCall {
                     function: Box::new(Node::Identifier("property_access".to_string(), span.clone())),
-                    arguments: vec![expr, Node::StringLiteral(name.lexeme, name_span)],
+                    arguments: vec![expr, Node::StringLiteral(name.lexeme, Span::new(
+                        Position::new(0, 0, name_span.start),
+                        Position::new(0, 0, name_span.end),
+                    ))],
                     span,
                 };
             } else {
@@ -1142,7 +1145,7 @@ impl Parser {
     }
 
     /// Parse a "considering all X" statement
-    fn considering_all_statement(&mut self, start_span: crate::turbulance::lexer::Span) -> Result<Node, TurbulanceError> {
+    fn considering_all_statement(&mut self, start_span: logos::Span) -> Result<Node, TurbulanceError> {
         let variable = self.consume(TokenKind::Identifier, "Expected variable name after 'all'")?
             .lexeme.clone();
         
@@ -1174,7 +1177,7 @@ impl Parser {
     }
 
     /// Parse a "considering these X" statement
-    fn considering_these_statement(&mut self, start_span: crate::turbulance::lexer::Span) -> Result<Node, TurbulanceError> {
+    fn considering_these_statement(&mut self, start_span: logos::Span) -> Result<Node, TurbulanceError> {
         let variable = self.consume(TokenKind::Identifier, "Expected variable name after 'these'")?
             .lexeme.clone();
         
@@ -1206,7 +1209,7 @@ impl Parser {
     }
 
     /// Parse a "considering item X" statement
-    fn considering_item_statement(&mut self, start_span: crate::turbulance::lexer::Span) -> Result<Node, TurbulanceError> {
+    fn considering_item_statement(&mut self, start_span: logos::Span) -> Result<Node, TurbulanceError> {
         let variable = self.consume(TokenKind::Identifier, "Expected variable name after 'item'")?
             .lexeme.clone();
         

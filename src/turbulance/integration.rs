@@ -11,8 +11,8 @@
 
 use std::collections::HashMap;
 use tokio::time::{timeout, Duration};
-use kwasa_kwasa::turbulance::debate_platform::{ChallengeAspect, PlatformConfig};
-use kwasa_kwasa::turbulance::probabilistic::ResolutionStrategy;
+use crate::turbulance::debate_platform::{ChallengeAspect, PlatformConfig};
+use crate::turbulance::probabilistic::ResolutionStrategy;
 use crate::turbulance::{
     TextPoint, ResolutionResult,
     PositionalAnalyzer, PositionalSentence,
@@ -213,9 +213,12 @@ impl KwasaKwasaPipeline {
         let start_time = std::time::Instant::now();
         let mut warnings = Vec::new();
         
+        // Get processing timeout before borrowing self mutably
+        let max_processing_time = self.config.max_processing_time;
+        
         // Set processing timeout
         let processing_future = self.process_text_internal(text, &mut warnings);
-        let result = timeout(Duration::from_secs(self.config.max_processing_time), processing_future).await;
+        let result = timeout(Duration::from_secs(max_processing_time), processing_future).await;
         
         let processing_result = match result {
             Ok(Ok(result)) => result,

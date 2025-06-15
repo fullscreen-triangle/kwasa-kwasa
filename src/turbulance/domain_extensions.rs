@@ -11,7 +11,7 @@ use std::collections::HashMap;
 use std::sync::Arc;
 
 /// Register all domain extensions with the interpreter
-pub fn register_domain_extensions(interpreter: &mut Interpreter) -> Result<(), TurbulanceError> {
+pub fn register_domain_extensions(interpreter: &mut Interpreter) -> std::result::Result<(), TurbulanceError> {
     register_genomic_extensions(interpreter)?;
     register_spectrometry_extensions(interpreter)?;
     register_chemistry_extensions(interpreter)?;
@@ -20,7 +20,7 @@ pub fn register_domain_extensions(interpreter: &mut Interpreter) -> Result<(), T
 }
 
 /// Register genomic extensions with the interpreter
-fn register_genomic_extensions(interpreter: &mut Interpreter) -> Result<(), TurbulanceError> {
+fn register_genomic_extensions(interpreter: &mut Interpreter) -> std::result::Result<(), TurbulanceError> {
     let genomic_module = create_module("genomic");
     
     // Register placeholder genomic constructors
@@ -34,21 +34,21 @@ fn register_genomic_extensions(interpreter: &mut Interpreter) -> Result<(), Turb
 }
 
 /// Register spectrometry extensions with the interpreter
-fn register_spectrometry_extensions(interpreter: &mut Interpreter) -> Result<(), TurbulanceError> {
+fn register_spectrometry_extensions(interpreter: &mut Interpreter) -> std::result::Result<(), TurbulanceError> {
     let spectrometry_module = create_module("spectrometry");
     interpreter.set_global("spectrometry", Value::Module(spectrometry_module));
     Ok(())
 }
 
 /// Register chemistry extensions with the interpreter
-fn register_chemistry_extensions(interpreter: &mut Interpreter) -> Result<(), TurbulanceError> {
+fn register_chemistry_extensions(interpreter: &mut Interpreter) -> std::result::Result<(), TurbulanceError> {
     let chemistry_module = create_module("chemistry");
     interpreter.set_global("chemistry", Value::Module(chemistry_module));
     Ok(())
 }
 
 /// Register pattern extensions with the interpreter
-fn register_pattern_extensions(interpreter: &mut Interpreter) -> Result<(), TurbulanceError> {
+fn register_pattern_extensions(interpreter: &mut Interpreter) -> std::result::Result<(), TurbulanceError> {
     let pattern_module = create_module("pattern");
     interpreter.set_global("pattern", Value::Module(pattern_module));
     Ok(())
