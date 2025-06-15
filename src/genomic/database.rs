@@ -3,7 +3,7 @@
 //! This module provides storage and retrieval functionality for genomic data.
 
 use std::collections::HashMap;
-use super::NucleotideSequence;
+use super::{NucleotideSequence, Unit};
 
 /// Genomic database
 #[derive(Debug, Clone)]

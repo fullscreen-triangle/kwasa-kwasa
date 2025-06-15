@@ -40,7 +40,13 @@ impl std::hash::Hash for GenomicMetadata {
         self.source.hash(state);
         self.strand.hash(state);
         self.position.hash(state);
-        self.annotations.hash(state);
+        // HashMap doesn't implement Hash, so we hash the sorted key-value pairs
+        let mut sorted_annotations: Vec<_> = self.annotations.iter().collect();
+        sorted_annotations.sort_by_key(|(k, _)| *k);
+        for (k, v) in sorted_annotations {
+            k.hash(state);
+            v.hash(state);
+        }
     }
 }
 
@@ -654,8 +660,7 @@ pub use analysis::{GenomicAnalyzer, AnalysisConfig};
 pub use variants::{VariantCaller, VariantConfig};
 pub use phylogeny::{PhylogeneticAnalyzer, PhylogeneticConfig};
 pub use alignment::{AlignmentEngine, PairwiseAligner, MultipleAligner};
-// unresolved import for Gene
-pub use annotation::{AnnotationConfig, Gene};
+pub use annotation::{AnnotationConfig};
 pub use quality::{QualityControl};
 pub use database::{GenomicDatabase, DatabaseConfig};
 
@@ -1518,8 +1523,8 @@ impl GenomicProcessor {
             sequence_analyzer: SequenceAnalyzer::new(SequenceConfig::default()),
             variant_caller: VariantCaller::new(VariantConfig::default()),
             phylogenetic_analyzer: PhylogeneticAnalyzer::new(PhylogeneticConfig::default()),
-            alignment_engine: AlignmentEngine::new(),
-            annotation_db: AnnotationDatabase::new(),
+            alignment_engine: alignment::AlignmentEngine::with_defaults(),
+            annotation_db: AnnotationDatabase::new(annotation::AnnotationConfig::default()),
             quality_control: QualityControl::default(),
             config,
         }
@@ -1564,10 +1569,10 @@ impl GenomicProcessor {
 #[derive(Debug, Clone)]
 pub enum GenomicInput {
     /// Single sequence
-    Sequence(Sequence),
+    Sequence(NucleotideSequence),
     
     /// Multiple sequences
-    Sequences(Vec<Sequence>),
+    Sequences(Vec<NucleotideSequence>),
     
     /// FASTA file path
     FastaFile(String),
@@ -1582,19 +1587,4 @@ pub enum GenomicInput {
     AlignmentFile(String),
 }
 
-impl AlignmentEngine {
-    fn new() -> Self {
-        Self {
-            pairwise_aligner: PairwiseAligner::new(Default::default()),
-            // no function associated with new structure below
-            multiple_aligner: MultipleAligner::new(),
-            parameters: AlignmentParameters {
-                match_score: 2,
-                mismatch_penalty: -1,
-                gap_open_penalty: -2,
-                gap_extend_penalty: -1,
-                algorithm: AlignmentAlgorithm::NeedlemanWunsch,
-            },
-        }
-    }
-} 
+ 
