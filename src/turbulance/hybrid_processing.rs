@@ -13,7 +13,7 @@ use crate::turbulance::debate_platform::{DebatePlatform, DebatePlatformManager};
 use crate::turbulance::streaming::{TextStream, StreamConfig};
 
 /// A probabilistic floor - an iterable collection of points with uncertainty
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug)]
 pub struct ProbabilisticFloor {
     /// Points with their probability weights
     pub points: HashMap<String, (TextPoint, f64)>,
@@ -167,7 +167,7 @@ pub struct HybridConfig {
 }
 
 /// Result of hybrid processing operations
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug)]
 pub struct HybridResult {
     /// Operation type performed
     pub operation: String,
@@ -522,7 +522,7 @@ impl HybridProcessor {
                         settled: true,
                         metadata: {
                             let mut meta = HashMap::new();
-                            meta.insert("skipped_probabilistic".to_string(), Value::Bool(true));
+                            meta.insert("skipped_probabilistic".to_string(), Value::Boolean(true));
                             meta
                         },
                     });
@@ -565,11 +565,11 @@ impl HybridProcessor {
     }
     
     /// Get processing statistics
-    pub fn get_stats(&self) -> &FloorStats {
+    pub fn get_stats(&self) -> FloorStats {
         if let Some(floor) = &self.context.floor {
-            &floor.metadata.stats
+            floor.metadata.stats.clone()
         } else {
-            &FloorStats::default()
+            FloorStats::default()
         }
     }
 }

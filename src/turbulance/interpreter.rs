@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use crate::turbulance::ast::{Node, BinaryOp, UnaryOp, TextOp};
 use crate::turbulance::TurbulanceError;
 use crate::turbulance::ast::TextUnit;
-use crate::turbulance::stdlib::StdLib;
+// use crate::turbulance::stdlib::StdLib;
 use std::rc::Rc;
 use std::cell::RefCell;
 use std::fmt;
@@ -15,7 +15,7 @@ type Result<T> = std::result::Result<T, TurbulanceError>;
 type Statement = Node;
 
 /// Native function type that can be called from Turbulance
-pub type NativeFunction = Box<dyn Fn(Vec<Value>) -> Result<Value> + Send + Sync>;
+pub type NativeFunction = Rc<dyn Fn(Vec<Value>) -> Result<Value> + Send + Sync>;
 
 /// Value types in the Turbulance language
 #[derive(Clone, Debug)]
@@ -50,7 +50,7 @@ impl PartialEq for Value {
             (Value::Boolean(a), Value::Boolean(b)) => a == b,
             (Value::Function(a), Value::Function(b)) => a == b,
             (Value::NativeFunction(_), Value::NativeFunction(_)) => {
-                // NativeFunctions are compared by pointer equality (they're Box<dyn Fn>)
+                // NativeFunctions are compared by pointer equality (they're Rc<dyn Fn>)
                 // For our purposes, we'll consider them never equal unless they're the same instance
                 false
             },
@@ -134,7 +134,7 @@ impl std::hash::Hash for Function {
     fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
         self.params.hash(state);
         // We can't hash the Statement directly, so use a proxy value
-        self.body.to_string().hash(state);
+        format!("{:?}", self.body).hash(state);
     }
 }
 
@@ -142,7 +142,7 @@ impl std::hash::Hash for Function {
 impl PartialEq for Function {
     fn eq(&self, other: &Self) -> bool {
         self.params == other.params && 
-        self.body.to_string() == other.body.to_string()
+        format!("{:?}", self.body) == format!("{:?}", other.body)
     }
 }
 
@@ -494,16 +494,46 @@ impl Interpreter {
             },
             
             Value::String(name) => {
-                // Try to call a standard library function by name
-                if let Some(stdlib) = self.get_stdlib() {
-                    if stdlib.has_function(&name) {
-                        return stdlib.call(&name);
+                // Try to call a function by name from the environment
+                if let Some(function_value) = self.environment.borrow().get(&name) {
+                    match function_value {
+                        Value::Function(func) => {
+                            // Call the user-defined function
+                            if func.params.len() != evaluated_args.len() {
+                                return Err(TurbulanceError::RuntimeError {
+                                    message: format!("Function '{}' expects {} arguments, got {}", name, func.params.len(), evaluated_args.len())
+                                });
+                            }
+                            
+                            // Create a new environment for the function call
+                            let mut new_env = Environment::with_enclosing(self.environment.clone());
+                            
+                            // Bind parameters to arguments
+                            for (param, arg) in func.params.iter().zip(evaluated_args.iter()) {
+                                new_env.define(param.clone(), arg.clone());
+                            }
+                            
+                            // Execute the function body in the new environment
+                            let old_env = self.environment.clone();
+                            self.environment = Rc::new(RefCell::new(new_env));
+                            let result = self.evaluate(&func.body);
+                            self.environment = old_env;
+                            
+                            result
+                        },
+                        Value::NativeFunction(native_func) => {
+                            // Call the native function
+                            native_func(evaluated_args)
+                        },
+                        _ => Err(TurbulanceError::RuntimeError {
+                            message: format!("'{}' is not a function", name)
+                        })
                     }
+                } else {
+                    Err(TurbulanceError::RuntimeError {
+                        message: format!("Function '{}' not found", name)
+                    })
                 }
-                
-                Err(TurbulanceError::RuntimeError {
-                    message: format!("String '{}' is not a function", name)
-                })
             },
             
             _ => Err(TurbulanceError::RuntimeError {
@@ -576,7 +606,7 @@ impl Interpreter {
                 // Object property assignment (e.g., obj.prop = value)
                 let mut object_value = self.evaluate(object)?;
                 
-                match (&mut object_value, property) {
+                match (&mut object_value, property.as_ref()) {
                     (Value::Map(map), Node::Identifier(key, _)) => {
                         // Map property assignment
                         map.insert(key.clone(), value.clone());
@@ -599,7 +629,7 @@ impl Interpreter {
             Node::IndexAccess { object, index, span } => {
                 // Array/list index assignment (e.g., arr[0] = value)
                 let mut object_value = self.evaluate(object)?;
-                let index_value = self.evaluate(index)?;
+                let index_value = self.evaluate(index.as_ref())?;
                 
                 match (&mut object_value, &index_value) {
                     (Value::List(list), Value::Number(i)) => {
@@ -1057,9 +1087,9 @@ impl Interpreter {
     
     fn evaluate_function_decl(&mut self, name: &str, parameters: &[crate::turbulance::ast::Parameter], body: &Node) -> Result<Value> {
         // Create a function value
-        let func = crate::turbulance::ast::Function {
-            name: name.to_string(),
-            parameters: parameters.to_vec(),
+        let param_names: Vec<String> = parameters.iter().map(|p| p.name.clone()).collect();
+        let func = Function {
+            params: param_names,
             body: Box::new(body.clone()),
             closure: self.capture_current_scope(),
         };
@@ -1165,30 +1195,6 @@ impl Interpreter {
                 Ok(Value::TextUnit(r))
             },
             
-            // TextUnit + TextUnit = Combined TextUnit with proper connectives
-            (Value::TextUnit(l), Value::TextUnit(r)) => {
-                let combined_content = format!("{} {}", l.content, r.content);
-                let mut combined_metadata = l.metadata.clone();
-                
-                // Merge metadata
-                for (key, value) in r.metadata {
-                    combined_metadata.insert(key, value);
-                }
-                Ok(Value::TextUnit(TextUnit::with_metadata(combined_content, combined_metadata)))
-            },
-            
-            // TextUnit + String = TextUnit with appended string
-            (Value::TextUnit(mut l), Value::String(r)) => {
-                l.content = format!("{} {}", l.content, r);
-                Ok(Value::TextUnit(l))
-            },
-            
-            // String + TextUnit = TextUnit with prepended string
-            (Value::String(l), Value::TextUnit(mut r)) => {
-                r.content = format!("{} {}", l, r.content);
-                Ok(Value::TextUnit(r))
-            },
-
             // Arrays can be concatenated
             (Value::Array(mut l), Value::Array(r)) => {
                 l.extend(r);

@@ -401,16 +401,29 @@ pub fn point(content: &str, confidence: f64) -> TextPoint {
 }
 
 /// Create a resolution context with the given domain
-pub fn context(domain: &str) -> ResolutionContext {
-    ResolutionContext {
-        domain: Some(domain.to_string()),
-        culture: None,
-        time_period: None,
-        purpose: None,
-        parameters: HashMap::new(),
-        resolution_strategy: ResolutionStrategy::MaximumLikelihood,
+    pub fn context(domain: &str) -> ResolutionContext {
+        ResolutionContext {
+            domain: Some(domain.to_string()),
+            culture: None,
+            time_period: None,
+            purpose: None,
+            parameters: HashMap::new(),
+            resolution_strategy: ResolutionStrategy::MaximumLikelihood,
+        }
     }
-}
+
+    impl Default for ResolutionContext {
+        fn default() -> Self {
+            Self {
+                domain: None,
+                culture: None,
+                time_period: None,
+                purpose: None,
+                parameters: HashMap::new(),
+                resolution_strategy: ResolutionStrategy::MaximumLikelihood,
+            }
+        }
+    }
 
 #[cfg(test)]
 mod tests {

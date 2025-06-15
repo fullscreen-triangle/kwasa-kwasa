@@ -1,6 +1,39 @@
 use std::collections::HashMap;
 use std::time::{Instant, Duration};
-use crate::error::{Error, Result, ErrorReporter};
+use crate::turbulance::TurbulanceError;
+
+/// Result type for operations that may fail
+pub type Result<T> = std::result::Result<T, TurbulanceError>;
+
+/// Simple error reporter for tracking errors during execution
+#[derive(Debug, Clone)]
+pub struct ErrorReporter {
+    errors: Vec<TurbulanceError>,
+}
+
+impl ErrorReporter {
+    pub fn new() -> Self {
+        Self {
+            errors: Vec::new(),
+        }
+    }
+    
+    pub fn add_error(&mut self, error: TurbulanceError) {
+        self.errors.push(error);
+    }
+    
+    pub fn errors(&self) -> &[TurbulanceError] {
+        &self.errors
+    }
+    
+    pub fn has_errors(&self) -> bool {
+        !self.errors.is_empty()
+    }
+    
+    pub fn clear(&mut self) {
+        self.errors.clear();
+    }
+}
 
 /// Execution context for Turbulance scripts
 pub struct Context {
@@ -174,10 +207,12 @@ impl Context {
         
         // Check for stack overflow
         if self.execution_state.depth > self.execution_state.max_depth {
-            return Err(Error::Runtime(format!(
-                "Stack overflow: exceeded maximum recursion depth of {}",
-                self.execution_state.max_depth
-            )));
+            return Err(TurbulanceError::RuntimeError { 
+                message: format!(
+                    "Stack overflow: exceeded maximum recursion depth of {}",
+                    self.execution_state.max_depth
+                )
+            });
         }
         
         self.execution_state.call_stack.push(function_name.to_string());
@@ -223,7 +258,7 @@ impl Context {
     }
     
     /// Add an error to the error reporter
-    pub fn add_error(&mut self, error: Error) {
+    pub fn add_error(&mut self, error: TurbulanceError) {
         self.error_reporter.add_error(error);
     }
     

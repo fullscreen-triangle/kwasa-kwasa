@@ -1,6 +1,57 @@
 use std::collections::HashMap;
-use crate::text_unit::{TextUnit, TextUnitType};
-use crate::orchestrator::StreamData;
+
+/// Text unit type classification
+#[derive(Debug, Clone, PartialEq)]
+pub enum TextUnitType {
+    Sentence,
+    Paragraph,
+    Document,
+    Fragment,
+    Custom(String),
+}
+
+/// Stream data container for processing
+#[derive(Debug, Clone)]
+pub struct StreamData {
+    content: String,
+    metadata: HashMap<String, String>,
+}
+
+impl StreamData {
+    pub fn new(content: String) -> Self {
+        Self {
+            content,
+            metadata: HashMap::new(),
+        }
+    }
+    
+    pub fn with_metadata(mut self, key: &str, value: &str) -> Self {
+        self.metadata.insert(key.to_string(), value.to_string());
+        self
+    }
+}
+
+/// Text unit with content and metadata
+#[derive(Debug, Clone, PartialEq)]
+pub struct TextUnit {
+    pub content: String,
+    pub start: usize,
+    pub end: usize,
+    pub unit_type: TextUnitType,
+    pub id: usize,
+}
+
+impl TextUnit {
+    pub fn new(content: String, start: usize, end: usize, unit_type: TextUnitType, id: usize) -> Self {
+        Self {
+            content,
+            start,
+            end,
+            unit_type,
+            id,
+        }
+    }
+}
 
 /// A Proposition is a container for ideas that can be analyzed and transformed
 pub struct Proposition {
