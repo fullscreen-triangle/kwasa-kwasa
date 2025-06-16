@@ -11,12 +11,14 @@ pub mod context;
 pub mod intervention;
 pub mod config;
 
-// Five Intelligence Modules for Metacognitive Orchestrator
+// Seven Intelligence Modules for Metacognitive Orchestrator
 pub mod mzekezeke;     // Bayesian Learning Engine
 pub mod diggiden;      // Adversarial System
 pub mod hatata;        // Decision System
 pub mod spectacular;   // Extraordinary Handler
 pub mod nicotine;      // Context Validator
+pub mod zengeza;       // Intelligent Noise Reduction Engine
+pub mod diadochi;      // Multi-Domain LLM Orchestration Framework
 pub mod integrated;    // Integrated Intelligence Orchestrator
 pub mod intelligence_examples; // Examples and usage demonstrations
 
@@ -32,6 +34,8 @@ pub use diggiden::DiggidenAdversarialSystem;
 pub use hatata::HatataDecisionSystem;
 pub use spectacular::SpectacularHandler;
 pub use nicotine::NicotineContextValidator;
+pub use zengeza::ZengezaNoiseReduction;
+pub use diadochi::DiadochiFramework;
 pub use integrated::IntegratedMetacognitiveOrchestrator;
 pub use intelligence_examples::run_all_intelligence_examples;
 

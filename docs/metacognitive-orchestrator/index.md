@@ -1,6 +1,6 @@
 # The Five Revolutionary Intelligence Modules
 
-## Overview
+## Overviewgit 
 
 The MetaCognitive Orchestrator incorporates five breakthrough modules that solve the fundamental problem of **"orchestration without learning"**. These modules provide the tangible objective function missing from traditional text processing systems, transforming Kwasa-Kwasa from sophisticated text manipulation into true text intelligence.
 
@@ -8,9 +8,34 @@ The MetaCognitive Orchestrator incorporates five breakthrough modules that solve
 
 Traditional text processing systems suffer from a critical flaw: **they orchestrate without learning**. They manipulate text through sophisticated pipelines but lack a tangible objective function to optimize toward. This creates systems that can transform text elegantly but cannot improve their understanding or adapt to new contexts.
 
+## The Tres Commas Engine & V8 Metabolism Pipeline
+
+The metacognitive orchestrator is powered by the revolutionary **[Tres Commas Engine](tres-commas.md)** - a trinity-based cognitive architecture featuring three consciousness layers (Context, Reasoning, Intuition) powered by the **V8 Metabolism Pipeline**:
+
+### Core Trinity Documentation
+
+- **[Tres Commas Engine](tres-commas.md)**: Complete trinity architecture with three consciousness layers
+- **[V8 Metabolism Pipeline](metabolism.md)**: Biological truth processing system with 8 metabolic modules
+- **[Clothesline Module](clothesline.md)**: Comprehension validator and context layer gatekeeper
+- **[Champagne Phase](champagne.md)**: Dreaming mode for lactate recovery and self-improvement
+
+### V8 Metabolic Modules
+
+The V8 pipeline transforms the original five modules into a complete biological metabolism system:
+
+1. **Mzekezeke** → **Hexokinase** (Truth Glucose Phosphorylation)
+2. **Diggiden** → **Phosphofructokinase** (Truth Energy Investment)
+3. **Hatata** → **Pyruvate Kinase** (Truth ATP Generation)
+4. **Spectacular** → **Citrate Synthase** (Truth Krebs Cycle Entry)
+5. **Nicotine** → **Isocitrate Dehydrogenase** (Truth NADH Production)
+6. **Clothesline** → **Succinate Dehydrogenase** (Truth FADH₂ Generation)
+7. **Pungwe** → **ATP Synthase** (Final Truth Energy Production)
+8. **Champagne** → **Lactate Dehydrogenase** (Anaerobic Recovery Processing)
+
 ## The Five-Module Solution
 
 ### 1. [Mzekezeke - The Bayesian Learning Engine](mzekezeke-bayesian-engine.md)
+
 **Purpose**: Provides the tangible objective function through temporal Bayesian belief networks
 
 - **Temporal Evidence Decay**: Models how text meaning degrades over time with multiple decay functions
@@ -20,6 +45,7 @@ Traditional text processing systems suffer from a critical flaw: **they orchestr
 - **ATP Integration**: Metabolic cost modeling for belief updates and network optimization
 
 ### 2. [Diggiden - The Adversarial System](diggiden-adversarial-system.md)
+
 **Purpose**: Continuously attacks text processing to find vulnerabilities and evidence flaws
 
 - **Attack Strategies**: Contradiction injection, temporal manipulation, semantic spoofing, perturbation attacks
@@ -29,6 +55,7 @@ Traditional text processing systems suffer from a critical flaw: **they orchestr
 - **Integration Testing**: Property-based testing with systematic fuzzing
 
 ### 3. [Hatata - The Decision System](hatata-decision-system.md)
+
 **Purpose**: Markov Decision Process with utility functions for probabilistic state transitions
 
 - **Utility Functions**: Linear, quadratic, exponential, logarithmic utility models for different text processing goals
@@ -38,6 +65,7 @@ Traditional text processing systems suffer from a critical flaw: **they orchestr
 - **Risk-Adjusted Optimization**: Utility maximization with uncertainty quantification
 
 ### 4. [Spectacular - The Extraordinary Handler](spectacular-extraordinary-handler.md)
+
 **Purpose**: Specialized module for handling extraordinary data and anomalous findings
 
 - **Detection Criteria**: Unexpected semantic clarity, paradigm-shifting content, cross-domain resonance, novel patterns
@@ -47,6 +75,7 @@ Traditional text processing systems suffer from a critical flaw: **they orchestr
 - **Historical Registry**: Maintains record of most significant discoveries for future reference
 
 ### 5. [Nicotine - The Context Validator](nicotine-context-validator.md)
+
 **Purpose**: Context preservation system that validates understanding through machine-readable puzzles
 
 - **Context Tracking**: Continuous monitoring of text processing state and drift detection
@@ -74,7 +103,7 @@ pub struct IntegratedMetacognitiveOrchestrator {
     hatata: HatataDecisionSystem,           // Decision optimization
     spectacular: SpectacularHandler,        // Extraordinary processing
     nicotine: NicotineContextValidator,     // Context validation
-    
+  
     integration_state: IntegrationState,
     orchestration_metrics: OrchestrationMetrics,
 }
@@ -83,8 +112,9 @@ pub struct IntegratedMetacognitiveOrchestrator {
 ## The Revolutionary Impact
 
 This creates a **self-improving text processing system** where:
+
 - Mzekezeke learns from text with temporal decay awareness
-- Diggiden attacks to find text processing vulnerabilities  
+- Diggiden attacks to find text processing vulnerabilities
 - Hatata optimizes decisions about text processing states
 - Spectacular elevates paradigm-shifting content
 - Nicotine maintains contextual coherence through validation
@@ -96,4 +126,4 @@ The result is the first text processing system that truly **understands** rather
 1. Read the individual module documentation for detailed technical specifications
 2. See the [integration examples](integration-examples.md) for how modules work together
 3. Review the [implementation guide](implementation-guide.md) for development details
-4. Check the [API reference](api-reference.md) for complete interface documentation 
+4. Check the [API reference](api-reference.md) for complete interface documentation

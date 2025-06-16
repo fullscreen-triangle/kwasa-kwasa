@@ -20,8 +20,13 @@ Welcome to the complete documentation for Kwasa-Kwasa, a revolutionary text proc
 
 **Advanced Topics:**
 - [Domain Extensions](examples/domain-extensions.md) - Specialized applications
-- [Metacognitive Orchestration](metacognitive-orchestration.md) - Intelligent control
+- [Metacognitive Orchestration](metacognitive-orchestration.md) - Intelligent control overview
 - [Cross-Domain Analysis](examples/cross_domain_analysis.md) - Complex examples
+
+**Metacognitive Intelligence Modules:**
+- [The Seven Revolutionary Intelligence Modules](metacognitive-orchestrator/five-intelligence-modules.md) - Complete overview of all intelligence modules
+- [Zengeza - Intelligent Noise Reduction](metacognitive-orchestrator/zengeza.md) - Statistical noise reduction using positional semantics
+- [Diadochi - Multi-Domain LLM Orchestration](metacognitive-orchestrator/diadochi.md) - Expert collaboration via specialized external LLMs
 
 **For Developers:**
 - [Implementation Status](implementation_status.md) - Development progress

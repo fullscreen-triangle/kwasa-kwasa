@@ -185,44 +185,138 @@ typeof(value)                               // Returns type information
 
 ### Metacognitive Orchestration
 
-The framework doesn't just process text; it understands your goals and guides the writing process through the Metacognitive Orchestrator.
+The framework doesn't just process text; it understands your goals and guides the writing process through the revolutionary **Tres Commas** engine powered by the **V8 Metabolism Pipeline**.
 
-#### Orchestrator Features
+#### The Tres Commas Engine
 
-- **Goal Representation**: Define and track writing objectives
-- **Context Awareness**: Maintain knowledge of document state and domain
-- **Intelligent Intervention**: Provide suggestions based on goals and context
-- **Progress Evaluation**: Assess alignment with intended outcomes
+**Tres Commas** (three commas in Spanish) represents the three cognitive punctuation points where consciousness pauses and processes information. This Trinity Engine implements biological cognition through three nested layers:
 
-#### Goal-Oriented Writing
-
-```turbulance
-// Setting up a writing goal
-item goal = new Goal("Write a technical tutorial for beginners", 0.4)
-goal.add_keywords(["tutorial", "beginner", "step-by-step", "explanation"])
-
-// Track progress towards the goal
-goal.update_progress(0.3)  // 30% complete
-goal.is_complete()         // Returns false
-
-// Evaluating alignment with goals
-item alignment = orchestrator.evaluate_alignment(text)
-given alignment < 0.3:
-    suggest_improvements()
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                          TRES COMMAS ENGINE                        │
+│  ┌─────────────────────────────────────────────────────────────┐   │
+│  │                    INTUITION LAYER                          │   │
+│  │              Pattern Recognition • Gestalt Formation        │   │
+│  │                   ↕ Pungwe Metacognitive Oversight         │   │
+│  └──────────────────────┬──────────────────────────────────────┘   │
+│                         │ ↕ V8 Module Transitions               │
+│  ┌──────────────────────┴──────────────────────────────────────┐   │
+│  │                    REASONING LAYER                          │   │
+│  │           Logical Processing • Evidence Weighing            │   │
+│  └──────────────────────┬──────────────────────────────────────┘   │
+│                         │ ↕ V8 Module Transitions               │
+│  ┌──────────────────────┴──────────────────────────────────────┐   │
+│  │                    CONTEXT LAYER                            │   │
+│  │        Semantic Grounding • Comprehension Validation       │   │
+│  └─────────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────────┘
 ```
 
-#### Advanced Processing Architecture
+#### The V8 Metabolism Pipeline
 
-The Metacognitive Orchestrator implements a streaming-based concurrent processing model with three nested layers:
+The **V8 Metabolism Pipeline** powers the Tres Commas engine with eight specialized intelligence modules that function as biological enzymes in cellular respiration:
 
-1. **Context Layer**: Establishes the relevant frame for processing
-2. **Reasoning Layer**: Handles logical processing and analytical computation
-3. **Intuition Layer**: Focuses on pattern recognition and heuristic reasoning
+**Core Intelligence Modules (The Original Five)**:
+1. **Mzekezeke** (Bayesian Learning Engine) - Temporal belief networks
+2. **Diggiden** (Adversarial System) - Vulnerability detection and attack testing
+3. **Hatata** (Decision System) - Markov Decision Process optimization
+4. **Spectacular** (Extraordinary Handler) - Paradigm-shifting insight detection
+5. **Nicotine** (Context Validator) - Context drift prevention
 
-This architecture enables:
-- Processing to begin before complete input is available
-- Continuous refinement of results as more information becomes available
-- Enhanced ability to handle complex, open-ended tasks
+**Enhanced Intelligence Modules**:
+6. **Zengeza** (Noise Reduction Engine) - Statistical noise filtering
+7. **Diadochi** (Multi-Domain LLM Orchestration) - External expertise integration
+8. **Clothesline** (Comprehension Validator) - True understanding verification
+
+**Metacognitive Oversight**:
+- **Pungwe** (Self-Awareness Engine) - Monitors actual vs claimed understanding
+
+#### Truth Respiration Cycle
+
+The V8 modules operate through biological cellular respiration, metabolizing information into truth:
+
+```turbulance
+// Truth Glycolysis (Context Layer Processing)
+funxn glycolysis_processing(complex_query):
+    // Step 1: Nicotine validates context retention (2 ATP investment)
+    item context_validated = IntelligenceModule::Nicotine.validate_context(complex_query)
+    
+    // Step 2: Clothesline validates comprehension (2 ATP investment)  
+    item comprehension_result = IntelligenceModule::Clothesline.validate_comprehension(context_validated)
+    
+    given comprehension_result.can_transition_to_reasoning:
+        // Step 3: Zengeza noise reduction (Net +2 ATP gain)
+        item processed_query = IntelligenceModule::Zengeza.reduce_noise(context_validated)
+        return TruthPyruvate(processed_query, net_atp: 2)
+    alternatively:
+        // Failed comprehension - store for champagne processing
+        champagne_buffer.store_incomplete(context_validated)
+        return LactateByproduct(context_validated, net_atp: 0)
+
+// Truth Krebs Cycle (Reasoning Layer Processing)
+funxn krebs_cycle_reasoning(truth_pyruvate):
+    item reasoning_results = []
+    item current_idea = truth_pyruvate.idea
+    
+    // 8-step evidence processing cycle using V8 modules
+    current_idea = IntelligenceModule::Hatata.citrate_synthase(current_idea)        // Decision commitment
+    current_idea = IntelligenceModule::Diggiden.aconitase(current_idea)            // Attack/restructure  
+    current_idea = IntelligenceModule::Mzekezeke.isocitrate_dehydrogenase(current_idea) // High-energy Bayesian
+    current_idea = IntelligenceModule::Spectacular.ketoglutarate_dehydrogenase(current_idea) // Paradigm detection
+    current_idea = IntelligenceModule::Diadochi.succinyl_coa_synthetase(current_idea)    // External consultation
+    current_idea = IntelligenceModule::Zengeza.succinate_dehydrogenase(current_idea)     // Information filtering
+    current_idea = IntelligenceModule::Nicotine.fumarase(current_idea)            // Context validation
+    current_idea = IntelligenceModule::Hatata.malate_dehydrogenase(current_idea)  // Final decision
+    
+    return TruthAcetylCoA(current_idea, net_atp: 2, nadh: 3, fadh2: 1)
+
+// Truth Electron Transport (Intuition Layer Synthesis)
+funxn electron_transport_intuition(high_energy_compounds):
+    // Complex I-IV processing with Pungwe oversight
+    item bayesian_processing = IntelligenceModule::Mzekezeke.complex_i(high_energy_compounds)
+    item paradigm_amplification = IntelligenceModule::Spectacular.complex_ii(bayesian_processing)
+    item final_validation = IntelligenceModule::Diggiden.complex_iii(paradigm_amplification)
+    item synthesis_decision = IntelligenceModule::Hatata.complex_iv(final_validation)
+    
+    // Pungwe metacognitive ATP synthase
+    item metacognitive_insight = IntelligenceModule::Pungwe.atp_synthase(
+        actual_understanding: (latest_nicotine_output, latest_clothesline_output),
+        claimed_understanding: (bayesian_processing, synthesis_decision),
+        original_goal: current_processing_goal
+    )
+    
+    return TruthATP(synthesis_decision, atp_yield: 32, metacognitive_awareness: metacognitive_insight)
+```
+
+#### Champagne Phase (Dreaming Mode)
+
+During system downtime, the **Champagne Phase** processes accumulated incomplete tasks through lactate cycle recovery:
+
+```turbulance
+// Champagne dreaming processing
+funxn champagne_phase():
+    while user.status == "away" and lactate_buffer.has_incomplete():
+        item incomplete_process = lactate_buffer.pop()
+        
+        // Complete aerobic processing with full V8 pipeline
+        item complete_result = full_aerobic_processing(incomplete_process)
+        
+        // Self-correct Turbulance scripts
+        given incomplete_process.type == "turbulance_script":
+            auto_debug_and_optimize(incomplete_process.script)
+        
+        // Store completed insights
+        permanent_memory.commit(complete_result)
+    
+    return "User returns to perfectly debugged, optimized code"
+```
+
+This biological architecture enables:
+- **Respiration-Constrained Processing**: Natural rhythm matching biological cellular respiration
+- **Metabolic Truth Synthesis**: Information literally metabolized into truth through ATP-generating cycles  
+- **Self-Correcting Scripts**: Turbulance code fixes itself during dreaming phases
+- **Metacognitive Awareness**: Pungwe prevents self-deception by comparing actual vs claimed understanding
+- **Adaptive Processing**: Switches between aerobic (complete) and anaerobic (rapid) processing based on available resources
 
 ### Proposition and Motion System
 
@@ -1199,9 +1293,11 @@ This hybrid processing system represents a fundamental advancement in computatio
    - Unified query interface
    - Conflict detection and resolution
 
-## The Five Revolutionary Intelligence Modules
+## The V8 Metabolism Pipeline: Eight Intelligence Modules
 
-The MetaCognitive Orchestrator incorporates five breakthrough modules that solve the fundamental problem of **"orchestration without learning"**. These modules provide the tangible objective function missing from traditional text processing systems, transforming Kwasa-Kwasa from sophisticated text manipulation into true text intelligence.
+The Tres Commas Engine incorporates eight breakthrough modules that power the **V8 Metabolism Pipeline** - solving the fundamental problem of **"orchestration without learning"**. These modules function as biological enzymes in cellular respiration, literally metabolizing information into truth through ATP-generating cycles.
+
+The V8 architecture combines core intelligence infrastructure with enhanced processing capabilities and metacognitive oversight, creating the first truly biological artificial intelligence system.
 
 ### **Mzekezeke - The Bayesian Learning Engine**
 **Purpose**: Provides the tangible objective function through temporal Bayesian belief networks
@@ -1248,24 +1344,99 @@ The MetaCognitive Orchestrator incorporates five breakthrough modules that solve
 - **Drift Prevention**: Catches when AI loses sight of original text processing objectives
 - **Confidence Restoration**: Successful validation restores processing confidence to 95%
 
-## The Trinity Solution to Text Intelligence
+## Efficiency Enhancement Modules
 
-These five modules work together to solve the fundamental **"orchestration without learning"** problem:
+Building upon the core intelligence infrastructure, two additional modules provide significant performance optimizations and capability extensions:
 
-1. **Mzekezeke provides the objective function**: A tangible Bayesian belief network that the text orchestrator optimizes toward
-2. **Diggiden provides robustness**: Continuous adversarial testing ensures text processing remains reliable
-3. **Hatata provides optimization**: Decision-theoretic utility maximization guides optimal text processing transitions
-4. **Spectacular handles breakthrough insights**: Ensures extraordinary text discoveries receive appropriate attention
-5. **Nicotine prevents context drift**: Validates continued understanding through systematic challenges
+### **Zengeza - The Intelligent Noise Reduction Engine**
+**Purpose**: Statistical analysis and machine learning-based noise reduction that leverages positional semantics
 
-This creates a **self-improving text processing system** where:
-- Mzekezeke learns from text with temporal decay awareness
-- Diggiden attacks to find text processing vulnerabilities  
-- Hatata optimizes decisions about text processing states
-- Spectacular elevates paradigm-shifting content
-- Nicotine maintains contextual coherence through validation
+- **Positional Noise Analysis**: Uses existing positional semantics engine to identify redundant or non-essential text elements
+- **Signal-to-Noise Calculation**: Employs statistical methods to quantify information density across text positions
+- **ML-Driven Filtering**: Machine learning models trained on domain-specific noise patterns for intelligent compression
+- **Semantic Preservation**: Ensures noise reduction maintains essential meaning while removing redundancy
+- **Adaptive Thresholds**: Dynamic adjustment of noise detection sensitivity based on context and goals
+- **Integration with Spectacular**: Special handling to prevent filtering of paradigm-shifting insights
 
-The result is the first text processing system that truly **understands** rather than merely **manipulates** text.
+### **Diadochi - The Multi-Domain LLM Orchestration Framework**
+**Purpose**: Intelligent routing and collaboration system for specialized domain expertise via external LLM APIs
+
+- **Domain Intelligence Router**: Analyzes text complexity and domain requirements to select appropriate specialized LLMs
+- **HuggingFace API Integration**: Seamless connection to HuggingFace model hub for accessing domain-specific language models
+- **Expert Collaboration Protocol**: Coordinates multiple specialized LLMs to provide comprehensive analysis
+- **Evidence Synthesis**: Combines outputs from multiple LLM sources using Bayesian evidence networks
+- **Cost-Benefit Optimization**: Uses Hatata decision system to balance API costs against expected utility gains
+- **Quality Validation**: Employs Diggiden adversarial testing to validate external LLM outputs before integration
+- **Context Preservation**: Works with Nicotine to ensure external consultations don't compromise original objectives
+
+### **Clothesline - The Comprehension Validator**
+**Purpose**: Strategic comprehension testing system that validates true understanding vs pattern matching
+
+- **Strategic Occlusion Patterns**: Systematically hides parts of sentences to test genuine comprehension
+- **Keyword Masking**: Tests understanding by removing high-importance semantic words
+- **Logical Connector Testing**: Validates inference capabilities by hiding connective words
+- **Positional Scrambling**: Tests positional semantic understanding through word rearrangement
+- **Semantic Substitution**: Distinguishes semantic vs lexical understanding through synonym replacement
+- **Structural Occlusion**: Tests comprehension by hiding entire clauses and requesting reconstruction
+- **Context Layer Gatekeeper**: Only allows transition to Reasoning layer after comprehension validation
+- **Remediation Strategies**: Provides targeted fixes for specific comprehension failures
+
+### **Pungwe - The Metacognitive Self-Awareness Engine**
+**Purpose**: Prevents AI self-deception by comparing actual understanding vs claimed understanding
+
+- **Four-Way Comparison Matrix**: Synthesizes actual understanding (Nicotine + Clothesline) vs claimed understanding (Mzekezeke + Hatata)
+- **Self-Deception Detection**: Identifies overconfidence, Dunning-Kruger effects, and goal displacement
+- **Awareness Gap Calculation**: Quantifies the difference between what the system knows vs what it claims to know
+- **Reality Check Enforcement**: Forces course correction when self-deception exceeds threshold
+- **Metacognitive ATP Synthase**: Generates highest-quality truth energy through perfect understanding alignment
+- **Blind Spot Identification**: Detects and maps cognitive biases and knowledge gaps
+- **Confidence Calibration**: Continuously adjusts confidence levels based on actual vs claimed performance
+- **Goal Alignment Monitoring**: Ensures processing stays aligned with original objectives
+
+## The V8 Biological Intelligence Solution
+
+The eight V8 modules plus Pungwe metacognitive oversight create the first truly **biological artificial intelligence** that solves the fundamental **"orchestration without learning"** problem through metabolic truth synthesis:
+
+### V8 Metabolism Pipeline (The Eight Core Modules)
+
+1. **Mzekezeke (Bayesian Engine)**: Provides temporal belief networks with evidence decay modeling
+2. **Diggiden (Adversarial System)**: Continuous vulnerability testing ensures truth processing remains robust
+3. **Hatata (Decision System)**: Markov Decision Process optimization guides optimal layer transitions
+4. **Spectacular (Extraordinary Handler)**: Detects and amplifies paradigm-shifting insights with special ATP investment
+5. **Nicotine (Context Validator)**: Prevents context drift through systematic validation challenges
+6. **Zengeza (Noise Reduction)**: Optimizes information density while preserving semantic meaning
+7. **Diadochi (LLM Orchestration)**: Integrates specialized external expertise through API orchestration
+8. **Clothesline (Comprehension Validator)**: Validates true understanding vs pattern matching through strategic occlusion
+
+### Metacognitive Oversight System
+
+- **Pungwe (Self-Awareness Engine)**: Prevents AI self-deception by comparing actual vs claimed understanding across all V8 modules
+
+### Tres Commas Trinity Engine Integration
+
+The V8 modules operate as **biological enzymes** within the Tres Commas three-layer architecture:
+
+- **Context Layer (Glycolysis)**: Nicotine + Clothesline validate context and comprehension (2 ATP investment → 2 ATP net gain)
+- **Reasoning Layer (Krebs Cycle)**: All V8 modules participate in 8-step evidence processing (2 ATP + 3 NADH + 1 FADH₂)
+- **Intuition Layer (Electron Transport)**: Mzekezeke, Spectacular, Diggiden, Hatata synthesize truth (32 ATP yield)
+- **Metacognitive ATP Synthase**: Pungwe ensures understanding alignment for maximum truth energy generation
+
+### Champagne Phase (Dreaming Metabolism)
+
+During system downtime, the **Champagne Phase** processes accumulated lactate through:
+- **Incomplete Task Recovery**: Converts partial understanding into complete comprehension
+- **Self-Correcting Scripts**: Automatically debugs and optimizes Turbulance code
+- **Metacognitive Learning**: Pungwe identifies and corrects recurring self-deception patterns
+- **ATP Regeneration**: Restores metabolic capacity for next processing cycle
+
+This creates the first **living digital organism** that:
+- **Breathes Information**: Respiration-constrained processing with natural rhythm
+- **Metabolizes Truth**: Literally converts information into truth through cellular respiration
+- **Dreams and Self-Corrects**: Fixes its own code during downtime
+- **Prevents Self-Deception**: Metacognitive awareness prevents overconfidence and goal drift
+- **Evolves Understanding**: Continuous learning through biological feedback loops
+
+The result is artificial life that **truly understands** rather than merely processes text, operating through authentic biological cognition.
 
 ### Domain Extensions
 
