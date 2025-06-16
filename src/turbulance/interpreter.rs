@@ -39,7 +39,7 @@ impl std::fmt::Debug for NativeFunction {
 }
 
 /// Value types in the Turbulance language
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub enum Value {
     Number(f64),
     String(String),
