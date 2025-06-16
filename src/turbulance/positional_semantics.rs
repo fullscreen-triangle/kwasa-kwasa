@@ -4,7 +4,7 @@
 /// as a first-class semantic feature, recognizing that "position IS meaning"
 /// in human language.
 
-use std::collections::{HashMap, VecDeque};
+use std::collections::HashMap;
 use serde::{Serialize, Deserialize};
 use crate::turbulance::interpreter::Value;
 use crate::turbulance::{Result, TurbulanceError};
@@ -111,7 +111,7 @@ pub enum RelationType {
 }
 
 /// A sentence analyzed for positional semantics
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug)]
 pub struct PositionalSentence {
     /// Original sentence text
     pub original_text: String,
@@ -157,6 +157,7 @@ struct POSTagger {
 }
 
 /// Pattern for part-of-speech assignment
+#[allow(dead_code)]
 struct POSPattern {
     pattern: String,
     pos: String,
@@ -302,7 +303,7 @@ impl PositionalAnalyzer {
             _ => 1.0,
         };
         
-        (base_weight * pos_multiplier).max(0.0).min(1.0)
+        (base_weight * pos_multiplier).max(0.0_f64).min(1.0_f64)
     }
     
     /// Calculate how dependent a word's meaning is on its position

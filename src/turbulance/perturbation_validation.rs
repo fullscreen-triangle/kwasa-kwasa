@@ -127,7 +127,7 @@ pub struct PerturbationTest {
 }
 
 /// Expected impact of a perturbation
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub enum ImpactLevel {
     /// Minimal impact expected (function words, punctuation)
     Minimal,
@@ -293,7 +293,7 @@ impl PerturbationValidator {
     }
     
     /// Run complete validation process
-    pub async fn run_validation(&mut self, config: &ValidationConfig) -> Result<ValidationResult> {
+    pub fn run_validation(&mut self, config: &ValidationConfig) -> Result<ValidationResult> {
         let start_time = std::time::Instant::now();
         
         // Generate perturbation tests based on configuration
@@ -301,8 +301,9 @@ impl PerturbationValidator {
         
         // Execute all perturbation tests
         let mut perturbation_results = Vec::new();
-        for test in &self.perturbation_tests {
-            let result = self.execute_perturbation_test(test, config).await?;
+        let tests = self.perturbation_tests.clone();
+        for test in &tests {
+            let result = self.execute_perturbation_test(test, config)?;
             perturbation_results.push(result);
         }
         
@@ -645,7 +646,7 @@ impl PerturbationValidator {
     }
     
     /// Execute a single perturbation test
-    async fn execute_perturbation_test(&mut self, test: &PerturbationTest, config: &ValidationConfig) -> Result<PerturbationResult> {
+    fn execute_perturbation_test(&mut self, test: &PerturbationTest, config: &ValidationConfig) -> Result<PerturbationResult> {
         // Get original resolution confidence
         let original_confidence = match &self.initial_resolution {
             ResolutionResult::Certain(value) => 1.0,
@@ -820,7 +821,8 @@ impl PerturbationValidator {
             "by", "for", "with", "from", "up", "about", "into", "through", "during",
         ];
         
-        !function_words.contains(&word.to_lowercase().as_str())
+        let word_lower = word.to_lowercase();
+        !function_words.contains(&word_lower.as_str())
     }
 }
 
@@ -847,14 +849,14 @@ impl Default for ValidationConfig {
 }
 
 /// Validate resolution quality through perturbation testing
-pub async fn validate_resolution_quality(
+pub fn validate_resolution_quality(
     point: &TextPoint,
     resolution: &ResolutionResult,
     config: Option<ValidationConfig>,
 ) -> Result<ValidationResult> {
     let config = config.unwrap_or_default();
     let mut validator = PerturbationValidator::new(point.clone(), resolution.clone(), config.clone());
-    validator.run_validation(&config).await
+    validator.run_validation(&config)
 }
 
 #[cfg(test)]
@@ -862,8 +864,8 @@ mod tests {
     use super::*;
     use crate::turbulance::probabilistic::ResolutionStrategy;
     
-    #[tokio::test]
-    async fn test_validator_creation() {
+    #[test]
+    fn test_validator_creation() {
         let point = TextPoint::new("The solution is optimal".to_string(), 0.8);
         let resolution = ResolutionResult::Certain(Value::String("test".to_string()));
         let config = ValidationConfig::default();
@@ -872,8 +874,8 @@ mod tests {
         assert_eq!(validator.stability_threshold, 0.7);
     }
     
-    #[tokio::test]
-    async fn test_word_removal_tests() {
+    #[test]
+    fn test_word_removal_tests() {
         let point = TextPoint::new("The solution is optimal".to_string(), 0.8);
         let resolution = ResolutionResult::Certain(Value::String("test".to_string()));
         let config = ValidationConfig::default();
@@ -885,22 +887,22 @@ mod tests {
         assert!(tests.len() <= 4); // One test per word
     }
     
-    #[tokio::test]
-    async fn test_perturbation_validation() {
+    #[test]
+    fn test_perturbation_validation() {
         let point = TextPoint::new("The solution is optimal".to_string(), 0.8);
         let resolution = ResolutionResult::Certain(Value::String("test".to_string()));
         let config = ValidationConfig::default();
         
         let mut validator = PerturbationValidator::new(point, resolution, config.clone());
-        let result = validator.run_validation(&config).await.unwrap();
+        let result = validator.run_validation(&config).unwrap();
         
         assert!(result.stability_score >= 0.0);
         assert!(result.stability_score <= 1.0);
         assert!(!result.perturbation_results.is_empty());
     }
     
-    #[tokio::test]
-    async fn test_negation_consistency() {
+    #[test]
+    fn test_negation_consistency() {
         let point = TextPoint::new("The solution is optimal".to_string(), 0.8);
         let resolution = ResolutionResult::Certain(Value::String("test".to_string()));
         let config = ValidationConfig::default();
@@ -913,12 +915,12 @@ mod tests {
         assert_eq!(tests[0].expected_impact, ImpactLevel::Logical);
     }
     
-    #[tokio::test]
-    async fn test_validation_quality_function() {
+    #[test]
+    fn test_validation_quality_function() {
         let point = TextPoint::new("The solution is optimal".to_string(), 0.8);
         let resolution = ResolutionResult::Certain(Value::String("test".to_string()));
         
-        let result = validate_resolution_quality(&point, &resolution, None).await.unwrap();
+        let result = validate_resolution_quality(&point, &resolution, None).unwrap();
         
         assert!(result.stability_score >= 0.0);
         assert!(result.stability_score <= 1.0);

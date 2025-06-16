@@ -138,13 +138,12 @@ pub async fn custom_configuration_example() {
         .with_significance_threshold(0.7)  // Lower threshold for extraordinariness
         .with_atp_investment(1000.0);      // Higher ATP investment
     
-    let nicotine = NicotineContextValidator::new()
-        .with_validation_frequency(std::time::Duration::from_secs(30)); // More frequent validation
+    let nicotine = NicotineContextValidator::new();
 
     info!("Custom intelligence modules configured:");
     info!("- Diggiden: 10-second attack frequency");
     info!("- Spectacular: 0.7 significance threshold, 1000 ATP investment");
-    info!("- Nicotine: 30-second validation frequency");
+    info!("- Nicotine: standard configuration");
 
     // Create custom pipeline
     let mut custom_pipeline = StreamPipeline::new("CustomIntelligence");

@@ -2,12 +2,9 @@ use std::collections::HashMap;
 use crate::turbulance::ast::{Node, BinaryOp, UnaryOp, TextOp};
 use crate::turbulance::TurbulanceError;
 use crate::turbulance::ast::TextUnit;
-// use crate::turbulance::stdlib::StdLib;
 use std::rc::Rc;
 use std::cell::RefCell;
 use std::fmt;
-use crate::turbulance::context::{Context, Value as ContextValue};
-use serde;
 
 // Define Result type for Turbulance operations
 type Result<T> = std::result::Result<T, TurbulanceError>;
@@ -47,13 +44,10 @@ pub enum Value {
     Number(f64),
     String(String),
     Boolean(bool),
-    #[allow(dead_code)]
     Function(Function),
-    #[allow(dead_code)]
     NativeFunction(NativeFunction),
     Array(Vec<Value>),
     Object(std::collections::HashMap<String, Value>),
-    #[allow(dead_code)]
     Module(ObjectRef),
     TextUnit(TextUnit),
     List(Vec<Value>),
@@ -289,7 +283,7 @@ impl Interpreter {
             Node::BoolLiteral(value, _) => Ok(Value::Boolean(*value)),
             
             // Variables
-            Node::Identifier(name, span) => {
+            Node::Identifier(name, _span) => {
                 self.lookup_variable(name)
                     .ok_or_else(|| TurbulanceError::RuntimeError { 
                         message: format!("Undefined variable '{}'", name) 
@@ -297,33 +291,33 @@ impl Interpreter {
             },
             
             // Expressions
-            Node::BinaryExpr { left, operator, right, span } => {
+            Node::BinaryExpr { left, operator, right, span: _ } => {
                 self.evaluate_binary_expr(left, operator, right)
             },
             
-            Node::UnaryExpr { operator, operand, span } => {
+            Node::UnaryExpr { operator, operand, span: _ } => {
                 self.evaluate_unary_expr(operator, operand)
             },
             
-            Node::FunctionCall { function, arguments, span } => {
+            Node::FunctionCall { function, arguments, span: _ } => {
                 self.evaluate_function_call(function, arguments)
             },
             
             // Control flow
-            Node::IfExpr { condition, then_branch, else_branch, span } => {
+            Node::IfExpr { condition, then_branch, else_branch, span: _ } => {
                 self.evaluate_if_expr(condition, then_branch, else_branch)
             },
             
             // Blocks and statements
-            Node::Block { statements, span } => {
+            Node::Block { statements, span: _ } => {
                 self.evaluate_block(statements)
             },
             
-            Node::Assignment { target, value, span } => {
+            Node::Assignment { target, value, span: _ } => {
                 self.evaluate_assignment(target, value)
             },
             
-            Node::ReturnStmt { value, span } => {
+            Node::ReturnStmt { value, span: _ } => {
                 match value {
                     Some(expr) => self.evaluate(expr),
                     None => Ok(Value::Null),
@@ -331,36 +325,36 @@ impl Interpreter {
             },
             
             // Turbulance-specific operations
-            Node::WithinBlock { target, body, span } => {
+            Node::WithinBlock { target, body, span: _ } => {
                 self.evaluate_within_block(target, body)
             },
             
-            Node::GivenBlock { condition, body, span } => {
+            Node::GivenBlock { condition, body, span: _ } => {
                 self.evaluate_given_block(condition, body)
             },
             
-            Node::EnsureStmt { condition, span } => {
+            Node::EnsureStmt { condition, span: _ } => {
                 self.evaluate_ensure_stmt(condition)
             },
             
-            Node::ResearchStmt { query, span } => {
+            Node::ResearchStmt { query, span: _ } => {
                 self.evaluate_research_stmt(query)
             },
             
-            Node::TextOperation { operation, target, arguments, span } => {
+            Node::TextOperation { operation, target, arguments, span: _ } => {
                 self.evaluate_text_operation(operation, target, arguments)
             },
             
             // Function and project declarations
-            Node::FunctionDecl { name, parameters, body, span } => {
+            Node::FunctionDecl { name, parameters, body, span: _ } => {
                 self.evaluate_function_decl(name, parameters, body)
             },
             
-            Node::ProjectDecl { name, attributes, body, span } => {
+            Node::ProjectDecl { name, attributes, body, span: _ } => {
                 self.evaluate_project_decl(name, attributes, body)
             },
             
-            Node::SourcesDecl { sources, span } => {
+            Node::SourcesDecl { sources, span: _ } => {
                 self.evaluate_sources_decl(sources)
             },
             

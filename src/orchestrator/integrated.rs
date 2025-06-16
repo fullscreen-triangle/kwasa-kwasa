@@ -43,11 +43,11 @@ impl IntegratedMetacognitiveOrchestrator {
         
         let mut pipeline = StreamPipeline::new("Intelligence");
         pipeline
-            .add_processor(self.mzekezeke.as_ref().clone())
-            .add_processor(self.diggiden.as_ref().clone())
-            .add_processor(self.hatata.as_ref().clone())
-            .add_processor(self.spectacular.as_ref().clone())
-            .add_processor(self.nicotine.as_ref().clone());
+            .add_processor(MzekezkeBayesianEngine::new())
+            .add_processor(DiggidenAdversarialSystem::new())
+            .add_processor(HatataDecisionSystem::new())
+            .add_processor(SpectacularHandler::new())
+            .add_processor(NicotineContextValidator::new());
         
         let results = pipeline.execute(vec![initial_data]).await;
         
@@ -59,28 +59,52 @@ impl IntegratedMetacognitiveOrchestrator {
 
 #[async_trait]
 impl StreamProcessor for IntegratedMetacognitiveOrchestrator {
-    async fn process(&self, input: Receiver<StreamData>) -> Receiver<StreamData> {
+    async fn process(&self, mut input: Receiver<StreamData>) -> Receiver<StreamData> {
         let (tx, rx) = channel(32);
         
-        let mzekezeke = self.mzekezeke.clone();
-        let diggiden = self.diggiden.clone();
-        let hatata = self.hatata.clone();
-        let spectacular = self.spectacular.clone();
-        let nicotine = self.nicotine.clone();
-        
         tokio::spawn(async move {
-            let mut pipeline = StreamPipeline::new("Integrated");
-            pipeline
-                .add_processor(mzekezeke.as_ref().clone())
-                .add_processor(diggiden.as_ref().clone())
-                .add_processor(hatata.as_ref().clone())
-                .add_processor(spectacular.as_ref().clone())
-                .add_processor(nicotine.as_ref().clone());
-            
-            let output = pipeline.process(input).await;
-            
-            let mut output = output;
-            while let Some(data) = output.recv().await {
+            // Create a sequential processing chain
+            while let Some(mut data) = input.recv().await {
+                // Process through Mzekezeke (Bayesian Learning)
+                let mzekezeke = MzekezkeBayesianEngine::new();
+                let (m_tx, m_rx) = channel(1);
+                let _ = m_tx.send(data).await;
+                drop(m_tx);
+                let mut m_output = mzekezeke.process(m_rx).await;
+                data = m_output.recv().await.unwrap_or(data);
+                
+                // Process through Diggiden (Adversarial System)
+                let diggiden = DiggidenAdversarialSystem::new();
+                let (d_tx, d_rx) = channel(1);
+                let _ = d_tx.send(data).await;
+                drop(d_tx);
+                let mut d_output = diggiden.process(d_rx).await;
+                data = d_output.recv().await.unwrap_or(data);
+                
+                // Process through Hatata (Decision System)
+                let hatata = HatataDecisionSystem::new();
+                let (h_tx, h_rx) = channel(1);
+                let _ = h_tx.send(data).await;
+                drop(h_tx);
+                let mut h_output = hatata.process(h_rx).await;
+                data = h_output.recv().await.unwrap_or(data);
+                
+                // Process through Spectacular (Extraordinary Handler)
+                let spectacular = SpectacularHandler::new();
+                let (s_tx, s_rx) = channel(1);
+                let _ = s_tx.send(data).await;
+                drop(s_tx);
+                let mut s_output = spectacular.process(s_rx).await;
+                data = s_output.recv().await.unwrap_or(data);
+                
+                // Process through Nicotine (Context Validator)
+                let nicotine = NicotineContextValidator::new();
+                let (n_tx, n_rx) = channel(1);
+                let _ = n_tx.send(data).await;
+                drop(n_tx);
+                let mut n_output = nicotine.process(n_rx).await;
+                data = n_output.recv().await.unwrap_or(data);
+                
                 if tx.send(data).await.is_err() {
                     break;
                 }
