@@ -15,6 +15,8 @@ pub mod debate_platform;
 pub mod integration;
 pub mod hybrid_processing;
 pub mod turbulance_syntax;
+pub mod image_syntax;
+pub mod audio_syntax;
 
 pub use context::Context;
 pub use debate_platform::{Affirmation, Contention, DebatePlatform, DebatePlatformManager};

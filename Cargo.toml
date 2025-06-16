@@ -78,6 +78,14 @@ indexmap = "2.0"
 # Numerical computations
 num-traits = "0.2"
 
+# Audio processing dependencies
+rodio = "0.17"
+symphonia = { version = "0.5", features = ["all"] }
+hound = "3.5"
+rustfft = "6.1"
+apodize = "1.0"
+realfft = "3.3"
+
 # Development dependencies for testing
 [dev-dependencies]
 criterion = "0.5.1"
@@ -101,8 +109,9 @@ crate-type = ["cdylib", "rlib"]
 
 [features]
 default = ["full"]
-full = ["genomics", "chemistry", "spectrometry", "visualization"]
+full = ["genomics", "chemistry", "spectrometry", "visualization", "audio"]
 genomics = []
 chemistry = []
 spectrometry = []
 visualization = []
+audio = []

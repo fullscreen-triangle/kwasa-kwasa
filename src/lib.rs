@@ -44,6 +44,7 @@ pub mod error;
 pub mod visualization;
 pub mod external_apis;
 pub mod image;
+pub mod audio;
 
 // Re-export important modules
 pub use orchestrator::Orchestrator;
