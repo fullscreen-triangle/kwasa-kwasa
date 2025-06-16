@@ -282,7 +282,7 @@ impl<'a> Lexer<'a> {
     pub fn tokenize(&mut self) -> Vec<Token> {
         let mut tokens = Vec::new();
         
-        for result in &mut self.lex {
+        while let Some(result) = self.lex.next() {
             let span = self.lex.span();
             let lexeme = self.get_lexeme(span.clone());
             

@@ -747,7 +747,7 @@ impl Parser {
                 // For now, we'll treat property access as a special kind of function call
                 expr = Node::FunctionCall {
                     function: Box::new(Node::Identifier("property_access".to_string(), span.clone())),
-                    arguments: vec![expr, Node::StringLiteral(name.lexeme, Span::new(
+                    arguments: vec![expr, Node::StringLiteral(name.lexeme.clone(), Span::new(
                         Position::new(0, 0, name_span.start),
                         Position::new(0, 0, name_span.end),
                     ))],

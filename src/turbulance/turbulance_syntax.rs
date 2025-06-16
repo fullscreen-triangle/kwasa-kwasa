@@ -405,7 +405,8 @@ impl TurbulanceProcessor {
     }
     
     /// Evaluate a condition
-    async fn evaluate_condition(&mut self, condition: &TurbulanceCondition) -> Result<bool> {
+    fn evaluate_condition<'a>(&'a mut self, condition: &'a TurbulanceCondition) -> std::pin::Pin<Box<dyn std::future::Future<Output = Result<bool>> + 'a>> {
+        Box::pin(async move {
         match condition {
             TurbulanceCondition::Binary { left, operator, right } => {
                 let left_value = self.get_variable_value(left)?;
@@ -463,6 +464,7 @@ impl TurbulanceProcessor {
             LogicOperator::Or => Ok(results.iter().any(|&x| x)),
             LogicOperator::Xor => Ok(results.iter().filter(|&&x| x).count() == 1),
         }
+        })
     }
     
     /// Helper methods for variable access
@@ -511,7 +513,7 @@ impl TurbulanceProcessor {
         match value {
             Value::String(s) => s.clone(),
             Value::Number(n) => n.to_string(),
-            Value::Bool(b) => b.to_string(),
+            Value::Boolean(b) => b.to_string(),
             _ => "unknown".to_string(),
         }
     }
