@@ -576,7 +576,7 @@ impl DebatePlatform {
         // Validate the affirmation if enabled
         let validation = if self.config.enable_perturbation_validation {
             let affirmation_point = TextPoint::new(content.clone(), confidence);
-            Some(validate_resolution_quality(&affirmation_point, &ResolutionResult::Certain(Value::String(content.clone())), None).await?)
+            Some(validate_resolution_quality(&affirmation_point, &ResolutionResult::Certain(Value::String(content.clone())), None)?)
         } else {
             None
         };
@@ -609,7 +609,7 @@ impl DebatePlatform {
         // Validate the contention if enabled
         let validation = if self.config.enable_perturbation_validation {
             let contention_point = TextPoint::new(content.clone(), confidence);
-            Some(validate_resolution_quality(&contention_point, &ResolutionResult::Certain(Value::String(content.clone())), None).await?)
+            Some(validate_resolution_quality(&contention_point, &ResolutionResult::Certain(Value::String(content.clone())), None)?)
         } else {
             None
         };

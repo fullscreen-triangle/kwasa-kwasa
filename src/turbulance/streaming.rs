@@ -288,6 +288,7 @@ impl TextStream {
         
         // Detect sentence boundaries
         let sentences = self.detect_sentences(text_chunk)?;
+        let sentence_count = sentences.len();
         
         let mut all_points = Vec::new();
         let mut all_resolutions = Vec::new();
