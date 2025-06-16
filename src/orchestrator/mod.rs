@@ -22,6 +22,12 @@ pub mod diadochi;      // Multi-Domain LLM Orchestration Framework
 pub mod integrated;    // Integrated Intelligence Orchestrator
 pub mod intelligence_examples; // Examples and usage demonstrations
 
+// Revolutionary Tres Commas Engine & V8 Metabolism Pipeline
+pub mod tres_commas;   // Trinity-Based Cognitive Architecture
+pub mod v8_metabolism; // V8 Biological Truth Processing Pipeline
+pub mod clothesline;   // Comprehension Validator & Context Gatekeeper
+pub mod pungwe;        // ATP Synthase & Understanding Gap Detector
+
 // Re-export main components
 pub use metacognitive::MetacognitiveOrchestrator;
 pub use stream::{StreamProcessor, StreamPipeline};
@@ -38,6 +44,12 @@ pub use zengeza::ZengezaNoiseReduction;
 pub use diadochi::DiadochiFramework;
 pub use integrated::IntegratedMetacognitiveOrchestrator;
 pub use intelligence_examples::run_all_intelligence_examples;
+
+// Re-export revolutionary Tres Commas Engine components
+pub use tres_commas::{TresCommasEngine, ConsciousnessLayer, CognitiveProcess, RespirationState};
+pub use v8_metabolism::{V8MetabolismPipeline, AtpUnit, MetabolicStage, TruthSubstrate};
+pub use clothesline::{ClotheslineModule, OcclusionPattern, OcclusionChallenge, ComprehensionResult};
+pub use pungwe::{PungweModule, UnderstandingGap, AtpSynthesis, GoalDistanceMetric};
 
 // Re-export main types for easy access
 pub use goal::{Goal, GoalType, GoalMetrics, SuccessCriterion, Strategy, GoalStatus};
