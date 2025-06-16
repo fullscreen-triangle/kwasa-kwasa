@@ -14,9 +14,7 @@ pub enum TemplateType {
     InsightTemplate,     // Pattern for generating insights
     ValidationMethod,    // Comprehension validation approach
     MetabolicPathway,    // V8 metabolism optimization
-    TrinityTransition,   // Layer transition pattern
     ChampagneRecipe,     // Dream processing method
-    GapDetectionLogic,   // Understanding gap analysis
 }
 
 impl TemplateType {
@@ -27,9 +25,7 @@ impl TemplateType {
             TemplateType::InsightTemplate => "Pattern for generating breakthrough insights",
             TemplateType::ValidationMethod => "Comprehension validation and gatekeeper logic",
             TemplateType::MetabolicPathway => "Optimized V8 metabolism processing route",
-            TemplateType::TrinityTransition => "Efficient consciousness layer transitions",
             TemplateType::ChampagneRecipe => "Dream processing method for specific scenarios",
-            TemplateType::GapDetectionLogic => "Understanding gap analysis methodology",
         }
     }
 
@@ -40,9 +36,7 @@ impl TemplateType {
             TemplateType::InsightTemplate => "Neural pathway for pattern recognition",
             TemplateType::ValidationMethod => "Immune system recognition pattern",
             TemplateType::MetabolicPathway => "Optimized cellular respiration route",
-            TemplateType::TrinityTransition => "Neurotransmitter release pattern",
             TemplateType::ChampagneRecipe => "REM sleep processing template",
-            TemplateType::GapDetectionLogic => "Error detection and correction mechanism",
         }
     }
 }
@@ -53,35 +47,20 @@ pub struct CognitiveTemplate {
     // Identity
     pub id: Uuid,
     pub name: String,
-    pub version: String,
     pub template_type: TemplateType,
-    pub created_at: Instant,
     pub author: String,
     
     // Core Template Data
     pub processing_steps: Vec<ProcessingStep>,
-    pub success_metrics: SuccessMetrics,
-    pub validation_criteria: Vec<ValidationCriterion>,
     
     // Usage Statistics
     pub usage_count: u64,
     pub success_rate: f64,
     pub average_atp_yield: f64,
-    pub average_processing_time: Duration,
-    
-    // Biological Characteristics
-    pub metabolic_efficiency: f64,
-    pub trinity_compatibility: Vec<String>, // Which layers it works best with
-    pub champagne_integration: bool,
     
     // Sharing & Versioning
     pub is_public: bool,
-    pub parent_template_id: Option<Uuid>,
-    pub child_template_ids: Vec<Uuid>,
     pub tags: Vec<String>,
-    
-    // Template Image/Map for Meta Orchestrator
-    pub cognitive_map: CognitiveMap,
 }
 
 impl CognitiveTemplate {
@@ -89,102 +68,30 @@ impl CognitiveTemplate {
         Self {
             id: Uuid::new_v4(),
             name,
-            version: "1.0.0".to_string(),
             template_type,
-            created_at: Instant::now(),
             author,
             processing_steps: Vec::new(),
-            success_metrics: SuccessMetrics::default(),
-            validation_criteria: Vec::new(),
             usage_count: 0,
             success_rate: 0.0,
             average_atp_yield: 0.0,
-            average_processing_time: Duration::from_secs(0),
-            metabolic_efficiency: 0.0,
-            trinity_compatibility: Vec::new(),
-            champagne_integration: false,
             is_public: false,
-            parent_template_id: None,
-            child_template_ids: Vec::new(),
             tags: Vec::new(),
-            cognitive_map: CognitiveMap::default(),
         }
     }
 
     pub fn add_processing_step(&mut self, step: ProcessingStep) {
         self.processing_steps.push(step);
-        self.update_cognitive_map();
     }
 
-    pub fn record_usage(&mut self, success: bool, atp_yield: f64, processing_time: Duration) {
+    pub fn record_usage(&mut self, success: bool, atp_yield: f64) {
         self.usage_count += 1;
         
-        // Update success rate
         let old_successes = (self.success_rate * (self.usage_count - 1) as f64) as u64;
         let new_successes = old_successes + if success { 1 } else { 0 };
         self.success_rate = new_successes as f64 / self.usage_count as f64;
         
-        // Update averages
         let old_total_atp = self.average_atp_yield * (self.usage_count - 1) as f64;
         self.average_atp_yield = (old_total_atp + atp_yield) / self.usage_count as f64;
-        
-        let old_total_time = self.average_processing_time.as_millis() * (self.usage_count - 1) as u128;
-        self.average_processing_time = Duration::from_millis(
-            ((old_total_time + processing_time.as_millis()) / self.usage_count as u128) as u64
-        );
-        
-        // Update metabolic efficiency
-        self.metabolic_efficiency = self.success_rate * (self.average_atp_yield / 38.0);
-    }
-
-    pub fn evolve_to_version(&self, new_version: String, improvements: Vec<String>) -> Self {
-        let mut evolved = self.clone();
-        evolved.id = Uuid::new_v4();
-        evolved.version = new_version;
-        evolved.parent_template_id = Some(self.id);
-        evolved.created_at = Instant::now();
-        evolved.tags.extend(improvements);
-        evolved
-    }
-
-    fn update_cognitive_map(&mut self) {
-        // Generate visual/conceptual map for meta orchestrator understanding
-        let mut complexity_score = 0.0;
-        let mut pathway_map = HashMap::new();
-        
-        for (i, step) in self.processing_steps.iter().enumerate() {
-            complexity_score += step.complexity_factor;
-            pathway_map.insert(format!("step_{}", i), step.description.clone());
-        }
-        
-        self.cognitive_map = CognitiveMap {
-            complexity_score,
-            pathway_visualization: pathway_map,
-            biological_pathway_analogy: self.template_type.biological_analogy().to_string(),
-            meta_orchestrator_hints: self.generate_orchestrator_hints(),
-        };
-    }
-
-    fn generate_orchestrator_hints(&self) -> Vec<String> {
-        let mut hints = Vec::new();
-        
-        if self.success_rate > 0.9 {
-            hints.push("High reliability template - prioritize for similar contexts".to_string());
-        }
-        
-        if self.average_atp_yield > 30.0 {
-            hints.push("High energy yield - excellent for complex processing".to_string());
-        }
-        
-        if self.champagne_integration {
-            hints.push("Dream-compatible - can be enhanced through champagne processing".to_string());
-        }
-        
-        if self.processing_steps.len() > 10 {
-            hints.push("Complex pathway - consider breaking into sub-templates".to_string());
-        }
-        
-        hints
     }
 }
 
@@ -218,58 +125,6 @@ impl ProcessingStep {
             required_confidence: 0.7,
             can_run_parallel: false,
             dependencies: Vec::new(),
-        }
-    }
-}
-
-/// Success metrics for template evaluation
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct SuccessMetrics {
-    pub min_success_rate: f64,
-    pub min_atp_efficiency: f64,
-    pub max_processing_time: Duration,
-    pub required_insight_count: u32,
-    pub champagne_recovery_rate: f64,
-}
-
-impl Default for SuccessMetrics {
-    fn default() -> Self {
-        Self {
-            min_success_rate: 0.8,
-            min_atp_efficiency: 0.7,
-            max_processing_time: Duration::from_secs(30),
-            required_insight_count: 1,
-            champagne_recovery_rate: 0.9,
-        }
-    }
-}
-
-/// Validation criteria for template application
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ValidationCriterion {
-    pub criterion_name: String,
-    pub description: String,
-    pub validation_method: String,
-    pub threshold_value: f64,
-    pub is_critical: bool,
-}
-
-/// Visual/conceptual map for meta orchestrator understanding
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct CognitiveMap {
-    pub complexity_score: f64,
-    pub pathway_visualization: HashMap<String, String>,
-    pub biological_pathway_analogy: String,
-    pub meta_orchestrator_hints: Vec<String>,
-}
-
-impl Default for CognitiveMap {
-    fn default() -> Self {
-        Self {
-            complexity_score: 0.0,
-            pathway_visualization: HashMap::new(),
-            biological_pathway_analogy: "Basic cellular process".to_string(),
-            meta_orchestrator_hints: Vec::new(),
         }
     }
 }
@@ -343,7 +198,7 @@ impl GerhardModule {
             recent_templates: Vec::new(),
             evolution_trees: HashMap::new(),
             max_templates_per_user: 100,
-            auto_share_threshold: 0.95,
+            auto_share_threshold: 0.9,
             template_expiry_days: 365,
             total_templates_created: 0,
             total_templates_shared: 0,
@@ -382,11 +237,9 @@ impl GerhardModule {
         
         self.total_templates_created += 1;
         
-        println!("🧬 GERHARD: Frozen analysis method '{}' as genetic template {}", 
+        println!("🧬 GERHARD: Frozen '{}' as genetic template {}", 
                  template.name, template_id);
-        println!("   🔬 Type: {} ({})", 
-                 format!("{:?}", template.template_type), 
-                 template.template_type.biological_analogy());
+        println!("   🔬 Type: {:?}", template.template_type);
         println!("   🧪 Steps: {} processing steps captured", template.processing_steps.len());
         
         Ok(template_id)
@@ -419,15 +272,6 @@ impl GerhardModule {
                 }
             }
             
-            // Processing time filter
-            if let Some(max_time) = query.max_processing_time {
-                if template.average_processing_time <= max_time {
-                    score += 1.0;
-                } else {
-                    continue; // Skip if too slow
-                }
-            }
-            
             // Tag matching
             for tag in &query.tags {
                 if template.tags.contains(tag) {
@@ -447,8 +291,8 @@ impl GerhardModule {
         
         // Sort by metabolic efficiency and usage
         matches.sort_by(|a, b| {
-            let score_a = a.metabolic_efficiency * (1.0 + a.usage_count as f64 / 100.0);
-            let score_b = b.metabolic_efficiency * (1.0 + b.usage_count as f64 / 100.0);
+            let score_a = a.success_rate * (1.0 + a.usage_count as f64 / 10.0);
+            let score_b = b.success_rate * (1.0 + b.usage_count as f64 / 10.0);
             score_b.partial_cmp(&score_a).unwrap_or(std::cmp::Ordering::Equal)
         });
         
@@ -470,15 +314,13 @@ impl GerhardModule {
             self.public_templates.insert(template_id, template.clone());
             self.total_templates_shared += 1;
             
-            println!("🌟 GERHARD: Template '{}' auto-shared due to excellent performance ({:.1}% success rate)", 
+            println!("🌟 GERHARD: Template '{}' auto-shared due to {:.1}% success rate", 
                      template.name, template.success_rate * 100.0);
         }
         
         println!("🔄 GERHARD: Overlaying template '{}' onto current analysis", template.name);
         println!("   📊 Success Rate: {:.1}%", template.success_rate * 100.0);
         println!("   ⚡ Avg ATP Yield: {:.1} units", template.average_atp_yield);
-        println!("   ⏱️ Avg Processing Time: {:?}", template.average_processing_time);
-        println!("   🧬 Metabolic Efficiency: {:.1}%", template.metabolic_efficiency * 100.0);
         
         // Return processing steps for execution
         Ok(template.processing_steps.clone())
@@ -494,8 +336,19 @@ impl GerhardModule {
         let parent_template = self.template_library.get(&parent_id)
             .ok_or("Parent template not found")?;
         
-        let new_version = format!("{}.1", parent_template.version);
-        let evolved_template = parent_template.evolve_to_version(new_version, improvements.clone());
+        let new_version = format!("{}.1", parent_template.name);
+        let evolved_template = CognitiveTemplate {
+            id: Uuid::new_v4(),
+            name: new_version,
+            template_type: parent_template.template_type,
+            author,
+            processing_steps: parent_template.processing_steps.clone(),
+            usage_count: 0,
+            success_rate: 0.0,
+            average_atp_yield: 0.0,
+            is_public: false,
+            tags: improvements,
+        };
         
         let evolved_id = evolved_template.id;
         
@@ -507,7 +360,7 @@ impl GerhardModule {
         
         // Update indices
         self.author_index.entry(author).or_insert_with(Vec::new).push(evolved_id);
-        self.type_index.entry(format!("{:?}", evolved_template.template_type))
+        self.type_index.entry(format!("{:?}", parent_template.template_type))
             .or_insert_with(Vec::new).push(evolved_id);
         
         println!("🧬 GERHARD: Evolved template '{}' -> '{}'", 
@@ -523,35 +376,18 @@ impl GerhardModule {
         let template = self.template_library.get(&template_id)
             .ok_or("Template not found")?;
         
-        // Serialize template to JSON for sharing
-        match serde_json::to_string_pretty(&template) {
-            Ok(json) => {
-                println!("📤 GERHARD: Exported template '{}' for sharing", template.name);
-                Ok(json)
-            }
-            Err(e) => Err(format!("Serialization error: {}", e))
-        }
-    }
-
-    /// Import template from external source
-    pub fn import_template(&mut self, template_json: &str) -> Result<Uuid, String> {
-        let template: CognitiveTemplate = serde_json::from_str(template_json)
-            .map_err(|e| format!("Deserialization error: {}", e))?;
+        let export_data = format!(
+            "Template: {}\nType: {:?}\nAuthor: {}\nSteps: {}\nSuccess: {:.1}%\nATP: {:.1}",
+            template.name,
+            template.template_type,
+            template.author,
+            template.processing_steps.len(),
+            template.success_rate * 100.0,
+            template.average_atp_yield
+        );
         
-        let template_id = template.id;
-        
-        // Store imported template
-        self.template_library.insert(template_id, template.clone());
-        
-        // Update indices
-        self.author_index.entry(template.author.clone()).or_insert_with(Vec::new).push(template_id);
-        self.type_index.entry(format!("{:?}", template.template_type)).or_insert_with(Vec::new).push(template_id);
-        
-        println!("📥 GERHARD: Imported template '{}' from external source", template.name);
-        println!("   👤 Author: {}", template.author);
-        println!("   🔬 Type: {:?}", template.template_type);
-        
-        Ok(template_id)
+        println!("📤 GERHARD: Exported template '{}'", template.name);
+        Ok(export_data)
     }
 
     /// Get template recommendations for current context
@@ -561,8 +397,8 @@ impl GerhardModule {
         
         // Prioritize by recent success and usage
         recommendations.sort_by(|a, b| {
-            let score_a = a.success_rate * a.metabolic_efficiency * (1.0 + a.usage_count as f64 / 10.0);
-            let score_b = b.success_rate * b.metabolic_efficiency * (1.0 + b.usage_count as f64 / 10.0);
+            let score_a = a.success_rate * a.average_atp_yield / 38.0;
+            let score_b = b.success_rate * b.average_atp_yield / 38.0;
             score_b.partial_cmp(&score_a).unwrap_or(std::cmp::Ordering::Equal)
         });
         
@@ -600,7 +436,7 @@ impl GerhardModule {
         // Calculate average metabolic efficiency
         if !self.template_library.is_empty() {
             let avg_efficiency: f64 = self.template_library.values()
-                .map(|t| t.metabolic_efficiency)
+                .map(|t| t.average_atp_yield)
                 .sum::<f64>() / self.template_library.len() as f64;
             stats.insert("average_metabolic_efficiency".to_string(), avg_efficiency);
         }
@@ -695,7 +531,7 @@ pub fn demonstrate_gerhard_system() -> Result<(), String> {
     
     // Simulate successful usage
     gerhard.template_library.get_mut(&template_id).unwrap()
-        .record_usage(true, 35.0, Duration::from_secs(5));
+        .record_usage(true, 35.0);
     
     // 5. Evolve template
     println!("\n🧬 STEP 4: Evolving Template with Improvements");
@@ -719,8 +555,8 @@ pub fn demonstrate_gerhard_system() -> Result<(), String> {
     println!("\n📤 STEP 6: Export/Import Capabilities");
     println!("-----------------------------------");
     
-    let exported_json = gerhard.export_template(template_id)?;
-    println!("✅ Template exported successfully ({} characters)", exported_json.len());
+    let exported = gerhard.export_template(template_id)?;
+    println!("✅ Template exported successfully ({} characters)", exported.len());
     
     // 8. Final statistics
     println!("\n📊 STEP 7: Gerhard System Statistics");

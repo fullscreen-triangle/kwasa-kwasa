@@ -29,6 +29,7 @@ pub mod clothesline;   // Comprehension Validator & Context Gatekeeper
 pub mod pungwe;        // ATP Synthase & Understanding Gap Detector
 pub mod champagne_simple; // Dream Mode Processing & Lactate Recovery
 pub mod integrated_simple; // Complete Integrated Biological AI System
+pub mod gerhard; // Cognitive Template & Method Preservation System - The DNA Library
 
 // Re-export main components
 pub use metacognitive::MetacognitiveOrchestrator;
@@ -51,6 +52,7 @@ pub use intelligence_examples::run_all_intelligence_examples;
 pub use tres_commas::{TresCommasEngine, ConsciousnessLayer, CognitiveProcess, RespirationState, demonstrate_tres_commas};
 pub use champagne_simple::{ChampagneModule, DreamMode, DreamInsight, demonstrate_champagne_phase};
 pub use integrated_simple::{IntegratedTresCommasSystem, demonstrate_integrated_system, quick_demo};
+pub use gerhard::{GerhardModule, CognitiveTemplate, TemplateType, ProcessingStep, demonstrate_gerhard_system};
 
 // Re-export main types for easy access
 pub use goal::{Goal, GoalType, GoalMetrics, SuccessCriterion, Strategy, GoalStatus};

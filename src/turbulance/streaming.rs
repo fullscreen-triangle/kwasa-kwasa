@@ -356,7 +356,7 @@ impl TextStream {
         
         // Calculate throughput
         if duration.as_secs_f64() > 0.0 {
-            self.stats.current_throughput = sentences.len() as f64 / duration.as_secs_f64();
+            self.stats.current_throughput = sentence_count as f64 / duration.as_secs_f64();
         }
         
         // Calculate context utilization

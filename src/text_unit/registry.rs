@@ -364,9 +364,10 @@ mod tests {
         
         let unit = TextUnit::new(
             "Test content".to_string(),
-            TextUnitType::Paragraph,
             0,
             12,
+            TextUnitType::Paragraph,
+            0, // hierarchy_level
         );
         let unit_id = unit.id();
         
@@ -387,15 +388,17 @@ mod tests {
         
         let parent = TextUnit::new(
             "Parent content".to_string(),
-            TextUnitType::Document,
             0,
             100,
+            TextUnitType::Document,
+            0, // hierarchy_level
         );
         let child = TextUnit::new(
             "Child content".to_string(),
-            TextUnitType::Paragraph,
             0,
             50,
+            TextUnitType::Paragraph,
+            1, // hierarchy_level
         );
         
         let parent_id = registry.add_unit(parent);
