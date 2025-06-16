@@ -155,8 +155,8 @@ impl CoherenceIntervention {
         // Extract keywords from text
         let text_keywords = extract_keywords(text);
         
-        // Get recent keywords from context
-        let context_keywords = context.get_recent_keywords();
+        // Get recent keywords from context - using a safer approach
+        let context_keywords = context.keywords(); // Use existing method instead
         
         // Calculate overlap
         let mut matches = 0;
@@ -186,13 +186,14 @@ impl CoherenceIntervention {
         let primary_topic = &text_keywords[0];
         
         // Check if this is a transition from a previous topic
-        let recent_keywords = context.get_recent_keywords();
+        let context_keywords = context.keywords(); // Use existing method
         
-        if recent_keywords.is_empty() {
+        if context_keywords.is_empty() {
             return text.to_string();
         }
         
-        let previous_topic = &recent_keywords[0];
+        // Get first keyword from the context HashSet
+        let previous_topic = context_keywords.iter().next().unwrap();
         
         // If transitioning to a new topic, suggest a transition phrase
         if primary_topic != previous_topic {
@@ -211,7 +212,7 @@ impl Intervention for CoherenceIntervention {
     
     fn should_intervene(&self, _goal: &Goal, context: &Context) -> bool {
         // Intervene if the context has enough keywords to work with
-        context.get_keywords().len() >= 3
+        context.keywords().len() >= 3
     }
     
     fn process_text(&self, text: &str, _goal: &Goal, context: &Context) -> Result<String, String> {

@@ -417,21 +417,28 @@ impl Goal {
     
     /// Update success criteria based on current metrics
     pub fn update_success_criteria(&mut self) {
-        for criterion in &mut self.success_criteria {
-            let current_value = self.get_metric_value(&criterion.metric);
-            
-            criterion.is_met = match criterion.operator {
-                ComparisonOperator::GreaterThan => current_value > criterion.target_value,
-                ComparisonOperator::GreaterThanOrEqual => current_value >= criterion.target_value,
-                ComparisonOperator::LessThan => current_value < criterion.target_value,
-                ComparisonOperator::LessThanOrEqual => current_value <= criterion.target_value,
-                ComparisonOperator::Equal => (current_value - criterion.target_value).abs() < 0.001,
-                ComparisonOperator::NotEqual => (current_value - criterion.target_value).abs() >= 0.001,
-                ComparisonOperator::Within(percentage) => {
-                    let tolerance = criterion.target_value * percentage / 100.0;
-                    (current_value - criterion.target_value).abs() <= tolerance
-                }
-            };
+        // First, collect all the metric values to avoid borrowing conflicts
+        let metric_values: Vec<(usize, f64)> = self.success_criteria.iter()
+            .enumerate()
+            .map(|(index, criterion)| (index, self.get_metric_value(&criterion.metric)))
+            .collect();
+        
+        // Now update the criteria using the collected values
+        for (index, current_value) in metric_values {
+            if let Some(criterion) = self.success_criteria.get_mut(index) {
+                criterion.is_met = match criterion.operator {
+                    ComparisonOperator::GreaterThan => current_value > criterion.target_value,
+                    ComparisonOperator::GreaterThanOrEqual => current_value >= criterion.target_value,
+                    ComparisonOperator::LessThan => current_value < criterion.target_value,
+                    ComparisonOperator::LessThanOrEqual => current_value <= criterion.target_value,
+                    ComparisonOperator::Equal => (current_value - criterion.target_value).abs() < 0.001,
+                    ComparisonOperator::NotEqual => (current_value - criterion.target_value).abs() >= 0.001,
+                    ComparisonOperator::Within(percentage) => {
+                        let tolerance = criterion.target_value * percentage / 100.0;
+                        (current_value - criterion.target_value).abs() <= tolerance
+                    }
+                };
+            }
         }
         
         self.updated_at = current_timestamp();

@@ -1421,4 +1421,465 @@ impl KwasaConfig {
         
         env_vars
     }
+}
+
+// Add more Default implementations for missing structs...
+
+impl Default for QualityConfig {
+    fn default() -> Self {
+        Self {
+            enable_readability: true,
+            enable_coherence: true,
+            enable_grammar: true,
+            enable_style: true,
+            thresholds: QualityThresholds::default(),
+        }
+    }
+}
+
+impl Default for QualityThresholds {
+    fn default() -> Self {
+        Self {
+            min_readability: 0.6,
+            min_coherence: 0.7,
+            max_grammar_errors: 0.05,
+            style_consistency: 0.8,
+        }
+    }
+}
+
+impl Default for TokenizationConfig {
+    fn default() -> Self {
+        Self {
+            strategy: "word_boundary".to_string(),
+            preserve_whitespace: false,
+            handle_contractions: true,
+            split_punctuation: true,
+            custom_patterns: Vec::new(),
+        }
+    }
+}
+
+impl Default for StemmingConfig {
+    fn default() -> Self {
+        Self {
+            enabled: true,
+            algorithm: "porter".to_string(),
+            language_rules: HashMap::new(),
+        }
+    }
+}
+
+impl Default for StopwordConfig {
+    fn default() -> Self {
+        Self {
+            enabled: true,
+            use_builtin: true,
+            custom_lists: HashMap::new(),
+            additional_words: Vec::new(),
+        }
+    }
+}
+
+impl Default for NgramConfig {
+    fn default() -> Self {
+        Self {
+            enabled: true,
+            min_size: 1,
+            max_size: 3,
+            min_frequency: 2,
+        }
+    }
+}
+
+impl Default for SequenceConfig {
+    fn default() -> Self {
+        Self {
+            max_length: 10000,
+            min_length: 10,
+            quality_threshold: 0.8,
+            validate_sequences: true,
+            allowed_nucleotides: vec!['A', 'T', 'G', 'C', 'N'],
+        }
+    }
+}
+
+impl Default for MotifConfig {
+    fn default() -> Self {
+        Self {
+            min_length: 6,
+            max_length: 20,
+            significance_threshold: 0.05,
+            enable_pwm: true,
+            conservation_threshold: 0.8,
+        }
+    }
+}
+
+impl Default for HighThroughputConfig {
+    fn default() -> Self {
+        Self {
+            enable_parallel: true,
+            worker_threads: num_cpus::get(),
+            batch_size: 1000,
+            memory_limit_mb: 512,
+            enable_caching: true,
+        }
+    }
+}
+
+impl Default for RetryConfig {
+    fn default() -> Self {
+        Self {
+            enabled: true,
+            max_attempts: 3,
+            initial_delay_ms: 1000,
+            backoff_multiplier: 2.0,
+            max_delay_ms: 30000,
+        }
+    }
+}
+
+impl Default for MetricsConfig {
+    fn default() -> Self {
+        Self {
+            enabled: true,
+            reporting_interval: 60,
+            storage_backend: "memory".to_string(),
+            enable_performance: true,
+            enable_error_tracking: true,
+        }
+    }
+}
+
+impl Default for AnalysisConfig {
+    fn default() -> Self {
+        Self {
+            statistics: StatisticsConfig::default(),
+            patterns: PatternConfig::default(),
+            similarity: SimilarityConfig::default(),
+            clustering: ClusteringConfig::default(),
+        }
+    }
+}
+
+impl Default for StatisticsConfig {
+    fn default() -> Self {
+        Self {
+            enabled: true,
+            confidence_level: 0.95,
+            min_sample_size: 30,
+            enable_correlation: true,
+            enable_distribution: true,
+        }
+    }
+}
+
+impl Default for PatternConfig {
+    fn default() -> Self {
+        Self {
+            enabled: true,
+            algorithms: vec!["regex".to_string(), "fuzzy".to_string()],
+            min_frequency: 3,
+            significance_threshold: 0.05,
+            enable_fuzzy: true,
+        }
+    }
+}
+
+impl Default for SimilarityConfig {
+    fn default() -> Self {
+        Self {
+            default_metric: "cosine".to_string(),
+            available_metrics: vec!["cosine".to_string(), "jaccard".to_string(), "euclidean".to_string()],
+            threshold: 0.7,
+            enable_semantic: true,
+            enable_structural: true,
+        }
+    }
+}
+
+impl Default for ClusteringConfig {
+    fn default() -> Self {
+        Self {
+            default_algorithm: "kmeans".to_string(),
+            available_algorithms: vec!["kmeans".to_string(), "hierarchical".to_string(), "dbscan".to_string()],
+            default_clusters: 5,
+            enable_hierarchical: true,
+            distance_metric: "euclidean".to_string(),
+        }
+    }
+}
+
+impl Default for OrchestratorConfig {
+    fn default() -> Self {
+        Self {
+            metacognitive: MetacognitiveConfig::default(),
+            biomimetic: BiomimeticConfig::default(),
+            goals: GoalConfig::default(),
+            context: ContextConfig::default(),
+            intervention: InterventionConfig::default(),
+        }
+    }
+}
+
+impl Default for MetacognitiveConfig {
+    fn default() -> Self {
+        Self {
+            enabled: true,
+            num_layers: 3,
+            layer_timeouts: vec![1000, 2000, 5000], // milliseconds
+            enable_reflection: true,
+            reflection_interval: 300, // 5 minutes
+        }
+    }
+}
+
+impl Default for BiomimeticConfig {
+    fn default() -> Self {
+        Self {
+            enabled: true,
+            enable_memory_consolidation: true,
+            enable_dreaming: false,
+            attention: AttentionConfig::default(),
+            learning: LearningConfig::default(),
+        }
+    }
+}
+
+impl Default for AttentionConfig {
+    fn default() -> Self {
+        Self {
+            base_span: 1800, // 30 minutes
+            decay_rate: 0.1,
+            influence_factors: vec!["relevance".to_string(), "novelty".to_string(), "importance".to_string()],
+            enable_switching: true,
+        }
+    }
+}
+
+impl Default for LearningConfig {
+    fn default() -> Self {
+        Self {
+            base_rate: 0.01,
+            rate_decay: 0.99,
+            enable_adaptive: true,
+            consolidation_interval: 6, // 6 hours
+        }
+    }
+}
+
+impl Default for GoalConfig {
+    fn default() -> Self {
+        Self {
+            enabled: true,
+            default_timeout: 24, // 24 hours
+            progress_interval: 15, // 15 minutes
+            auto_subgoals: true,
+            priority_weights: HashMap::new(),
+        }
+    }
+}
+
+impl Default for ContextConfig {
+    fn default() -> Self {
+        Self {
+            max_history_size: 1000,
+            persistence_interval: 30, // 30 minutes
+            enable_prediction: true,
+            similarity_threshold: 0.7,
+            enable_sharing: false,
+        }
+    }
+}
+
+impl Default for InterventionConfig {
+    fn default() -> Self {
+        Self {
+            enabled: true,
+            default_timeout: 10, // 10 minutes
+            max_per_hour: 5,
+            sensitivity: 0.6,
+            enable_adaptive: true,
+        }
+    }
+}
+
+impl Default for FontConfig {
+    fn default() -> Self {
+        Self {
+            family: "Inter".to_string(),
+            size: 14,
+            weight: "normal".to_string(),
+            line_height: 1.4,
+            letter_spacing: 0.0,
+        }
+    }
+}
+
+impl Default for LayoutConfig {
+    fn default() -> Self {
+        Self {
+            window_width: 1200,
+            window_height: 800,
+            panels: HashMap::new(),
+            responsive: true,
+        }
+    }
+}
+
+impl Default for AccessibilityConfig {
+    fn default() -> Self {
+        Self {
+            screen_reader: false,
+            high_contrast: false,
+            large_text: false,
+            keyboard_nav: true,
+            voice_commands: false,
+        }
+    }
+}
+
+impl Default for NotificationConfig {
+    fn default() -> Self {
+        Self {
+            enabled: true,
+            types: vec!["info".to_string(), "warning".to_string(), "error".to_string()],
+            timeout: 5,
+            sound: SoundConfig::default(),
+            visual: VisualNotificationConfig::default(),
+        }
+    }
+}
+
+impl Default for SoundConfig {
+    fn default() -> Self {
+        Self {
+            enabled: true,
+            volume: 0.5,
+            theme: "default".to_string(),
+            custom_sounds: HashMap::new(),
+        }
+    }
+}
+
+impl Default for VisualNotificationConfig {
+    fn default() -> Self {
+        Self {
+            enabled: true,
+            animation_duration: 300,
+            position: "top-right".to_string(),
+            max_notifications: 5,
+        }
+    }
+}
+
+impl Default for DatabaseConfig {
+    fn default() -> Self {
+        Self {
+            db_type: "sqlite".to_string(),
+            connection_string: "kwasa_kwasa.db".to_string(),
+            pool_size: 10,
+            connection_timeout: 30,
+            query_timeout: 60,
+            enable_migrations: true,
+        }
+    }
+}
+
+impl Default for FileStorageConfig {
+    fn default() -> Self {
+        Self {
+            root_dir: PathBuf::from("./data"),
+            naming_convention: "timestamp".to_string(),
+            max_file_size: 100, // 100MB
+            enable_compression: true,
+            compression_algorithm: "gzip".to_string(),
+            enable_encryption: false,
+        }
+    }
+}
+
+impl Default for CacheConfig {
+    fn default() -> Self {
+        Self {
+            cache_type: "memory".to_string(),
+            max_size_mb: 256,
+            ttl_seconds: 3600, // 1 hour
+            enable_lru: true,
+            warming_strategies: vec!["preload".to_string()],
+        }
+    }
+}
+
+impl Default for BackupConfig {
+    fn default() -> Self {
+        Self {
+            enabled: true,
+            interval_hours: 24,
+            retention_days: 30,
+            backup_dir: PathBuf::from("./backups"),
+            compression: true,
+            remote: None,
+        }
+    }
+}
+
+impl Default for IoConfig {
+    fn default() -> Self {
+        Self {
+            buffer_sizes: HashMap::new(),
+            timeout_ms: 5000,
+            enable_async: true,
+            filesystem: FilesystemConfig::default(),
+        }
+    }
+}
+
+impl Default for FilesystemConfig {
+    fn default() -> Self {
+        Self {
+            enable_watching: true,
+            watch_patterns: vec!["*.toml".to_string(), "*.txt".to_string()],
+            temp_cleanup_interval: 60,
+            enable_caching: true,
+        }
+    }
+}
+
+impl Default for NetworkConfig {
+    fn default() -> Self {
+        Self {
+            connection_timeout: 30,
+            read_timeout: 60,
+            write_timeout: 60,
+            max_connections: 100,
+            enable_keep_alive: true,
+            proxy: None,
+        }
+    }
+}
+
+impl Default for ProfilingConfig {
+    fn default() -> Self {
+        Self {
+            output_dir: PathBuf::from("./profile"),
+            interval: 60,
+            enable_cpu: true,
+            enable_memory: true,
+            enable_io: false,
+        }
+    }
+}
+
+impl Default for TracingConfig {
+    fn default() -> Self {
+        Self {
+            output_dir: PathBuf::from("./traces"),
+            buffer_size: 1024,
+            enable_distributed: false,
+            endpoint: None,
+            sampling_rate: 0.1,
+        }
+    }
 } 
