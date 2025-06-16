@@ -45,9 +45,11 @@ pub enum Value {
     String(String),
     Boolean(bool),
     Function(Function),
+    #[serde(skip)]
     NativeFunction(NativeFunction),
     Array(Vec<Value>),
     Object(std::collections::HashMap<String, Value>),
+    #[serde(skip)]
     Module(ObjectRef),
     TextUnit(TextUnit),
     List(Vec<Value>),
@@ -170,16 +172,20 @@ impl PartialEq for Function {
 // Add Eq implementation for Function
 impl Eq for Function {}
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Function {
     params: Vec<String>,
+    #[serde(skip)]
     body: Box<Statement>,
+    #[serde(skip)]
     closure: Environment,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 struct Environment {
+    #[serde(skip)]
     values: HashMap<String, Value>,
+    #[serde(skip)]
     enclosing: Option<Rc<RefCell<Environment>>>,
 }
 

@@ -35,7 +35,7 @@ impl Span {
 }
 
 /// Represents a value in the Turbulance language
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
 pub enum Value {
     String(String),
     Number(f64),
@@ -50,7 +50,7 @@ pub enum Value {
 }
 
 /// Represents a text unit, which is a block of text with metadata
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
 pub struct TextUnit {
     pub content: String,
     pub metadata: HashMap<String, Value>,
@@ -224,18 +224,21 @@ pub enum Node {
 }
 
 /// Represents a function definition
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
 pub struct FunctionDef {
     pub name: String,
     pub parameters: Vec<Parameter>,
+    #[serde(skip)]
     pub body: Box<Node>,
 }
 
 /// Represents a parameter in a function declaration
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
 pub struct Parameter {
     pub name: String,
+    #[serde(skip)]
     pub default_value: Option<Node>,
+    #[serde(skip)]
     pub span: Span,
 }
 
