@@ -48,6 +48,7 @@ pub use intelligence_examples::run_all_intelligence_examples;
 
 // Re-export revolutionary Tres Commas Engine components
 pub use tres_commas::{TresCommasEngine, ConsciousnessLayer, CognitiveProcess, RespirationState, demonstrate_tres_commas};
+pub use champagne_simple::{ChampagneModule, DreamMode, DreamInsight, demonstrate_champagne_phase};
 
 // Re-export main types for easy access
 pub use goal::{Goal, GoalType, GoalMetrics, SuccessCriterion, Strategy, GoalStatus};
