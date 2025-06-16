@@ -28,6 +28,7 @@ pub mod v8_metabolism; // V8 Biological Truth Processing Pipeline
 pub mod clothesline;   // Comprehension Validator & Context Gatekeeper
 pub mod pungwe;        // ATP Synthase & Understanding Gap Detector
 pub mod champagne_simple; // Dream Mode Processing & Lactate Recovery
+pub mod integrated_simple; // Complete Integrated Biological AI System
 
 // Re-export main components
 pub use metacognitive::MetacognitiveOrchestrator;
@@ -49,6 +50,7 @@ pub use intelligence_examples::run_all_intelligence_examples;
 // Re-export revolutionary Tres Commas Engine components
 pub use tres_commas::{TresCommasEngine, ConsciousnessLayer, CognitiveProcess, RespirationState, demonstrate_tres_commas};
 pub use champagne_simple::{ChampagneModule, DreamMode, DreamInsight, demonstrate_champagne_phase};
+pub use integrated_simple::{IntegratedTresCommasSystem, demonstrate_integrated_system, quick_demo};
 
 // Re-export main types for easy access
 pub use goal::{Goal, GoalType, GoalMetrics, SuccessCriterion, Strategy, GoalStatus};
