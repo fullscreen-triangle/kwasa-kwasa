@@ -284,7 +284,7 @@ The framework introduces data structures specifically for metacognitive text pro
 
 ```turbulance
 // Create an evidence network for scientific analysis
-var network = new EvidenceNetwork()
+item network = new EvidenceNetwork()
 
 // Add nodes representing different types of evidence
 network.add_node("genomic_1", EvidenceNode.GenomicFeature {
@@ -375,23 +375,23 @@ Turbulance enables mathematical-like operations on text:
 
 1. **Division (/)**: Segments text into units
    ```turbulance
-   var paragraphs = document / "paragraph"
-   var topics = document / "topic"
+   item paragraphs = document / "paragraph"
+   item topics = document / "topic"
    ```
 
 2. **Multiplication (*)**: Combines with transitions
    ```turbulance
-   var section = historical_context * current_regulations
+   item section = historical_context * current_regulations
    ```
 
 3. **Addition (+)**: Combines with connectives
    ```turbulance
-   var comprehensive_view = pilot_testimony + expert_analysis
+   item comprehensive_view = pilot_testimony + expert_analysis
    ```
 
 4. **Subtraction (-)**: Removes elements
    ```turbulance
-   var accessible_explanation = technical_explanation - jargon
+   item accessible_explanation = technical_explanation - jargon
    ```
 
 #### Transformation Pipelines
@@ -1132,6 +1132,7 @@ This hybrid processing system represents a fundamental advancement in computatio
    - Contextual understanding of content domains
    - Intervention decision system
    - Progress evaluation against goals
+   - **Five Revolutionary Intelligence Modules** (see below)
 
 4. **Knowledge Integration Engine**
    - Research interface for contextual information retrieval
@@ -1198,6 +1199,74 @@ This hybrid processing system represents a fundamental advancement in computatio
    - Unified query interface
    - Conflict detection and resolution
 
+## The Five Revolutionary Intelligence Modules
+
+The MetaCognitive Orchestrator incorporates five breakthrough modules that solve the fundamental problem of **"orchestration without learning"**. These modules provide the tangible objective function missing from traditional text processing systems, transforming Kwasa-Kwasa from sophisticated text manipulation into true text intelligence.
+
+### **Mzekezeke - The Bayesian Learning Engine**
+**Purpose**: Provides the tangible objective function through temporal Bayesian belief networks
+
+- **Temporal Evidence Decay**: Models how text meaning degrades over time with multiple decay functions
+- **Multi-Dimensional Text Assessment**: Evaluates text across semantic coherence, contextual relevance, temporal validity, source credibility, logical consistency, and evidence support
+- **Network Optimization**: Variational inference as the concrete mathematical objective that the orchestrator optimizes toward
+- **Uncertainty Propagation**: Tracks confidence degradation through text transformations
+- **ATP Integration**: Metabolic cost modeling for belief updates and network optimization
+
+### **Diggiden - The Adversarial System**
+**Purpose**: Continuously attacks text processing to find vulnerabilities and evidence flaws
+
+- **Attack Strategies**: Contradiction injection, temporal manipulation, semantic spoofing, perturbation attacks
+- **Vulnerability Detection**: Belief manipulation, context exploitation, credibility bypass, pipeline weaknesses
+- **Adaptive Learning**: Success rate tracking and strategy evolution
+- **Stealth Operations**: Adjustable attack visibility for continuous monitoring
+- **Integration Testing**: Property-based testing with systematic fuzzing
+
+### **Hatata - The Decision System**
+**Purpose**: Markov Decision Process with utility functions for probabilistic state transitions
+
+- **Utility Functions**: Linear, quadratic, exponential, logarithmic utility models for different text processing goals
+- **MDP Framework**: Complete state space, action space, transition probabilities for text processing decisions
+- **Stochastic Modeling**: Wiener process, Ornstein-Uhlenbeck, Geometric Brownian motion for uncertainty
+- **Value Iteration**: Optimal decision making between text processing states
+- **Risk-Adjusted Optimization**: Utility maximization with uncertainty quantification
+
+### **Spectacular - The Extraordinary Handler**
+**Purpose**: Specialized module for handling extraordinary data and anomalous findings
+
+- **Detection Criteria**: Unexpected semantic clarity, paradigm-shifting content, cross-domain resonance, novel patterns
+- **Processing Strategies**: Paradigm amplification, anomaly enhancement, contextual elevation, resonance detection
+- **Significance Scoring**: Multi-factor analysis of finding importance and potential impact
+- **ATP Investment**: Additional metabolic cost for extraordinary processing (500+ ATP base cost)
+- **Historical Registry**: Maintains record of most significant discoveries for future reference
+
+### **Nicotine - The Context Validator**
+**Purpose**: Context preservation system that validates understanding through machine-readable puzzles
+
+- **Context Tracking**: Continuous monitoring of text processing state and drift detection
+- **Break Triggers**: Operations count, time elapsed, complexity accumulation, drift thresholds
+- **Coded Puzzles**: Machine-readable challenges that validate context retention (hash chains, state encoding, sequence validation)
+- **Drift Prevention**: Catches when AI loses sight of original text processing objectives
+- **Confidence Restoration**: Successful validation restores processing confidence to 95%
+
+## The Trinity Solution to Text Intelligence
+
+These five modules work together to solve the fundamental **"orchestration without learning"** problem:
+
+1. **Mzekezeke provides the objective function**: A tangible Bayesian belief network that the text orchestrator optimizes toward
+2. **Diggiden provides robustness**: Continuous adversarial testing ensures text processing remains reliable
+3. **Hatata provides optimization**: Decision-theoretic utility maximization guides optimal text processing transitions
+4. **Spectacular handles breakthrough insights**: Ensures extraordinary text discoveries receive appropriate attention
+5. **Nicotine prevents context drift**: Validates continued understanding through systematic challenges
+
+This creates a **self-improving text processing system** where:
+- Mzekezeke learns from text with temporal decay awareness
+- Diggiden attacks to find text processing vulnerabilities  
+- Hatata optimizes decisions about text processing states
+- Spectacular elevates paradigm-shifting content
+- Nicotine maintains contextual coherence through validation
+
+The result is the first text processing system that truly **understands** rather than merely **manipulates** text.
+
 ### Domain Extensions
 
 Kwasa-Kwasa's core philosophy of arbitrarily defined boundaries and semantic unit manipulation extends beyond traditional text processing to other domains, allowing you to work with diverse data types using the same powerful abstractions.
@@ -1217,7 +1286,7 @@ import fuzzy
 import hybrid
 
 // Create a comprehensive evidence network
-var evidence_network = evidence.EvidenceNetwork.new()
+item evidence_network = evidence.EvidenceNetwork.new()
 
 // Add genomic evidence
 evidence_network.add_genomic_evidence("BRCA1_mutation", {
@@ -1257,7 +1326,7 @@ evidence_network.add_fuzzy_rule(
 )
 
 // Perform hybrid analysis
-var analysis_result = evidence_network.hybrid_analysis()
+item analysis_result = evidence_network.hybrid_analysis()
 print("Evidence strength: " + analysis_result.overall_strength)
 print("Recommendation: " + analysis_result.clinical_recommendation)
 ```
@@ -1268,7 +1337,7 @@ The framework implements sophisticated Bayesian reasoning for evidence evaluatio
 
 ```turbulance
 // Create Bayesian evidence network
-var bayesian_net = evidence.BayesianNetwork.new()
+item bayesian_net = evidence.BayesianNetwork.new()
 
 // Define conditional dependencies
 bayesian_net.add_node("genetic_predisposition", ["low", "moderate", "high"])
@@ -1290,7 +1359,7 @@ bayesian_net.observe("genetic_predisposition", "high")
 bayesian_net.update_beliefs()
 
 // Query for disease probability
-var disease_probability = bayesian_net.query("disease_outcome", "positive")
+item disease_probability = bayesian_net.query("disease_outcome", "positive")
 print("Disease probability given evidence: " + disease_probability)
 ```
 
@@ -1306,13 +1375,13 @@ evidence_network.add_contradiction_rule(
 )
 
 // Analyze for contradictions
-var contradictions = evidence_network.detect_contradictions()
+item contradictions = evidence_network.detect_contradictions()
 
 considering contradictions:
     print("Contradiction found: " + contradiction.description)
     
     // Propose resolution strategies
-    var strategies = contradiction.resolution_strategies()
+    item strategies = contradiction.resolution_strategies()
     considering strategies:
         print("Resolution option: " + strategy.description)
         print("Required actions: " + strategy.required_actions)
@@ -1324,7 +1393,7 @@ The framework supports sophisticated evidence fusion across multiple data modali
 
 ```turbulance
 // Create multi-modal evidence fusion system
-var fusion_system = evidence.MultiModalFusion.new()
+item fusion_system = evidence.MultiModalFusion.new()
 
 // Add different evidence modalities
 fusion_system.add_modality("genomic", weight=0.35)
@@ -1339,10 +1408,10 @@ fusion_system.add_fusion_rule("weighted_consensus", {
 })
 
 // Perform evidence fusion
-var fused_result = fusion_system.fuse_evidence(evidence_network)
+item fused_result = fusion_system.fuse_evidence(evidence_network)
 
 // Generate comprehensive report
-var report = fusion_system.generate_evidence_report(fused_result, {
+item report = fusion_system.generate_evidence_report(fused_result, {
     include_uncertainty: true,
     include_sensitivity_analysis: true,
     format: "clinical_summary"

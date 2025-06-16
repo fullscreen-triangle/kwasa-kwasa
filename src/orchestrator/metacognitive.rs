@@ -118,8 +118,9 @@ impl MetacognitiveOrchestrator {
             .add_processor(ReasoningLayerProcessor::new(self.reasoning_layer.clone(), self.knowledge.clone()))
             .add_processor(IntuitionLayerProcessor::new(self.intuition_layer.clone(), self.knowledge.clone()));
         
-        // Create input
-        pipeline.create_input()
+        // Create and return input channels
+        let (tx, rx) = channel(32);
+        (tx, rx)
     }
     
     /// Process streaming input and collect via callback
@@ -188,6 +189,10 @@ impl StreamProcessor for ContextLayerProcessor {
     fn name(&self) -> &str {
         "ContextLayerProcessor"
     }
+    
+    fn stats(&self) -> super::stream::ProcessorStats {
+        super::stream::ProcessorStats::default()
+    }
 }
 
 /// Processor that wraps the reasoning layer
@@ -233,6 +238,10 @@ impl StreamProcessor for ReasoningLayerProcessor {
     
     fn name(&self) -> &str {
         "ReasoningLayerProcessor"
+    }
+    
+    fn stats(&self) -> super::stream::ProcessorStats {
+        super::stream::ProcessorStats::default()
     }
 }
 
@@ -284,6 +293,10 @@ impl StreamProcessor for IntuitionLayerProcessor {
     fn name(&self) -> &str {
         "IntuitionLayerProcessor"
     }
+    
+    fn stats(&self) -> super::stream::ProcessorStats {
+        super::stream::ProcessorStats::default()
+    }
 }
 
 /// Default context layer implementation
@@ -319,6 +332,10 @@ impl StreamProcessor for DefaultContextLayer {
     fn name(&self) -> &str {
         "DefaultContextLayer"
     }
+    
+    fn stats(&self) -> super::stream::ProcessorStats {
+        super::stream::ProcessorStats::default()
+    }
 }
 
 /// Default reasoning layer implementation
@@ -350,6 +367,10 @@ impl StreamProcessor for DefaultReasoningLayer {
     
     fn name(&self) -> &str {
         "DefaultReasoningLayer"
+    }
+    
+    fn stats(&self) -> super::stream::ProcessorStats {
+        super::stream::ProcessorStats::default()
     }
 }
 
@@ -384,5 +405,9 @@ impl StreamProcessor for DefaultIntuitionLayer {
     
     fn name(&self) -> &str {
         "DefaultIntuitionLayer"
+    }
+    
+    fn stats(&self) -> super::stream::ProcessorStats {
+        super::stream::ProcessorStats::default()
     }
 } 

@@ -76,7 +76,7 @@ pub fn create_custom_orchestrator() -> MetacognitiveOrchestrator {
 /// Example: Process text using the orchestrator
 pub async fn process_text_example(text: &str) -> Vec<StreamData> {
     // Create orchestrator
-    let orchestrator = create_default_orchestrator();
+    let mut orchestrator = create_default_orchestrator();
     
     // Add some knowledge
     orchestrator.add_knowledge("domain", "creative writing");

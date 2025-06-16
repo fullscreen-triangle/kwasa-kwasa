@@ -44,7 +44,7 @@ pub struct Orchestrator {
     units: Arc<Mutex<TextUnitRegistry>>,
     
     /// Connection to the knowledge database
-    knowledge_db: Arc<Mutex<Result<KnowledgeDatabase>>>,
+    knowledge_db: Arc<Mutex<Result<KnowledgeDatabase, crate::error::Error>>>,
     
     /// Available interventions
     interventions: Vec<Box<dyn Intervention>>,
@@ -64,7 +64,7 @@ pub struct Orchestrator {
 
 impl Orchestrator {
     /// Create a new orchestrator
-    pub fn new(goal: Goal, knowledge_db: Arc<Mutex<Result<KnowledgeDatabase>>>) -> Self {
+    pub fn new(goal: Goal, knowledge_db: Arc<Mutex<Result<KnowledgeDatabase, crate::error::Error>>>) -> Self {
         let context = Arc::new(Mutex::new(Context::new()));
         let units = Arc::new(Mutex::new(TextUnitRegistry::new()));
         

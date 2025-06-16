@@ -194,7 +194,7 @@ where
 {
     async fn process(&self, mut input: Receiver<StreamData>) -> Receiver<StreamData> {
         let (tx, rx) = channel(32);
-        let function = &self.function;
+        let function = Arc::new(&self.function);
         let name = self.name.clone();
         
         tokio::spawn(async move {
@@ -268,7 +268,7 @@ where
 {
     async fn process(&self, mut input: Receiver<StreamData>) -> Receiver<StreamData> {
         let (tx, rx) = channel(32);
-        let predicate = &self.predicate;
+        let predicate = Arc::new(&self.predicate);
         let name = self.name.clone();
         
         tokio::spawn(async move {
@@ -295,6 +295,10 @@ where
     
     fn name(&self) -> &str {
         &self.name
+    }
+    
+    fn stats(&self) -> ProcessorStats {
+        ProcessorStats::default()
     }
 }
 
@@ -387,6 +391,10 @@ impl StreamProcessor for BatchProcessor {
     fn name(&self) -> &str {
         &self.name
     }
+    
+    fn stats(&self) -> ProcessorStats {
+        ProcessorStats::default()
+    }
 }
 
 /// Combine a batch of StreamData into a single StreamData
@@ -426,7 +434,7 @@ fn combine_batch(batch: &[StreamData]) -> StreamData {
         confidence: avg_confidence,
         metadata: combined_metadata,
         is_final: batch.iter().all(|d| d.is_final),
-        processing_hints: Vec::new(),
+        state: crate::orchestrator::types::StreamState::Processing,
     }
 }
 
@@ -529,6 +537,10 @@ where
     
     fn name(&self) -> &str {
         &self.name
+    }
+    
+    fn stats(&self) -> ProcessorStats {
+        ProcessorStats::default()
     }
 }
 
