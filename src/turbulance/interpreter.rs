@@ -175,18 +175,31 @@ impl Eq for Function {}
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Function {
     params: Vec<String>,
-    #[serde(skip)]
+    #[serde(skip, default = "default_statement")]
     body: Box<Statement>,
-    #[serde(skip)]
+    #[serde(skip, default)]
     closure: Environment,
+}
+
+fn default_statement() -> Box<Node> {
+    Box::new(Node::Identifier("".to_string(), crate::turbulance::ast::Span::new(
+        crate::turbulance::ast::Position::new(0, 0, 0),
+        crate::turbulance::ast::Position::new(0, 0, 0)
+    )))
 }
 
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 struct Environment {
-    #[serde(skip)]
+    #[serde(skip, default)]
     values: HashMap<String, Value>,
-    #[serde(skip)]
+    #[serde(skip, default)]
     enclosing: Option<Rc<RefCell<Environment>>>,
+}
+
+impl Default for Environment {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl Environment {

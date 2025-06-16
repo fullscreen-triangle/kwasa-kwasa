@@ -228,18 +228,29 @@ pub enum Node {
 pub struct FunctionDef {
     pub name: String,
     pub parameters: Vec<Parameter>,
-    #[serde(skip)]
+    #[serde(skip, default = "default_node")]
     pub body: Box<Node>,
+}
+
+fn default_node() -> Box<Node> {
+    Box::new(Node::Identifier("".to_string(), default_span()))
 }
 
 /// Represents a parameter in a function declaration
 #[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
 pub struct Parameter {
     pub name: String,
-    #[serde(skip)]
+    #[serde(skip, default)]
     pub default_value: Option<Node>,
-    #[serde(skip)]
+    #[serde(skip, default = "default_span")]
     pub span: Span,
+}
+
+fn default_span() -> Span {
+    Span::new(
+        Position::new(0, 0, 0),
+        Position::new(0, 0, 0)
+    )
 }
 
 /// Represents a source declaration

@@ -27,6 +27,7 @@ pub mod tres_commas;   // Trinity-Based Cognitive Architecture
 pub mod v8_metabolism; // V8 Biological Truth Processing Pipeline
 pub mod clothesline;   // Comprehension Validator & Context Gatekeeper
 pub mod pungwe;        // ATP Synthase & Understanding Gap Detector
+pub mod champagne_simple; // Dream Mode Processing & Lactate Recovery
 
 // Re-export main components
 pub use metacognitive::MetacognitiveOrchestrator;
