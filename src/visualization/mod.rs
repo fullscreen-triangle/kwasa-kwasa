@@ -549,9 +549,10 @@ impl SvgRenderer {
                 let height = (category.value * scale) as u32;
                 let y = visualization.config.height - height - 50;
                 
+                let color = "#69b3a2";
                 bars.push_str(&format!(
                     r#"<rect x="{}" y="{}" width="{}" height="{}" fill="{}"/>"#,
-                    x, y, bar_width, height, "#69b3a2"
+                    x, y, bar_width, height, color
                 ));
                 
                 bars.push_str(&format!(

@@ -294,7 +294,8 @@ impl Orchestrator {
 impl Default for Orchestrator {
     fn default() -> Self {
         let temp_path = std::env::temp_dir().join("kwasa_default.db");
-        let db_result = crate::knowledge::KnowledgeDatabase::new(&temp_path);
+        let db_result = crate::knowledge::KnowledgeDatabase::new(&temp_path)
+            .map_err(|e| crate::error::Error::Database(format!("Database error: {}", e)));
         Self::new(Goal::new("Default Goal", 0.5), Arc::new(Mutex::new(db_result)))
     }
 }
