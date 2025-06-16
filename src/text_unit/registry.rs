@@ -426,15 +426,17 @@ mod tests {
         
         let unit1 = TextUnit::new(
             "This is a test sentence".to_string(),
-            TextUnitType::Sentence,
             0,
             23,
+            TextUnitType::Sentence,
+            0, // hierarchy_level
         );
         let unit2 = TextUnit::new(
             "Another example paragraph".to_string(),
-            TextUnitType::Paragraph,
             24,
             49,
+            TextUnitType::Paragraph,
+            0, // hierarchy_level
         );
         
         registry.add_unit(unit1);
@@ -459,9 +461,10 @@ mod tests {
         
         let unit = TextUnit::new(
             "Hello world".to_string(),
-            TextUnitType::Sentence,
             10,
             21,
+            TextUnitType::Sentence,
+            0, // hierarchy_level
         );
         
         registry.add_unit(unit);
@@ -487,9 +490,10 @@ mod tests {
         
         let unit = TextUnit::new(
             "Valid unit".to_string(),
-            TextUnitType::Paragraph,
             0,
             10,
+            TextUnitType::Paragraph,
+            0, // hierarchy_level
         );
         
         registry.add_unit(unit);
