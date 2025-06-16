@@ -19,13 +19,13 @@ Turbulance uses dynamic typing with strong type inference:
 
 ```turbulance
 // Basic variable declaration
-var temperature = 23.5
-var molecule_name = "caffeine"
-var is_valid = true
+item temperature = 23.5
+item molecule_name = "caffeine"
+item is_valid = true
 
 // Typed declarations for clarity
-var data: TimeSeries = load_series("temperature.csv")
-var patterns: PatternSet = {}
+item data: TimeSeries = load_series("temperature.csv")
+item patterns: PatternSet = {}
 ```
 
 ### 2. Functions
@@ -35,8 +35,8 @@ Functions in Turbulance use the `funxn` keyword (a play on "function"):
 ```turbulance
 // Basic function
 funxn calculate_average(numbers):
-    var sum = 0
-    var count = 0
+    item sum = 0
+    item count = 0
     
     for each number in numbers:
         sum = sum + number
@@ -98,7 +98,7 @@ within text_data:
 // Complex pattern with variables
 within genetic_sequence:
     given matches("ATG(?<codon>...)TAG"):
-        var protein_start = codon
+        item protein_start = codon
         analyze_protein(protein_start)
 ```
 
@@ -106,36 +106,36 @@ within genetic_sequence:
 
 #### Lists and Arrays
 ```turbulance
-var numbers = [1, 2, 3, 4, 5]
-var mixed_data = ["text", 42, true, 3.14]
+item numbers = [1, 2, 3, 4, 5]
+item mixed_data = ["text", 42, true, 3.14]
 
 // Dynamic arrays
-var temperatures = []
+item temperatures = []
 temperatures.append(23.5)
 temperatures.extend([24.1, 22.8, 25.3])
 ```
 
 #### Dictionaries/Maps
 ```turbulance
-var person = {
+item person = {
     "name": "Dr. Smith",
     "age": 45,
     "department": "Physics"
 }
 
 // Accessing values
-var name = person["name"]
-var age = person.age  // Dot notation also works
+item name = person["name"]
+item age = person.age  // Dot notation also works
 ```
 
 #### Sets
 ```turbulance
-var unique_values = {1, 2, 3, 4, 5}
-var gene_names = {"BRCA1", "TP53", "EGFR"}
+item unique_values = {1, 2, 3, 4, 5}
+item gene_names = {"BRCA1", "TP53", "EGFR"}
 
 // Set operations
-var intersection = set1 & set2
-var union = set1 | set2
+item intersection = set1 & set2
+item union = set1 | set2
 ```
 
 ## Domain-Specific Extensions
@@ -144,30 +144,30 @@ var union = set1 | set2
 
 ```turbulance
 // Mathematical operations
-var matrix = [[1, 2], [3, 4]]
-var eigenvalues = calculate_eigenvalues(matrix)
+item matrix = [[1, 2], [3, 4]]
+item eigenvalues = calculate_eigenvalues(matrix)
 
 // Statistical functions
-var mean_value = mean(dataset)
-var correlation = pearson_correlation(x_values, y_values)
+item mean_value = mean(dataset)
+item correlation = pearson_correlation(x_values, y_values)
 ```
 
 ### Text Analysis
 
 ```turbulance
 // Natural language processing
-var sentiment = analyze_sentiment(text)
-var topics = extract_topics(documents, num_topics=5)
-var entities = recognize_entities(text)
+item sentiment = analyze_sentiment(text)
+item topics = extract_topics(documents, num_topics=5)
+item entities = recognize_entities(text)
 ```
 
 ### Bioinformatics
 
 ```turbulance
 // Genomic analysis
-var gc_content = calculate_gc_content(dna_sequence)
-var alignment = align_sequences(seq1, seq2, algorithm="needleman-wunsch")
-var variants = call_variants(reference, sample)
+item gc_content = calculate_gc_content(dna_sequence)
+item alignment = align_sequences(seq1, seq2, algorithm="needleman-wunsch")
+item variants = call_variants(reference, sample)
 ```
 
 ## Advanced Features
@@ -227,7 +227,7 @@ Turbulance provides comprehensive error handling:
 
 ```turbulance
 try:
-    var result = risky_operation(data)
+    item result = risky_operation(data)
 catch PatternNotFound as e:
     print("Pattern matching failed: {}".format(e.message))
     use_fallback_method()
@@ -255,9 +255,9 @@ import chemistry as chem
 // Conditional imports based on availability
 try:
     import experimental_features
-    var use_experimental = true
+    item use_experimental = true
 catch ImportError:
-    var use_experimental = false
+    item use_experimental = false
 ```
 
 ## Concurrency and Parallelism
@@ -272,14 +272,14 @@ parallel analyze_samples(samples):
 
 // Async operations
 async funxn fetch_data(url):
-    var response = await http_get(url)
+    item response = await http_get(url)
     return parse_response(response)
 
 // Concurrent evidence gathering
 concurrent gather_evidence():
-    var text_evidence = analyze_text_async(documents)
-    var numeric_evidence = analyze_numbers_async(datasets)
-    var pattern_evidence = find_patterns_async(sequences)
+    item text_evidence = analyze_text_async(documents)
+    item numeric_evidence = analyze_numbers_async(datasets)
+    item pattern_evidence = find_patterns_async(sequences)
     
     await all([text_evidence, numeric_evidence, pattern_evidence])
 ```
@@ -290,21 +290,21 @@ Turbulance features a gradual type system:
 
 ```turbulance
 // Dynamic typing (default)
-var data = load_file("data.csv")
+item data = load_file("data.csv")
 
 // Optional type annotations
-var temperature: Float = 23.5
-var genes: List[String] = ["BRCA1", "TP53"]
+item temperature: Float = 23.5
+item genes: List[String] = ["BRCA1", "TP53"]
 
 // Generic types
 funxn process_items<T>(items: List[T]) -> List[T]:
     // Process items of any type T
 
 // Union types
-var identifier: String | Integer = "sample_001"
+item identifier: String | Integer = "sample_001"
 
 // Optional types
-var optional_value: String? = might_return_none()
+item optional_value: String? = might_return_none()
 ```
 
 ## Memory Management
@@ -313,12 +313,12 @@ Automatic memory management with manual control when needed:
 
 ```turbulance
 // Automatic cleanup
-var large_dataset = load_massive_file("huge_data.csv")
+item large_dataset = load_massive_file("huge_data.csv")
 // Automatically freed when out of scope
 
 // Manual memory management for large operations
 with managed_memory(limit="2GB"):
-    var results = process_big_data(dataset)
+    item results = process_big_data(dataset)
     
 // Streaming for memory efficiency
 stream process_large_file(filename):
@@ -345,15 +345,15 @@ debug print("Intermediate result: {}", calculation_step)
 ```turbulance
 // Unit tests
 test "calculate_gc_content works correctly":
-    var sequence = "ATCGATCG"
-    var expected = 0.5
-    var actual = calculate_gc_content(sequence)
+    item sequence = "ATCGATCG"
+    item expected = 0.5
+    item actual = calculate_gc_content(sequence)
     assert_equals(expected, actual)
 
 // Property-based testing
 property "sequence length is preserved":
     for any sequence in generate_dna_sequences():
-        var processed = process_sequence(sequence)
+        item processed = process_sequence(sequence)
         assert len(processed) == len(sequence)
 ```
 

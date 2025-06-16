@@ -42,10 +42,10 @@ struct Goal {
 
 ```turbulance
 // Simple goal creation
-var goal = Goal.new("Write a clear technical tutorial", 0.8)
+item goal = Goal.new("Write a clear technical tutorial", 0.8)
 
 // Detailed goal creation
-var tutorial_goal = Goal.new("Create beginner-friendly machine learning tutorial") {
+item tutorial_goal = Goal.new("Create beginner-friendly machine learning tutorial") {
     success_threshold: 0.85,
     keywords: ["tutorial", "beginner", "machine learning", "step-by-step"],
     domain: "education",
@@ -59,7 +59,7 @@ var tutorial_goal = Goal.new("Create beginner-friendly machine learning tutorial
 
 #### Writing Quality Goals
 ```turbulance
-var clarity_goal = Goal.new("Ensure text clarity for general audience") {
+item clarity_goal = Goal.new("Ensure text clarity for general audience") {
     success_threshold: 0.7,
     metrics: {
         readability_score: 65,     // Minimum Flesch-Kincaid score
@@ -68,7 +68,7 @@ var clarity_goal = Goal.new("Ensure text clarity for general audience") {
     }
 }
 
-var engagement_goal = Goal.new("Create engaging and compelling content") {
+item engagement_goal = Goal.new("Create engaging and compelling content") {
     success_threshold: 0.75,
     metrics: {
         attention_retention: 0.8,   // Predicted reader attention span
@@ -80,7 +80,7 @@ var engagement_goal = Goal.new("Create engaging and compelling content") {
 
 #### Content Structure Goals
 ```turbulance
-var organization_goal = Goal.new("Maintain logical content organization") {
+item organization_goal = Goal.new("Maintain logical content organization") {
     success_threshold: 0.8,
     metrics: {
         coherence_score: 0.75,      // Inter-paragraph logical flow
@@ -89,7 +89,7 @@ var organization_goal = Goal.new("Maintain logical content organization") {
     }
 }
 
-var completeness_goal = Goal.new("Cover all required topics comprehensively") {
+item completeness_goal = Goal.new("Cover all required topics comprehensively") {
     success_threshold: 0.9,
     keywords: ["introduction", "methodology", "results", "conclusion"],
     metrics: {
@@ -102,7 +102,7 @@ var completeness_goal = Goal.new("Cover all required topics comprehensively") {
 
 #### Domain-Specific Goals
 ```turbulance
-var academic_goal = Goal.new("Meet academic writing standards") {
+item academic_goal = Goal.new("Meet academic writing standards") {
     success_threshold: 0.85,
     domain: "academic",
     metrics: {
@@ -112,7 +112,7 @@ var academic_goal = Goal.new("Meet academic writing standards") {
     }
 }
 
-var technical_goal = Goal.new("Create accurate technical documentation") {
+item technical_goal = Goal.new("Create accurate technical documentation") {
     success_threshold: 0.9,
     domain: "technical",
     metrics: {
@@ -130,14 +130,14 @@ var technical_goal = Goal.new("Create accurate technical documentation") {
 ```turbulance
 // Goals automatically track progress as you write
 funxn track_progress(goal: Goal, text: TextUnit) -> ProgressUpdate:
-    var progress = goal.evaluate_progress(text)
+    item progress = goal.evaluate_progress(text)
     
     // Update goal metrics
     goal.current_progress = progress.overall_score
     goal.last_updated = now()
     
     // Identify areas needing attention
-    var gaps = progress.identify_gaps()
+    item gaps = progress.identify_gaps()
     
     return ProgressUpdate {
         score: progress.overall_score,
@@ -152,7 +152,7 @@ funxn track_progress(goal: Goal, text: TextUnit) -> ProgressUpdate:
 ```turbulance
 // Real-time progress evaluation
 considering goal in active_goals:
-    var current_score = goal.evaluate_against(current_text)
+    item current_score = goal.evaluate_against(current_text)
     
     given current_score >= goal.success_threshold:
         goal.mark_completed()
@@ -172,7 +172,7 @@ considering goal in active_goals:
 ```turbulance
 // Operations can consider active goals
 funxn goal_aware_enhancement(text: TextUnit, goals: Array<Goal>) -> TextUnit:
-    var enhanced = text
+    item enhanced = text
     
     considering goal in goals where goal.is_active():
         given goal.requires_clarity() && readability_score(enhanced) < goal.metrics.readability_score:
@@ -215,7 +215,7 @@ proposition ContentQuality:
 
 ```turbulance
 // Break complex goals into manageable sub-goals
-var dissertation_goal = Goal.new("Complete PhD dissertation") {
+item dissertation_goal = Goal.new("Complete PhD dissertation") {
     success_threshold: 0.9,
     deadline: "2024-06-01"
 }
@@ -266,7 +266,7 @@ dissertation_goal.define_dependencies([
 // Automatic dependency checking
 funxn check_dependencies(goal: Goal) -> DependencyStatus:
     considering sub_goal in goal.sub_goals:
-        var dependencies = goal.get_dependencies(sub_goal)
+        item dependencies = goal.get_dependencies(sub_goal)
         
         considering dependency in dependencies:
             given not dependency.is_satisfied():
@@ -282,11 +282,11 @@ funxn check_dependencies(goal: Goal) -> DependencyStatus:
 ```turbulance
 // Goals can adapt based on progress and context
 funxn adaptive_goal_management(goals: Array<Goal>, context: WritingContext) -> Array<Goal>:
-    var adapted_goals = goals
+    item adapted_goals = goals
     
     considering goal in adapted_goals:
         // Adjust based on progress velocity
-        var velocity = goal.calculate_velocity()
+        item velocity = goal.calculate_velocity()
         given velocity < 0.5 && goal.deadline.is_approaching():
             goal.suggest_scope_reduction()
             goal.increase_support_level()
@@ -298,7 +298,7 @@ funxn adaptive_goal_management(goals: Array<Goal>, context: WritingContext) -> A
         
         // Adjust based on audience feedback
         given has_audience_feedback(goal):
-            var feedback = get_audience_feedback(goal)
+            item feedback = get_audience_feedback(goal)
             goal.adapt_to_feedback(feedback)
     
     return adapted_goals
@@ -309,20 +309,20 @@ funxn adaptive_goal_management(goals: Array<Goal>, context: WritingContext) -> A
 ```turbulance
 // Handle conflicting goals automatically
 funxn resolve_goal_conflicts(goals: Array<Goal>) -> ConflictResolution:
-    var conflicts = detect_conflicts(goals)
+    item conflicts = detect_conflicts(goals)
     
     considering conflict in conflicts:
         given conflict.type == ConflictType.Priority:
             // Resolve by priority and deadline
-            var resolution = resolve_by_priority(conflict.goals)
+            item resolution = resolve_by_priority(conflict.goals)
             
         given conflict.type == ConflictType.Resource:
             // Resolve by resource optimization
-            var resolution = optimize_resource_allocation(conflict.goals)
+            item resolution = optimize_resource_allocation(conflict.goals)
             
         given conflict.type == ConflictType.Logical:
             // Resolve by logical consistency
-            var resolution = ensure_logical_consistency(conflict.goals)
+            item resolution = ensure_logical_consistency(conflict.goals)
     
     return ConflictResolution(resolutions)
 ```
@@ -334,10 +334,10 @@ funxn resolve_goal_conflicts(goals: Array<Goal>) -> ConflictResolution:
 ```turbulance
 // Provide context-aware suggestions based on goals
 funxn generate_goal_suggestions(text: TextUnit, goals: Array<Goal>) -> Array<Suggestion>:
-    var suggestions = []
+    item suggestions = []
     
     considering goal in goals where goal.needs_attention():
-        var gap_analysis = goal.analyze_gaps(text)
+        item gap_analysis = goal.analyze_gaps(text)
         
         given gap_analysis.has_clarity_gap():
             suggestions.add(Suggestion.ClarityImprovement {
@@ -368,12 +368,12 @@ funxn generate_goal_suggestions(text: TextUnit, goals: Array<Goal>) -> Array<Sug
 ```turbulance
 // Provide real-time writing guidance
 within active_writing_session:
-    var current_goals = get_active_goals()
-    var live_text = get_current_document()
+    item current_goals = get_active_goals()
+    item live_text = get_current_document()
     
     // Continuous evaluation
     every 30_seconds:
-        var progress_update = evaluate_progress(current_goals, live_text)
+        item progress_update = evaluate_progress(current_goals, live_text)
         
         given progress_update.has_immediate_suggestions():
             display_inline_suggestions(progress_update.suggestions)
@@ -424,8 +424,8 @@ struct CollaborativeGoal extends Goal {
 
 funxn coordinate_collaborative_goal(goal: CollaborativeGoal):
     considering collaborator in goal.collaborators:
-        var individual_progress = goal.evaluate_collaborator_progress(collaborator)
-        var team_progress = goal.evaluate_team_progress()
+        item individual_progress = goal.evaluate_collaborator_progress(collaborator)
+        item team_progress = goal.evaluate_team_progress()
         
         given team_progress.needs_coordination():
             suggest_coordination_meeting(goal.collaborators)
@@ -468,14 +468,14 @@ interface GoalOrchestration {
 impl MetacognitiveOrchestrator for GoalOrchestration {
     funxn process_goal_requests():
         considering goal in active_goals:
-            var status = goal.get_current_status()
+            item status = goal.get_current_status()
             
             given status.needs_attention():
-                var intervention = design_intervention(goal, status)
+                item intervention = design_intervention(goal, status)
                 execute_intervention(intervention)
             
             given status.conflicts_with_others():
-                var resolution = resolve_goal_conflicts([goal] + related_goals)
+                item resolution = resolve_goal_conflicts([goal] + related_goals)
                 apply_resolution(resolution)
 }
 ```

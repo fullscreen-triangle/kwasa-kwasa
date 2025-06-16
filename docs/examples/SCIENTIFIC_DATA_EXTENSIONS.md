@@ -70,7 +70,7 @@ The Mass Spectrometry extension allows processing of spectral data commonly prod
 import spectrometry
 
 // Create a spectrum from raw data
-var spectrum = spectrometry.MassSpectrum.from_numeric_data(
+item spectrum = spectrometry.MassSpectrum.from_numeric_data(
     [100.1, 120.2, 130.3, 145.6, 180.9, 212.4, 258.3],  // m/z values
     [1050, 320, 5200, 750, 3500, 12300, 8400],          // intensities
     "sample_spectrum"
@@ -86,26 +86,26 @@ print("Total intensity: {:.1}", sum(spectrum.peaks().map(p => p.intensity)))
 
 ```turbulance
 // Division: split by pattern
-var spectrum_ops = spectrometry.SpectrumOperations.new()
+item spectrum_ops = spectrometry.SpectrumOperations.new()
 
 // Split by m/z ranges (e.g., 100 m/z windows)
-var range_parts = spectrum_ops.divide(spectrum, "mz_range")
+item range_parts = spectrum_ops.divide(spectrum, "mz_range")
 
 // Split by intensity levels (low, medium, high)
-var intensity_parts = spectrum_ops.divide(spectrum, "intensity")
+item intensity_parts = spectrum_ops.divide(spectrum, "intensity")
 
 // Split into individual peaks
-var peak_parts = spectrum_ops.divide(spectrum, "peak")
+item peak_parts = spectrum_ops.divide(spectrum, "peak")
 
 // Addition: combining spectra
-var combined = spectrum_ops.add(spectrum1, spectrum2)
+item combined = spectrum_ops.add(spectrum1, spectrum2)
 
 // Multiplication: spectral convolution
-var convolved = spectrum_ops.multiply(spectrum1, spectrum2)
+item convolved = spectrum_ops.multiply(spectrum1, spectrum2)
 
 // Subtraction: background removal
-var background = create_background_spectrum()
-var background_subtracted = spectrum_ops.subtract(spectrum, background)
+item background = create_background_spectrum()
+item background_subtracted = spectrum_ops.subtract(spectrum, background)
 ```
 
 ### Integration with Propositions and Motions
@@ -127,21 +127,21 @@ proposition MassSpectralAnalysis:
 1. **Data preprocessing**:
    ```turbulance
    // Normalize spectrum
-   var normalized = spectrum.normalize()
+   item normalized = spectrum.normalize()
    
    // Filter by minimum intensity
-   var filtered = spectrum.filter_by_intensity(1000)
+   item filtered = spectrum.filter_by_intensity(1000)
    
    // Extract a specific m/z range
-   var range_of_interest = spectrum.extract_range(200, 300)
+   item range_of_interest = spectrum.extract_range(200, 300)
    ```
 
 2. **Fragment searching**:
    ```turbulance
    funxn find_fragments(spectrum, fragment_masses, tolerance=0.1):
-       var matches = []
+       item matches = []
        for each mass in fragment_masses:
-           var peaks = spectrum.peaks_in_range(mass - tolerance, mass + tolerance)
+           item peaks = spectrum.peaks_in_range(mass - tolerance, mass + tolerance)
            if len(peaks) > 0:
                matches.append((mass, peaks[0]))
        return matches
@@ -150,11 +150,11 @@ proposition MassSpectralAnalysis:
 3. **Spectral comparison**:
    ```turbulance
    funxn spectral_similarity(spec1, spec2, tolerance=0.1):
-       var common_peaks = 0
-       var total_peaks = len(spec1.peaks())
+       item common_peaks = 0
+       item total_peaks = len(spec1.peaks())
        
        for each peak1 in spec1.peaks():
-           var matching = spec2.peaks_in_range(peak1.mz - tolerance, peak1.mz + tolerance)
+           item matching = spec2.peaks_in_range(peak1.mz - tolerance, peak1.mz + tolerance)
            if len(matching) > 0:
                common_peaks += 1
        
@@ -179,8 +179,8 @@ The Cheminformatics extension enables processing of molecular structures, primar
 import chemistry
 
 // Create molecules from SMILES strings
-var ethanol = chemistry.Molecule.from_smiles("CCO", "ethanol")
-var aspirin = chemistry.Molecule.from_smiles("CC(=O)OC1=CC=CC=C1C(=O)O", "aspirin")
+item ethanol = chemistry.Molecule.from_smiles("CCO", "ethanol")
+item aspirin = chemistry.Molecule.from_smiles("CC(=O)OC1=CC=CC=C1C(=O)O", "aspirin")
 
 // Basic properties
 print("Ethanol SMILES: {}", ethanol.smiles())
@@ -192,23 +192,23 @@ print("Aspirin molecular weight: {:.2f}", aspirin.molecular_weight())
 
 ```turbulance
 // Division: split by pattern
-var molecule_ops = chemistry.MoleculeOperations.new()
+item molecule_ops = chemistry.MoleculeOperations.new()
 
 // Split by functional groups
-var functional_groups = molecule_ops.divide(aspirin, "functional_group")
+item functional_groups = molecule_ops.divide(aspirin, "functional_group")
 
 // Split by rings
-var rings = molecule_ops.divide(aspirin, "ring")
+item rings = molecule_ops.divide(aspirin, "ring")
 
 // Addition: combining molecules (mixing)
-var mixture = molecule_ops.add(ethanol, aspirin)
+item mixture = molecule_ops.add(ethanol, aspirin)
 
 // Multiplication: simulating reaction
-var reaction_product = molecule_ops.multiply(ethanol, aspirin)
+item reaction_product = molecule_ops.multiply(ethanol, aspirin)
 
 // Subtraction: removing a functional group
-var hydroxyl = chemistry.Molecule.from_smiles("O", "hydroxyl")
-var dehydroxylated = molecule_ops.subtract(ethanol, hydroxyl)
+item hydroxyl = chemistry.Molecule.from_smiles("O", "hydroxyl")
+item dehydroxylated = molecule_ops.subtract(ethanol, hydroxyl)
 ```
 
 ### Integration with Propositions and Motions
@@ -230,8 +230,8 @@ proposition MolecularAnalysis:
 1. **Structure analysis**:
    ```turbulance
    funxn analyze_functional_groups(molecule):
-       var smiles = molecule.smiles()
-       var groups = {}
+       item smiles = molecule.smiles()
+       item groups = {}
        
        if smiles.contains("OH"): groups["hydroxyl"] = smiles.count("OH")
        if smiles.contains("C(=O)O"): groups["carboxyl"] = smiles.count("C(=O)O")
@@ -243,11 +243,11 @@ proposition MolecularAnalysis:
 2. **Molecular similarity**:
    ```turbulance
    funxn tanimoto_similarity(mol1, mol2):
-       var fp1 = generate_fingerprint(mol1)
-       var fp2 = generate_fingerprint(mol2)
+       item fp1 = generate_fingerprint(mol1)
+       item fp2 = generate_fingerprint(mol2)
        
-       var intersection = bit_intersection(fp1, fp2)
-       var union = bit_union(fp1, fp2)
+       item intersection = bit_intersection(fp1, fp2)
+       item union = bit_union(fp1, fp2)
        
        return len(intersection) / len(union)
    ```
@@ -255,7 +255,7 @@ proposition MolecularAnalysis:
 3. **Drug-likeness prediction**:
    ```turbulance
    funxn check_lipinski_rule_of_five(molecule):
-       var violations = 0
+       item violations = 0
        
        if molecular_weight(molecule) > 500: violations += 1
        if count_h_donors(molecule) > 5: violations += 1
@@ -273,16 +273,16 @@ The Genomic extension is documented in more detail in `DOMAIN_EXPANSION.md`, but
 import genomic
 
 // Create a DNA sequence
-var dna = genomic.NucleotideSequence.new("ATGCTAGCTAGCTAGCTA", "gene_123")
+item dna = genomic.NucleotideSequence.new("ATGCTAGCTAGCTAGCTA", "gene_123")
 
 // Calculate GC content
 print("GC content: {:.2f}%", dna.gc_content() * 100)
 
 // Get reverse complement
-var rev_comp = dna.reverse_complement()
+item rev_comp = dna.reverse_complement()
 
 // Translate to protein
-var protein = dna.translate()
+item protein = dna.translate()
 ```
 
 ## Cross-Domain Applications
@@ -299,19 +299,19 @@ import chemistry
 // Analyze a protein-metabolite interaction
 funxn analyze_interaction(protein_sequence, metabolite_smiles, binding_spectrum):
     // Genomic analysis of protein
-    var protein = genomic.NucleotideSequence.new(protein_sequence, "protein")
-    var domains = protein / "domain"
+    item protein = genomic.NucleotideSequence.new(protein_sequence, "protein")
+    item domains = protein / "domain"
     
     // Chemical analysis of metabolite
-    var metabolite = chemistry.Molecule.from_smiles(metabolite_smiles, "metabolite")
-    var functional_groups = chemistry.MoleculeOperations.new().divide(metabolite, "functional_group")
+    item metabolite = chemistry.Molecule.from_smiles(metabolite_smiles, "metabolite")
+    item functional_groups = chemistry.MoleculeOperations.new().divide(metabolite, "functional_group")
     
     // Spectral analysis of binding
-    var binding_data = spectrometry.MassSpectrum.from_file(binding_spectrum)
-    var binding_peaks = binding_data.peaks_in_range(500, 1500)
+    item binding_data = spectrometry.MassSpectrum.from_file(binding_spectrum)
+    item binding_peaks = binding_data.peaks_in_range(500, 1500)
     
     // Cross-domain correlation
-    var correlations = correlate_binding_with_structure(binding_peaks, functional_groups, domains)
+    item correlations = correlate_binding_with_structure(binding_peaks, functional_groups, domains)
     
     return correlations
 ```
@@ -321,20 +321,20 @@ funxn analyze_interaction(protein_sequence, metabolite_smiles, binding_spectrum)
 ```turbulance
 // Convert spectral data to sequence representation
 funxn spectrum_to_sequence(spectrum):
-    var normalized = spectrum.normalize()
-    var sequence = ""
+    item normalized = spectrum.normalize()
+    item sequence = ""
     
     for each peak in normalized.peaks():
         // Convert intensity to amino acid letter (0-100% maps to A-Y)
-        var intensity_scaled = min(int(peak.intensity / 4), 24)
-        var amino = char(65 + intensity_scaled)  // ASCII: A=65, B=66, etc.
+        item intensity_scaled = min(int(peak.intensity / 4), 24)
+        item amino = char(65 + intensity_scaled)  // ASCII: A=65, B=66, etc.
         sequence = sequence + amino
     
     return genomic.NucleotideSequence.new(sequence, "spectrum_derived")
 
 // Now we can apply genomic analysis techniques to spectral data!
-var spec_seq = spectrum_to_sequence(mass_spectrum)
-var patterns = spec_seq / "pattern"
+item spec_seq = spectrum_to_sequence(mass_spectrum)
+item patterns = spec_seq / "pattern"
 ```
 
 ## Extension Development Guide
@@ -382,7 +382,7 @@ Want to create your own domain extension? Follow these steps:
    import my_domain
    
    // Demonstrate usage of your extension
-   var my_unit = my_domain.MyDomainUnit.new(...)
+   item my_unit = my_domain.MyDomainUnit.new(...)
    ```
 
 For detailed implementation guidance, see the existing extensions in `src/spectrometry/mod.rs`, `src/chemistry/mod.rs`, and `src/genomic/mod.rs`. 

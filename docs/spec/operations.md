@@ -30,14 +30,14 @@ result = text_unit / boundary_type
 #### Examples
 ```turbulance
 // Split a paragraph into sentences
-var sentences = paragraph / sentence
+item sentences = paragraph / sentence
 
 // Split text by custom boundaries
-var sections = document / section
-var words = sentence / word
+item sections = document / section
+item words = sentence / word
 
 // Chain divisions
-var all_words = document / paragraph / sentence / word
+item all_words = document / paragraph / sentence / word
 ```
 
 #### Semantic Preservation
@@ -66,14 +66,14 @@ result = unit1 * unit2 * ... * unitN
 #### Examples
 ```turbulance
 // Combine sentences into a paragraph
-var paragraph = sentence1 * sentence2 * sentence3
+item paragraph = sentence1 * sentence2 * sentence3
 
 // Smart combination with context awareness
-var coherent_text = intro * main_body * conclusion
+item coherent_text = intro * main_body * conclusion
 
 // Conditional combination
 given coherence_score(sentence1, sentence2) > 0.7:
-    var combined = sentence1 * sentence2
+    item combined = sentence1 * sentence2
 ```
 
 ### Addition Operations (`+`)
@@ -93,14 +93,14 @@ result = base_text + additional_content
 #### Examples
 ```turbulance
 // Extend a sentence
-var extended = original_sentence + " with additional context"
+item extended = original_sentence + " with additional context"
 
 // Add explanatory content
-var explained = technical_term + " (which refers to " + explanation + ")"
+item explained = technical_term + " (which refers to " + explanation + ")"
 
 // Conditional addition
 given needs_clarification(sentence):
-    var clarified = sentence + clarifying_phrase
+    item clarified = sentence + clarifying_phrase
 ```
 
 ### Subtraction Operations (`-`)
@@ -121,14 +121,14 @@ result = original_text - content_to_remove
 #### Examples
 ```turbulance
 // Remove specific phrases
-var cleaned = text - "unnecessary filler"
+item cleaned = text - "unnecessary filler"
 
 // Remove by pattern
-var formal = text - informal_expressions
+item formal = text - informal_expressions
 
 // Conditional removal
 given verbosity_score(text) > 0.8:
-    var concise = text - redundant_phrases
+    item concise = text - redundant_phrases
 ```
 
 ## Specialized Functions
@@ -279,7 +279,7 @@ chemical_similarity(molecule1: String, molecule2: String) -> f64
 ### Chaining Operations
 ```turbulance
 // Operations can be chained for complex transformations
-var result = text 
+item result = text 
     |> simplify_sentences()
     |> replace_jargon("academic")
     |> add_transitions()
@@ -299,7 +299,7 @@ given contains_technical_terms(text):
 ### Parallel Operations
 ```turbulance
 // Multiple operations can run in parallel
-var analysis = parallel {
+item analysis = parallel {
     sentiment_analysis(text),
     readability_score(text),
     extract_keywords(text, 15),
@@ -313,7 +313,7 @@ var analysis = parallel {
 ```turbulance
 // Operations include built-in validation
 try {
-    var sentences = malformed_text / sentence
+    item sentences = malformed_text / sentence
 } catch DivisionError(reason) {
     print("Cannot divide: {}", reason)
     // Handle gracefully
@@ -323,15 +323,15 @@ try {
 ### Type Safety
 ```turbulance
 // Operations are type-aware
-var paragraph = Paragraph("Some text")
-var sentences = paragraph / sentence  // ✓ Valid
-var invalid = paragraph / spectrum    // ✗ Compile-time error
+item paragraph = Paragraph("Some text")
+item sentences = paragraph / sentence  // ✓ Valid
+item invalid = paragraph / spectrum    // ✗ Compile-time error
 ```
 
 ### Semantic Validation
 ```turbulance
 // Operations validate semantic coherence
-var result = sentence1 * sentence2
+item result = sentence1 * sentence2
 if coherence_score(result) < threshold:
     suggest_connecting_phrase(sentence1, sentence2)
 ```
@@ -374,9 +374,9 @@ proposition TextQuality:
 motion claim = Motion("AI will transform education", "claim")
 
 // Operations specific to motion types
-var spelling_issues = claim.spelling()
-var factual_support = claim.find_supporting_evidence()
-var logical_coherence = claim.check_logical_consistency()
+item spelling_issues = claim.spelling()
+item factual_support = claim.find_supporting_evidence()
+item logical_coherence = claim.check_logical_consistency()
 ```
 
 This comprehensive operations system enables sophisticated text manipulation while maintaining semantic meaning and linguistic correctness.

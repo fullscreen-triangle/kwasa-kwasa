@@ -41,8 +41,8 @@ kwasa-kwasa validate script.turb
 ```turbulance
 // Function declaration
 funxn analyze_text(text, domain="general"):
-    var score = readability_score(text)
-    var keywords = extract_keywords(text, 10)
+    item score = readability_score(text)
+    item keywords = extract_keywords(text, 10)
     
     within text:
         given score < 50:
@@ -58,8 +58,8 @@ project research_analysis:
     goal "Extract key insights from research papers"
     
     funxn process_paper(paper):
-        var summary = extract_summary(paper)
-        var citations = extract_citations(paper)
+        item summary = extract_summary(paper)
+        item citations = extract_citations(paper)
         return {summary: summary, citations: citations}
 ```
 
@@ -67,16 +67,16 @@ project research_analysis:
 
 ```turbulance
 // Text division and manipulation
-var paragraphs = text / "paragraph"
-var sentences = text / "sentence"
-var words = text / "word"
+item paragraphs = text / "paragraph"
+item sentences = text / "sentence"
+item words = text / "word"
 
 // Text combination
-var combined = text1 + text2
-var repeated = text * 3
+item combined = text1 + text2
+item repeated = text * 3
 
 // Text filtering
-var filtered = text - stopwords
+item filtered = text - stopwords
 ```
 
 ### Control Flow
@@ -172,7 +172,7 @@ project academic_writing:
     relevance_threshold 0.8
     
     funxn enhance_for_goal(text):
-        var alignment = evaluate_alignment(text)
+        item alignment = evaluate_alignment(text)
         given alignment < 0.6:
             suggest_improvements()
         return text
@@ -183,8 +183,8 @@ project academic_writing:
 ```turbulance
 // Using the knowledge database
 funxn research_enhanced_writing(topic):
-    var context = research_context(topic)
-    var facts = fact_check(topic)
+    item context = research_context(topic)
+    item facts = fact_check(topic)
     
     ensure len(context) > 0
     return build_content(context, facts)
@@ -195,20 +195,20 @@ funxn research_enhanced_writing(topic):
 ```turbulance
 // Genomic analysis
 funxn analyze_dna_sequence(sequence):
-    var motifs = extract_motifs(sequence)
-    var enrichment = motif_enrichment(sequence, "ATCG")
+    item motifs = extract_motifs(sequence)
+    item enrichment = motif_enrichment(sequence, "ATCG")
     return {motifs: motifs, enrichment: enrichment}
 
 // Chemical analysis  
 funxn analyze_compound(formula):
-    var properties = calculate_properties(formula)
-    var reactions = predict_reactions(formula)
+    item properties = calculate_properties(formula)
+    item reactions = predict_reactions(formula)
     return {properties: properties, reactions: reactions}
 
 // Spectral analysis
 funxn compare_spectra(spec1, spec2):
-    var correlation = spectral_correlation(spec1, spec2)
-    var peaks = identify_peaks(spec1)
+    item correlation = spectral_correlation(spec1, spec2)
+    item peaks = identify_peaks(spec1)
     return {correlation: correlation, peaks: peaks}
 ```
 
@@ -287,7 +287,7 @@ const kwasa = await setupKwasa();
 // Execute Turbulance code
 const result = kwasa.execute_code(`
     funxn improve_text(text):
-        var score = readability_score(text)
+        item score = readability_score(text)
         given score < 60:
             return simplify_sentences(text)
         return text
@@ -317,19 +317,19 @@ project research_paper:
     relevance_threshold 0.8
     
     funxn analyze_literature():
-        var papers = load_papers()
-        var summaries = []
+        item papers = load_papers()
+        item summaries = []
         
         for paper in papers:
-            var summary = extract_summary(paper)
-            var keywords = extract_keywords(summary, 10)
+            item summary = extract_summary(paper)
+            item keywords = extract_keywords(summary, 10)
             summaries.append({paper: paper, summary: summary, keywords: keywords})
         
         return summaries
     
     funxn synthesize_findings(summaries):
-        var themes = identify_themes(summaries)
-        var connections = find_connections(themes)
+        item themes = identify_themes(summaries)
+        item connections = find_connections(themes)
         return build_synthesis(themes, connections)
 ```
 
@@ -342,8 +342,8 @@ project data_analysis:
     goal "Extract insights from multi-domain datasets"
     
     funxn cross_domain_analysis(genomic_data, spectral_data):
-        var correlation = cross_domain_correlation(genomic_data, spectral_data)
-        var significance = permutation_significance(correlation, random_baseline)
+        item correlation = cross_domain_correlation(genomic_data, spectral_data)
+        item significance = permutation_significance(correlation, random_baseline)
         
         ensure significance < 0.05
         
@@ -368,8 +368,8 @@ project academic_writing:
     // Related functions here
 
 // Use meaningful variable names
-var readability_threshold = 65
-var technical_term_density = 0.15
+item readability_threshold = 65
+item technical_term_density = 0.15
 ```
 
 ### Error Handling
@@ -379,7 +379,7 @@ funxn safe_analysis(text):
     ensure len(text) > 0
     ensure typeof(text) == "string"
     
-    var result = analyze_text(text)
+    item result = analyze_text(text)
     
     given result == null:
         return default_analysis()
@@ -391,18 +391,18 @@ funxn safe_analysis(text):
 
 ```turbulance
 // Use appropriate text units for operations
-var sentences = text / "sentence"  // More efficient than word-level for sentence analysis
+item sentences = text / "sentence"  // More efficient than word-level for sentence analysis
 
 // Cache expensive computations
-var cached_score = memoize(readability_score, text)
+item cached_score = memoize(readability_score, text)
 
 // Use streaming for large documents
 funxn process_large_document(document):
-    var chunks = document / "paragraph"
-    var results = []
+    item chunks = document / "paragraph"
+    item results = []
     
     for chunk in chunks:
-        var result = process_chunk(chunk)
+        item result = process_chunk(chunk)
         results.append(result)
     
     return merge_results(results)
@@ -542,7 +542,7 @@ resolution evaluate_medical_claim(point: MedicalPoint) -> MedicalOutcome {
 }
 
 // Execute the resolution
-var outcome = evaluate_medical_claim(research_claim)
+item outcome = evaluate_medical_claim(research_claim)
 print(f"Resolution confidence: {outcome.confidence}")
 print(f"Clinical recommendation: {outcome.recommendation}")
 ```
@@ -553,7 +553,7 @@ Create networks of interconnected points for complex reasoning:
 
 ```turbulance
 // Build a discourse network
-var network = DiscourseNetwork::new()
+item network = DiscourseNetwork::new()
 
 // Add multiple related points
 network.add_point("main_hypothesis", research_claim)
@@ -565,7 +565,7 @@ network.add_causal_link("supporting_study", "main_hypothesis", strength: 0.84)
 network.add_supporting_link("methodology", "supporting_study", strength: 0.91)
 
 // Perform network-wide resolution
-var network_outcome = network.global_resolution()
+item network_outcome = network.global_resolution()
 print(f"Network coherence: {network_outcome.coherence_score}")
 print(f"Overall confidence: {network_outcome.confidence_interval}")
 ```
@@ -578,10 +578,10 @@ Positional semantics recognizes that word location fundamentally affects meaning
 
 ```turbulance
 // Analyze positional semantics
-var analyzer = PositionalAnalyzer::new()
-var sentence = "Significantly, the new treatment reduces mortality."
+item analyzer = PositionalAnalyzer::new()
+item sentence = "Significantly, the new treatment reduces mortality."
 
-var analysis = analyzer.analyze(sentence)
+item analysis = analyzer.analyze(sentence)
 
 // Each word has position-dependent properties
 for word in analysis.words {
@@ -613,17 +613,17 @@ All text operations can account for positional semantics:
 ```turbulance
 // Position-weighted similarity comparison
 funxn compare_medical_statements(statement1, statement2) -> PositionalSimilarity {
-    var analysis1 = PositionalAnalyzer::analyze(statement1)
-    var analysis2 = PositionalAnalyzer::analyze(statement2)
+    item analysis1 = PositionalAnalyzer::analyze(statement1)
+    item analysis2 = PositionalAnalyzer::analyze(statement2)
     
-    var similarity_score = 0.0
-    var total_weight = 0.0
+    item similarity_score = 0.0
+    item total_weight = 0.0
     
     // Weight similarity by positional importance
     for (word1, word2) in align_word_sequences(analysis1, analysis2) {
-        var semantic_similarity = calculate_semantic_similarity(word1, word2)
-        var position_weight = min(word1.position_weight, word2.position_weight)
-        var role_compatibility = assess_role_compatibility(word1.semantic_role, word2.semantic_role)
+        item semantic_similarity = calculate_semantic_similarity(word1, word2)
+        item position_weight = min(word1.position_weight, word2.position_weight)
+        item role_compatibility = assess_role_compatibility(word1.semantic_role, word2.semantic_role)
         
         similarity_score += semantic_similarity * position_weight * role_compatibility
         total_weight += position_weight
@@ -637,9 +637,9 @@ funxn compare_medical_statements(statement1, statement2) -> PositionalSimilarity
 }
 
 // Usage
-var stmt1 = "The treatment significantly improves patient outcomes."
-var stmt2 = "Patient outcomes improve significantly with treatment."
-var similarity = compare_medical_statements(stmt1, stmt2)
+item stmt1 = "The treatment significantly improves patient outcomes."
+item stmt2 = "Patient outcomes improve significantly with treatment."
+item similarity = compare_medical_statements(stmt1, stmt2)
 
 print(f"Positional similarity: {similarity.weighted_similarity}")  // ~0.73
 print(f"Role alignment: {similarity.role_alignment}")              // ~0.68
@@ -652,17 +652,17 @@ Generate embeddings that capture position-dependent meaning:
 
 ```turbulance
 // Create position-aware embeddings
-var embedding_model = PositionalEmbeddingModel::new()
+item embedding_model = PositionalEmbeddingModel::new()
 
 // Same word, different positions = different embeddings
-var critical_beginning = embedding_model.embed("critical", Position::SentenceInitial)
-var critical_middle = embedding_model.embed("critical", Position::MidSentence)
-var critical_end = embedding_model.embed("critical", Position::SentenceFinal)
+item critical_beginning = embedding_model.embed("critical", Position::SentenceInitial)
+item critical_middle = embedding_model.embed("critical", Position::MidSentence)
+item critical_end = embedding_model.embed("critical", Position::SentenceFinal)
 
 // Compare positional embedding differences
-var beg_mid_sim = cosine_similarity(critical_beginning, critical_middle)  // ~0.74
-var mid_end_sim = cosine_similarity(critical_middle, critical_end)        // ~0.82
-var beg_end_sim = cosine_similarity(critical_beginning, critical_end)     // ~0.69
+item beg_mid_sim = cosine_similarity(critical_beginning, critical_middle)  // ~0.74
+item mid_end_sim = cosine_similarity(critical_middle, critical_end)        // ~0.82
+item beg_end_sim = cosine_similarity(critical_beginning, critical_end)     // ~0.69
 
 print(f"Position affects meaning: beginning-end similarity = {beg_end_sim}")
 ```
@@ -675,14 +675,14 @@ Test the robustness of resolutions through systematic perturbations:
 
 ```turbulance
 // Create perturbation validator
-var validator = PerturbationValidator::new()
+item validator = PerturbationValidator::new()
 
 // Original text and resolution
-var original = "Machine learning algorithms demonstrate significant improvements in diagnostic accuracy."
-var original_resolution = evaluate_claim(extract_point(original))
+item original = "Machine learning algorithms demonstrate significant improvements in diagnostic accuracy."
+item original_resolution = evaluate_claim(extract_point(original))
 
 // Apply comprehensive perturbation testing
-var validation = validator.validate_comprehensive(original, original_resolution)
+item validation = validator.validate_comprehensive(original, original_resolution)
 
 // Analyze results
 print(f"Overall stability: {validation.overall_stability}")
@@ -701,7 +701,7 @@ for perturbation in validation.perturbation_results {
 #### Word Removal Testing
 ```turbulance
 // Test which words are essential for meaning
-var removal_analysis = validator.word_removal_analysis(original)
+item removal_analysis = validator.word_removal_analysis(original)
 
 for word_test in removal_analysis.results {
     print(f"Removing '{word_test.word}': semantic impact = {word_test.impact}")
@@ -717,7 +717,7 @@ for word_test in removal_analysis.results {
 #### Positional Rearrangement Testing
 ```turbulance
 // Test sensitivity to word order changes
-var rearrangement = validator.positional_rearrangement_analysis(original)
+item rearrangement = validator.positional_rearrangement_analysis(original)
 
 print(f"Most stable arrangement: {rearrangement.most_stable.text}")
 print(f"  Stability score: {rearrangement.most_stable.score}")
@@ -731,7 +731,7 @@ print(f"Order sensitivity: {rearrangement.order_sensitivity}")
 #### Synonym Substitution Testing
 ```turbulance
 // Test robustness to word choice variations
-var substitution = validator.synonym_substitution_analysis(original)
+item substitution = validator.synonym_substitution_analysis(original)
 
 for sub_test in substitution.results {
     print(f"'{sub_test.original}' → '{sub_test.replacement}'")
@@ -749,7 +749,7 @@ Create and manage collections of points with uncertainty:
 
 ```turbulance
 // Initialize a probabilistic floor
-var floor = ProbabilisticFloor::new()
+item floor = ProbabilisticFloor::new()
 
 // Add points with varying certainty and weights
 floor.add_point("primary_claim", certainty: 0.84, weight: 0.91)
@@ -758,11 +758,11 @@ floor.add_point("methodology", certainty: 0.95, weight: 0.65)
 floor.add_point("limitations", certainty: 0.88, weight: 0.44)
 
 // Sample points based on combined certainty and weight
-var selected_points = floor.sample_weighted(count: 3)
+item selected_points = floor.sample_weighted(count: 3)
 print(f"Selected points for processing: {selected_points}")
 
 // Get probability distribution across points
-var distribution = floor.get_probability_distribution()
+item distribution = floor.get_probability_distribution()
 for (point_id, probability) in distribution {
     print(f"Point '{point_id}': selection probability = {probability}")
 }
@@ -774,7 +774,7 @@ for (point_id, probability) in distribution {
 ```turbulance
 // Basic cycle with confidence tracking
 cycle item over floor:
-    var analysis_result = resolution.analyze(item)
+    item analysis_result = resolution.analyze(item)
     
     // Switch processing mode based on confidence
     if analysis_result.confidence > 0.75:
@@ -794,11 +794,11 @@ cycle item over floor:
 ```turbulance
 // Probabilistic drift through content
 drift text_chunk in large_corpus:
-    var complexity = assess_chunk_complexity(text_chunk)
-    var uncertainty = assess_chunk_uncertainty(text_chunk)
+    item complexity = assess_chunk_complexity(text_chunk)
+    item uncertainty = assess_chunk_uncertainty(text_chunk)
     
     // Probability of deep analysis depends on complexity and uncertainty
-    var analysis_probability = calculate_drift_probability(complexity, uncertainty)
+    item analysis_probability = calculate_drift_probability(complexity, uncertainty)
     
     if random() < analysis_probability:
         // Deep probabilistic analysis
@@ -813,8 +813,8 @@ drift text_chunk in large_corpus:
 ```turbulance
 // Adaptive streaming processing
 flow line on floor:
-    var line_properties = analyze_line_properties(line)
-    var processing_mode = determine_optimal_mode(line_properties)
+    item line_properties = analyze_line_properties(line)
+    item processing_mode = determine_optimal_mode(line_properties)
     
     match processing_mode {
         ProcessingMode::FastDeterministic => {
@@ -824,7 +824,7 @@ flow line on floor:
             resolution.probabilistic_deep_parse(line)
         },
         ProcessingMode::HybridAdaptive => {
-            var quick_result = resolution.fast_parse(line)
+            item quick_result = resolution.fast_parse(line)
             if quick_result.confidence < 0.7 {
                 // Refine with probabilistic methods
                 resolution.probabilistic_refinement(quick_result)
@@ -837,7 +837,7 @@ flow line on floor:
 ```turbulance
 // Iterative resolution until convergence
 roll until settled:
-    var current_state = resolution.assess_current_state()
+    item current_state = resolution.assess_current_state()
     
     // Check multiple convergence criteria
     if current_state.is_settled(tolerance: 0.05) {
@@ -863,22 +863,22 @@ roll until settled:
 // Full hybrid function demonstrating all features
 funxn comprehensive_document_analysis(document, confidence_threshold=0.75) -> HybridAnalysisResult {
     // Initialize probabilistic floor from document
-    var floor = ProbabilisticFloor::from_document(document)
-    var processor = HybridProcessor::new(confidence_threshold)
+    item floor = ProbabilisticFloor::from_document(document)
+    item processor = HybridProcessor::new(confidence_threshold)
     
     // Multi-stage analysis with adaptive processing
-    var analysis_results = []
+    item analysis_results = []
     
     // Stage 1: Stream through document sections
     flow section on floor:
-        var section_complexity = calculate_complexity(section)
+        item section_complexity = calculate_complexity(section)
         
         // Adaptive mode selection
         processor.set_mode_based_on_complexity(section_complexity)
         
         considering sentence in section:
             // Extract points with positional awareness
-            var points = extract_points_with_position(sentence)
+            item points = extract_points_with_position(sentence)
             
             // Conditional probabilistic processing
             if sentence.contains_high_uncertainty_points():
@@ -886,15 +886,15 @@ funxn comprehensive_document_analysis(document, confidence_threshold=0.75) -> Hy
                 
                 // Process each point through resolution
                 for point in points:
-                    var resolution = create_adaptive_resolution(point)
+                    item resolution = create_adaptive_resolution(point)
                     
                     // Probabilistic convergence loop
                     roll until settled:
-                        var assessment = resolution.assess(point)
+                        item assessment = resolution.assess(point)
                         
                         if assessment.confidence > confidence_threshold:
                             // Validate with perturbation testing
-                            var validation = perturbation_validate(point, assessment)
+                            item validation = perturbation_validate(point, assessment)
                             
                             if validation.reliability >= ReliabilityCategory::Reliable:
                                 accept_point_resolution(assessment)
@@ -914,12 +914,12 @@ funxn comprehensive_document_analysis(document, confidence_threshold=0.75) -> Hy
         analysis_results.push(section_analysis)
     
     // Stage 2: Network-wide coherence analysis
-    var discourse_network = build_discourse_network(analysis_results)
-    var network_coherence = discourse_network.assess_global_coherence()
+    item discourse_network = build_discourse_network(analysis_results)
+    item network_coherence = discourse_network.assess_global_coherence()
     
     // Stage 3: Final confidence assessment
     cycle result over analysis_results:
-        var result_confidence = result.calculate_confidence()
+        item result_confidence = result.calculate_confidence()
         
         if result_confidence > 0.8:
             continue_deterministic()
@@ -942,8 +942,8 @@ funxn comprehensive_document_analysis(document, confidence_threshold=0.75) -> Hy
 }
 
 // Execute comprehensive analysis
-var document = load_document("complex_research_paper.txt")
-var result = comprehensive_document_analysis(document, confidence_threshold: 0.8)
+item document = load_document("complex_research_paper.txt")
+item result = comprehensive_document_analysis(document, confidence_threshold: 0.8)
 
 // Display results
 print(f"Document Analysis Complete")

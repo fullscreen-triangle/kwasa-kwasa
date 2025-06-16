@@ -11,7 +11,7 @@ Turbulance is a domain-specific language designed for semantic text processing a
 #### Keywords
 ```
 funxn       function declaration
-var         variable declaration
+item         variable declaration
 let         immutable binding
 given       conditional expression
 within      scope boundary
@@ -332,11 +332,11 @@ TextUnit - Pattern -> TextUnit
 ```turbulance
 within document:
     // 'document' is available as implicit variable
-    var sections = document / section
+    item sections = document / section
     
     within section:
         // both 'document' and 'section' available
-        var paragraphs = section / paragraph
+        item paragraphs = section / paragraph
 ```
 
 ### Motion and Proposition Semantics
@@ -390,18 +390,18 @@ typeof(value: Any) -> String
 ```turbulance
 // Genomic extension
 import genomic
-var dna = genomic.Sequence("ATGC...")
-var codons = dna / codon
+item dna = genomic.Sequence("ATGC...")
+item codons = dna / codon
 
 // Chemistry extension  
 import chemistry
-var molecule = chemistry.from_smiles("CC(=O)O")
-var fragments = molecule / functional_group
+item molecule = chemistry.from_smiles("CC(=O)O")
+item fragments = molecule / functional_group
 
 // Mass spectrometry extension
 import mass_spec
-var spectrum = mass_spec.load("data.mzML")
-var peaks = spectrum / peak
+item spectrum = mass_spec.load("data.mzML")
+item peaks = spectrum / peak
 ```
 
 ## Syntax Examples
@@ -409,7 +409,7 @@ var peaks = spectrum / peak
 ### Complete Function Example
 ```turbulance
 funxn enhance_academic_text(text: TextUnit, domain: String = "general") -> TextUnit:
-    var enhanced = text
+    item enhanced = text
     
     // Check readability and improve if needed
     given readability_score(enhanced) < 60:
@@ -445,7 +445,7 @@ proposition AcademicQuality:
 ### Complex Text Processing Pipeline
 ```turbulance
 funxn process_research_paper(paper: Document) -> Document:
-    var processed = paper
+    item processed = paper
     
     // Analyze each section differently
     considering all section in processed:
@@ -465,7 +465,7 @@ funxn process_research_paper(paper: Document) -> Document:
                 |> ensure_clear_presentation()
     
     // Cross-section analysis
-    var coherence = check_cross_section_coherence(processed)
+    item coherence = check_cross_section_coherence(processed)
     given coherence < 0.8:
         processed = improve_transitions(processed)
     

@@ -30,42 +30,42 @@ The genomics extension provides comprehensive tools for DNA, RNA, and protein an
 import genomics
 
 // Create sequence objects
-var dna_seq = genomics.DNASequence("ATGCGATCGTAGC")
-var rna_seq = genomics.RNASequence("AUGCGAUCGUAGC")
+item dna_seq = genomics.DNASequence("ATGCGATCGTAGC")
+item rna_seq = genomics.RNASequence("AUGCGAUCGUAGC")
 
 // Basic analysis
-var gc_content = dna_seq.gc_content()
-var complement = dna_seq.complement()
-var reverse_complement = dna_seq.reverse_complement()
+item gc_content = dna_seq.gc_content()
+item complement = dna_seq.complement()
+item reverse_complement = dna_seq.reverse_complement()
 
 // Find open reading frames
-var orfs = dna_seq.find_orfs(min_length=100)
+item orfs = dna_seq.find_orfs(min_length=100)
 
 // Translate to protein
-var protein = rna_seq.translate()
+item protein = rna_seq.translate()
 ```
 
 #### Advanced Features
 
 ```turbulance
 // Multiple sequence alignment
-var sequences = [
+item sequences = [
     genomics.DNASequence("ATGCGATCG"),
     genomics.DNASequence("ATGCGATGG"),
     genomics.DNASequence("ATGCGATAG")
 ]
 
-var alignment = genomics.align_multiple(sequences, algorithm="muscle")
-var phylo_tree = genomics.build_phylogeny(alignment, method="neighbor_joining")
+item alignment = genomics.align_multiple(sequences, algorithm="muscle")
+item phylo_tree = genomics.build_phylogeny(alignment, method="neighbor_joining")
 
 // Variant analysis
-var reference = genomics.load_reference("hg38.fa")
-var sample_reads = genomics.load_reads("sample.fastq")
-var variants = genomics.call_variants(reference, sample_reads)
+item reference = genomics.load_reference("hg38.fa")
+item sample_reads = genomics.load_reads("sample.fastq")
+item variants = genomics.call_variants(reference, sample_reads)
 
 // Gene expression analysis
-var expression_data = genomics.load_expression("expression_matrix.csv")
-var de_genes = genomics.differential_expression(
+item expression_data = genomics.load_expression("expression_matrix.csv")
+item de_genes = genomics.differential_expression(
     expression_data, 
     condition_a="control", 
     condition_b="treatment"
@@ -76,26 +76,26 @@ var de_genes = genomics.differential_expression(
 
 ```turbulance
 // Genomic intervals
-var interval = genomics.GenomicInterval("chr1", 1000, 2000, strand="+")
-var gene_annotation = genomics.GeneAnnotation(
+item interval = genomics.GenomicInterval("chr1", 1000, 2000, strand="+")
+item gene_annotation = genomics.GeneAnnotation(
     gene_id="ENSG00000001",
     symbol="BRCA1",
     intervals=[interval]
 )
 
 // Variant representations
-var snv = genomics.SNV("chr1", 12345, "A", "T")
-var indel = genomics.Indel("chr2", 67890, "ATG", "A")
+item snv = genomics.SNV("chr1", 12345, "A", "T")
+item indel = genomics.Indel("chr2", 67890, "ATG", "A")
 
 // Population genetics
-var population = genomics.Population([
+item population = genomics.Population([
     genomics.Individual("IND001", genotype="AA"),
     genomics.Individual("IND002", genotype="AT"),
     genomics.Individual("IND003", genotype="TT")
 ])
 
-var allele_freq = population.allele_frequency()
-var hardy_weinberg = population.test_hardy_weinberg()
+item allele_freq = population.allele_frequency()
+item hardy_weinberg = population.test_hardy_weinberg()
 ```
 
 ### 2. Chemistry Extension
@@ -115,48 +115,48 @@ The chemistry extension enables molecular structure analysis and chemical inform
 import chemistry
 
 // Create molecules from SMILES
-var ethanol = chemistry.Molecule.from_smiles("CCO")
-var aspirin = chemistry.Molecule.from_smiles("CC(=O)OC1=CC=CC=C1C(=O)O")
+item ethanol = chemistry.Molecule.from_smiles("CCO")
+item aspirin = chemistry.Molecule.from_smiles("CC(=O)OC1=CC=CC=C1C(=O)O")
 
 // Basic properties
-var mol_weight = ethanol.molecular_weight()
-var formula = ethanol.molecular_formula()
-var atom_count = ethanol.atom_count()
+item mol_weight = ethanol.molecular_weight()
+item formula = ethanol.molecular_formula()
+item atom_count = ethanol.atom_count()
 
 // Functional group analysis
-var functional_groups = aspirin.identify_functional_groups()
-var aromatic_rings = aspirin.count_aromatic_rings()
+item functional_groups = aspirin.identify_functional_groups()
+item aromatic_rings = aspirin.count_aromatic_rings()
 ```
 
 #### Advanced Chemical Analysis
 
 ```turbulance
 // Chemical reactions
-var reactants = [
+item reactants = [
     chemistry.Molecule.from_smiles("CCO"),      // Ethanol
     chemistry.Molecule.from_smiles("CC(=O)O")   // Acetic acid
 ]
 
-var products = chemistry.predict_reaction(reactants, reaction_type="esterification")
+item products = chemistry.predict_reaction(reactants, reaction_type="esterification")
 
 // Molecular similarity
-var similarity = chemistry.tanimoto_similarity(aspirin, ethanol)
-var cluster = chemistry.cluster_molecules(
+item similarity = chemistry.tanimoto_similarity(aspirin, ethanol)
+item cluster = chemistry.cluster_molecules(
     [aspirin, ethanol, /* more molecules */],
     similarity_threshold=0.7
 )
 
 // Property prediction
-var logp = chemistry.predict_logp(aspirin)
-var solubility = chemistry.predict_solubility(aspirin)
-var toxicity = chemistry.predict_toxicity(aspirin)
+item logp = chemistry.predict_logp(aspirin)
+item solubility = chemistry.predict_solubility(aspirin)
+item toxicity = chemistry.predict_toxicity(aspirin)
 ```
 
 #### Drug Discovery Tools
 
 ```turbulance
 // ADMET prediction
-var admet = chemistry.predict_admet(aspirin)
+item admet = chemistry.predict_admet(aspirin)
 print("Absorption: {}", admet.absorption)
 print("Distribution: {}", admet.distribution)
 print("Metabolism: {}", admet.metabolism)
@@ -164,8 +164,8 @@ print("Excretion: {}", admet.excretion)
 print("Toxicity: {}", admet.toxicity)
 
 // Lead optimization
-var lead_compound = chemistry.Molecule.from_smiles("...")
-var optimized = chemistry.optimize_lead(
+item lead_compound = chemistry.Molecule.from_smiles("...")
+item optimized = chemistry.optimize_lead(
     lead_compound,
     objectives=["potency", "selectivity", "admet"],
     constraints=["molecular_weight < 500", "logp < 5"]
@@ -189,16 +189,16 @@ Specialized tools for mass spectrometry data analysis.
 import massspec
 
 // Load spectrum data
-var spectrum = massspec.load_spectrum("sample.mzML")
+item spectrum = massspec.load_spectrum("sample.mzML")
 
 // Basic processing
-var processed = spectrum
+item processed = spectrum
     .smooth(method="savitzky_golay")
     .baseline_correct()
     .normalize()
 
 // Peak detection
-var peaks = processed.find_peaks(
+item peaks = processed.find_peaks(
     intensity_threshold=1000,
     snr_threshold=3.0
 )
@@ -208,25 +208,25 @@ var peaks = processed.find_peaks(
 
 ```turbulance
 // Metabolomics workflow
-var samples = massspec.load_samples("metabolomics_data/")
-var aligned = massspec.align_peaks(samples)
-var identified = massspec.identify_metabolites(
+item samples = massspec.load_samples("metabolomics_data/")
+item aligned = massspec.align_peaks(samples)
+item identified = massspec.identify_metabolites(
     aligned,
     database="HMDB",
     mass_tolerance=0.005
 )
 
 // Statistical analysis
-var pca_result = massspec.pca_analysis(identified)
-var differential = massspec.differential_analysis(
+item pca_result = massspec.pca_analysis(identified)
+item differential = massspec.differential_analysis(
     identified,
     group_a="control",
     group_b="treatment"
 )
 
 // Proteomics analysis
-var protein_spectrum = massspec.load_proteomics("proteins.mgf")
-var peptides = massspec.database_search(
+item protein_spectrum = massspec.load_proteomics("proteins.mgf")
+item peptides = massspec.database_search(
     protein_spectrum,
     database="uniprot_human",
     enzyme="trypsin"
@@ -250,10 +250,10 @@ Tools for computational physics and data analysis.
 import physics
 
 // Classical mechanics
-var particle = physics.Particle(mass=1.0, charge=1.0, position=[0, 0, 0])
-var force_field = physics.ElectricField(strength=1000, direction=[1, 0, 0])
+item particle = physics.Particle(mass=1.0, charge=1.0, position=[0, 0, 0])
+item force_field = physics.ElectricField(strength=1000, direction=[1, 0, 0])
 
-var trajectory = physics.simulate_trajectory(
+item trajectory = physics.simulate_trajectory(
     particle,
     force_field,
     time_steps=1000,
@@ -261,34 +261,34 @@ var trajectory = physics.simulate_trajectory(
 )
 
 // Quantum mechanics
-var hamiltonian = physics.quantum.Hamiltonian(
+item hamiltonian = physics.quantum.Hamiltonian(
     kinetic_energy=physics.quantum.KineticEnergy(),
     potential=physics.quantum.HarmonicOscillator(frequency=1.0)
 )
 
-var eigenvalues, eigenvectors = hamiltonian.solve()
+item eigenvalues, eigenvectors = hamiltonian.solve()
 ```
 
 #### Advanced Physics Analysis
 
 ```turbulance
 // Statistical mechanics
-var system = physics.statistical.CanonicalEnsemble(
+item system = physics.statistical.CanonicalEnsemble(
     temperature=300,  // Kelvin
     particles=1000
 )
 
-var partition_function = system.partition_function()
-var thermodynamic_props = system.thermodynamic_properties()
+item partition_function = system.partition_function()
+item thermodynamic_props = system.thermodynamic_properties()
 
 // Signal processing
-var signal = physics.signals.load_signal("detector_data.csv")
-var filtered = signal
+item signal = physics.signals.load_signal("detector_data.csv")
+item filtered = signal
     .bandpass_filter(low_freq=10, high_freq=1000)
     .denoise(method="wavelet")
 
-var fft_result = signal.fourier_transform()
-var peaks = fft_result.find_peaks()
+item fft_result = signal.fourier_transform()
+item peaks = fft_result.find_peaks()
 ```
 
 ### 5. Materials Science Extension
@@ -308,13 +308,13 @@ Tools for materials analysis and property prediction.
 import materials
 
 // Crystal structure
-var crystal = materials.Crystal.from_cif("structure.cif")
-var space_group = crystal.space_group()
-var density = crystal.density()
+item crystal = materials.Crystal.from_cif("structure.cif")
+item space_group = crystal.space_group()
+item density = crystal.density()
 
 // Property prediction
-var band_gap = materials.predict_band_gap(crystal)
-var elastic_modulus = materials.predict_elastic_modulus(crystal)
+item band_gap = materials.predict_band_gap(crystal)
+item elastic_modulus = materials.predict_elastic_modulus(crystal)
 ```
 
 ## Cross-Domain Integration
@@ -328,12 +328,12 @@ import genomics
 import chemistry
 
 // Analyze drug-target interactions
-var target_protein = genomics.Protein.from_sequence("MKTAYIAK...")
-var drug_compound = chemistry.Molecule.from_smiles("CC(C)CC1=CC=C(C=C1)C(C)C(=O)O")
+item target_protein = genomics.Protein.from_sequence("MKTAYIAK...")
+item drug_compound = chemistry.Molecule.from_smiles("CC(C)CC1=CC=C(C=C1)C(C)C(=O)O")
 
 // Predict binding affinity
-var binding_site = target_protein.predict_binding_site()
-var affinity = chemistry.predict_binding_affinity(drug_compound, binding_site)
+item binding_site = target_protein.predict_binding_site()
+item affinity = chemistry.predict_binding_affinity(drug_compound, binding_site)
 
 // Analyze sequence-structure-function relationships
 proposition DrugTargetBinding:
@@ -354,18 +354,18 @@ import chemistry
 import physics
 
 // Molecular dynamics simulation
-var molecule = chemistry.Molecule.from_smiles("CCO")
-var force_field = physics.molecular.AMBER99()
+item molecule = chemistry.Molecule.from_smiles("CCO")
+item force_field = physics.molecular.AMBER99()
 
-var md_simulation = physics.molecular.MDSimulation(
+item md_simulation = physics.molecular.MDSimulation(
     molecule=molecule,
     force_field=force_field,
     temperature=300,
     pressure=1.0
 )
 
-var trajectory = md_simulation.run(simulation_time=1000)  // ps
-var properties = trajectory.analyze_properties()
+item trajectory = md_simulation.run(simulation_time=1000)  // ps
+item properties = trajectory.analyze_properties()
 ```
 
 ### Multi-Domain Evidence Integration
@@ -430,13 +430,13 @@ register_extension(CustomDomain)
 // Use the extension
 import custom_analysis
 
-var data = custom_analysis.CustomData(
+item data = custom_analysis.CustomData(
     measurement=42.0,
     uncertainty=0.1,
     metadata={"source": "experiment_1"}
 )
 
-var results = custom_analysis.custom_analysis([data])
+item results = custom_analysis.custom_analysis([data])
 ```
 
 ## Best Practices
@@ -446,7 +446,7 @@ var results = custom_analysis.custom_analysis([data])
 ```turbulance
 // Always validate domain-specific data
 funxn validate_genomic_sequence(sequence: String) -> Boolean:
-    var valid_bases = {"A", "T", "G", "C"}
+    item valid_bases = {"A", "T", "G", "C"}
     for each base in sequence:
         given base not in valid_bases:
             return false

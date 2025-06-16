@@ -12,7 +12,7 @@ The orchestrator can represent and track complex writing and processing goals:
 
 ```turbulance
 // Define a writing goal
-var goal = Goal.new("Write a technical tutorial for beginners")
+item goal = Goal.new("Write a technical tutorial for beginners")
     .with_target_audience("beginners")
     .with_technical_depth("moderate")
     .with_keywords(["tutorial", "beginner", "step-by-step"])
@@ -33,7 +33,7 @@ The orchestrator maintains awareness of the current processing context:
 
 ```turbulance
 // Get current context
-var context = orchestrator.current_context()
+item context = orchestrator.current_context()
 print("Domain: {}".format(context.domain))
 print("Technical level: {}".format(context.technical_level))
 
@@ -60,7 +60,7 @@ orchestrator.on_technical_term(function(term) {
 })
 
 // Process text with interventions
-var processed = orchestrator.process_with_interventions(text)
+item processed = orchestrator.process_with_interventions(text)
 ```
 
 ### 4. Progress Evaluation
@@ -69,9 +69,9 @@ Continuous evaluation of progress towards goals:
 
 ```turbulance
 // Evaluate alignment with goals
-var alignment = orchestrator.evaluate_alignment(text)
+item alignment = orchestrator.evaluate_alignment(text)
 if alignment < 0.3:
-    var suggestions = orchestrator.suggest_improvements()
+    item suggestions = orchestrator.suggest_improvements()
     for each suggestion in suggestions:
         print("Suggestion: {}".format(suggestion))
 ```
@@ -85,7 +85,7 @@ The orchestrator implements a streaming-based concurrent processing model:
 1. **Context Layer**
 ```turbulance
 // Set up context layer
-var context_layer = orchestrator.context_layer()
+item context_layer = orchestrator.context_layer()
     .with_domain("scientific")
     .with_audience("academic")
     .with_style_guide("APA")
@@ -94,7 +94,7 @@ var context_layer = orchestrator.context_layer()
 2. **Reasoning Layer**
 ```turbulance
 // Configure reasoning layer
-var reasoning_layer = orchestrator.reasoning_layer()
+item reasoning_layer = orchestrator.reasoning_layer()
     .with_logic_rules([
         "if contains_technical_term then needs_explanation",
         "if readability_low then needs_simplification"
@@ -104,7 +104,7 @@ var reasoning_layer = orchestrator.reasoning_layer()
 3. **Intuition Layer**
 ```turbulance
 // Set up intuition layer
-var intuition_layer = orchestrator.intuition_layer()
+item intuition_layer = orchestrator.intuition_layer()
     .with_pattern_recognition()
     .with_heuristic_analysis()
 ```
@@ -113,7 +113,7 @@ var intuition_layer = orchestrator.intuition_layer()
 
 ```turbulance
 // Set up streaming pipeline
-var pipeline = orchestrator.create_pipeline()
+item pipeline = orchestrator.create_pipeline()
     .add_stage(context_analysis)
     .add_stage(content_processing)
     .add_stage(quality_validation)
@@ -135,7 +135,7 @@ orchestrator.configure_research()
     .with_fact_checking(true)
 
 // Perform research
-var research = orchestrator.research_context("quantum computing", {
+item research = orchestrator.research_context("quantum computing", {
     depth: "medium",
     focus: ["basic principles", "applications"]
 })
@@ -145,7 +145,7 @@ var research = orchestrator.research_context("quantum computing", {
 
 ```turbulance
 // Access knowledge database
-var db = orchestrator.knowledge_db()
+item db = orchestrator.knowledge_db()
 
 // Store new knowledge
 db.store_fact({
@@ -156,7 +156,7 @@ db.store_fact({
 })
 
 // Query knowledge
-var results = db.query({
+item results = db.query({
     domain: "physics",
     confidence_threshold: 0.8
 })
@@ -168,7 +168,7 @@ var results = db.query({
 
 ```turbulance
 // Define clear, measurable goals
-var goal = Goal.new("Explain quantum computing")
+item goal = Goal.new("Explain quantum computing")
     .with_metrics([
         Metric.readability(min_score: 70),
         Metric.technical_accuracy(min_score: 0.9),

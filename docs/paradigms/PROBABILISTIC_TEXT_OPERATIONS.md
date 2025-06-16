@@ -42,11 +42,11 @@ struct TextPoint {
 
 ```turbulance
 // Traditional: deterministic
-var length = len("Hello world")  // Returns: 11
+item length = len("Hello world")  // Returns: 11
 
 // Probabilistic: handles uncertainty  
-var text_point = point("Hello world", confidence: 0.9)
-var length_resolution = resolve probabilistic_len(text_point) given context("informal")
+item text_point = point("Hello world", confidence: 0.9)
+item length_resolution = resolve probabilistic_len(text_point) given context("informal")
 
 // Returns multiple possibilities with probabilities:
 // {
@@ -64,7 +64,7 @@ var length_resolution = resolve probabilistic_len(text_point) given context("inf
 Every operation acknowledges uncertainty:
 
 ```turbulance
-var uncertain_text = point("The bank is closed", confidence: 0.7)
+item uncertain_text = point("The bank is closed", confidence: 0.7)
 
 // "bank" could mean:
 uncertain_text.add_interpretation({
@@ -85,13 +85,13 @@ uncertain_text.add_interpretation({
 Same text, different meanings in different contexts:
 
 ```turbulance
-var text = "This is huge!"
+item text = "This is huge!"
 
-var twitter_analysis = resolve probabilistic_sentiment(point(text, 0.8)) 
+item twitter_analysis = resolve probabilistic_sentiment(point(text, 0.8)) 
                       given context("social_media")
 // Likely: enthusiastic positive (0.9 confidence)
 
-var academic_analysis = resolve probabilistic_sentiment(point(text, 0.8))
+item academic_analysis = resolve probabilistic_sentiment(point(text, 0.8))
                        given context("research_paper") 
 // Likely: inappropriate/unprofessional (0.7 confidence)
 ```
@@ -101,19 +101,19 @@ var academic_analysis = resolve probabilistic_sentiment(point(text, 0.8))
 Different ways to handle uncertainty:
 
 ```turbulance
-var ambiguous_point = point("The solution is optimal", 0.8)
+item ambiguous_point = point("The solution is optimal", 0.8)
 
 // Maximum likelihood: choose most probable interpretation
-var result1 = resolve with strategy("maximum_likelihood")
+item result1 = resolve with strategy("maximum_likelihood")
 
 // Conservative: choose safest interpretation  
-var result2 = resolve with strategy("conservative_min")
+item result2 = resolve with strategy("conservative_min")
 
 // Bayesian: weight by prior beliefs
-var result3 = resolve with strategy("bayesian_weighted")
+item result3 = resolve with strategy("bayesian_weighted")
 
 // Full distribution: return all possibilities
-var result4 = resolve with strategy("full_distribution")
+item result4 = resolve with strategy("full_distribution")
 ```
 
 ### 4. Uncertainty Propagation
@@ -121,11 +121,11 @@ var result4 = resolve with strategy("full_distribution")
 How uncertainty flows through operations:
 
 ```turbulance
-var text1 = point("roughly accurate", confidence: 0.6)
-var text2 = point("approximately correct", confidence: 0.7)
+item text1 = point("roughly accurate", confidence: 0.6)
+item text2 = point("approximately correct", confidence: 0.7)
 
 // Combine with uncertainty propagation
-var combined = merge_points(text1, text2)
+item combined = merge_points(text1, text2)
 // Resulting confidence: calculated based on agreement/disagreement
 ```
 
@@ -212,8 +212,8 @@ src/turbulance/probabilistic/
 ### 1. Ambiguity Resolution
 
 ```turbulance
-var ambiguous = point("bank statement", confidence: 0.8)
-var resolved = resolve probabilistic_meaning(ambiguous) 
+item ambiguous = point("bank statement", confidence: 0.8)
+item resolved = resolve probabilistic_meaning(ambiguous) 
                given context("financial_document")
 // High confidence: financial statement (not riverbank description)
 ```
@@ -221,13 +221,13 @@ var resolved = resolve probabilistic_meaning(ambiguous)
 ### 2. Cross-Cultural Communication
 
 ```turbulance
-var text = point("That's interesting", confidence: 0.9)
+item text = point("That's interesting", confidence: 0.9)
 
-var us_interpretation = resolve probabilistic_sentiment(text) 
+item us_interpretation = resolve probabilistic_sentiment(text) 
                        given context("us_english")
 // Likely: polite dismissal (0.6 confidence)
 
-var uk_interpretation = resolve probabilistic_sentiment(text)
+item uk_interpretation = resolve probabilistic_sentiment(text)
                        given context("british_english") 
 // Likely: genuine interest (0.7 confidence)
 ```
@@ -235,13 +235,13 @@ var uk_interpretation = resolve probabilistic_sentiment(text)
 ### 3. Domain-Specific Analysis
 
 ```turbulance
-var technical_text = point("the solution converged", confidence: 0.85)
+item technical_text = point("the solution converged", confidence: 0.85)
 
-var math_analysis = resolve probabilistic_meaning(technical_text)
+item math_analysis = resolve probabilistic_meaning(technical_text)
                    given context("mathematics")
 // Interpretation: algorithm reached stable state
 
-var social_analysis = resolve probabilistic_meaning(technical_text)
+item social_analysis = resolve probabilistic_meaning(technical_text)
                      given context("social_science")
 // Interpretation: parties reached agreement
 ```
@@ -249,13 +249,13 @@ var social_analysis = resolve probabilistic_meaning(technical_text)
 ### 4. Temporal Context
 
 ```turbulance
-var historical_text = point("wireless communication", confidence: 0.9)
+item historical_text = point("wireless communication", confidence: 0.9)
 
-var 1920s_meaning = resolve probabilistic_meaning(historical_text)
+item 1920s_meaning = resolve probabilistic_meaning(historical_text)
                    given context("1920s")
 // Interpretation: radio communication
 
-var 2020s_meaning = resolve probabilistic_meaning(historical_text)
+item 2020s_meaning = resolve probabilistic_meaning(historical_text)
                    given context("2020s") 
 // Interpretation: WiFi, Bluetooth, cellular, etc.
 ```
@@ -309,8 +309,8 @@ This approach acknowledges fundamental truths about human language:
 ### 1. Machine Learning Integration
 
 ```turbulance
-var ml_point = point("sentiment analysis target", confidence: 0.8)
-var ml_result = resolve neural_sentiment(ml_point) 
+item ml_point = point("sentiment analysis target", confidence: 0.8)
+item ml_result = resolve neural_sentiment(ml_point) 
                given context("social_media")
                with model("transformer_large")
 ```
@@ -318,15 +318,15 @@ var ml_result = resolve neural_sentiment(ml_point)
 ### 2. Multi-Modal Points
 
 ```turbulance
-var multimodal_point = point_with_image("A picture is worth...", image_data, confidence: 0.9)
-var visual_text_analysis = resolve multimodal_meaning(multimodal_point)
+item multimodal_point = point_with_image("A picture is worth...", image_data, confidence: 0.9)
+item visual_text_analysis = resolve multimodal_meaning(multimodal_point)
 ```
 
 ### 3. Collaborative Resolution
 
 ```turbulance
-var crowd_point = point("ambiguous statement", confidence: 0.6)
-var crowd_result = resolve crowd_wisdom(crowd_point)
+item crowd_point = point("ambiguous statement", confidence: 0.6)
+item crowd_result = resolve crowd_wisdom(crowd_point)
                   given context("collaborative_platform")
 ```
 
@@ -334,8 +334,8 @@ var crowd_result = resolve crowd_wisdom(crowd_point)
 
 ```turbulance
 // System learns from resolution outcomes
-var learning_point = point("new expression", confidence: 0.5)
-var adaptive_result = resolve adaptive_meaning(learning_point)
+item learning_point = point("new expression", confidence: 0.5)
+item adaptive_result = resolve adaptive_meaning(learning_point)
                      with feedback_loop(enabled: true)
 ```
 

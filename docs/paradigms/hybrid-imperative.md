@@ -290,7 +290,7 @@ query all Protein where gene_produces_protein("BRCA1", Protein)
 unify sequence("ATGC") with motif(X)
 
 // Embedding in imperative code
-var matches = query all Gene, Protein where gene_produces_protein(Gene, Protein)
+item matches = query all Gene, Protein where gene_produces_protein(Gene, Protein)
 for match in matches {
     print("Gene {} produces protein {}".format(match.Gene, match.Protein))
 }
@@ -333,8 +333,8 @@ fuzzy_rule with_hedges {
 }
 
 // Using in imperative code
-var expression_level = 75.0
-var fuzzy_value = fuzzy_engine.fuzzify("gene_expression_level", expression_level)
+item expression_level = 75.0
+item fuzzy_value = fuzzy_engine.fuzzify("gene_expression_level", expression_level)
 print("Expression level membership in 'high': {}".format(fuzzy_value["high"]))
 ```
 
@@ -346,15 +346,15 @@ The syntax allows seamless integration between paradigms:
 // Hybrid function using both paradigms
 funxn analyze_gene_expression(gene_id, expression_data, proteomics_data) {
     // Imperative code
-    var gene_sequence = get_gene_sequence(gene_id)
-    var expression_level = expression_data.get_level(gene_id)
+    item gene_sequence = get_gene_sequence(gene_id)
+    item expression_level = expression_data.get_level(gene_id)
     
     // Logical reasoning
     assert fact expression(gene_id, expression_level).
     for protein_id in query all P where codes_for(gene_id, P) {
         // Fuzzy reasoning
-        var protein_abundance = proteomics_data.get_abundance(protein_id)
-        var consistency = fuzzy_rule_eval {
+        item protein_abundance = proteomics_data.get_abundance(protein_id)
+        item consistency = fuzzy_rule_eval {
             if expression_level is high and protein_abundance is high then consistency is supporting
             if expression_level is low and protein_abundance is high then consistency is contradicting
         }
@@ -447,7 +447,7 @@ import genomic.high_throughput as ht_genomic
 import logic.genomic
 
 // Set up logic for genomic analysis
-var rule_base = logic.RuleBase.new()
+item rule_base = logic.RuleBase.new()
 
 // Add genomic rules
 rule_base.add_rule("functional_region(Gene, Start, End) :- " +
@@ -459,7 +459,7 @@ rule_base.add_rule("functional_region(Gene, Start, End) :- " +
                   "Content < 0.4.")
 
 // Create evidence network
-var network = evidence.EvidenceNetwork.new()
+item network = evidence.EvidenceNetwork.new()
 
 // Add genomic data to evidence network
 for sequence in sequences {
@@ -469,7 +469,7 @@ for sequence in sequences {
     rule_base.assert_fact("gene('{}')".format(sequence.id()))
     
     // Find motifs and add as facts
-    var motifs = ht_genomic.find_motifs_parallel(sequence, known_motifs, 0.7)
+    item motifs = ht_genomic.find_motifs_parallel(sequence, known_motifs, 0.7)
     for motif in motifs {
         for position in motif.positions {
             rule_base.assert_fact("contains_motif('{}', '{}', {})".format(
@@ -486,13 +486,13 @@ for sequence in sequences {
 rule_base.apply_rules()
 
 // Query for functional regions
-var regions = rule_base.query("functional_region(Gene, Start, End)")
+item regions = rule_base.query("functional_region(Gene, Start, End)")
 
 // Process results
 for solution in regions.solutions {
-    var gene = solution.get("Gene")
-    var start = solution.get("Start")
-    var end = solution.get("End")
+    item gene = solution.get("Gene")
+    item start = solution.get("Start")
+    item end = solution.get("End")
     
     print("Found functional region in {} at positions {}-{}".format(gene, start, end))
     
@@ -513,7 +513,7 @@ import spectrometry.high_throughput as ht_spec
 import fuzzy.spectrometry
 
 // Create fuzzy logic engine
-var fuzzy_engine = fuzzy.FuzzyLogicEngine.new()
+item fuzzy_engine = fuzzy.FuzzyLogicEngine.new()
 
 // Add spectrometry variables
 fuzzy_engine.add_variables(fuzzy_spectrometry.standard_variables())
@@ -536,32 +536,32 @@ fuzzy_engine.add_rule("if peak_intensity is weak or mass_accuracy is low " +
                      "then peptide_identification is low")
 
 // Process spectra
-var results = ht_spec.process_spectra_parallel(spectra, (spectrum) => {
+item results = ht_spec.process_spectra_parallel(spectra, (spectrum) => {
     // Find peaks
-    var peaks = ht_spec.find_peaks_parallel([spectrum], 500.0, 3.0)[0]
+    item peaks = ht_spec.find_peaks_parallel([spectrum], 500.0, 3.0)[0]
     
-    var identifications = []
+    item identifications = []
     
     // For each peak
     for peak in peaks {
         // Calculate normalized intensity
-        var norm_intensity = peak.intensity / max_intensity
+        item norm_intensity = peak.intensity / max_intensity
         
         // Calculate mass accuracy (ppm)
-        var mass_accuracy = calculate_mass_accuracy(peak.mz, theoretical_masses)
+        item mass_accuracy = calculate_mass_accuracy(peak.mz, theoretical_masses)
         
         // Fuzzify values
-        var fuzzy_intensity = fuzzy_engine.fuzzify("peak_intensity", norm_intensity)
-        var fuzzy_accuracy = fuzzy_engine.fuzzify("mass_accuracy", mass_accuracy)
+        item fuzzy_intensity = fuzzy_engine.fuzzify("peak_intensity", norm_intensity)
+        item fuzzy_accuracy = fuzzy_engine.fuzzify("mass_accuracy", mass_accuracy)
         
         // Apply fuzzy inference
-        var result = fuzzy_engine.infer({
+        item result = fuzzy_engine.infer({
             "peak_intensity": fuzzy_intensity,
             "mass_accuracy": fuzzy_accuracy
         })
         
         // Get peptide identification confidence
-        var confidence = result["peptide_identification"]
+        item confidence = result["peptide_identification"]
         
         // Add to results if confidence in "high" is good
         if confidence["high"] > 0.7 {
@@ -580,7 +580,7 @@ var results = ht_spec.process_spectra_parallel(spectra, (spectrum) => {
 })
 
 // Add to evidence network
-var network = evidence.EvidenceNetwork.new()
+item network = evidence.EvidenceNetwork.new()
 
 for result in results {
     network.add_node("spectrum_" + result.spectrum.id(),
@@ -618,7 +618,7 @@ import fuzzy
 import hybrid
 
 // Create hybrid reasoning system
-var hybrid_system = hybrid.HybridReasoningSystem.new()
+item hybrid_system = hybrid.HybridReasoningSystem.new()
 
 // Define logical rules
 hybrid_system.add_logical_rules([
@@ -648,12 +648,12 @@ hybrid_system.add_fuzzy_rule("if gene_expression is high and protein_present is 
                            "then evidence_consistency is contradictory")
 
 // Load data
-var genes = load_genes()
-var expression_data = load_expression_data()
-var proteomics_data = load_proteomics_data()
+item genes = load_genes()
+item expression_data = load_expression_data()
+item proteomics_data = load_proteomics_data()
 
 // Build evidence network
-var network = evidence.EvidenceNetwork.new()
+item network = evidence.EvidenceNetwork.new()
 
 // Add genes
 for gene in genes {
@@ -686,7 +686,7 @@ hybrid_system.apply_logical_rules()
 hybrid_system.apply_fuzzy_rules()
 
 // Find contradictions in the evidence
-var contradictions = hybrid_system.query(
+item contradictions = hybrid_system.query(
     "gene(Gene), fuzzy_belief(Gene, 'evidence_consistency', 'contradictory', Degree), Degree > 0.7"
 )
 
@@ -698,7 +698,7 @@ for case in contradictions.solutions {
     ))
     
     // Analyze contradiction
-    var explanation = hybrid_system.explain_contradiction(case.get("Gene"))
+    item explanation = hybrid_system.explain_contradiction(case.get("Gene"))
     print("Explanation: {}".format(explanation))
 }
 ```
@@ -946,7 +946,7 @@ The Dreaming Module operates through:
 
 ```turbulance
 // Configure dreaming module
-var dreaming = dreaming.DreamingModule.new()
+item dreaming = dreaming.DreamingModule.new()
 dreaming.configure({
     idle_threshold: 5000,  // ms of system inactivity before dreaming starts
     max_dream_time: 60000, // ms maximum for a dreaming session
@@ -1055,7 +1055,7 @@ The Metacognitive Orchestrator decides what computation to perform, while the Co
 // Example of high-performance computation in genomics
 funxn find_motifs_optimized(sequence, motif_patterns) {
     // The orchestrator decides what to compute
-    var computation_plan = orchestrator.plan_computation(
+    item computation_plan = orchestrator.plan_computation(
         ComputationType.PatternMatching({
             pattern_type: "genomic_motif",
             data_size: sequence.length,
@@ -1064,7 +1064,7 @@ funxn find_motifs_optimized(sequence, motif_patterns) {
     )
     
     // The computation manager determines how to compute it
-    var computation_result = computation_manager.execute(
+    item computation_result = computation_manager.execute(
         computation_plan,
         {
             sequence: sequence,
@@ -1159,7 +1159,7 @@ Using fuzzy datastructures in the system:
 
 ```turbulance
 // Create a fuzzy set of genomic sequences
-var similar_sequences = fuzzy.FuzzyContainer.new(
+item similar_sequences = fuzzy.FuzzyContainer.new(
     function(seq) {
         // Membership function based on similarity to reference
         return similarity_score(seq, reference_sequence)
@@ -1174,10 +1174,10 @@ similar_sequences.add(sequence2)  // Membership calculated by function
 similar_sequences.add_with_membership(sequence3, 0.7)
 
 // Query with threshold
-var highly_similar = similar_sequences.filter_by_membership(0.8)
+item highly_similar = similar_sequences.filter_by_membership(0.8)
 
 // Fuzzy map for spectrum-to-peptide mapping
-var peptide_map = fuzzy.FuzzyMap.new(
+item peptide_map = fuzzy.FuzzyMap.new(
     function(spectrum1, spectrum2) {
         // Key similarity function for spectra
         return spectral_similarity(spectrum1, spectrum2)
@@ -1189,7 +1189,7 @@ peptide_map.add(spectrum1, peptide1, 0.9)  // High confidence mapping
 peptide_map.add(spectrum2, peptide2, 0.6)  // Medium confidence mapping
 
 // Fuzzy lookup - returns potential matches with certainty
-var potential_peptides = peptide_map.lookup_similar(query_spectrum, 0.7)
+item potential_peptides = peptide_map.lookup_similar(query_spectrum, 0.7)
 ```
 
 This extension to fuzzy datastructures aligns the entire system with the principle that boundaries and relationships in knowledge representation should reflect the inherent uncertainty and contextual nature of real-world information.

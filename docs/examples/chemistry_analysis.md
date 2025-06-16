@@ -11,9 +11,9 @@ This example demonstrates how to use Kwasa-Kwasa's chemistry extension to analyz
 import chemistry
 
 // Create molecules from SMILES strings
-var ethanol = chemistry.Molecule.from_smiles("CCO", "ethanol").with_name("Ethanol")
-var aspirin = chemistry.Molecule.from_smiles("CC(=O)OC1=CC=CC=C1C(=O)O", "aspirin").with_name("Aspirin")
-var caffeine = chemistry.Molecule.from_smiles("CN1C=NC2=C1C(=O)N(C(=O)N2C)C", "caffeine").with_name("Caffeine")
+item ethanol = chemistry.Molecule.from_smiles("CCO", "ethanol").with_name("Ethanol")
+item aspirin = chemistry.Molecule.from_smiles("CC(=O)OC1=CC=CC=C1C(=O)O", "aspirin").with_name("Aspirin")
+item caffeine = chemistry.Molecule.from_smiles("CN1C=NC2=C1C(=O)N(C(=O)N2C)C", "caffeine").with_name("Caffeine")
 
 // Function to analyze a molecule
 funxn analyze_molecule(molecule):
@@ -29,7 +29,7 @@ funxn analyze_molecule(molecule):
     print("Number of bonds: {}".format(len(molecule.bonds())))
     
     // Calculate functional groups
-    var functional_groups = identify_functional_groups(molecule)
+    item functional_groups = identify_functional_groups(molecule)
     print("Functional groups:")
     for each group, count in functional_groups:
         print("  - {}: {}".format(group, count))
@@ -40,7 +40,7 @@ funxn analyze_molecule(molecule):
 ### 1. Molecule Creation and Basic Analysis
 
 ```turbulance
-var ethanol = chemistry.Molecule.from_smiles("CCO", "ethanol").with_name("Ethanol")
+item ethanol = chemistry.Molecule.from_smiles("CCO", "ethanol").with_name("Ethanol")
 ```
 
 The example shows how to:
@@ -53,8 +53,8 @@ The example shows how to:
 
 ```turbulance
 funxn identify_functional_groups(molecule):
-    var groups = {}
-    var smiles = molecule.smiles()
+    item groups = {}
+    item smiles = molecule.smiles()
     
     // Check for common functional groups
     if smiles.contains("OH"):
@@ -72,16 +72,16 @@ Features:
 
 ```turbulance
 // Division: split by functional groups
-var ethanol_parts = molecule_ops.divide(ethanol, "functional_group")
+item ethanol_parts = molecule_ops.divide(ethanol, "functional_group")
 
 // Multiplication: chemical reaction
-var reaction_product = molecule_ops.multiply(ethanol, aspirin)
+item reaction_product = molecule_ops.multiply(ethanol, aspirin)
 
 // Addition: combine molecules
-var mixture = molecule_ops.add(caffeine, aspirin)
+item mixture = molecule_ops.add(caffeine, aspirin)
 
 // Subtraction: remove a functional group
-var dehydroxylated = molecule_ops.subtract(ethanol, chemistry.Molecule.from_smiles("O", "hydroxyl"))
+item dehydroxylated = molecule_ops.subtract(ethanol, chemistry.Molecule.from_smiles("O", "hydroxyl"))
 ```
 
 Demonstrates:
@@ -112,7 +112,7 @@ Shows how to:
 
 ```turbulance
 funxn molecular_complexity(molecule):
-    var complexity = 0
+    item complexity = 0
     // Calculate complexity based on structure
     
 funxn find_similar(molecule, candidates, threshold=0.7):

@@ -20,10 +20,10 @@ Kwasa-Kwasa transforms text processing by introducing **mathematical operations 
 
 ```turbulance
 // Mathematical text operations
-var sentences = paragraph / sentence    // Division: split into smaller units
-var combined = sentence1 * sentence2    // Multiplication: intelligent combination
-var extended = text + " more content"   // Addition: semantic concatenation
-var filtered = text - "unwanted phrase" // Subtraction: content removal
+item sentences = paragraph / sentence    // Division: split into smaller units
+item combined = sentence1 * sentence2    // Multiplication: intelligent combination
+item extended = text + " more content"   // Addition: semantic concatenation
+item filtered = text - "unwanted phrase" // Subtraction: content removal
 ```
 
 ## Turbulance: A Language for Text
@@ -136,7 +136,7 @@ The framework doesn't just process text; it understands your goals and guides th
 
 ```turbulance
 // Setting up a writing goal
-var goal = new Goal("Write a technical tutorial for beginners", 0.4)
+item goal = new Goal("Write a technical tutorial for beginners", 0.4)
 goal.add_keywords(["tutorial", "beginner", "step-by-step", "explanation"])
 
 // Track progress towards the goal
@@ -144,7 +144,7 @@ goal.update_progress(0.3)  // 30% complete
 goal.is_complete()         // Returns false
 
 // Evaluating alignment with goals
-var alignment = orchestrator.evaluate_alignment(text)
+item alignment = orchestrator.evaluate_alignment(text)
 if alignment < 0.3:
     suggest_improvements()
 ```
@@ -216,7 +216,7 @@ The framework introduces data structures specifically for metacognitive text pro
 
 ```turbulance
 // Create an evidence network for scientific analysis
-var network = new EvidenceNetwork()
+item network = new EvidenceNetwork()
 
 // Add nodes representing different types of evidence
 network.add_node("genomic_1", EvidenceNode.GenomicFeature {
@@ -308,17 +308,17 @@ Document
 
 ```turbulance
 // Division: Split into smaller units
-var sentences = paragraph / sentence
-var words = sentence / word
+item sentences = paragraph / sentence
+item words = sentence / word
 
 // Multiplication: Combine with intelligent connectors  
-var paragraph = sentence1 * sentence2 * sentence3
+item paragraph = sentence1 * sentence2 * sentence3
 
 // Addition: Concatenate while preserving type
-var extended = original_text + " additional content"
+item extended = original_text + " additional content"
 
 // Subtraction: Remove content while maintaining structure
-var cleaned = text - "unwanted phrase"
+item cleaned = text - "unwanted phrase"
 ```
 
 ## Domain Extensions
@@ -331,11 +331,11 @@ Process DNA sequences as text units:
 import genomic
 
 // Create a DNA sequence
-var dna = genomic.NucleotideSequence.new("ATGCTAGCTAGCTAGCTA", "gene_123")
+item dna = genomic.NucleotideSequence.new("ATGCTAGCTAGCTAGCTA", "gene_123")
 
 // Apply text operations to genetic data
-var codons = dna / codon  // Split into codons
-var gc_rich_regions = dna.filter("gc_content() > 0.6")
+item codons = dna / codon  // Split into codons
+item gc_rich_regions = dna.filter("gc_content() > 0.6")
 
 // Use propositions for genetic analysis
 proposition GeneRegulation:
@@ -356,11 +356,11 @@ Manipulate molecular structures:
 import chemistry
 
 // Create a molecule from SMILES
-var caffeine = chemistry.Molecule.from_smiles("CN1C=NC2=C1C(=O)N(C(=O)N2C)C")
+item caffeine = chemistry.Molecule.from_smiles("CN1C=NC2=C1C(=O)N(C(=O)N2C)C")
 
 // Apply text operations to molecules
-var fragments = caffeine / functional_group
-var aromatic_parts = caffeine.filter("is_aromatic() == true")
+item fragments = caffeine / functional_group
+item aromatic_parts = caffeine.filter("is_aromatic() == true")
 
 // Chemical analysis with propositions
 proposition DrugLikeness:
@@ -381,9 +381,9 @@ Analyze spectral data:
 import mass_spec
 
 // Load and process spectrum
-var spectrum = mass_spec.Spectrum.from_file("sample.mzML")
-var peaks = spectrum / peak
-var high_intensity = peaks.filter("intensity > 1000")
+item spectrum = mass_spec.Spectrum.from_file("sample.mzML")
+item peaks = spectrum / peak
+item high_intensity = peaks.filter("intensity > 1000")
 
 // Spectral analysis propositions
 proposition CompoundIdentification:
@@ -421,11 +421,11 @@ funxn enhance_academic_paper(paper):
 
 ```turbulance
 funxn generate_api_docs(code_base):
-    var docs = Document.new("API Documentation")
+    item docs = Document.new("API Documentation")
     
     considering all module in code_base:
         considering all function in module:
-            var func_doc = document_function(function)
+            item func_doc = document_function(function)
             given complexity_score(func_doc) > 0.7:
                 add_examples(func_doc)
                 simplify_explanations(func_doc)
@@ -472,10 +472,10 @@ Create `hello.turb`:
 
 ```turbulance
 funxn main():
-    var text = "Hello, Kwasa-Kwasa! This framework transforms how we work with text."
+    item text = "Hello, Kwasa-Kwasa! This framework transforms how we work with text."
     
     // Split into sentences using division
-    var sentences = text / sentence
+    item sentences = text / sentence
     print("Number of sentences: {}", len(sentences))
     
     // Check readability

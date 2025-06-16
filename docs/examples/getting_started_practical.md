@@ -50,12 +50,12 @@ Create a file called `hello.turb`:
 
 funxn main():
     // Create some text to work with
-    var text = "Hello, world! This is my first Turbulance program. It's quite exciting to work with text in this way."
+    item text = "Hello, world! This is my first Turbulance program. It's quite exciting to work with text in this way."
     
     print("Original text: {}", text)
     
     // Split text into sentences using the division operator
-    var sentences = text / sentence
+    item sentences = text / sentence
     print("Number of sentences: {}", len(sentences))
     
     // Print each sentence
@@ -63,7 +63,7 @@ funxn main():
         print("Sentence: {}", sentence)
     
     // Check readability
-    var readability = readability_score(text)
+    item readability = readability_score(text)
     print("Readability score: {}", readability)
     
     // Use conditional processing
@@ -101,14 +101,14 @@ Let's explore how text units work with a more detailed example:
 // text_units.turb - Understanding text unit operations
 
 funxn explore_text_units():
-    var document = "Machine learning is a subset of artificial intelligence. It focuses on algorithms that can learn from data. These algorithms improve automatically through experience."
+    item document = "Machine learning is a subset of artificial intelligence. It focuses on algorithms that can learn from data. These algorithms improve automatically through experience."
     
     print("=== Working with Text Units ===")
     
     // Split into different unit types
-    var paragraphs = document / paragraph
-    var sentences = document / sentence
-    var words = document / word
+    item paragraphs = document / paragraph
+    item sentences = document / sentence
+    item words = document / word
     
     print("Paragraphs: {}", len(paragraphs))
     print("Sentences: {}", len(sentences))
@@ -118,15 +118,15 @@ funxn explore_text_units():
     print("\n=== Text Mathematics ===")
     
     // Combine sentences with multiplication
-    var combined = sentences[0] * sentences[1]
+    item combined = sentences[0] * sentences[1]
     print("Combined sentences: {}", combined)
     
     // Add content
-    var extended = sentences[0] + " (especially in computer science)"
+    item extended = sentences[0] + " (especially in computer science)"
     print("Extended sentence: {}", extended)
     
     // Remove content with subtraction
-    var shortened = document - "artificial intelligence"
+    item shortened = document - "artificial intelligence"
     print("Shortened text: {}", shortened)
 
 explore_text_units()
@@ -140,7 +140,7 @@ Create a file called `propositions.turb`:
 // propositions.turb - Understanding propositions and motions
 
 funxn analyze_with_propositions():
-    var academic_text = "The research methodology employed in this study utilized a mixed-methods approach. Quantitative data was collected through surveys, while qualitative insights were gathered via interviews. The results indicate a significant correlation between variables."
+    item academic_text = "The research methodology employed in this study utilized a mixed-methods approach. Quantitative data was collected through surveys, while qualitative insights were gathered via interviews. The results indicate a significant correlation between variables."
     
     // Define a proposition for academic writing quality
     proposition AcademicQuality:
@@ -166,7 +166,7 @@ funxn analyze_with_propositions():
                 print("✓ Evidence-based language found")
     
     // Test individual motions
-    var formality_check = academic_text.check_formality()
+    item formality_check = academic_text.check_formality()
     print("Formality score: {}", formality_check.score)
 
 analyze_with_propositions()
@@ -180,24 +180,24 @@ Create `pipeline.turb` to see how to chain operations:
 // pipeline.turb - Building text processing pipelines
 
 funxn create_processing_pipeline():
-    var raw_text = "this is some text that needs improvement. it has poor capitalization and might be hard to read for some people. we should make it better."
+    item raw_text = "this is some text that needs improvement. it has poor capitalization and might be hard to read for some people. we should make it better."
     
     print("Original: {}", raw_text)
     
     // Method 1: Step by step processing
     print("\n=== Step by Step Processing ===")
-    var step1 = capitalize_sentences(raw_text)
+    item step1 = capitalize_sentences(raw_text)
     print("After capitalization: {}", step1)
     
-    var step2 = improve_readability(step1)
+    item step2 = improve_readability(step1)
     print("After readability improvement: {}", step2)
     
-    var step3 = add_transitions(step2)
+    item step3 = add_transitions(step2)
     print("After adding transitions: {}", step3)
     
     // Method 2: Pipeline processing (more elegant)
     print("\n=== Pipeline Processing ===")
-    var processed = raw_text |>
+    item processed = raw_text |>
         capitalize_sentences() |>
         improve_readability() |>
         add_transitions() |>
@@ -206,8 +206,8 @@ funxn create_processing_pipeline():
     print("Final result: {}", processed)
     
     // Analyze the improvement
-    var original_score = readability_score(raw_text)
-    var improved_score = readability_score(processed)
+    item original_score = readability_score(raw_text)
+    item improved_score = readability_score(processed)
     
     print("\nReadability improvement: {} -> {}", original_score, improved_score)
 
@@ -222,7 +222,7 @@ Create `analysis.turb`:
 // analysis.turb - Using built-in analysis functions
 
 funxn comprehensive_analysis():
-    var text = "The quick brown fox jumps over the lazy dog. This pangram contains every letter of the alphabet at least once. It's commonly used for testing purposes."
+    item text = "The quick brown fox jumps over the lazy dog. This pangram contains every letter of the alphabet at least once. It's commonly used for testing purposes."
     
     print("=== Comprehensive Text Analysis ===")
     print("Text: {}", text)
@@ -240,20 +240,20 @@ funxn comprehensive_analysis():
     print()
     
     // Sentiment analysis
-    var sentiment = sentiment_analysis(text)
+    item sentiment = sentiment_analysis(text)
     print("Sentiment polarity: {}", sentiment.polarity)
     print("Sentiment subjectivity: {}", sentiment.subjectivity)
     print()
     
     // Keyword extraction
-    var keywords = extract_keywords(text, 5)
+    item keywords = extract_keywords(text, 5)
     print("Top keywords:")
     considering all keyword in keywords:
         print("  - {}", keyword)
     print()
     
     // Pattern analysis
-    var patterns = find_patterns(text, "common_english")
+    item patterns = find_patterns(text, "common_english")
     print("Detected patterns: {}", len(patterns))
     
     // Check for specific content
@@ -274,23 +274,23 @@ Create `file_processing.turb`:
 
 funxn process_file():
     // Read a text file
-    var content = read_file("sample.txt")
+    item content = read_file("sample.txt")
     
     given content.is_error():
         print("Error reading file: {}", content.error())
         return
     
-    var text = content.unwrap()
+    item text = content.unwrap()
     print("Loaded {} characters from file", len(text))
     
     // Process the content
-    var processed = text |>
+    item processed = text |>
         normalize_whitespace() |>
         correct_spelling() |>
         improve_readability()
     
     // Save the processed version
-    var result = write_file("processed_sample.txt", processed)
+    item result = write_file("processed_sample.txt", processed)
     
     given result.is_ok():
         print("Processed file saved successfully")
@@ -299,12 +299,12 @@ funxn process_file():
 
 // Alternative: streaming processing for large files
 funxn process_large_file():
-    var file_stream = open_file_stream("large_document.txt")
-    var output_stream = create_file_stream("processed_large_document.txt")
+    item file_stream = open_file_stream("large_document.txt")
+    item output_stream = create_file_stream("processed_large_document.txt")
     
     // Process in chunks to manage memory
     file_stream.process_chunks(chunk_size=1000) { chunk ->
-        var processed_chunk = chunk |>
+        item processed_chunk = chunk |>
             normalize_whitespace() |>
             correct_spelling()
         
@@ -328,15 +328,15 @@ kwasa-kwasa repl
 In the REPL, you can try:
 
 ```turbulance
->>> var text = "Hello, interactive mode!"
+>>> item text = "Hello, interactive mode!"
 >>> print(text)
 Hello, interactive mode!
 
->>> var words = text / word
+>>> item words = text / word
 >>> print(len(words))
 3
 
->>> var readability = readability_score(text)
+>>> item readability = readability_score(text)
 >>> print("Readability: {}", readability)
 Readability: 91.5
 
@@ -399,10 +399,10 @@ Load configuration in your programs:
 
 ```turbulance
 // Load configuration
-var config = load_config("kwasa.toml")
+item config = load_config("kwasa.toml")
 
 // Use configuration settings
-var target_readability = config.general.readability_target
+item target_readability = config.general.readability_target
 given readability_score(text) < target_readability:
     improve_readability(text)
 ```
@@ -416,13 +416,13 @@ funxn debug_example():
     // Enable debug mode
     debug_mode(true)
     
-    var text = "Sample text for debugging"
+    item text = "Sample text for debugging"
     
     // Log processing steps
     log_debug("Starting analysis of text: {}", text)
     
     try:
-        var result = analyze_text(text)
+        item result = analyze_text(text)
         log_debug("Analysis successful: {}", result)
         print("Result: {}", result)
         
@@ -439,17 +439,17 @@ funxn debug_example():
 
 // Error handling with text operations
 funxn safe_text_operations():
-    var text = "Test text"
+    item text = "Test text"
     
     // Safe division that handles errors
-    var sentences = try_divide(text, sentence)
+    item sentences = try_divide(text, sentence)
     
     given sentences.is_ok():
         print("Successfully divided into {} sentences", len(sentences.unwrap()))
     given otherwise:
         print("Division failed: {}", sentences.error())
         // Fallback behavior
-        var fallback = [text]  // Treat entire text as one unit
+        item fallback = [text]  // Treat entire text as one unit
         print("Using fallback: single unit")
 
 debug_example()
@@ -488,19 +488,19 @@ pip install -r python-requirements.txt
 **Issue**: "Text unit type not recognized"
 ```turbulance
 // Problem: Using undefined text unit type
-var result = text / unknown_type
+item result = text / unknown_type
 
 // Solution: Use defined types
-var result = text / sentence  // or word, paragraph, etc.
+item result = text / sentence  // or word, paragraph, etc.
 ```
 
 **Issue**: "Function not found"
 ```turbulance
 // Problem: Function name doesn't exist
-var score = unknown_function(text)
+item score = unknown_function(text)
 
 // Solution: Check available functions
-var score = readability_score(text)
+item score = readability_score(text)
 ```
 
 ### Performance Issues
@@ -508,10 +508,10 @@ var score = readability_score(text)
 **Issue**: Slow processing on large files
 ```turbulance
 // Problem: Loading entire file into memory
-var content = read_file("huge_file.txt")
+item content = read_file("huge_file.txt")
 
 // Solution: Use streaming
-var stream = open_file_stream("huge_file.txt")
+item stream = open_file_stream("huge_file.txt")
 stream.process_chunks(1000) { chunk -> process(chunk) }
 ```
 

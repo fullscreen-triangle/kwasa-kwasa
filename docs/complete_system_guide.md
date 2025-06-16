@@ -14,9 +14,9 @@ Text units are bounded regions of text with specific characteristics:
 
 ```turbulance
 // A text unit represents any bounded piece of text
-var paragraph = TextUnit("This is a paragraph. It contains multiple sentences.", TextUnitType.Paragraph)
-var sentence = TextUnit("This is a sentence.", TextUnitType.Sentence)
-var word = TextUnit("word", TextUnitType.Word)
+item paragraph = TextUnit("This is a paragraph. It contains multiple sentences.", TextUnitType.Paragraph)
+item sentence = TextUnit("This is a sentence.", TextUnitType.Sentence)
+item word = TextUnit("word", TextUnitType.Word)
 ```
 
 ### Text Unit Hierarchy
@@ -42,8 +42,8 @@ Splits text into smaller units based on boundaries:
 
 ```turbulance
 // Split a paragraph into sentences
-var paragraph = "This is sentence one. This is sentence two! This is sentence three?"
-var sentences = paragraph / sentence
+item paragraph = "This is sentence one. This is sentence two! This is sentence three?"
+item sentences = paragraph / sentence
 
 // Results in:
 // [
@@ -58,9 +58,9 @@ Combines units intelligently with appropriate connectors:
 
 ```turbulance
 // Combine sentences into a paragraph
-var sentence1 = "Climate change affects weather patterns."
-var sentence2 = "Rising temperatures cause more extreme events."
-var paragraph = sentence1 * sentence2
+item sentence1 = "Climate change affects weather patterns."
+item sentence2 = "Rising temperatures cause more extreme events."
+item paragraph = sentence1 * sentence2
 
 // Results in: "Climate change affects weather patterns. Rising temperatures cause more extreme events."
 ```
@@ -70,9 +70,9 @@ Concatenates units while preserving their type:
 
 ```turbulance
 // Add content to existing text
-var original = "Machine learning uses algorithms"
-var addition = "to find patterns in data"
-var complete = original + addition
+item original = "Machine learning uses algorithms"
+item addition = "to find patterns in data"
+item complete = original + addition
 
 // Results in: "Machine learning uses algorithms to find patterns in data"
 ```
@@ -82,8 +82,8 @@ Removes content while maintaining structure:
 
 ```turbulance
 // Remove specific content
-var text = "The quick brown fox jumps over the lazy dog"
-var reduced = text - "brown fox "
+item text = "The quick brown fox jumps over the lazy dog"
+item reduced = text - "brown fox "
 
 // Results in: "The quick jumps over the lazy dog"
 ```
@@ -99,8 +99,8 @@ Functions use the `funxn` keyword:
 
 ```turbulance
 funxn analyze_text(content):
-    var word_count = len(content.split(" "))
-    var sentence_count = len(content / sentence)
+    item word_count = len(content.split(" "))
+    item sentence_count = len(content / sentence)
     return {"words": word_count, "sentences": sentence_count}
 ```
 
@@ -183,7 +183,7 @@ Kwasa-Kwasa provides specialized data structures for complex text analysis:
 Represents relationships between concepts as a network:
 
 ```turbulance
-var concept_graph = new TextGraph()
+item concept_graph = new TextGraph()
 
 // Add concepts as nodes
 concept_graph.add_node("machine_learning", "A subset of artificial intelligence")
@@ -195,14 +195,14 @@ concept_graph.add_edge("machine_learning", "neural_networks", 0.8)
 concept_graph.add_edge("neural_networks", "deep_learning", 0.9)
 
 // Find related concepts
-var related = concept_graph.find_related("machine_learning", threshold=0.7)
+item related = concept_graph.find_related("machine_learning", threshold=0.7)
 ```
 
 #### ConceptChain
 Represents cause-and-effect relationships:
 
 ```turbulance
-var causal_chain = new ConceptChain()
+item causal_chain = new ConceptChain()
 
 // Define causal relationships
 causal_chain.add_concept("increased_funding", "Research funding increases")
@@ -214,14 +214,14 @@ causal_chain.add_relationship("increased_funding", "more_research")
 causal_chain.add_relationship("more_research", "better_outcomes")
 
 // Trace effects
-var effects = causal_chain.trace_effects("increased_funding")
+item effects = causal_chain.trace_effects("increased_funding")
 ```
 
 #### ArgMap
 Creates argument maps with claims, evidence, and objections:
 
 ```turbulance
-var argument_map = new ArgMap()
+item argument_map = new ArgMap()
 
 // Add main claim
 argument_map.add_claim("main", "Climate change requires immediate action")
@@ -234,14 +234,14 @@ argument_map.add_evidence("main", "ice_melting", "Arctic ice melting acceleratin
 argument_map.add_objection("main", "economic_cost", "Action would hurt economy")
 
 // Evaluate claim strength
-var strength = argument_map.evaluate_claim("main")
+item strength = argument_map.evaluate_claim("main")
 ```
 
 #### EvidenceNetwork
 Implements Bayesian networks for scientific evidence:
 
 ```turbulance
-var evidence_network = new EvidenceNetwork()
+item evidence_network = new EvidenceNetwork()
 
 // Add evidence nodes
 evidence_network.add_node("genomic_data", EvidenceNode.Genomic {
@@ -269,10 +269,10 @@ The system automatically detects boundaries between different types of text unit
 
 ```turbulance
 // Detect paragraph boundaries
-var paragraphs = detect_boundaries(text, BoundaryType.Paragraph)
+item paragraphs = detect_boundaries(text, BoundaryType.Paragraph)
 
 // Detect sentence boundaries with custom options
-var sentences = detect_boundaries(text, BoundaryType.Sentence, {
+item sentences = detect_boundaries(text, BoundaryType.Sentence, {
     min_length: 10,
     max_length: 200,
     confidence_threshold: 0.8
@@ -308,13 +308,13 @@ Filter text units based on complex criteria:
 
 ```turbulance
 // Filter sentences by complexity
-var complex_sentences = document.filter("readability < 40")
+item complex_sentences = document.filter("readability < 40")
 
 // Filter paragraphs containing technical terms
-var technical_paragraphs = document.filter("contains_technical_terms() == true")
+item technical_paragraphs = document.filter("contains_technical_terms() == true")
 
 // Filter using regular expressions
-var date_patterns = document.filter("matches('\\d{4}-\\d{2}-\\d{2}')")
+item date_patterns = document.filter("matches('\\d{4}-\\d{2}-\\d{2}')")
 ```
 
 ##### Transformation Pipelines
@@ -322,7 +322,7 @@ Chain multiple operations together:
 
 ```turbulance
 // Create a processing pipeline
-var processed = document |>
+item processed = document |>
     normalize_whitespace() |>
     correct_spelling() |>
     improve_readability() |>
@@ -335,10 +335,10 @@ Identify recurring patterns in text:
 
 ```turbulance
 // Detect citation patterns
-var citations = document.find_patterns("citation")
+item citations = document.find_patterns("citation")
 
 // Detect argument structures
-var arguments = document.find_patterns("argument_structure", {
+item arguments = document.find_patterns("argument_structure", {
     claim_markers: ["therefore", "thus", "consequently"],
     evidence_markers: ["because", "since", "given that"]
 })
@@ -356,7 +356,7 @@ The orchestrator operates using three concurrent processing layers:
 Responsible for understanding domain and maintaining knowledge:
 
 ```turbulance
-var context_layer = orchestrator.context_layer()
+item context_layer = orchestrator.context_layer()
     .with_domain("academic_writing")
     .with_audience("graduate_students")
     .with_style_guide("APA")
@@ -367,7 +367,7 @@ var context_layer = orchestrator.context_layer()
 Handles logical processing and rule application:
 
 ```turbulance
-var reasoning_layer = orchestrator.reasoning_layer()
+item reasoning_layer = orchestrator.reasoning_layer()
     .with_logic_rules([
         "if technical_term then provide_definition",
         "if citation_needed then add_reference",
@@ -380,7 +380,7 @@ var reasoning_layer = orchestrator.reasoning_layer()
 Manages pattern recognition and heuristic analysis:
 
 ```turbulance
-var intuition_layer = orchestrator.intuition_layer()
+item intuition_layer = orchestrator.intuition_layer()
     .with_pattern_library("academic_patterns")
     .with_heuristics("writing_best_practices")
     .with_creativity_factor(0.3)
@@ -392,14 +392,14 @@ The orchestrator processes information as streams, allowing for real-time analys
 
 ```turbulance
 // Set up streaming pipeline
-var pipeline = orchestrator.create_pipeline()
+item pipeline = orchestrator.create_pipeline()
     .add_stage("context_analysis", context_layer)
     .add_stage("logical_processing", reasoning_layer)
     .add_stage("pattern_recognition", intuition_layer)
     .with_feedback_loops(true)
 
 // Process text stream
-var output_stream = pipeline.process_stream(input_text_stream)
+item output_stream = pipeline.process_stream(input_text_stream)
 
 // Handle results as they become available
 output_stream.on_result(function(result) {
@@ -415,7 +415,7 @@ The orchestrator can work toward specific writing goals:
 
 ```turbulance
 // Define a writing goal
-var goal = Goal.new("Create accessible technical documentation")
+item goal = Goal.new("Create accessible technical documentation")
     .with_target_audience("non-experts")
     .with_readability_target(70)
     .with_technical_depth("moderate")
@@ -429,7 +429,7 @@ var goal = Goal.new("Create accessible technical documentation")
 orchestrator.set_goal(goal)
 
 // Process with goal guidance
-var result = orchestrator.process_toward_goal(document)
+item result = orchestrator.process_toward_goal(document)
 ```
 
 ### Self-Reflection and Meta-Analysis
@@ -438,7 +438,7 @@ The orchestrator can analyze its own processing:
 
 ```turbulance
 // Enable self-reflection
-var reflection = orchestrator.reflect_on_processing()
+item reflection = orchestrator.reflect_on_processing()
 
 print("Processing efficiency: {}", reflection.efficiency)
 print("Confidence distribution: {}", reflection.confidence_stats)
@@ -458,11 +458,11 @@ Process DNA sequences as text units:
 import genomic
 
 // Create DNA sequence
-var dna = genomic.NucleotideSequence.new("ATGCGATCGATCG", "gene_123")
+item dna = genomic.NucleotideSequence.new("ATGCGATCGATCG", "gene_123")
 
 // Apply text operations to genetic data
-var codons = dna / codon  // Split into codons
-var gc_rich_regions = dna.filter("gc_content() > 0.6")
+item codons = dna / codon  // Split into codons
+item gc_rich_regions = dna.filter("gc_content() > 0.6")
 
 // Use propositions for genetic analysis
 proposition GeneExpression:
@@ -484,11 +484,11 @@ Manipulate molecular structures:
 import chemistry
 
 // Create molecule
-var caffeine = chemistry.Molecule.from_smiles("CN1C=NC2=C1C(=O)N(C(=O)N2C)C")
+item caffeine = chemistry.Molecule.from_smiles("CN1C=NC2=C1C(=O)N(C(=O)N2C)C")
 
 // Apply text operations to molecules
-var fragments = caffeine / functional_group
-var aromatic_parts = caffeine.filter("is_aromatic() == true")
+item fragments = caffeine / functional_group
+item aromatic_parts = caffeine.filter("is_aromatic() == true")
 
 // Chemical analysis with propositions
 proposition DrugLikeness:
@@ -509,11 +509,11 @@ Analyze spectral data:
 import mass_spec
 
 // Load spectrum
-var spectrum = mass_spec.Spectrum.from_file("sample.mzML")
+item spectrum = mass_spec.Spectrum.from_file("sample.mzML")
 
 // Process spectral peaks as text units
-var peaks = spectrum / peak
-var high_intensity_peaks = peaks.filter("intensity > 1000")
+item peaks = spectrum / peak
+item high_intensity_peaks = peaks.filter("intensity > 1000")
 
 // Spectral analysis propositions
 proposition CompoundIdentification:
@@ -559,15 +559,15 @@ Create a simple Turbulance script:
 ```turbulance
 // hello_world.turb
 funxn main():
-    var text = "Hello, world! This is a complex sentence that might need simplification."
+    item text = "Hello, world! This is a complex sentence that might need simplification."
     
     given readability_score(text) < 60:
-        var simplified = simplify_sentences(text)
+        item simplified = simplify_sentences(text)
         print("Original: {}", text)
         print("Simplified: {}", simplified)
     
     // Demonstrate text unit operations
-    var sentences = text / sentence
+    item sentences = text / sentence
     print("Number of sentences: {}", len(sentences))
     
     // Use propositions
@@ -601,7 +601,7 @@ proposition AcademicWriting:
     
 funxn enhance_academic_paper(paper):
     // Set up academic context
-    var context = Context.new("academic")
+    item context = Context.new("academic")
         .with_style("APA")
         .with_audience("researchers")
     
@@ -632,15 +632,15 @@ proposition TechnicalDocumentation:
     motion Accuracy("Technical information is correct")
 
 funxn generate_api_docs(code_base):
-    var docs = Document.new("API Documentation")
+    item docs = Document.new("API Documentation")
     
     // Process each module
     considering all module in code_base:
-        var section = create_section(module.name)
+        item section = create_section(module.name)
         
         // Document functions
         considering all function in module:
-            var func_doc = document_function(function)
+            item func_doc = document_function(function)
             
             // Ensure accessibility
             given complexity_score(func_doc) > 0.7:
@@ -665,8 +665,8 @@ proposition CreativeWriting:
 
 funxn enhance_creative_writing(story):
     // Analyze current state
-    var engagement_score = calculate_engagement(story)
-    var flow_score = calculate_flow(story)
+    item engagement_score = calculate_engagement(story)
+    item flow_score = calculate_flow(story)
     
     considering all paragraph in story:
         // Enhance descriptions
@@ -693,9 +693,9 @@ Define your own text operations:
 ```turbulance
 // Define custom operation
 operation extract_quotes(text):
-    var quotes = []
-    var in_quote = false
-    var current_quote = ""
+    item quotes = []
+    item in_quote = false
+    item current_quote = ""
     
     considering all character in text:
         given character == '"':
@@ -712,7 +712,7 @@ operation extract_quotes(text):
     return quotes
 
 // Use custom operation
-var quotes = extract_quotes(document)
+item quotes = extract_quotes(document)
 ```
 
 ### Plugin System
@@ -724,7 +724,7 @@ Extend functionality with plugins:
 import plugin("sentiment_analysis")
 
 // Use plugin functions
-var sentiment = analyze_sentiment(text)
+item sentiment = analyze_sentiment(text)
 print("Sentiment: {} (confidence: {})", sentiment.polarity, sentiment.confidence)
 ```
 
@@ -735,10 +735,10 @@ print("Sentiment: {} (confidence: {})", sentiment.polarity, sentiment.confidence
 import external("zotero")
 
 funxn add_citations(text):
-    var citations_needed = find_citation_needs(text)
+    item citations_needed = find_citation_needs(text)
     
     considering all citation in citations_needed:
-        var reference = zotero.search(citation.topic)
+        item reference = zotero.search(citation.topic)
         given reference.confidence > 0.8:
             insert_citation(citation.position, reference)
 ```
@@ -766,7 +766,7 @@ Efficient handling of large documents:
 
 ```turbulance
 // Streaming processing for large files
-var large_file = StreamingFile.open("huge_document.txt")
+item large_file = StreamingFile.open("huge_document.txt")
 
 large_file.process_chunks(chunk_size=1000) { chunk ->
     process_text_chunk(chunk)
@@ -782,7 +782,7 @@ cache_operation("sentiment_analysis", function(text) {
 })
 
 // Use cached results
-var sentiment = sentiment_analysis(text)  // Uses cache if available
+item sentiment = sentiment_analysis(text)  // Uses cache if available
 ```
 
 ## Debugging and Development
@@ -797,7 +797,7 @@ debug_mode(true)
 
 // Log processing steps
 log_step("Starting text analysis")
-var result = analyze_text(content)
+item result = analyze_text(content)
 log_step("Analysis complete: {}", result)
 ```
 
@@ -808,16 +808,16 @@ Built-in testing capabilities:
 ```turbulance
 // Test function
 test "paragraph splitting works correctly":
-    var text = "First sentence. Second sentence. Third sentence."
-    var sentences = text / sentence
+    item text = "First sentence. Second sentence. Third sentence."
+    item sentences = text / sentence
     assert_equals(len(sentences), 3)
     assert_equals(sentences[0], "First sentence.")
 
 // Property-based testing
 property "text operations preserve total character count":
     for any text in generate_sample_texts():
-        var original_length = len(text)
-        var processed = normalize_whitespace(text)
+        item original_length = len(text)
+        item processed = normalize_whitespace(text)
         assert original_length >= len(processed)
 ```
 

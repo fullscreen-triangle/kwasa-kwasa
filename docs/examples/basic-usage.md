@@ -36,8 +36,8 @@ import text
 
 funxn main():
     // Basic text processing
-    var message = "Hello, Kwasa-Kwasa World!"
-    var words = message.split(" ")
+    item message = "Hello, Kwasa-Kwasa World!"
+    item words = message.split(" ")
     
     print("Original message: {}", message)
     print("Word count: {}", len(words))
@@ -68,13 +68,13 @@ kwasa run hello.turb
 
 ```turbulance
 // Dynamic typing
-var temperature = 23.5
-var name = "Sample_001"
-var is_valid = true
+item temperature = 23.5
+item name = "Sample_001"
+item is_valid = true
 
 // Type annotations (optional but recommended)
-var data: List[Float] = [1.2, 3.4, 5.6]
-var metadata: Dict[String, Any] = {"source": "sensor", "quality": "high"}
+item data: List[Float] = [1.2, 3.4, 5.6]
+item metadata: Dict[String, Any] = {"source": "sensor", "quality": "high"}
 
 // Constants
 const PI = 3.14159
@@ -86,7 +86,7 @@ const MAX_ITERATIONS = 1000
 ```turbulance
 // Basic function
 funxn calculate_mean(values: List[Float]) -> Float:
-    var sum = 0.0
+    item sum = 0.0
     for each value in values:
         sum += value
     return sum / len(values)
@@ -102,7 +102,7 @@ funxn analyze_data(data: List[Float], method: String = "standard", threshold: Fl
 
 // Higher-order functions
 funxn apply_to_all(items: List[Any], func: Function) -> List[Any]:
-    var results = []
+    item results = []
     for each item in items:
         results.append(func(item))
     return results
@@ -137,13 +137,13 @@ within data:
 
 ```turbulance
 // For-each loop
-var samples = ["sample1", "sample2", "sample3"]
+item samples = ["sample1", "sample2", "sample3"]
 for each sample in samples:
-    var result = process_sample(sample)
+    item result = process_sample(sample)
     print("Processed: {}", sample)
 
 // While loop
-var counter = 0
+item counter = 0
 while counter < 10:
     process_iteration(counter)
     counter += 1
@@ -164,27 +164,27 @@ within dataset as records:
 
 ```turbulance
 // Creating lists
-var numbers = [1, 2, 3, 4, 5]
-var mixed = ["text", 42, 3.14, true]
-var empty_list = []
+item numbers = [1, 2, 3, 4, 5]
+item mixed = ["text", 42, 3.14, true]
+item empty_list = []
 
 // List operations
 numbers.append(6)                    // Add element
 numbers.extend([7, 8, 9])           // Add multiple elements
-var first = numbers.first()          // Get first element
-var last = numbers.last()            // Get last element
-var slice = numbers[1:4]             // Slice: [2, 3, 4]
+item first = numbers.first()          // Get first element
+item last = numbers.last()            // Get last element
+item slice = numbers[1:4]             // Slice: [2, 3, 4]
 
 // List comprehensions
-var squares = [x*x for x in range(10)]
-var evens = [x for x in numbers if x % 2 == 0]
+item squares = [x*x for x in range(10)]
+item evens = [x for x in numbers if x % 2 == 0]
 ```
 
 #### Working with Dictionaries
 
 ```turbulance
 // Creating dictionaries
-var person = {
+item person = {
     "name": "Dr. Smith",
     "age": 45,
     "department": "Physics",
@@ -192,9 +192,9 @@ var person = {
 }
 
 // Accessing values
-var name = person["name"]           // Bracket notation
-var age = person.age                // Dot notation
-var papers = person.get("publications", 0)  // With default
+item name = person["name"]           // Bracket notation
+item age = person.age                // Dot notation
+item papers = person.get("publications", 0)  // With default
 
 // Updating values
 person["age"] = 46
@@ -209,16 +209,16 @@ for each key, value in person:
 
 ```turbulance
 // Creating sets
-var unique_genes = {"BRCA1", "TP53", "EGFR"}
-var numbers_set = {1, 2, 3, 4, 5}
+item unique_genes = {"BRCA1", "TP53", "EGFR"}
+item numbers_set = {1, 2, 3, 4, 5}
 
 // Set operations
-var set_a = {1, 2, 3}
-var set_b = {3, 4, 5}
+item set_a = {1, 2, 3}
+item set_b = {3, 4, 5}
 
-var union = set_a | set_b           // {1, 2, 3, 4, 5}
-var intersection = set_a & set_b    // {3}
-var difference = set_a - set_b      // {1, 2}
+item union = set_a | set_b           // {1, 2, 3, 4, 5}
+item intersection = set_a & set_b    // {3}
+item difference = set_a - set_b      // {1, 2}
 ```
 
 ## Pattern Matching
@@ -228,7 +228,7 @@ Pattern matching is a core feature of Turbulance:
 ### Basic Pattern Matching
 
 ```turbulance
-var text = "The research paper discusses BRCA1 gene mutations"
+item text = "The research paper discusses BRCA1 gene mutations"
 
 within text:
     given matches("research.*paper"):
@@ -245,8 +245,8 @@ within text:
 // Named capture groups
 within genetic_sequence:
     given matches("ATG(?<start_codon>...)(?<gene_body>.*)TAA"):
-        var start = start_codon
-        var body = gene_body
+        item start = start_codon
+        item body = gene_body
         analyze_gene(start, body)
 
 // Multiple patterns
@@ -301,14 +301,14 @@ evidence ExperimentalEvidence:
 ```turbulance
 // Try-catch blocks
 try:
-    var data = load_file("experiment.csv")
-    var results = analyze_data(data)
+    item data = load_file("experiment.csv")
+    item results = analyze_data(data)
 catch FileNotFound as e:
     print("File not found: {}", e.filename)
-    var data = generate_sample_data()
+    item data = generate_sample_data()
 catch DataCorruption as e:
     print("Data corruption detected: {}", e.message)
-    var data = restore_from_backup()
+    item data = restore_from_backup()
 finally:
     cleanup_temporary_files()
 ```
@@ -355,9 +355,9 @@ import matplotlib.pyplot as plt
 // Conditional imports
 try:
     import advanced_features
-    var has_advanced = true
+    item has_advanced = true
 catch ImportError:
-    var has_advanced = false
+    item has_advanced = false
     print("Advanced features not available")
 ```
 
@@ -370,19 +370,19 @@ Create a file `my_analysis.turb`:
 
 /// Calculate the coefficient of variation
 funxn coefficient_of_variation(data: List[Float]) -> Float:
-    var mean_val = mean(data)
-    var std_val = standard_deviation(data)
+    item mean_val = mean(data)
+    item std_val = standard_deviation(data)
     return std_val / mean_val
 
 /// Detect outliers using IQR method
 funxn detect_outliers_iqr(data: List[Float]) -> List[Float]:
-    var q1 = quantile(data, 0.25)
-    var q3 = quantile(data, 0.75)
-    var iqr = q3 - q1
-    var lower_bound = q1 - 1.5 * iqr
-    var upper_bound = q3 + 1.5 * iqr
+    item q1 = quantile(data, 0.25)
+    item q3 = quantile(data, 0.75)
+    item iqr = q3 - q1
+    item lower_bound = q1 - 1.5 * iqr
+    item upper_bound = q3 + 1.5 * iqr
     
-    var outliers = []
+    item outliers = []
     for each value in data:
         given value < lower_bound or value > upper_bound:
             outliers.append(value)
@@ -398,9 +398,9 @@ Use it in another file:
 ```turbulance
 import my_analysis
 
-var data = [1, 2, 3, 4, 5, 100]  // 100 is an outlier
-var cv = my_analysis.coefficient_of_variation(data)
-var outliers = my_analysis.detect_outliers_iqr(data)
+item data = [1, 2, 3, 4, 5, 100]  // 100 is an outlier
+item cv = my_analysis.coefficient_of_variation(data)
+item outliers = my_analysis.detect_outliers_iqr(data)
 
 print("Coefficient of variation: {}", cv)
 print("Outliers: {}", outliers)
@@ -412,7 +412,7 @@ print("Outliers: {}", outliers)
 
 ```turbulance
 funxn validate_experimental_data(data: List[Dict]):
-    var validated_data = []
+    item validated_data = []
     
     for each record in data:
         // Check required fields
@@ -436,22 +436,22 @@ funxn validate_experimental_data(data: List[Dict]):
 
 ```turbulance
 funxn aggregate_results(experiments: List[Dict]) -> Dict:
-    var aggregated = {
+    item aggregated = {
         "total_experiments": len(experiments),
         "success_rate": 0.0,
         "average_duration": 0.0,
         "error_types": {}
     }
     
-    var successful = 0
-    var total_duration = 0.0
+    item successful = 0
+    item total_duration = 0.0
     
     for each experiment in experiments:
         given experiment.status == "success":
             successful += 1
             total_duration += experiment.duration
         given experiment.status == "error":
-            var error_type = experiment.error_type
+            item error_type = experiment.error_type
             given error_type not in aggregated.error_types:
                 aggregated.error_types[error_type] = 0
             aggregated.error_types[error_type] += 1
@@ -466,7 +466,7 @@ funxn aggregate_results(experiments: List[Dict]) -> Dict:
 
 ```turbulance
 // config.turb - Configuration management
-var default_config = {
+item default_config = {
     "analysis": {
         "method": "standard",
         "threshold": 0.05,
@@ -485,14 +485,14 @@ var default_config = {
 
 funxn load_config(config_file: String = "config.json") -> Dict:
     try:
-        var user_config = load_json(config_file)
+        item user_config = load_json(config_file)
         return merge_configs(default_config, user_config)
     catch FileNotFound:
         print("Config file not found, using defaults")
         return default_config
 
 funxn merge_configs(default: Dict, user: Dict) -> Dict:
-    var merged = default.copy()
+    item merged = default.copy()
     for each key, value in user:
         given isinstance(value, Dict) and key in merged:
             merged[key] = merge_configs(merged[key], value)
@@ -507,12 +507,12 @@ funxn merge_configs(default: Dict, user: Dict) -> Dict:
 
 ```turbulance
 // Use sets for membership testing
-var valid_ids = {"ID001", "ID002", "ID003"}  // Set lookup: O(1)
+item valid_ids = {"ID001", "ID002", "ID003"}  // Set lookup: O(1)
 given sample_id in valid_ids:  // Fast lookup
     process_sample(sample_id)
 
 // Use dictionaries for key-value lookups
-var gene_functions = {
+item gene_functions = {
     "BRCA1": "DNA repair",
     "TP53": "tumor suppressor",
     "EGFR": "growth factor receptor"
@@ -541,11 +541,11 @@ for each chunk in chunked(read_large_file("huge_dataset.csv"), 1000):
 parallel process_samples(samples: List[String]):
     workers: 4
     for each sample in samples:
-        var result = analyze_sample(sample)
+        item result = analyze_sample(sample)
         yield result
 
 // Collect results
-var all_results = []
+item all_results = []
 for each result in process_samples(sample_list):
     all_results.append(result)
 ```
@@ -574,18 +574,18 @@ given DEBUG_MODE:
 // test_analysis.turb - Unit tests
 
 test "mean calculation works correctly":
-    var data = [1, 2, 3, 4, 5]
-    var expected = 3.0
-    var actual = calculate_mean(data)
+    item data = [1, 2, 3, 4, 5]
+    item expected = 3.0
+    item actual = calculate_mean(data)
     assert_equals(expected, actual, tolerance=0.001)
 
 test "outlier detection finds correct outliers":
-    var data = [1, 2, 3, 4, 5, 100]
-    var outliers = detect_outliers_iqr(data)
+    item data = [1, 2, 3, 4, 5, 100]
+    item outliers = detect_outliers_iqr(data)
     assert_equals([100], outliers)
 
 test "empty data handling":
-    var empty_data = []
+    item empty_data = []
     try:
         calculate_mean(empty_data)
         assert_fail("Should have thrown an exception")

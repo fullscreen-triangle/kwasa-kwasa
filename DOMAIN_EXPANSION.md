@@ -25,7 +25,7 @@ import genomic
 
 ```turbulance
 // Create a new DNA sequence
-var dna = genomic.NucleotideSequence.new("ATGCTAGCTAGCTAGCTA", "gene_123")
+item dna = genomic.NucleotideSequence.new("ATGCTAGCTAGCTAGCTA", "gene_123")
 
 // Access properties
 print("GC content: {:.2f}%".format(dna.gc_content() * 100))
@@ -36,18 +36,18 @@ print("Length: {} bp".format(len(dna.content())))
 
 ```turbulance
 // Split into fragments using division operator
-var motifs = dna / "GCT"
+item motifs = dna / "GCT"
 
 // Combine sequences with multiplication (recombination)
-var exon1 = genomic.NucleotideSequence.new("ATGCCC", "exon1")
-var exon2 = genomic.NucleotideSequence.new("GGGTGA", "exon2")
-var joined = exon1 * exon2
+item exon1 = genomic.NucleotideSequence.new("ATGCCC", "exon1")
+item exon2 = genomic.NucleotideSequence.new("GGGTGA", "exon2")
+item joined = exon1 * exon2
 
 // Concatenate sequences with addition
-var concatenated = exon1 + exon2
+item concatenated = exon1 + exon2
 
 // Remove pattern with subtraction
-var filtered = dna - "GCT"
+item filtered = dna - "GCT"
 ```
 
 #### Using Within Blocks for Genomic Processing
@@ -91,7 +91,7 @@ proposition GeneRegulation:
 
 ```turbulance
 // Create a genomic analysis pipeline
-var result = dna |>
+item result = dna |>
     find_open_reading_frames() |>
     filter_by_length(min_length=100) |>
     translate_to_protein() |>
@@ -114,19 +114,19 @@ import pattern
 
 ```turbulance
 // Create analyzers
-var analyzer = pattern.PatternAnalyzer.new()
-var ortho_analyzer = pattern.OrthographicAnalyzer.new()
+item analyzer = pattern.PatternAnalyzer.new()
+item ortho_analyzer = pattern.OrthographicAnalyzer.new()
 ```
 
 #### Analyzing Character Distributions
 
 ```turbulance
 // Analyze n-gram frequencies
-var text = "The quick brown fox jumps over the lazy dog"
-var trigrams = analyzer.analyze_ngrams(text, 3)
+item text = "The quick brown fox jumps over the lazy dog"
+item trigrams = analyzer.analyze_ngrams(text, 3)
 
 // Calculate entropy
-var entropy = analyzer.shannon_entropy(text)
+item entropy = analyzer.shannon_entropy(text)
 print("Text entropy: {:.2f} bits".format(entropy))
 ```
 
@@ -134,7 +134,7 @@ print("Text entropy: {:.2f} bits".format(entropy))
 
 ```turbulance
 // Detect statistically significant patterns
-var patterns = analyzer.detect_significant_patterns(text, 2, 5)
+item patterns = analyzer.detect_significant_patterns(text, 2, 5)
 
 for each p in patterns:
     print("Pattern '{}' occurs {} times (significance: {:.2f})".format(
@@ -146,27 +146,27 @@ for each p in patterns:
 
 ```turbulance
 // Generate visual density map
-var density_map = ortho_analyzer.visual_density(text, 40)
+item density_map = ortho_analyzer.visual_density(text, 40)
 print("Average density: {:.2f}".format(density_map.average_density()))
 
 // Extract visual rhythm
-var rhythm = ortho_analyzer.visual_rhythm(text)
+item rhythm = ortho_analyzer.visual_rhythm(text)
 ```
 
 ### Mathematical Operators for Patterns
 
 ```turbulance
 // Division: Split text by pattern type
-var visual_units = text / "visual_class"
+item visual_units = text / "visual_class"
 
 // Multiplication: Combine based on pattern similarity
-var combined = text1 * text2
+item combined = text1 * text2
 
 // Addition: Concatenate with pattern-aware joining
-var joined = text1 + text2
+item joined = text1 + text2
 
 // Subtraction: Remove common patterns
-var uncommon = text - common_patterns
+item uncommon = text - common_patterns
 ```
 
 ### Working with Pattern Propositions
@@ -191,11 +191,11 @@ One powerful aspect of Kwasa-Kwasa is the ability to apply pattern analysis tech
 
 ```turbulance
 // Analyze patterns in a genomic sequence
-var dna = genomic.NucleotideSequence.new("ATGCTAGCTAGCTAGCTA", "gene_123")
-var pattern_analyzer = pattern.PatternAnalyzer.new()
+item dna = genomic.NucleotideSequence.new("ATGCTAGCTAGCTAGCTA", "gene_123")
+item pattern_analyzer = pattern.PatternAnalyzer.new()
 
 // Find repeating patterns in DNA
-var significant_patterns = pattern_analyzer.detect_significant_patterns(dna.content(), 3, 7)
+item significant_patterns = pattern_analyzer.detect_significant_patterns(dna.content(), 3, 7)
 
 for each p in significant_patterns:
     print("DNA pattern '{}' occurs {} times".format(p.content(), p.occurrences()))

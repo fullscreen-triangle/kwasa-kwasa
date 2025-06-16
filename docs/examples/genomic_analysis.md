@@ -8,19 +8,19 @@ This example demonstrates how to use Kwasa-Kwasa's genomic extension to analyze 
 // Example of genomic sequence analysis using Turbulance
 
 // Define a DNA sequence
-var dna_sequence = "ATGCCCGGGTAATCGGTAACGGCTAGCATTGCATGCATCGA"
+item dna_sequence = "ATGCCCGGGTAATCGGTAACGGCTAGCATTGCATGCATCGA"
 
 // Function to find open reading frames
 funxn find_orfs(sequence):
     // Split the sequence into codons
-    var codons = sequence / "codon"
-    var orfs = []
+    item codons = sequence / "codon"
+    item orfs = []
     
     within sequence:
         // Find start codons (ATG)
         given contains("ATG"):
-            var start_pos = index_of("ATG")
-            var orf = extract_from(start_pos)
+            item start_pos = index_of("ATG")
+            item orf = extract_from(start_pos)
             
             // Ensure it has a valid length
             given len(orf) >= 6 and len(orf) % 3 == 0:
@@ -32,7 +32,7 @@ funxn find_orfs(sequence):
 
 // Function to calculate GC content
 funxn gc_content(sequence):
-    var gc_count = 0
+    item gc_count = 0
     
     within sequence as nucleotides:
         given nucleotide in ["G", "C"]:
@@ -42,11 +42,11 @@ funxn gc_content(sequence):
 
 // Function to find motifs
 funxn find_motifs(sequence, motif_pattern):
-    var locations = []
-    var current_pos = 0
+    item locations = []
+    item current_pos = 0
     
     while current_pos < len(sequence):
-        var found_at = sequence.find(motif_pattern, current_pos)
+        item found_at = sequence.find(motif_pattern, current_pos)
         
         given found_at != -1:
             locations.append(found_at)
@@ -65,7 +65,7 @@ funxn find_motifs(sequence, motif_pattern):
 ```turbulance
 funxn find_orfs(sequence):
     // Split the sequence into codons
-    var codons = sequence / "codon"
+    item codons = sequence / "codon"
     // ...
 ```
 The `find_orfs` function:
@@ -77,7 +77,7 @@ The `find_orfs` function:
 #### GC Content Calculation
 ```turbulance
 funxn gc_content(sequence):
-    var gc_count = 0
+    item gc_count = 0
     within sequence as nucleotides:
         given nucleotide in ["G", "C"]:
             gc_count = gc_count + 1
@@ -100,16 +100,16 @@ The example demonstrates various sequence operations:
 
 ```turbulance
 // Addition: concatenation
-var combined_exons = exon1 + exon2
+item combined_exons = exon1 + exon2
 
 // Division: split by pattern
-var fragments = dna_sequence / "GGT"
+item fragments = dna_sequence / "GGT"
 
 // Multiplication: special joining (recombination)
-var recombined = exon1 * exon2
+item recombined = exon1 * exon2
 
 // Subtraction: remove pattern
-var filtered = dna_sequence - "GGT"
+item filtered = dna_sequence - "GGT"
 ```
 
 ### 3. Gene Regulation Analysis
@@ -133,7 +133,7 @@ This section demonstrates:
 
 ```turbulance
 funxn analyze_pattern_frequencies(sequence, pattern_size=3):
-    var patterns = sequence / pattern_size
+    item patterns = sequence / pattern_size
     // ...
 ```
 

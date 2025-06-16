@@ -8,16 +8,16 @@ This example demonstrates Kwasa-Kwasa's powerful pattern analysis capabilities, 
 // Example of pattern-based meaning extraction using Turbulance
 
 // Some example text with potentially interesting patterns
-var text = "The quick brown fox jumps over the lazy dog. How vexingly quick daft zebras jump!"
+item text = "The quick brown fox jumps over the lazy dog. How vexingly quick daft zebras jump!"
 
 // Function to analyze letter frequency
 funxn letter_frequency(text):
-    var frequencies = {}
-    var total = 0
+    item frequencies = {}
+    item total = 0
     
     within text as characters:
         given character.is_alpha():
-            var char_lower = character.lower()
+            item char_lower = character.lower()
             
             given char_lower in frequencies:
                 frequencies[char_lower] = frequencies[char_lower] + 1
@@ -34,8 +34,8 @@ funxn letter_frequency(text):
 
 // Calculate Shannon entropy of text
 funxn calculate_entropy(text):
-    var frequencies = letter_frequency(text)
-    var entropy = 0.0
+    item frequencies = letter_frequency(text)
+    item entropy = 0.0
     
     for each letter, freq in frequencies:
         given freq > 0:
@@ -46,7 +46,7 @@ funxn calculate_entropy(text):
 // Detect recurring visual patterns
 funxn detect_visual_patterns(text, pattern_length=3):
     // Map letters to shape classes
-    var shape_classes = {
+    item shape_classes = {
         'a': 0, 'c': 0, 'e': 0, 'o': 0, 's': 0,  // round shapes
         'i': 1, 'l': 1, 'j': 1, 'f': 1, 't': 1,  // vertical strokes
         'm': 2, 'n': 2, 'h': 2, 'u': 2,          // arch shapes
@@ -62,8 +62,8 @@ funxn detect_visual_patterns(text, pattern_length=3):
 
 ```turbulance
 funxn letter_frequency(text):
-    var frequencies = {}
-    var total = 0
+    item frequencies = {}
+    item total = 0
     
     within text as characters:
         given character.is_alpha():
@@ -83,8 +83,8 @@ This function:
 
 ```turbulance
 funxn calculate_entropy(text):
-    var frequencies = letter_frequency(text)
-    var entropy = 0.0
+    item frequencies = letter_frequency(text)
+    item entropy = 0.0
     // ... entropy calculation
 ```
 
@@ -97,7 +97,7 @@ Calculates Shannon entropy of text:
 
 ```turbulance
 funxn detect_visual_patterns(text, pattern_length=3):
-    var shape_classes = {
+    item shape_classes = {
         'a': 0, 'c': 0, 'e': 0, 'o': 0, 's': 0,  // round shapes
         'i': 1, 'l': 1, 'j': 1, 'f': 1, 't': 1,  // vertical strokes
         // ... more shape classes

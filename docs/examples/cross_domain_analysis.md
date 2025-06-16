@@ -22,28 +22,28 @@ import physics
 import statistics
 
 // Define the target protein and drug candidate
-var target_gene = "EGFR"  // Epidermal Growth Factor Receptor
-var drug_smiles = "CC1=C(C=C(C=C1)C(=O)N)C2=CN=CN=C2N3CCC(CC3)N"  // Gefitinib
+item target_gene = "EGFR"  // Epidermal Growth Factor Receptor
+item drug_smiles = "CC1=C(C=C(C=C1)C(=O)N)C2=CN=CN=C2N3CCC(CC3)N"  // Gefitinib
 
 // Load target protein sequence and structure
-var protein_sequence = genomics.load_protein_sequence(target_gene)
-var protein_structure = genomics.load_protein_structure(target_gene, "pdb")
+item protein_sequence = genomics.load_protein_sequence(target_gene)
+item protein_structure = genomics.load_protein_structure(target_gene, "pdb")
 
 // Create drug molecule
-var drug_molecule = chemistry.Molecule.from_smiles(drug_smiles, "gefitinib")
+item drug_molecule = chemistry.Molecule.from_smiles(drug_smiles, "gefitinib")
 
 funxn cross_domain_drug_analysis(protein_seq, protein_struct, drug_mol):
     // 1. Genomics Analysis
-    var genomic_analysis = analyze_genomics(protein_seq)
+    item genomic_analysis = analyze_genomics(protein_seq)
     
     // 2. Chemistry Analysis
-    var chemical_analysis = analyze_chemistry(drug_mol)
+    item chemical_analysis = analyze_chemistry(drug_mol)
     
     // 3. Physics Analysis
-    var physics_analysis = analyze_physics(protein_struct, drug_mol)
+    item physics_analysis = analyze_physics(protein_struct, drug_mol)
     
     // 4. Cross-domain integration
-    var integrated_results = integrate_analyses(
+    item integrated_results = integrate_analyses(
         genomic_analysis, 
         chemical_analysis, 
         physics_analysis
@@ -56,16 +56,16 @@ funxn analyze_genomics(protein_sequence):
     print("=== Genomics Analysis ===")
     
     // Sequence analysis
-    var sequence_length = len(protein_sequence)
-    var molecular_weight = genomics.calculate_molecular_weight(protein_sequence)
+    item sequence_length = len(protein_sequence)
+    item molecular_weight = genomics.calculate_molecular_weight(protein_sequence)
     
     // Find functional domains
-    var domains = genomics.find_protein_domains(protein_sequence)
-    var binding_sites = genomics.predict_binding_sites(protein_sequence)
+    item domains = genomics.find_protein_domains(protein_sequence)
+    item binding_sites = genomics.predict_binding_sites(protein_sequence)
     
     // Expression analysis
-    var expression_data = genomics.load_expression_data(target_gene)
-    var tissue_specificity = genomics.analyze_tissue_expression(expression_data)
+    item expression_data = genomics.load_expression_data(target_gene)
+    item tissue_specificity = genomics.analyze_tissue_expression(expression_data)
     
     print("Protein length: {} amino acids", sequence_length)
     print("Molecular weight: {:.2f} kDa", molecular_weight / 1000)
@@ -90,22 +90,22 @@ funxn analyze_chemistry(drug_molecule):
     print("=== Chemistry Analysis ===")
     
     // Basic molecular properties
-    var mol_weight = drug_molecule.molecular_weight()
-    var logp = chemistry.calculate_logp(drug_molecule)
-    var hbd = chemistry.count_hbond_donors(drug_molecule)
-    var hba = chemistry.count_hbond_acceptors(drug_molecule)
+    item mol_weight = drug_molecule.molecular_weight()
+    item logp = chemistry.calculate_logp(drug_molecule)
+    item hbd = chemistry.count_hbond_donors(drug_molecule)
+    item hba = chemistry.count_hbond_acceptors(drug_molecule)
     
     // Lipinski's Rule of Five
-    var lipinski_compliant = chemistry.check_lipinski_rule(drug_molecule)
+    item lipinski_compliant = chemistry.check_lipinski_rule(drug_molecule)
     
     // Functional group analysis
-    var functional_groups = drug_molecule.identify_functional_groups()
+    item functional_groups = drug_molecule.identify_functional_groups()
     
     // ADMET prediction
-    var admet_properties = chemistry.predict_admet(drug_molecule)
+    item admet_properties = chemistry.predict_admet(drug_molecule)
     
     // Toxicity prediction
-    var toxicity_score = chemistry.predict_toxicity(drug_molecule)
+    item toxicity_score = chemistry.predict_toxicity(drug_molecule)
     
     print("Molecular weight: {:.2f} Da", mol_weight)
     print("LogP: {:.2f}", logp)
@@ -132,8 +132,8 @@ funxn analyze_physics(protein_structure, drug_molecule):
     print("=== Physics Analysis ===")
     
     // Molecular dynamics simulation
-    var md_system = physics.molecular.create_system(protein_structure, drug_molecule)
-    var md_simulation = physics.molecular.MDSimulation(
+    item md_system = physics.molecular.create_system(protein_structure, drug_molecule)
+    item md_simulation = physics.molecular.MDSimulation(
         system=md_system,
         temperature=310,  // Body temperature in Kelvin
         pressure=1.0,
@@ -141,18 +141,18 @@ funxn analyze_physics(protein_structure, drug_molecule):
     )
     
     // Run simulation
-    var trajectory = md_simulation.run()
+    item trajectory = md_simulation.run()
     
     // Binding affinity calculation
-    var binding_affinity = physics.calculate_binding_affinity(trajectory)
-    var binding_energy = physics.calculate_binding_energy(trajectory)
+    item binding_affinity = physics.calculate_binding_affinity(trajectory)
+    item binding_energy = physics.calculate_binding_energy(trajectory)
     
     // Conformational analysis
-    var rmsd = physics.calculate_rmsd(trajectory)
-    var flexibility = physics.analyze_flexibility(trajectory)
+    item rmsd = physics.calculate_rmsd(trajectory)
+    item flexibility = physics.analyze_flexibility(trajectory)
     
     // Electrostatic analysis
-    var electrostatic_potential = physics.calculate_electrostatic_potential(
+    item electrostatic_potential = physics.calculate_electrostatic_potential(
         protein_structure, 
         drug_molecule
     )
@@ -210,14 +210,14 @@ funxn integrate_analyses(genomic_results, chemical_results, physics_results):
                 print("✓ Low toxicity predicted")
     
     // Cross-domain correlation analysis
-    var correlations = analyze_cross_domain_correlations(
+    item correlations = analyze_cross_domain_correlations(
         genomic_results, 
         chemical_results, 
         physics_results
     )
     
     // Generate integrated score
-    var integrated_score = calculate_integrated_score(
+    item integrated_score = calculate_integrated_score(
         genomic_results, 
         chemical_results, 
         physics_results,
@@ -233,7 +233,7 @@ funxn integrate_analyses(genomic_results, chemical_results, physics_results):
 
 // Analyze correlations between domains
 funxn analyze_cross_domain_correlations(genomic, chemical, physics):
-    var correlations = {}
+    item correlations = {}
     
     // Correlation between molecular weight and binding affinity
     correlations.mw_affinity = statistics.correlation(
@@ -248,7 +248,7 @@ funxn analyze_cross_domain_correlations(genomic, chemical, physics):
     )
     
     // Correlation between expression level and binding strength
-    var avg_expression = statistics.mean(genomic.expression.expression_levels)
+    item avg_expression = statistics.mean(genomic.expression.expression_levels)
     correlations.expression_binding = statistics.correlation(
         [avg_expression],
         [physics.binding.affinity]
@@ -263,7 +263,7 @@ funxn analyze_cross_domain_correlations(genomic, chemical, physics):
 // Calculate integrated drug score
 funxn calculate_integrated_score(genomic, chemical, physics, correlations):
     // Weight different factors
-    var weights = {
+    item weights = {
         "binding_affinity": 0.3,
         "drug_likeness": 0.2,
         "safety": 0.2,
@@ -272,17 +272,17 @@ funxn calculate_integrated_score(genomic, chemical, physics, correlations):
     }
     
     // Normalize scores (0-1)
-    var binding_score = normalize_binding_score(physics.binding.affinity)
-    var druglikeness_score = chemical.molecular_properties.lipinski_compliant ? 1.0 : 0.0
-    var safety_score = 1.0 - chemical.toxicity  // Invert toxicity
-    var specificity_score = genomic.expression.tissue_specificity
-    var correlation_score = statistics.mean([
+    item binding_score = normalize_binding_score(physics.binding.affinity)
+    item druglikeness_score = chemical.molecular_properties.lipinski_compliant ? 1.0 : 0.0
+    item safety_score = 1.0 - chemical.toxicity  // Invert toxicity
+    item specificity_score = genomic.expression.tissue_specificity
+    item correlation_score = statistics.mean([
         abs(correlations.mw_affinity),
         abs(correlations.flexibility_binding),
         abs(correlations.expression_binding)
     ])
     
-    var integrated_score = (
+    item integrated_score = (
         weights.binding_affinity * binding_score +
         weights.drug_likeness * druglikeness_score +
         weights.safety * safety_score +
@@ -307,18 +307,18 @@ funxn calculate_integrated_score(genomic, chemical, physics, correlations):
 // Normalize binding affinity to 0-1 score
 funxn normalize_binding_score(affinity):
     // Strong binding: -12 kcal/mol, Weak binding: 0 kcal/mol
-    var min_affinity = -12.0
-    var max_affinity = 0.0
+    item min_affinity = -12.0
+    item max_affinity = 0.0
     
-    var normalized = (affinity - max_affinity) / (min_affinity - max_affinity)
+    item normalized = (affinity - max_affinity) / (min_affinity - max_affinity)
     return max(0.0, min(1.0, normalized))
 
 // Generate recommendations based on analysis
 funxn generate_recommendations(integrated_results):
-    var score = integrated_results.overall_score
-    var components = integrated_results.component_scores
+    item score = integrated_results.overall_score
+    item components = integrated_results.component_scores
     
-    var recommendations = []
+    item recommendations = []
     
     given score > 0.8:
         recommendations.append("Excellent drug candidate - proceed to clinical trials")
@@ -349,12 +349,12 @@ funxn main():
     print("=====================================")
     
     // Load data
-    var protein_seq = genomics.load_protein_sequence(target_gene)
-    var protein_struct = genomics.load_protein_structure(target_gene)
-    var drug_mol = chemistry.Molecule.from_smiles(drug_smiles)
+    item protein_seq = genomics.load_protein_sequence(target_gene)
+    item protein_struct = genomics.load_protein_structure(target_gene)
+    item drug_mol = chemistry.Molecule.from_smiles(drug_smiles)
     
     // Perform cross-domain analysis
-    var results = cross_domain_drug_analysis(protein_seq, protein_struct, drug_mol)
+    item results = cross_domain_drug_analysis(protein_seq, protein_struct, drug_mol)
     
     // Generate final report
     print("\n=== Final Recommendations ===")
@@ -506,7 +506,7 @@ Overall Score: 0.742/1.0
 // Continuous analysis with new data
 stream real_time_analysis():
     for each new_data in data_stream:
-        var updated_results = cross_domain_drug_analysis(
+        item updated_results = cross_domain_drug_analysis(
             new_data.genomics,
             new_data.chemistry,
             new_data.physics
@@ -521,13 +521,13 @@ stream real_time_analysis():
 ```turbulance
 // Propagate uncertainty across domains
 funxn uncertainty_analysis(results):
-    var uncertainty_sources = {
+    item uncertainty_sources = {
         "genomic_data": 0.05,
         "chemical_predictions": 0.15,
         "physics_simulations": 0.10
     }
     
-    var propagated_uncertainty = calculate_uncertainty_propagation(
+    item propagated_uncertainty = calculate_uncertainty_propagation(
         results,
         uncertainty_sources
     )

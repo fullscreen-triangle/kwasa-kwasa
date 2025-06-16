@@ -19,10 +19,10 @@ Just as Python revolutionized data science by making arrays first-class citizens
 
 funxn analyze_medical_scan(scan_path, confidence_required):
     // Load image as semantic unit (like text units)
-    var scan = load_image(scan_path)
+    item scan = load_image(scan_path)
     
     // Test understanding through reconstruction (Helicopter philosophy)
-    var understanding = understand_image(scan, confidence_threshold: confidence_required)
+    item understanding = understand_image(scan, confidence_threshold: confidence_required)
     
     // Use propositions to test specific medical claims
     proposition RadiologyQuality:
@@ -47,22 +47,22 @@ funxn analyze_medical_scan(scan_path, confidence_required):
         print("Perfect reconstruction achieved - high confidence analysis")
         
         // Divide scan into anatomical regions (like text units)
-        var anatomical_regions = scan / anatomical_region
+        item anatomical_regions = scan / anatomical_region
         
         considering all region in anatomical_regions:
             // Test understanding of each region through reconstruction
-            var region_reconstruction = autonomous_reconstruction(region,
+            item region_reconstruction = autonomous_reconstruction(region,
                 max_iterations: 50, target_quality: 0.95)
             
             given region_reconstruction.quality > 0.9:
                 print("Region " + region.description + " perfectly understood")
                 
                 // Proceed with detailed analysis
-                var abnormalities = detect_abnormalities(region)
+                item abnormalities = detect_abnormalities(region)
                 
                 considering all abnormality in abnormalities:
                     // Verify detection through reconstruction
-                    var verification = verify_through_reconstruction(abnormality)
+                    item verification = verify_through_reconstruction(abnormality)
                     
                     given verification.confidence > 0.8:
                         report_finding(abnormality, verification.confidence)
@@ -75,7 +75,7 @@ funxn analyze_medical_scan(scan_path, confidence_required):
         print("Good understanding - proceeding with segment-aware analysis")
         
         // Use segment-aware reconstruction for complex regions
-        var segments = segment_aware_reconstruction(scan,
+        item segments = segment_aware_reconstruction(scan,
             description: "medical scan with multiple tissue types")
         
         considering all segment in segments.results:
@@ -85,12 +85,12 @@ funxn analyze_medical_scan(scan_path, confidence_required):
                 print("Segment understanding insufficient - applying noise detection")
                 
                 // Use Zengeza for intelligent noise analysis
-                var noise_analysis = zengeza_noise_detection(segment.region,
+                item noise_analysis = zengeza_noise_detection(segment.region,
                     sensitivity: 0.1)
                 
                 given noise_analysis.noise_level > 0.3:
                     print("High noise detected - adjusting analysis parameters")
-                    var cleaned_analysis = noise_aware_analysis(segment)
+                    item cleaned_analysis = noise_aware_analysis(segment)
                     analyze_segment(cleaned_analysis)
     
     given otherwise:
@@ -104,31 +104,31 @@ funxn analyze_medical_scan(scan_path, confidence_required):
 
 funxn create_architectural_visualization(project_spec):
     // Create semantic canvas (not just pixel grid)
-    var canvas = create_canvas(2048, 1536)
+    item canvas = create_canvas(2048, 1536)
     canvas.set_goal("Create photorealistic architectural rendering")
     
     // Define semantic regions (not just rectangles)
-    var sky_region = define_semantic_region(canvas, "sky and atmosphere")
-    var building_region = define_semantic_region(canvas, "main building structure")  
-    var landscape_region = define_semantic_region(canvas, "landscaping and environment")
-    var detail_regions = extract_detail_regions(project_spec.architectural_plans)
+    item sky_region = define_semantic_region(canvas, "sky and atmosphere")
+    item building_region = define_semantic_region(canvas, "main building structure")  
+    item landscape_region = define_semantic_region(canvas, "landscaping and environment")
+    item detail_regions = extract_detail_regions(project_spec.architectural_plans)
     
     // Reference Understanding Engine - Revolutionary approach
-    var lighting_reference = add_reference_image(
+    item lighting_reference = add_reference_image(
         "references/golden_hour_architecture.jpg",
         "dramatic golden hour lighting on building facades"
     )
     
-    var material_reference = add_reference_image(
+    item material_reference = add_reference_image(
         "references/concrete_glass_facade.jpg", 
         "modern concrete and glass material textures"
     )
     
     // Make AI prove it understands references through reconstruction
-    var lighting_understanding = reference_understanding(lighting_reference,
+    item lighting_understanding = reference_understanding(lighting_reference,
         "golden hour lighting effects and shadow patterns")
     
-    var material_understanding = reference_understanding(material_reference,
+    item material_understanding = reference_understanding(material_reference,
         "concrete texture and glass reflection properties")
     
     // Only proceed if AI has mastered the references
@@ -151,13 +151,13 @@ funxn create_architectural_visualization(project_spec):
             model: "midjourney")
         
         // Progressive refinement with multiple passes  
-        var refined_image = progressive_refinement(canvas,
+        item refined_image = progressive_refinement(canvas,
             max_passes: 8,
             target_quality: 0.9,
             strategy: RefinementStrategy.ADAPTIVE)
         
         // Verify final result through cross-modal analysis
-        var verification = text_image_alignment(project_spec.requirements, refined_image)
+        item verification = text_image_alignment(project_spec.requirements, refined_image)
         
         given verification.score > 0.85:
             // Save as reusable template
@@ -180,12 +180,12 @@ funxn create_architectural_visualization(project_spec):
 // Seamlessly combine text and image operations
 
 funxn create_technical_manual(content_outline, visual_style):
-    var manual = create_empty_document()
-    var text_sections = content_outline / section
+    item manual = create_empty_document()
+    item text_sections = content_outline / section
     
     considering all section in text_sections:
         // Add text content
-        var text_content = generate_section_text(section)
+        item text_content = generate_section_text(section)
         manual.add_text(text_content)
         
         // Determine if visual aids would help understanding
@@ -193,23 +193,23 @@ funxn create_technical_manual(content_outline, visual_style):
             print("Section complexity high - generating visual aid")
             
             // Extract visual concepts from text
-            var visual_concepts = extract_visual_concepts(text_content)
+            item visual_concepts = extract_visual_concepts(text_content)
             
             given visual_concepts.has_drawable_content():
                 // Generate illustration using Pakati
-                var canvas = create_canvas(800, 600)
+                item canvas = create_canvas(800, 600)
                 
                 // Use cross-modal analysis to ensure alignment
-                var illustration_prompt = optimize_prompt_for_text(
+                item illustration_prompt = optimize_prompt_for_text(
                     visual_concepts.description, text_content)
                 
-                var illustration = apply_to_region(canvas,
+                item illustration = apply_to_region(canvas,
                     full_canvas_region(canvas),
                     illustration_prompt,
                     style: visual_style)
                 
                 // Verify illustration matches text through cross-modal analysis
-                var alignment = text_image_alignment(text_content, illustration)
+                item alignment = text_image_alignment(text_content, illustration)
                 
                 given alignment.score > 0.8:
                     manual.add_image(illustration)
@@ -217,7 +217,7 @@ funxn create_technical_manual(content_outline, visual_style):
                 
                 given alignment.score > 0.6:
                     print("Good alignment - refining illustration")
-                    var refined = refine_illustration_for_text(
+                    item refined = refine_illustration_for_text(
                         illustration, text_content, alignment.discrepancies)
                     manual.add_image(refined)
                 
@@ -225,16 +225,16 @@ funxn create_technical_manual(content_outline, visual_style):
                     print("Poor text-image alignment - trying different approach")
                     
                     // Break down into smaller visual concepts
-                    var concept_parts = visual_concepts / individual_concept
+                    item concept_parts = visual_concepts / individual_concept
                     
                     considering all concept in concept_parts:
-                        var mini_canvas = create_canvas(400, 300)
-                        var concept_illustration = apply_to_region(mini_canvas,
+                        item mini_canvas = create_canvas(400, 300)
+                        item concept_illustration = apply_to_region(mini_canvas,
                             full_canvas_region(mini_canvas),
                             concept.description,
                             style: visual_style)
                         
-                        var concept_alignment = text_image_alignment(
+                        item concept_alignment = text_image_alignment(
                             concept.related_text, concept_illustration)
                         
                         given concept_alignment.score > 0.7:
@@ -249,13 +249,13 @@ funxn create_technical_manual(content_outline, visual_style):
 // Use understanding to verify AI work
 
 funxn quality_assurance_pipeline(image_batch, quality_standards):
-    var results = []
+    item results = []
     
     considering all image_path in image_batch:
-        var image = load_image(image_path)
+        item image = load_image(image_path)
         
         // Test understanding through reconstruction
-        var understanding = helicopter_analysis(image)
+        item understanding = helicopter_analysis(image)
         
         // Only analyze images we can understand
         given understanding.understanding_probability > 0.8:
@@ -275,7 +275,7 @@ funxn quality_assurance_pipeline(image_batch, quality_standards):
                     support AestheticQuality
             
             // Calculate overall quality based on motion support
-            var overall_quality = calculate_proposition_support(ImageQuality)
+            item overall_quality = calculate_proposition_support(ImageQuality)
             
             given overall_quality > 0.8:
                 results.append({
@@ -287,7 +287,7 @@ funxn quality_assurance_pipeline(image_batch, quality_standards):
             
             given overall_quality > 0.6:
                 // Analyze specific issues
-                var issues = analyze_quality_issues(image, ImageQuality)
+                item issues = analyze_quality_issues(image, ImageQuality)
                 
                 results.append({
                     "image": image_path,
@@ -323,21 +323,21 @@ funxn quality_assurance_pipeline(image_batch, quality_standards):
 // Metacognitive system that improves over time
 
 funxn adaptive_image_processor(image_queue, learning_enabled):
-    var orchestrator = create_image_orchestrator()
+    item orchestrator = create_image_orchestrator()
     orchestrator.enable_learning(learning_enabled)
     
-    var processing_history = []
+    item processing_history = []
     
     considering all image_data in image_queue:
-        var image = load_image(image_data.path)
+        item image = load_image(image_data.path)
         
         // Assess image complexity and select strategy
-        var complexity = assess_image_complexity(image)
-        var strategy = orchestrator.select_optimal_strategy(complexity)
+        item complexity = assess_image_complexity(image)
+        item strategy = orchestrator.select_optimal_strategy(complexity)
         
         match strategy:
             ProcessingStrategy.SpeedOptimized => {
-                var result = fast_reconstruction_analysis(image)
+                item result = fast_reconstruction_analysis(image)
                 processing_history.append({
                     "strategy": "speed",
                     "result": result,
@@ -346,7 +346,7 @@ funxn adaptive_image_processor(image_queue, learning_enabled):
             },
             
             ProcessingStrategy.QualityOptimized => {
-                var result = helicopter_analysis(image)
+                item result = helicopter_analysis(image)
                 processing_history.append({
                     "strategy": "quality", 
                     "result": result,
@@ -356,7 +356,7 @@ funxn adaptive_image_processor(image_queue, learning_enabled):
             
             ProcessingStrategy.Adaptive => {
                 // Start fast, upgrade if needed
-                var fast_result = fast_reconstruction_analysis(image)
+                item fast_result = fast_reconstruction_analysis(image)
                 
                 given fast_result.confidence > 0.8:
                     processing_history.append({
@@ -367,7 +367,7 @@ funxn adaptive_image_processor(image_queue, learning_enabled):
                 
                 given otherwise:
                     print("Fast analysis insufficient - upgrading to full helicopter")
-                    var detailed_result = helicopter_analysis(image)
+                    item detailed_result = helicopter_analysis(image)
                     processing_history.append({
                         "strategy": "adaptive_upgraded",
                         "result": detailed_result,
@@ -380,7 +380,7 @@ funxn adaptive_image_processor(image_queue, learning_enabled):
             orchestrator.learn_from_result(image, strategy, processing_history.last())
             
             // Adapt strategy selection based on success patterns
-            var learned_optimizations = orchestrator.analyze_performance_patterns(
+            item learned_optimizations = orchestrator.analyze_performance_patterns(
                 processing_history)
             
             given learned_optimizations.has_improvements():
@@ -388,7 +388,7 @@ funxn adaptive_image_processor(image_queue, learning_enabled):
                 orchestrator.apply_learned_optimizations(learned_optimizations)
     
     // Generate insights about processing session
-    var session_insights = orchestrator.generate_session_insights(processing_history)
+    item session_insights = orchestrator.generate_session_insights(processing_history)
     
     return {
         "processed_images": processing_history.length,
@@ -416,12 +416,12 @@ edges = cv2.Canny(gray, 50, 150)
 ### Turbulance Semantic Approach:
 ```turbulance
 // Turbulance approach
-var image = load_image("image.jpg")
-var understanding = understand_image(image, confidence_threshold: 0.8)
+item image = load_image("image.jpg")
+item understanding = understand_image(image, confidence_threshold: 0.8)
 
 given understanding.level == "Excellent":
     // We KNOW the AI understands the image
-    var edges = image / edge
+    item edges = image / edge
     
     // Test if edge detection worked through propositions
     proposition EdgeDetection:

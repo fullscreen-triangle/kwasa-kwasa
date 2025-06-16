@@ -111,7 +111,7 @@ Traditional control flow assumes binary logic. Kwasa-Kwasa implements "weird loo
 ```turbulance
 // Hybrid function with probabilistic control flow
 funxn analyze_document(doc) -> HybridResult {
-    var floor = ProbabilisticFloor::from_document(doc)
+    item floor = ProbabilisticFloor::from_document(doc)
     
     // Adaptive processing based on confidence
     flow section on floor:
@@ -119,7 +119,7 @@ funxn analyze_document(doc) -> HybridResult {
             if sentence.contains_uncertainty():
                 switch_to_probabilistic_mode()
                 roll until settled:
-                    var assessment = resolution.assess(sentence)
+                    item assessment = resolution.assess(sentence)
                     if assessment.confidence > 0.8:
                         break settled(assessment)
                     else:
@@ -174,8 +174,8 @@ The system demonstrates adaptive intelligence through:
 ### Scientific Paper Analysis
 ```turbulance
 // Complete pipeline demonstrating all paradigms
-var paper = load_document("research_submission.txt")
-var analysis = comprehensive_analyze(paper, confidence_threshold: 0.8)
+item paper = load_document("research_submission.txt")
+item analysis = comprehensive_analyze(paper, confidence_threshold: 0.8)
 
 // 1. Points: Extract uncertain semantic claims
 // 2. Positional: Weight by structural prominence
@@ -188,8 +188,8 @@ Result: peer_review_confidence: 0.84, validated_claims: 12, stability_score: 0.9
 ### Legal Document Processing
 ```turbulance
 // Conservative processing for high-stakes interpretation
-var contract = load_document("agreement.txt")
-var legal_analysis = conservative_analyze(contract)
+item contract = load_document("agreement.txt")
+item legal_analysis = conservative_analyze(contract)
 
 // Conservative resolution strategies for legal certainty
 // Position-weighted interpretation for clause precedence
@@ -202,8 +202,8 @@ Result: enforceability_confidence: 0.76, risk_assessment: "moderate"
 ### Medical Diagnosis Support
 ```turbulance
 // Probabilistic analysis with position-aware symptom processing
-var patient_record = load_document("clinical_notes.txt")
-var diagnostic_support = medical_analyze(patient_record)
+item patient_record = load_document("clinical_notes.txt")
+item diagnostic_support = medical_analyze(patient_record)
 
 // Position-weighted symptom importance
 // Probabilistic disease associations

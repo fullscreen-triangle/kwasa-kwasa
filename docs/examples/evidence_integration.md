@@ -22,7 +22,7 @@ import meta_analysis
 import uncertainty
 
 // Define evidence sources and types
-var evidence_sources = {
+item evidence_sources = {
     "experimental": ExperimentalEvidence,
     "literature": LiteratureEvidence,
     "computational": ComputationalEvidence,
@@ -72,16 +72,16 @@ funxn collect_evidence():
     print("=== Evidence Collection Phase ===")
     
     // Collect experimental data
-    var experimental_evidence = collect_experimental_data()
+    item experimental_evidence = collect_experimental_data()
     
     // Collect observational data
-    var observational_evidence = collect_observational_data()
+    item observational_evidence = collect_observational_data()
     
     // Collect computational evidence
-    var computational_evidence = collect_computational_evidence()
+    item computational_evidence = collect_computational_evidence()
     
     // Collect literature evidence
-    var literature_evidence = collect_literature_evidence()
+    item literature_evidence = collect_literature_evidence()
     
     return {
         "experimental": experimental_evidence,
@@ -109,16 +109,16 @@ funxn collect_experimental_data():
             - homogenization_adjustment()
             - uncertainty_estimation()
     
-    var temperature_data = ExperimentalTemperatureData.collect(
+    item temperature_data = ExperimentalTemperatureData.collect(
         time_range=("1880-01-01", "2024-12-31")
     )
     
     // Calculate global temperature anomalies
-    var baseline_period = ("1951-01-01", "1980-12-31")
-    var anomalies = calculate_anomalies(temperature_data, baseline_period)
+    item baseline_period = ("1951-01-01", "1980-12-31")
+    item anomalies = calculate_anomalies(temperature_data, baseline_period)
     
     // Estimate measurement uncertainty
-    var measurement_uncertainty = estimate_measurement_uncertainty(temperature_data)
+    item measurement_uncertainty = estimate_measurement_uncertainty(temperature_data)
     
     print("Collected {} temperature records", len(temperature_data))
     print("Average measurement uncertainty: {:.3f}°C", measurement_uncertainty)
@@ -151,16 +151,16 @@ funxn collect_observational_data():
             - cloud_masking()
             - temporal_compositing()
     
-    var satellite_data = SatelliteObservations.collect()
+    item satellite_data = SatelliteObservations.collect()
     
     // Process different observation types
-    var surface_temp = process_surface_temperature(satellite_data)
-    var ice_extent = process_ice_extent(satellite_data)
-    var vegetation = process_vegetation_indices(satellite_data)
+    item surface_temp = process_surface_temperature(satellite_data)
+    item ice_extent = process_ice_extent(satellite_data)
+    item vegetation = process_vegetation_indices(satellite_data)
     
     // Calculate trends
-    var temperature_trend = calculate_trend(surface_temp, method="theil_sen")
-    var ice_trend = calculate_trend(ice_extent, method="linear_regression")
+    item temperature_trend = calculate_trend(surface_temp, method="theil_sen")
+    item ice_trend = calculate_trend(ice_extent, method="linear_regression")
     
     print("Satellite temperature trend: {:.4f}°C/decade", temperature_trend.slope * 10)
     print("Ice extent trend: {:.2f}% per decade", ice_trend.slope * 10)
@@ -199,15 +199,15 @@ funxn collect_computational_evidence():
             - physical_consistency
             - energy_balance_check
     
-    var model_ensemble = ClimateModelEnsemble.run_ensemble()
+    item model_ensemble = ClimateModelEnsemble.run_ensemble()
     
     // Calculate ensemble statistics
-    var ensemble_mean = calculate_ensemble_mean(model_ensemble)
-    var ensemble_spread = calculate_ensemble_spread(model_ensemble)
-    var model_agreement = assess_model_agreement(model_ensemble)
+    item ensemble_mean = calculate_ensemble_mean(model_ensemble)
+    item ensemble_spread = calculate_ensemble_spread(model_ensemble)
+    item model_agreement = assess_model_agreement(model_ensemble)
     
     // Evaluate model performance
-    var performance_metrics = evaluate_model_performance(
+    item performance_metrics = evaluate_model_performance(
         model_ensemble,
         observational_data
     )
@@ -254,17 +254,17 @@ funxn collect_literature_evidence():
             - figure_extraction
             - citation_analysis
     
-    var literature_results = ScientificLiterature.search_and_extract()
+    item literature_results = ScientificLiterature.search_and_extract()
     
     // Perform meta-analysis
-    var meta_analysis_results = meta_analysis.conduct_meta_analysis(
+    item meta_analysis_results = meta_analysis.conduct_meta_analysis(
         literature_results,
         outcome_variable="temperature_trend",
         effect_size_measure="weighted_mean_difference"
     )
     
     // Assess publication bias
-    var publication_bias = meta_analysis.assess_publication_bias(
+    item publication_bias = meta_analysis.assess_publication_bias(
         literature_results,
         methods=["funnel_plot", "egger_test", "begg_test"]
     )
@@ -316,7 +316,7 @@ proposition ClimateChangeEvidence:
             print("✓ Consistent future warming projections")
     
     // Assess overall confidence
-    var evidence_convergence = assess_evidence_convergence([
+    item evidence_convergence = assess_evidence_convergence([
         experimental_evidence,
         observational_evidence,
         computational_evidence,
@@ -332,7 +332,7 @@ funxn integrate_evidence_advanced(all_evidence):
     print("=== Advanced Evidence Integration ===")
     
     // Weight evidence sources by reliability
-    var evidence_weights = {
+    item evidence_weights = {
         "experimental": 0.30,
         "observational": 0.25,
         "computational": 0.25,
@@ -340,27 +340,27 @@ funxn integrate_evidence_advanced(all_evidence):
     }
     
     // Bayesian evidence integration
-    var bayesian_integration = bayesian_evidence_fusion(
+    item bayesian_integration = bayesian_evidence_fusion(
         all_evidence,
         evidence_weights,
         prior_distribution="uniform"
     )
     
     // Uncertainty propagation
-    var propagated_uncertainty = uncertainty.propagate_uncertainty(
+    item propagated_uncertainty = uncertainty.propagate_uncertainty(
         all_evidence,
         correlation_matrix=estimate_evidence_correlations(all_evidence)
     )
     
     // Consensus building
-    var consensus_result = build_evidence_consensus(
+    item consensus_result = build_evidence_consensus(
         all_evidence,
         consensus_threshold=0.8,
         disagreement_threshold=0.2
     )
     
     // Sensitivity analysis
-    var sensitivity_results = perform_sensitivity_analysis(
+    item sensitivity_results = perform_sensitivity_analysis(
         all_evidence,
         perturbation_range=0.1
     )
@@ -377,19 +377,19 @@ funxn quantify_uncertainties(evidence_integration):
     print("=== Uncertainty Quantification ===")
     
     // Aleatory uncertainty (natural variability)
-    var aleatory_uncertainty = calculate_aleatory_uncertainty(evidence_integration)
+    item aleatory_uncertainty = calculate_aleatory_uncertainty(evidence_integration)
     
     // Epistemic uncertainty (knowledge limitations)
-    var epistemic_uncertainty = calculate_epistemic_uncertainty(evidence_integration)
+    item epistemic_uncertainty = calculate_epistemic_uncertainty(evidence_integration)
     
     // Model uncertainty
-    var model_uncertainty = assess_model_uncertainty(evidence_integration)
+    item model_uncertainty = assess_model_uncertainty(evidence_integration)
     
     // Measurement uncertainty
-    var measurement_uncertainty = assess_measurement_uncertainty(evidence_integration)
+    item measurement_uncertainty = assess_measurement_uncertainty(evidence_integration)
     
     // Total uncertainty
-    var total_uncertainty = combine_uncertainties([
+    item total_uncertainty = combine_uncertainties([
         aleatory_uncertainty,
         epistemic_uncertainty,
         model_uncertainty,
@@ -416,19 +416,19 @@ funxn detect_and_correct_biases(evidence_integration):
     print("=== Bias Detection and Correction ===")
     
     // Selection bias
-    var selection_bias = detect_selection_bias(evidence_integration)
+    item selection_bias = detect_selection_bias(evidence_integration)
     
     // Confirmation bias
-    var confirmation_bias = detect_confirmation_bias(evidence_integration)
+    item confirmation_bias = detect_confirmation_bias(evidence_integration)
     
     // Publication bias
-    var publication_bias = detect_publication_bias(evidence_integration)
+    item publication_bias = detect_publication_bias(evidence_integration)
     
     // Measurement bias
-    var measurement_bias = detect_measurement_bias(evidence_integration)
+    item measurement_bias = detect_measurement_bias(evidence_integration)
     
     // Apply corrections
-    var corrected_evidence = evidence_integration
+    item corrected_evidence = evidence_integration
     
     given selection_bias.detected:
         corrected_evidence = correct_selection_bias(corrected_evidence, selection_bias)
@@ -462,14 +462,14 @@ funxn generate_final_assessment(integrated_evidence, uncertainties, bias_correct
     print("=== Final Evidence Assessment ===")
     
     // Calculate overall confidence score
-    var confidence_score = calculate_overall_confidence(
+    item confidence_score = calculate_overall_confidence(
         integrated_evidence,
         uncertainties,
         bias_correction
     )
     
     // Generate summary statistics
-    var summary_stats = {
+    item summary_stats = {
         "effect_size": integrated_evidence.bayesian_result.posterior_mean,
         "confidence_interval": uncertainties.confidence_intervals.ci_95,
         "evidence_strength": assess_evidence_strength(integrated_evidence),
@@ -477,14 +477,14 @@ funxn generate_final_assessment(integrated_evidence, uncertainties, bias_correct
     }
     
     // Generate recommendations
-    var recommendations = generate_evidence_based_recommendations(
+    item recommendations = generate_evidence_based_recommendations(
         integrated_evidence,
         confidence_score,
         summary_stats
     )
     
     // Create uncertainty visualization
-    var uncertainty_viz = create_uncertainty_visualization(
+    item uncertainty_viz = create_uncertainty_visualization(
         summary_stats,
         uncertainties
     )
@@ -514,22 +514,22 @@ funxn main():
     print("===========================================")
     
     // Step 1: Collect evidence from all sources
-    var all_evidence = collect_evidence()
+    item all_evidence = collect_evidence()
     
     // Step 2: Evaluate propositions
-    var proposition_results = ClimateChangeEvidence.evaluate(all_evidence)
+    item proposition_results = ClimateChangeEvidence.evaluate(all_evidence)
     
     // Step 3: Advanced integration
-    var integrated_results = integrate_evidence_advanced(all_evidence)
+    item integrated_results = integrate_evidence_advanced(all_evidence)
     
     // Step 4: Quantify uncertainties
-    var uncertainty_analysis = quantify_uncertainties(integrated_results)
+    item uncertainty_analysis = quantify_uncertainties(integrated_results)
     
     // Step 5: Detect and correct biases
-    var bias_analysis = detect_and_correct_biases(integrated_results)
+    item bias_analysis = detect_and_correct_biases(integrated_results)
     
     // Step 6: Generate final assessment
-    var final_assessment = generate_final_assessment(
+    item final_assessment = generate_final_assessment(
         bias_analysis.corrected_evidence,
         uncertainty_analysis,
         bias_analysis
@@ -705,7 +705,7 @@ Evidence strength: Very Strong
 ```turbulance
 stream continuous_evidence_integration():
     for each new_evidence in evidence_stream:
-        var updated_integration = update_evidence_base(new_evidence)
+        item updated_integration = update_evidence_base(new_evidence)
         
         given significant_change_detected(updated_integration):
             alert_stakeholders(updated_integration)
