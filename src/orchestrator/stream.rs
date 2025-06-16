@@ -190,7 +190,7 @@ where
 #[async_trait]
 impl<F> StreamProcessor for FunctionProcessor<F>
 where
-    F: Fn(StreamData) -> StreamData + Send + Sync,
+    F: Fn(StreamData) -> StreamData + Send + Sync + 'static,
 {
     async fn process(&self, mut input: Receiver<StreamData>) -> Receiver<StreamData> {
         let (tx, rx) = channel(32);
@@ -250,7 +250,7 @@ pub struct FilterProcessor<P> {
 
 impl<P> FilterProcessor<P>
 where
-    P: Fn(&StreamData) -> bool + Send + Sync,
+    P: Fn(&StreamData) -> bool + Send + Sync + 'static,
 {
     /// Create a new filter processor
     pub fn new(name: &str, predicate: P) -> Self {
@@ -264,7 +264,7 @@ where
 #[async_trait]
 impl<P> StreamProcessor for FilterProcessor<P>
 where
-    P: Fn(&StreamData) -> bool + Send + Sync,
+    P: Fn(&StreamData) -> bool + Send + Sync + 'static,
 {
     async fn process(&self, mut input: Receiver<StreamData>) -> Receiver<StreamData> {
         let (tx, rx) = channel(32);
