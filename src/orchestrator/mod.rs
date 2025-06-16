@@ -17,6 +17,8 @@ pub mod diggiden;      // Adversarial System
 pub mod hatata;        // Decision System
 pub mod spectacular;   // Extraordinary Handler
 pub mod nicotine;      // Context Validator
+pub mod integrated;    // Integrated Intelligence Orchestrator
+pub mod intelligence_examples; // Examples and usage demonstrations
 
 // Re-export main components
 pub use metacognitive::MetacognitiveOrchestrator;
@@ -30,6 +32,8 @@ pub use diggiden::DiggidenAdversarialSystem;
 pub use hatata::HatataDecisionSystem;
 pub use spectacular::SpectacularHandler;
 pub use nicotine::NicotineContextValidator;
+pub use integrated::IntegratedMetacognitiveOrchestrator;
+pub use intelligence_examples::run_all_intelligence_examples;
 
 // Re-export main types for easy access
 pub use goal::{Goal, GoalType, GoalMetrics, SuccessCriterion, Strategy, GoalStatus};

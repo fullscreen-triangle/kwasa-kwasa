@@ -422,6 +422,7 @@ impl TurbulanceProcessor {
                 self.evaluate_complex_condition(conditions, logic).await
             },
         }
+        })
     }
     
     fn evaluate_binary_condition(&self, left: &Value, operator: &str, right: &Value) -> Result<bool> {
@@ -463,7 +464,6 @@ impl TurbulanceProcessor {
             LogicOperator::Or => Ok(results.iter().any(|&x| x)),
             LogicOperator::Xor => Ok(results.iter().filter(|&&x| x).count() == 1),
         }
-        })
     }
     
     /// Helper methods for variable access
