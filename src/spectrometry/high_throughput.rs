@@ -3,7 +3,6 @@ use rayon::prelude::*;
 use crate::spectrometry::{MassSpectrum, Peak, UnitId, SpectrumMetadata, MzRange};
 use std::collections::{HashMap, BTreeMap, HashSet};
 use crate::spectrometry::Unit;
-use crate::spectrometry::SpectrumFeature;
 
 /// High-throughput mass spectrometry operations for parallel processing
 pub struct HighThroughputSpectrometry;
@@ -381,10 +380,11 @@ impl HighThroughputSpectrometry {
             });
         }
         
+        let similarity_score = calculate_similarity(&aligned_peaks);
         AlignedSpectrum {
             id: UnitId::new(format!("aligned_{}", spectrum.id)),
             peaks: aligned_peaks,
-            similarity_score: calculate_similarity(&aligned_peaks),
+            similarity_score,
         }
     }
 }

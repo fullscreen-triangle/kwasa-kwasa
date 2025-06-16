@@ -118,7 +118,7 @@ pub trait UnitOperations<T: Unit> {
 //------------------------------------------------------------------------------
 
 /// A single peak in a mass spectrum
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Peak {
     /// m/z value
     pub mz: f64,

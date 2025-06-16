@@ -201,7 +201,8 @@ impl TurbulanceProcessor {
     }
     
     /// Execute a single operation
-    pub async fn execute_operation(&mut self, operation: &TurbulanceOperation) -> Result<Value> {
+    pub fn execute_operation<'a>(&'a mut self, operation: &'a TurbulanceOperation) -> std::pin::Pin<Box<dyn std::future::Future<Output = Result<Value>> + 'a>> {
+        Box::pin(async move {
         match operation {
             TurbulanceOperation::Cycle { item_var, floor_var, body } => {
                 self.execute_cycle(item_var, floor_var, body).await
