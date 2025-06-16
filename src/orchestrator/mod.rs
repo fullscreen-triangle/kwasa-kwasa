@@ -46,10 +46,7 @@ pub use integrated::IntegratedMetacognitiveOrchestrator;
 pub use intelligence_examples::run_all_intelligence_examples;
 
 // Re-export revolutionary Tres Commas Engine components
-pub use tres_commas::{TresCommasEngine, ConsciousnessLayer, CognitiveProcess, RespirationState};
-pub use v8_metabolism::{V8MetabolismPipeline, AtpUnit, MetabolicStage, TruthSubstrate};
-pub use clothesline::{ClotheslineModule, OcclusionPattern, OcclusionChallenge, ComprehensionResult};
-pub use pungwe::{PungweModule, UnderstandingGap, AtpSynthesis, GoalDistanceMetric};
+pub use tres_commas::{TresCommasEngine, ConsciousnessLayer, CognitiveProcess, RespirationState, demonstrate_tres_commas};
 
 // Re-export main types for easy access
 pub use goal::{Goal, GoalType, GoalMetrics, SuccessCriterion, Strategy, GoalStatus};
