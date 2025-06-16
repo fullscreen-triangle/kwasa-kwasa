@@ -174,6 +174,12 @@ impl From<rustyline::error::ReadlineError> for Error {
     }
 }
 
+impl From<rusqlite::Error> for Error {
+    fn from(err: rusqlite::Error) -> Self {
+        Self::Database(format!("SQLite error: {}", err))
+    }
+}
+
 /// Error reporter for detailed error reporting
 pub struct ErrorReporter {
     source: Option<String>,

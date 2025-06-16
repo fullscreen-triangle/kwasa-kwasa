@@ -234,6 +234,55 @@ impl TextUnit {
     pub fn is_descendant_of(&self, other: &TextUnit, registry: &super::TextUnitRegistry) -> bool {
         other.is_ancestor_of(self, registry)
     }
+    
+    /// Calculate a simple complexity score for this text unit (0.0-1.0)
+    pub fn complexity(&self) -> f64 {
+        // Simple complexity calculation based on sentence and word structure
+        let sentences: Vec<&str> = self.content
+            .split(&['.', '!', '?'][..])
+            .filter(|s| !s.trim().is_empty())
+            .collect();
+            
+        let words: Vec<&str> = self.content.split_whitespace().collect();
+        
+        if sentences.is_empty() || words.is_empty() {
+            return 0.0;
+        }
+        
+        let avg_sentence_length = words.len() as f64 / sentences.len() as f64;
+        let total_chars: usize = words.iter().map(|w| w.len()).sum();
+        let avg_word_length = total_chars as f64 / words.len() as f64;
+        
+        // Normalize complexity score (higher values = more complex)
+        let complexity = ((avg_sentence_length - 10.0).abs() / 20.0 + 
+                         (avg_word_length - 4.0).abs() / 10.0) / 2.0;
+        complexity.max(0.0).min(1.0)
+    }
+    
+    /// Calculate readability score for this text unit (0.0-1.0, higher = more readable)
+    pub fn readability_score(&self) -> f64 {
+        // Simplified Flesch Reading Ease calculation
+        let sentences: Vec<&str> = self.content
+            .split(&['.', '!', '?'][..])
+            .filter(|s| !s.trim().is_empty())
+            .collect();
+            
+        let words: Vec<&str> = self.content.split_whitespace().collect();
+        
+        if sentences.is_empty() || words.is_empty() {
+            return 0.5; // Neutral score for empty content
+        }
+        
+        let avg_sentence_length = words.len() as f64 / sentences.len() as f64;
+        let total_chars: usize = words.iter().map(|w| w.len()).sum();
+        let avg_word_length = total_chars as f64 / words.len() as f64;
+        
+        // Simplified Flesch Reading Ease formula
+        let raw_score = 206.835 - (1.015 * avg_sentence_length) - (84.6 * avg_word_length);
+        
+        // Convert to 0-1 scale where 1 is most readable
+        (raw_score / 100.0).max(0.0).min(1.0)
+    }
 }
 
 impl fmt::Display for TextUnit {

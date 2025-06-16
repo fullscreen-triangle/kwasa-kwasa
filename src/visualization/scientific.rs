@@ -616,10 +616,11 @@ pub struct ScientificVisualizationBuilder {
 impl ScientificVisualizationBuilder {
     /// Create a new scientific visualization builder
     pub fn new(data_type: ScientificDataType) -> Self {
+        let title = format!("{:?} Visualization", data_type); // Use data_type before moving it
         Self {
             data_type,
             config: ScientificConfig::default(),
-            title: format!("{:?} Visualization", data_type),
+            title,
             width: 1000,
             height: 600,
         }

@@ -3,6 +3,7 @@ pub mod text_transform;
 pub mod research;
 pub mod utils;
 pub mod cross_domain_analysis;
+pub mod image_processing;
 
 use crate::turbulance::interpreter::Value;
 use crate::turbulance::Result;

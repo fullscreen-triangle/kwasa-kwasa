@@ -43,6 +43,7 @@ pub mod evidence;
 pub mod error;
 pub mod visualization;
 pub mod external_apis;
+pub mod image;
 
 // Re-export important modules
 pub use orchestrator::Orchestrator;
