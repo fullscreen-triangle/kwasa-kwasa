@@ -3,7 +3,7 @@
 //! This module provides variant calling and analysis functionality.
 
 use std::collections::HashMap;
-use super::NucleotideSequence;
+use super::{NucleotideSequence, Unit};
 
 /// Variant caller for genomic sequences
 #[derive(Debug, Clone)]
@@ -45,7 +45,7 @@ pub struct Variant {
 }
 
 /// Type of genomic variant
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum VariantType {
     /// Single nucleotide polymorphism
     SNP,

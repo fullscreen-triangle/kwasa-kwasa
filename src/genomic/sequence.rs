@@ -4,7 +4,7 @@
 //! composition analysis, motif finding, and sequence statistics.
 
 use std::collections::HashMap;
-use super::{NucleotideSequence, GenomicMetadata, UnitId, Strand, Position};
+use super::{NucleotideSequence, GenomicMetadata, UnitId, Strand, Position, Unit};
 
 /// Sequence analyzer for genomic sequences
 #[derive(Debug, Clone)]
