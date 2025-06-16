@@ -169,19 +169,19 @@ impl StreamPipeline {
 /// A simple function-based processor
 pub struct FunctionProcessor<F> {
     name: String,
-    function: F,
+    function: Arc<F>,
     stats: std::sync::Mutex<ProcessorStats>,
 }
 
 impl<F> FunctionProcessor<F>
 where
-    F: Fn(StreamData) -> StreamData + Send + Sync,
+    F: Fn(StreamData) -> StreamData + Send + Sync + 'static,
 {
     /// Create a new function processor
     pub fn new(name: &str, function: F) -> Self {
         Self {
             name: name.to_string(),
-            function,
+            function: Arc::new(function),
             stats: std::sync::Mutex::new(ProcessorStats::default()),
         }
     }
@@ -194,7 +194,7 @@ where
 {
     async fn process(&self, mut input: Receiver<StreamData>) -> Receiver<StreamData> {
         let (tx, rx) = channel(32);
-        let function = Arc::new(&self.function);
+        let function = self.function.clone();
         let name = self.name.clone();
         
         tokio::spawn(async move {
@@ -245,7 +245,7 @@ where
 /// A filter processor that removes items based on a predicate
 pub struct FilterProcessor<P> {
     name: String,
-    predicate: P,
+    predicate: Arc<P>,
 }
 
 impl<P> FilterProcessor<P>
@@ -256,7 +256,7 @@ where
     pub fn new(name: &str, predicate: P) -> Self {
         Self {
             name: name.to_string(),
-            predicate,
+            predicate: Arc::new(predicate),
         }
     }
 }
@@ -268,7 +268,7 @@ where
 {
     async fn process(&self, mut input: Receiver<StreamData>) -> Receiver<StreamData> {
         let (tx, rx) = channel(32);
-        let predicate = Arc::new(&self.predicate);
+        let predicate = self.predicate.clone();
         let name = self.name.clone();
         
         tokio::spawn(async move {
@@ -434,7 +434,7 @@ fn combine_batch(batch: &[StreamData]) -> StreamData {
         confidence: avg_confidence,
         metadata: combined_metadata,
         is_final: batch.iter().all(|d| d.is_final),
-        state: crate::orchestrator::types::StreamState::Processing,
+        state: std::collections::HashMap::new(),
     }
 }
 

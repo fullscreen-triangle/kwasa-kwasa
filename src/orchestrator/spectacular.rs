@@ -140,7 +140,7 @@ impl SpectacularHandler {
         // Check for cross-domain indicators
         let domains = ["technology", "science", "medicine", "economics", "philosophy", "psychology"];
         let domain_mentions = domains.iter()
-            .filter(|domain| content.to_lowercase().contains(domain))
+            .filter(|&&domain| content.to_lowercase().contains(domain))
             .count();
         
         let cross_domain_score = if domain_mentions > 1 { 0.8 } else { 0.2 };

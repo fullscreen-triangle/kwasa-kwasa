@@ -346,7 +346,7 @@ impl MzekezkeBayesianEngine {
             credibility -= 0.05;
         }
         
-        credibility.clamp(0.0, 1.0)
+        credibility.clamp(0.0_f64, 1.0_f64)
     }
 
     /// Assess text quality across multiple dimensions
