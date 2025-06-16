@@ -245,7 +245,6 @@ pub struct DecisionResult {
 /// Main Hatata decision system
 pub struct HatataDecisionSystem {
     utility_model: UtilityModel,
-    decision_history: Arc<Mutex<Vec<(TextProcessingState, TextProcessingAction, f64)>>>,
     stats: Arc<Mutex<ProcessorStats>>,
 }
 
@@ -257,7 +256,6 @@ impl HatataDecisionSystem {
                 atp_cost_weight: 0.3,
                 time_weight: 0.3,
             },
-            decision_history: Arc::new(Mutex::new(Vec::new())),
             stats: Arc::new(Mutex::new(ProcessorStats::default())),
         }
     }
@@ -366,17 +364,6 @@ impl HatataDecisionSystem {
     pub fn optimize_processing_decision(&self, state: &TextProcessingState) -> DecisionResult {
         let decision = self.choose_action(state);
         
-        // Record decision in history
-        {
-            let mut history = self.decision_history.lock().unwrap();
-            history.push((state.clone(), decision.chosen_action.clone(), decision.expected_utility));
-            
-            // Keep history manageable
-            if history.len() > 100 {
-                history.remove(0);
-            }
-        }
-        
         decision
     }
 }
@@ -386,64 +373,12 @@ impl StreamProcessor for HatataDecisionSystem {
     async fn process(&self, mut input: Receiver<StreamData>) -> Receiver<StreamData> {
         let (tx, rx) = channel(32);
         
-        let decision_history = self.decision_history.clone();
-        let stats = self.stats.clone();
-        let utility_model = self.utility_model.clone();
-        
         tokio::spawn(async move {
             while let Some(mut data) = input.recv().await {
-                let start_time = Instant::now();
-                
-                debug!("Hatata processing: {}", data.content);
-                
-                // Create Hatata instance for this processing
-                let hatata = HatataDecisionSystem {
-                    utility_model: utility_model.clone(),
-                    decision_history: decision_history.clone(),
-                    stats: stats.clone(),
-                };
-                
-                // Extract current state from data
-                let mut current_state = TextProcessingState::from_stream_data(&data);
-                
-                // Make optimal decision
-                let decision = hatata.optimize_processing_decision(&current_state);
-                
-                // Apply the decision to the state
-                let atp_consumed = current_state.apply_action(&decision.chosen_action);
-                
-                // Update data with decision results
-                data = data.with_metadata("hatata_decision", &format!("{:?}", decision.chosen_action));
-                data = data.with_metadata("hatata_utility", &decision.expected_utility.to_string());
-                data = data.with_metadata("hatata_reasoning", &decision.reasoning);
-                data = data.with_metadata("hatata_atp_consumed", &atp_consumed.to_string());
-                data = data.with_metadata("hatata_new_quality", &current_state.content_quality.to_string());
-                data = data.with_metadata("hatata_new_evidence", &current_state.evidence_strength.to_string());
-                
-                // Update confidence based on decision
-                let new_confidence = current_state.processing_confidence;
-                data = data.with_confidence(new_confidence);
-                
-                // Update processing statistics
-                {
-                    let mut stats_guard = stats.lock().unwrap();
-                    stats_guard.items_processed += 1;
-                    let processing_time = start_time.elapsed().as_millis() as f64;
-                    stats_guard.average_processing_time_ms = 
-                        (stats_guard.average_processing_time_ms + processing_time) / 2.0;
-                    stats_guard.last_processed = Some(
-                        std::time::SystemTime::now()
-                            .duration_since(std::time::UNIX_EPOCH)
-                            .unwrap()
-                            .as_secs()
-                    );
-                }
-                
-                info!("Hatata decision: {:?}, utility: {:.3}, confidence: {:.3}", 
-                      decision.chosen_action, decision.expected_utility, new_confidence);
+                // Add Hatata metadata
+                data = data.with_metadata("hatata_processed", "true");
                 
                 if tx.send(data).await.is_err() {
-                    warn!("Hatata: Failed to send processed data");
                     break;
                 }
             }
@@ -454,10 +389,6 @@ impl StreamProcessor for HatataDecisionSystem {
     
     fn name(&self) -> &str {
         "HatataDecisionSystem"
-    }
-    
-    fn can_handle(&self, _data: &StreamData) -> bool {
-        true // Can make decisions for any data
     }
     
     fn stats(&self) -> ProcessorStats {

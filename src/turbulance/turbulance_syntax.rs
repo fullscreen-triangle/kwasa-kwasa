@@ -245,6 +245,7 @@ impl TurbulanceProcessor {
                 Ok(Value::String(format!("return:{}", self.value_to_string(value))))
             },
         }
+        })
     }
     
     /// Execute cycle operation
@@ -304,7 +305,7 @@ impl TurbulanceProcessor {
         for flow_result in flow_results {
             // Set current line variable
             self.variables.insert(line_var.to_string(), Value::String(flow_result.input.clone()));
-            self.variables.insert("current_settled".to_string(), Value::Bool(flow_result.settled));
+            self.variables.insert("current_settled".to_string(), Value::Boolean(flow_result.settled));
             
             // Execute body
             let result = self.execute_operation(body).await?;
@@ -326,7 +327,7 @@ impl TurbulanceProcessor {
         // Set result variables
         self.variables.insert("final_confidence".to_string(), Value::Number(roll_result.confidence));
         self.variables.insert("iterations".to_string(), Value::Number(roll_result.iterations as f64));
-        self.variables.insert("settled".to_string(), Value::Bool(roll_result.settled));
+        self.variables.insert("settled".to_string(), Value::Boolean(roll_result.settled));
         
         // Execute body
         self.execute_operation(body).await
