@@ -15,8 +15,7 @@ pub mod text;
 /// Re-exports for easy access
 pub mod prelude {
     pub use super::{
-        Visualization, VisualizationType, ChartConfig, GraphConfig,
-        TextVisualization, ScientificVisualization, NetworkVisualization,
+        Visualization, VisualizationType, VisualizationConfig, VisualizationData,
         VisualizationRenderer, HtmlRenderer, SvgRenderer, JsonRenderer
     };
     pub use super::charts::*;
@@ -551,8 +550,8 @@ impl SvgRenderer {
                 let y = visualization.config.height - height - 50;
                 
                 bars.push_str(&format!(
-                    r#"<rect x="{}" y="{}" width="{}" height="{}" fill="#69b3a2"/>"#,
-                    x, y, bar_width, height
+                    r#"<rect x="{}" y="{}" width="{}" height="{}" fill="{}"/>"#,
+                    x, y, bar_width, height, "#69b3a2"
                 ));
                 
                 bars.push_str(&format!(
