@@ -26,9 +26,10 @@ pub fn detect_paragraph_boundaries(
         if end_pos - start_pos >= options.min_unit_size && end_pos - start_pos <= options.max_unit_size {
             let mut unit = TextUnit::new(
                 paragraph.trim().to_string(),
-                TextUnitType::Paragraph,
                 start_pos,
                 end_pos,
+                TextUnitType::Paragraph,
+                0, // hierarchy_level
             );
             
             // Add boundary information
@@ -86,9 +87,10 @@ pub fn detect_sentence_boundaries(
                     
                     let mut unit = TextUnit::new(
                         trimmed.to_string(),
-                        TextUnitType::Sentence,
                         sentence_start,
                         i + 1,
+                        TextUnitType::Sentence,
+                        0, // hierarchy_level
                     );
                     
                     // Add boundary information
@@ -126,9 +128,10 @@ pub fn detect_sentence_boundaries(
             
             let unit = TextUnit::new(
                 trimmed.to_string(),
-                TextUnitType::Sentence,
                 sentence_start,
                 chars.len(),
+                TextUnitType::Sentence,
+                0, // hierarchy_level
             );
             
             let unit_id = registry.add_unit(unit);
@@ -166,9 +169,10 @@ pub fn detect_word_boundaries(
                 if word_text.len() >= options.min_unit_size && word_text.len() <= options.max_unit_size {
                     let mut unit = TextUnit::new(
                         word_text,
-                        TextUnitType::Word,
                         word_start,
                         i,
+                        TextUnitType::Word,
+                        0, // hierarchy_level
                     );
                     
                     // Add boundary information
@@ -198,9 +202,10 @@ pub fn detect_word_boundaries(
         if word_text.len() >= options.min_unit_size && word_text.len() <= options.max_unit_size {
             let unit = TextUnit::new(
                 word_text,
-                TextUnitType::Word,
                 word_start,
                 chars.len(),
+                TextUnitType::Word,
+                0, // hierarchy_level
             );
             
             let unit_id = registry.add_unit(unit);

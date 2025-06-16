@@ -1,4 +1,5 @@
 use crate::text_unit::{TextUnit, TextUnitType, TextUnitRegistry};
+use crate::text_unit::types::TextUnitId;
 use crate::turbulance::ast::Value;
 use std::collections::HashMap;
 use regex;
@@ -22,7 +23,7 @@ pub enum OperationResult {
 
 impl OperationResult {
     /// Convert the result to a text unit
-    pub fn to_unit(self, registry: &mut TextUnitRegistry) -> Result<usize, String> {
+    pub fn to_unit(self, registry: &mut TextUnitRegistry) -> Result<TextUnitId, String> {
         match self {
             OperationResult::Unit(unit) => Ok(registry.add_unit(unit)),
             OperationResult::Units(units) => {
@@ -36,8 +37,8 @@ impl OperationResult {
                     .collect::<Vec<String>>()
                     .join(" ");
                 
-                let start = units.first().unwrap().start;
-                let end = units.last().unwrap().end;
+                let start = units.first().unwrap().start_pos;
+                let end = units.last().unwrap().end_pos;
                 
                 let unit = TextUnit::new(
                     combined,
@@ -995,11 +996,22 @@ fn unit_type_level(unit_type: TextUnitType) -> usize {
     match unit_type {
         TextUnitType::Character => 1,
         TextUnitType::Word => 2,
+        TextUnitType::Phrase => 2,
         TextUnitType::Sentence => 3,
         TextUnitType::Paragraph => 4,
         TextUnitType::Section => 5,
         TextUnitType::Document => 6,
         TextUnitType::Custom(_) => 0, // Custom types are lowest level
+        TextUnitType::Sequence => 3,
+        TextUnitType::Formula => 3,
+        TextUnitType::Spectrum => 3,
+        TextUnitType::Code => 3,
+        TextUnitType::Math => 3,
+        TextUnitType::Table => 4,
+        TextUnitType::ListItem => 3,
+        TextUnitType::Header => 5,
+        TextUnitType::Footer => 5,
+        TextUnitType::Citation => 3,
     }
 }
 

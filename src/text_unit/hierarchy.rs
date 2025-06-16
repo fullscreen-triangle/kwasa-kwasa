@@ -1,8 +1,8 @@
 use std::collections::{HashMap, HashSet, VecDeque};
 use std::fmt;
 
-use crate::text_unit::boundary::{BoundaryType, detect_boundaries};
-use crate::text_unit::types::TextUnit;
+use crate::text_unit::types::{TextUnit, BoundaryType};
+use crate::text_unit::boundary::{detect_paragraph_boundaries, detect_sentence_boundaries, detect_word_boundaries};
 use crate::text_unit::TextUnitRegistry;
 use crate::text_unit::utils::string_similarity;
 
@@ -49,14 +49,11 @@ impl fmt::Display for NodeType {
 impl From<BoundaryType> for NodeType {
     fn from(boundary_type: BoundaryType) -> Self {
         match boundary_type {
-            BoundaryType::Document => NodeType::Document,
-            BoundaryType::Sections => NodeType::Section,
-            BoundaryType::Paragraphs => NodeType::Paragraph,
-            BoundaryType::Sentences => NodeType::Sentence,
-            BoundaryType::Words => NodeType::Word,
-            BoundaryType::Characters => NodeType::Word, // Map to Word as closest equivalent
+            BoundaryType::Hard => NodeType::Section,
+            BoundaryType::Soft => NodeType::Paragraph,
             BoundaryType::Semantic => NodeType::SemanticBlock,
-            BoundaryType::Custom(name) => NodeType::Custom(name),
+            BoundaryType::Structural => NodeType::Paragraph,
+            BoundaryType::Domain(name) => NodeType::Custom(name),
         }
     }
 }
@@ -393,9 +390,20 @@ impl DocumentHierarchy {
             crate::text_unit::TextUnitType::Section => NodeType::Section,
             crate::text_unit::TextUnitType::Paragraph => NodeType::Paragraph,
             crate::text_unit::TextUnitType::Sentence => NodeType::Sentence,
+            crate::text_unit::TextUnitType::Phrase => NodeType::Phrase,
             crate::text_unit::TextUnitType::Word => NodeType::Word,
             crate::text_unit::TextUnitType::Character => NodeType::Word,
-            crate::text_unit::TextUnitType::Custom(_) => NodeType::Custom("Custom".to_string()),
+            crate::text_unit::TextUnitType::Custom(name) => NodeType::Custom(name),
+            crate::text_unit::TextUnitType::Sequence => NodeType::Custom("Sequence".to_string()),
+            crate::text_unit::TextUnitType::Formula => NodeType::Custom("Formula".to_string()),
+            crate::text_unit::TextUnitType::Spectrum => NodeType::Custom("Spectrum".to_string()),
+            crate::text_unit::TextUnitType::Code => NodeType::Custom("Code".to_string()),
+            crate::text_unit::TextUnitType::Math => NodeType::Custom("Math".to_string()),
+            crate::text_unit::TextUnitType::Table => NodeType::Custom("Table".to_string()),
+            crate::text_unit::TextUnitType::ListItem => NodeType::Custom("ListItem".to_string()),
+            crate::text_unit::TextUnitType::Header => NodeType::Custom("Header".to_string()),
+            crate::text_unit::TextUnitType::Footer => NodeType::Custom("Footer".to_string()),
+            crate::text_unit::TextUnitType::Citation => NodeType::Custom("Citation".to_string()),
         };
         
         let root = HierarchyNode::new(node_type, text_unit, root_id, None);
@@ -455,13 +463,17 @@ impl DocumentHierarchy {
         // Create a temporary registry
         let mut registry = TextUnitRegistry::new();
         
-        // Detect boundaries
-        let child_ids = detect_boundaries(
-            &parent_unit.content,
-            child_boundary_type,
-            &mut registry,
-            None,
-        );
+        // Detect boundaries based on boundary type
+        let child_ids = match child_boundary_type {
+            BoundaryType::Structural => {
+                // Use paragraph detection as default for structural
+                detect_paragraph_boundaries(&parent_unit.content, &mut registry, &Default::default())
+            },
+            _ => {
+                // Use sentence detection for other types
+                detect_sentence_boundaries(&parent_unit.content, &mut registry, &Default::default())
+            }
+        };
         
         // Add children to parent
         if let Some(parent) = self.find_node_by_id_mut(parent_id) {
@@ -637,7 +649,7 @@ impl DocumentHierarchy {
                     } else {
                         // Create a new semantic block from current sentences
                         if !current_block.is_empty() {
-                            new_hierarchy.add_semantic_block(&current_block);
+                            new_hierarchy.add_semantic_block(&current_block[..]);
                             current_block.clear();
                         }
                         
@@ -649,7 +661,7 @@ impl DocumentHierarchy {
                 
                 // Add the last block if it exists
                 if !current_block.is_empty() {
-                    new_hierarchy.add_semantic_block(&current_block);
+                    new_hierarchy.add_semantic_block(&current_block[..]);
                 }
             }
         }
@@ -669,10 +681,10 @@ impl DocumentHierarchy {
             // Create a text unit for the semantic block
             let text_unit = TextUnit::new(
                 combined_text,
-                sentences.first().map_or(0, |s| s.content().start),
-                sentences.last().map_or(0, |s| s.content().end),
-                crate::text_unit::TextUnitType::Custom(0), // Using custom type for semantic block
-                self.next_id,
+                sentences.first().map_or(0, |s| s.content().start_pos),
+                sentences.last().map_or(0, |s| s.content().end_pos),
+                crate::text_unit::TextUnitType::Custom("semantic_block".to_string()), // Using custom type for semantic block
+                0, // hierarchy_level
             );
             
             // Create a new node
@@ -806,7 +818,7 @@ mod tests {
                 BoundaryType::Sentences => crate::text_unit::TextUnitType::Sentence,
                 BoundaryType::Words => crate::text_unit::TextUnitType::Word,
                 BoundaryType::Characters => crate::text_unit::TextUnitType::Character,
-                _ => crate::text_unit::TextUnitType::Custom(0),
+                _ => crate::text_unit::TextUnitType::Custom("test".to_string()),
             },
             0,
         )
