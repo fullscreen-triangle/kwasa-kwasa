@@ -3,7 +3,7 @@
 //! This module provides specific functionality for mass spectrometry data analysis.
 
 use std::collections::HashMap;
-use super::{MassSpectrum, Peak};
+use super::{MassSpectrum, Peak, Unit};
 
 /// Mass spectrometry analyzer
 #[derive(Debug, Clone)]

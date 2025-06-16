@@ -146,7 +146,11 @@ impl PeakPicking {
             None
         };
 
-        let data_to_use = smoothed_data.as_ref().unwrap_or(y_data);
+        let data_to_use: &[f64] = if let Some(ref smoothed) = smoothed_data {
+            smoothed.as_slice()
+        } else {
+            y_data
+        };
 
         // Calculate baseline
         let baseline = self.calculate_baseline(data_to_use);

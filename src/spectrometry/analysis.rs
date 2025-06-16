@@ -224,7 +224,7 @@ impl SpectrometryAnalyzer {
     }
 
     /// Get mass spec result
-    fn get_mass_spec_result(&self, results: &HashMap<String, TechniqueResult>) -> Option<&MassSpecAnalysisResult> {
+    fn get_mass_spec_result<'a>(&self, results: &'a HashMap<String, TechniqueResult>) -> Option<&'a MassSpecAnalysisResult> {
         results.values().find_map(|r| match r {
             TechniqueResult::MassSpec(ms) => Some(ms),
             _ => None,
@@ -232,7 +232,7 @@ impl SpectrometryAnalyzer {
     }
 
     /// Get NMR result
-    fn get_nmr_result(&self, results: &HashMap<String, TechniqueResult>) -> Option<&NMRAnalysisResult> {
+    fn get_nmr_result<'a>(&self, results: &'a HashMap<String, TechniqueResult>) -> Option<&'a NMRAnalysisResult> {
         results.values().find_map(|r| match r {
             TechniqueResult::NMR(nmr) => Some(nmr),
             _ => None,
@@ -240,7 +240,7 @@ impl SpectrometryAnalyzer {
     }
 
     /// Get IR result
-    fn get_ir_result(&self, results: &HashMap<String, TechniqueResult>) -> Option<&IRAnalysisResult> {
+    fn get_ir_result<'a>(&self, results: &'a HashMap<String, TechniqueResult>) -> Option<&'a IRAnalysisResult> {
         results.values().find_map(|r| match r {
             TechniqueResult::IR(ir) => Some(ir),
             _ => None,
@@ -248,7 +248,7 @@ impl SpectrometryAnalyzer {
     }
 
     /// Get UV-Vis result
-    fn get_uv_vis_result(&self, results: &HashMap<String, TechniqueResult>) -> Option<&UVVisAnalysisResult> {
+    fn get_uv_vis_result<'a>(&self, results: &'a HashMap<String, TechniqueResult>) -> Option<&'a UVVisAnalysisResult> {
         results.values().find_map(|r| match r {
             TechniqueResult::UVVis(uv) => Some(uv),
             _ => None,
