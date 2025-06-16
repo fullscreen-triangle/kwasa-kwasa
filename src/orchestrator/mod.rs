@@ -11,11 +11,25 @@ pub mod context;
 pub mod intervention;
 pub mod config;
 
+// Five Intelligence Modules for Metacognitive Orchestrator
+pub mod mzekezeke;     // Bayesian Learning Engine
+pub mod diggiden;      // Adversarial System
+pub mod hatata;        // Decision System
+pub mod spectacular;   // Extraordinary Handler
+pub mod nicotine;      // Context Validator
+
 // Re-export main components
 pub use metacognitive::MetacognitiveOrchestrator;
 pub use stream::{StreamProcessor, StreamPipeline};
 pub use types::StreamData;
 pub use examples::{create_default_orchestrator, create_custom_orchestrator};
+
+// Re-export intelligence modules
+pub use mzekezeke::MzekezkeBayesianEngine;
+pub use diggiden::DiggidenAdversarialSystem;
+pub use hatata::HatataDecisionSystem;
+pub use spectacular::SpectacularHandler;
+pub use nicotine::NicotineContextValidator;
 
 // Re-export main types for easy access
 pub use goal::{Goal, GoalType, GoalMetrics, SuccessCriterion, Strategy, GoalStatus};

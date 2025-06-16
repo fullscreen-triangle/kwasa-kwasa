@@ -424,7 +424,6 @@ impl TurbulanceProcessor {
         }
     }
     
-    /// Evaluate binary condition
     fn evaluate_binary_condition(&self, left: &Value, operator: &str, right: &Value) -> Result<bool> {
         match operator {
             "contains" => {
