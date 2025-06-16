@@ -329,6 +329,7 @@ impl ChartBuilder {
     /// Build the visualization
     pub fn build(self) -> Result<Visualization> {
         let statistics = self.calculate_statistics();
+        let chart_type = self.chart_type.clone(); // Clone before use
         
         let chart_data = ChartVisualizationData {
             chart_type: self.chart_type,
@@ -341,8 +342,8 @@ impl ChartBuilder {
         let visualization = Visualization {
             id: uuid::Uuid::new_v4().to_string(),
             title: self.config.title.clone(),
-            description: format!("{:?} chart visualization", self.chart_type),
-            visualization_type: match self.chart_type {
+            description: format!("{:?} chart visualization", chart_type),
+            visualization_type: match chart_type {
                 ChartType::Line | ChartType::MultiLine => VisualizationType::LineChart,
                 ChartType::Bar | ChartType::HorizontalBar | ChartType::StackedBar => VisualizationType::BarChart,
                 ChartType::Scatter => VisualizationType::ScatterPlot,

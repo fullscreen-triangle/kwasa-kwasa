@@ -3,7 +3,7 @@
 use std::collections::HashMap;
 use serde::{Serialize, Deserialize};
 use crate::error::{Error, Result};
-use crate::pattern::{Pattern, MetaNode, MetaEdge, MetaNodeType, MetaEdgeType};
+use crate::pattern::prelude::{Pattern, MetaNode, MetaEdge, MetaNodeType, MetaEdgeType};
 use super::{
     Visualization, VisualizationType, VisualizationData, VisualizationConfig,
     NetworkData, NetworkNode, NetworkEdge, NetworkLayout, ColorScheme
@@ -583,9 +583,10 @@ impl GraphBuilder {
         let center_x = self.width as f64 / 2.0;
         let center_y = self.height as f64 / 2.0;
         let radius = (self.width.min(self.height) as f64 / 2.0) * 0.8;
+        let node_count = self.nodes.len(); // Store length before borrowing mutably
         
         for (i, node) in self.nodes.iter_mut().enumerate() {
-            let angle = 2.0 * std::f64::consts::PI * i as f64 / self.nodes.len() as f64;
+            let angle = 2.0 * std::f64::consts::PI * i as f64 / node_count as f64;
             node.position = (
                 center_x + radius * angle.cos(),
                 center_y + radius * angle.sin(),
