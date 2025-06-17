@@ -195,6 +195,7 @@ This represents the first computational framework to treat language as **inheren
 1. **Context Layer**: Domain understanding and knowledge base
 2. **Reasoning Layer**: Logical processing and rule application  
 3. **Intuition Layer**: Pattern recognition and heuristic analysis
+**[Metabolism](metacognitive-orchestrator/metabolism.md)**
 
 ### Goal-Oriented Writing
 The Goal System enables intelligent, objective-driven text processing:

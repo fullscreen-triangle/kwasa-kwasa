@@ -86,6 +86,71 @@ rustfft = "6.1"
 apodize = "1.0"
 realfft = "3.3"
 
+# Video processing dependencies (Spectacular)
+opencv = { version = "0.88", features = ["opencv-4"] }
+ffmpeg-next = "6.0"
+image = { version = "0.24", features = ["png", "jpeg", "gif", "webp"] }
+imageproc = "0.23"
+ndarray = "0.15"
+
+# Geospatial processing dependencies (Sighthound)
+geo = "0.26"
+geojson = "0.24"
+proj = "0.27"
+gdal = "0.16"
+rstar = "0.12"
+
+# AI/ML dependencies (Nebuchadnezzar)
+candle-core = "0.3"
+candle-nn = "0.3" 
+candle-transformers = "0.3"
+tokenizers = "0.14"
+hf-hub = "0.3"
+
+# Microservices dependencies (Trebuchet)
+tonic = "0.10"
+prost = "0.12"
+tower = "0.4"
+hyper = { version = "0.14", features = ["full"] }
+axum = "0.7"
+tower-http = { version = "0.4", features = ["cors", "trace"] }
+
+# Network graph visualization (Fullscreen)
+petgraph = "0.6"
+graphviz-rust = "0.8"
+dot_writer = "0.1"
+serde_graph = "0.1"
+
+# Code execution and analysis (Zangalewa)
+tree-sitter = "0.20"
+tree-sitter-rust = "0.20"
+tree-sitter-python = "0.20"
+tree-sitter-javascript = "0.20"
+syn = { version = "2.0", features = ["full"] }
+proc-macro2 = "1.0"
+quote = "1.0"
+
+# Meta orchestrator (Harare)
+crossbeam = "0.8"
+parking_lot = "0.12"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+metrics = "0.21"
+
+# Database and persistence
+sqlx = { version = "0.7", features = ["runtime-tokio-rustls", "sqlite", "postgres"] }
+redis = { version = "0.23", features = ["tokio-comp"] }
+
+# Additional utilities
+base64 = "0.21"
+hex = "0.4"
+bytes = "1.4"
+memmap2 = "0.7"
+walkdir = "2.3"
+notify = "6.0"
+once_cell = "1.18"
+lazy_static = "1.4"
+
 # Development dependencies for testing
 [dev-dependencies]
 criterion = "0.5.1"
