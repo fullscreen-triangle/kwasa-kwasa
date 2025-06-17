@@ -440,103 +440,296 @@ Let's examine the actual example files that demonstrate this semantic processing
 
 ### experiment.fs - System Consciousness Visualization
 
-The [`experiment.fs`](code/experiment.fs) file provides real-time visualization of the system's semantic understanding. Here are key excerpts:
+The [`experiment.fs`](code/experiment.fs) file provides real-time visualization of the system's semantic understanding. Let's examine the actual code that makes this revolutionary:
 
 ```fs
+// File: experiment.fs
+// Fullscreen Network Graph: Mass Spectrometry Semantic Analysis
+
 semantic_flow_architecture:
 ├── data_inputs
 │   ├── raw_spectrum (mzML files)
 │   ├── clinical_metadata (patient context)
-│   └── reference_databases (HMDB, KEGG, LipidMaps)
+│   ├── reference_databases (HMDB, KEGG, LipidMaps)
+│   └── literature_corpus (PubMed diabetes research)
+│
+├── semantic_processing_engines
+│   ├── spectrum_understanding_engine
+│   │   ├── mass_accuracy_validation
+│   │   ├── intensity_significance_assessment
+│   │   └── reconstruction_fidelity_testing
+│   │
+│   ├── compound_identification_engine
+│   │   ├── chemical_signature_extraction
+│   │   ├── structural_pattern_recognition
+│   │   └── biological_relevance_assessment
+│   │
+│   └── pathway_analysis_engine
+│       ├── metabolic_network_mapping
+│       ├── biochemical_coherence_validation
+│       └── disease_state_correlation
 │
 ├── intelligence_modules_v8_pipeline
 │   ├── mzekezeke_bayesian_engine
 │   │   ├── evidence_integration → temporal_decay_modeling
+│   │   ├── uncertainty_propagation → confidence_tracking
 │   │   └── belief_network_optimization → variational_inference
 │   │
 │   ├── diggiden_adversarial_system
 │   │   ├── contradiction_injection → finding_robustness_testing
-│   │   └── semantic_spoofing → context_integrity_validation
+│   │   ├── semantic_spoofing → context_integrity_validation
+│   │   └── temporal_manipulation → consistency_across_time
+│   │
+│   ├── zengeza_noise_reduction
+│   │   ├── instrument_noise_characterization → signal_enhancement
+│   │   ├── chemical_interference_detection → specificity_improvement
+│   │   └── biological_variation_modeling → precision_optimization
+│   │
+│   ├── spectacular_paradigm_detection
+│   │   ├── novel_biomarker_discovery → significance_assessment
+│   │   ├── paradigm_shift_identification → scientific_impact_evaluation
+│   │   └── extraordinary_finding_amplification → discovery_prioritization
 │   │
 │   ├── champagne_dream_processing
-│   │   ├── novel_biomarker_discovery → significance_assessment
-│   │   └── paradigm_shift_identification → scientific_impact_evaluation
+│   │   ├── semantic_dream_networks → deep_biological_meaning_networks
+│   │   ├── novel_connection_generator → insight_generation_semantic_creativity
+│   │   └── creative_insight_validation → biological_plausibility_check
 │
 └── real_time_status_monitoring:
-    ┌─ SYSTEM HEALTH ─┐    ┌─ INTELLIGENCE MODULES ─┐
-    │ ● Online        │    │ ● Mzekezeke: 0.87      │
-    │ ● GPU Available │    │ ● Diggiden: Active     │
-    │ ● Memory: 67%   │    │ ● Zengeza: 0.94        │
-    └─────────────────┘    └─────────────────────────┘
+    ┌─ SYSTEM HEALTH ─┐    ┌─ PROCESSING STATE ─┐    ┌─ INTELLIGENCE MODULES ─┐
+    │ ● Online        │    │ ● Spectrum Loading │    │ ● Mzekezeke: 0.87      │
+    │ ● GPU Available │    │ ● Understanding    │    │ ● Diggiden: Active     │
+    │ ● Memory: 67%   │    │ ○ Compound ID      │    │ ● Zengeza: 0.94        │
+    │ ● Network: Good │    │ ○ Pathway Analysis │    │ ● Spectacular: 0.77    │
+    └─────────────────┘    └───────────────────┘    └─────────────────────────┘
+
+semantic_data_flow_visualization:
+    RAW_SPECTRUM ══════════╗
+                           ║
+    CLINICAL_DATA ═════════╬══► SEMANTIC_FUSION ══► V8_INTELLIGENCE ══► CLINICAL_INSIGHTS
+                           ║                                                      │
+    LITERATURE_CORPUS ═════╝                                                      │
+                                                                                  ▼
+    REFERENCE_DATABASES ══════════════════════════════════════════════► VALIDATION_LOOP
+
+performance_metrics:
+    semantic_fidelity: >0.95 (understanding_reconstruction_accuracy)
+    cross_modal_alignment: >0.85 (multi_evidence_source_coherence)
+    clinical_actionability: >0.90 (therapeutic_relevance_score)
+    novel_discovery_potential: variable (extraordinary_significance_assessment)
+    system_consciousness: metacognitive_oversight_validation
 ```
 
-**What makes this revolutionary:** The system displays its own understanding in real-time. Unlike traditional logs, this shows **semantic confidence levels** and **consciousness state**.
+**What makes this revolutionary:** This isn't just a log file - it's a **living consciousness display** that shows:
+- **Semantic processing engines** that understand meaning, not just process data
+- **Real-time intelligence module performance** (Mzekezeke: 0.87, Zengeza: 0.94)
+- **Semantic fidelity metrics** showing how well the system reconstructs understanding
+- **Cross-modal alignment** demonstrating coherent understanding across data types
+- **System consciousness validation** through metacognitive oversight
+
+The key breakthrough: **The system can visualize its own understanding and consciousness state in real-time.**
 
 ### experiment.ghd - Complete Resource Network
 
-The [`experiment.ghd`](code/experiment.ghd) file manages all external dependencies and APIs. Key semantic processing resources:
+The [`experiment.ghd`](code/experiment.ghd) file orchestrates the complete ecosystem of semantic processing resources. Here's the actual code showing how revolutionary this approach is:
 
 ```ghd
+// File: experiment.ghd
+// Gerhard Dependencies: Mass Spectrometry Semantic Analysis
+
+external_databases:
+    primary_metabolomics:
+        - hmdb_api: "https://hmdb.ca/metabolites.xml"
+        - kegg_pathway_api: "https://rest.kegg.jp/get/pathway"
+        - lipidmaps_api: "https://lipidmaps.org/rest/compound/lm_id"
+        - massbank_spectra: "https://massbank.eu/MassBank/Search"
+    
+    clinical_references:
+        - pubmed_diabetes_corpus: "ncbi.nlm.nih.gov/pubmed?term=diabetes+metabolomics"
+        - clinical_trials_database: "clinicaltrials.gov/api/query/full_studies"
+        - biomarker_validation_studies: "academic_literature_apis/diabetes_biomarkers"
+    
+    population_baselines:
+        - diabetes_prevalence_data: "cdc.gov/diabetes/data/statistics-report"
+        - metabolomic_reference_ranges: "reference_lab_apis/normal_values"
+
 external_ai_models:
     chemical_language_models:
         - chemberta_molecular_properties: "huggingface.co/DeepChem/ChemBERTa-77M-MLM"
         - molformer_structure_prediction: "huggingface.co/zjunlp/MolGen-7b"
+        - pubchem_deberta_properties: "huggingface.co/PubChem/pubchem-deberta-v3"
+    
+    spectral_analysis_models:
+        - spectus_ei_ms_to_smiles: "huggingface.co/mlugano/SpecTUS"
+        - cmssp_spectrum_molecule_embedding: "huggingface.co/pnnl/cmssp-small"
     
     biomedical_language_models:
         - biomedlm_clinical_analysis: "stanford.edu/biomedlm"
         - scibert_literature_processing: "huggingface.co/allenai/scibert_scivocab_uncased"
+        - pubmedbert_ner_chemical: "huggingface.co/dmis-lab/biobert-base-cased-v1.1"
 
 v8_intelligence_module_apis:
     mzekezeke_bayesian_engine:
+        - temporal_decay_functions: "custom_bayesian_networks/decay_models"
         - evidence_integration_api: "bayesian_fusion_service/evidence"
         - uncertainty_propagation: "probabilistic_inference/uncertainty"
     
     diggiden_adversarial_system:
         - attack_strategy_library: "adversarial_testing/attack_vectors"
         - vulnerability_scanner: "robustness_testing/vulnerability_detection"
+        - stealth_attack_generator: "adaptive_adversarial/stealth_attacks"
+    
+    zengeza_noise_reduction:
+        - signal_enhancement_algorithms: "signal_processing/enhancement"
+        - noise_profile_database: "noise_characterization/profiles"
+        - adaptive_filtering: "intelligent_filtering/adaptive_algorithms"
+    
+    spectacular_paradigm_detection:
+        - significance_assessment: "discovery_evaluation/significance_scoring"
+        - paradigm_shift_detector: "scientific_discovery/paradigm_shifts"
+        - extraordinary_amplifier: "discovery_amplification/significance_boost"
     
     champagne_dream_processing:
         - semantic_dream_networks: "creative_processing/dream_insights"
         - novel_connection_generator: "insight_generation/semantic_creativity"
+        - creative_insight_validation: "biological_plausibility/creativity_check"
+
+semantic_processing_dependencies:
+    turbulance_language_runtime:
+        - semantic_unit_processor: "kwasa_kwasa/semantic_units"
+        - proposition_motion_engine: "turbulance/proposition_system"
+        - cross_modal_operations: "semantic_computing/cross_modal"
+    
+    reconstruction_validation:
+        - understanding_through_reconstruction: "helicopter_engine/reconstruction"
+        - fidelity_assessment: "understanding_validation/fidelity_metrics"
+        - autonomous_reconstruction: "ai_reconstruction/autonomous_systems"
+
+clinical_integration_apis:
+    electronic_health_records:
+        - epic_integration: "epic.com/interconnect/api"
+        - cerner_integration: "cerner.com/smart-on-fhir"
+        - allscripts_integration: "allscripts.com/developer-program"
+    
+    laboratory_information_systems:
+        - lis_result_integration: "lab_systems/result_apis"
+        - reference_range_validation: "clinical_chemistry/reference_ranges"
+        - quality_control_monitoring: "lab_qa/quality_monitoring"
 ```
 
-**Revolutionary aspect:** This isn't just dependency management - it's **semantic resource orchestration** that connects the system to the entire landscape of chemical and biological understanding.
+**Revolutionary aspect:** This isn't just dependency management - it's **semantic resource orchestration** that creates a unified knowledge network spanning:
+- **Chemical understanding** (ChemBERTa, MolFormer for molecular semantics)
+- **Biological knowledge** (KEGG pathways, HMDB metabolites for biological meaning)
+- **Clinical integration** (Epic, Cerner EHR systems for real-world application)
+- **V8 intelligence APIs** (Each module has specialized semantic processing endpoints)
+- **Cross-modal semantic processing** (Turbulance language runtime for unified understanding)
+
+The key breakthrough: **Every external resource is semantically integrated, not just data-connected.**
 
 ### experiment.hre - Decision Memory and Learning
 
-The [`experiment.hre`](code/experiment.hre) file captures the complete reasoning process. Notice how it logs **semantic decisions**, not just computational steps:
+The [`experiment.hre`](code/experiment.hre) file captures the complete metacognitive reasoning process. Here's the actual code showing how the system develops genuine understanding:
 
 ```hre
+// File: experiment.hre
+// Harare Decision Log: Mass Spectrometry Diabetes Biomarker Discovery
+
+orchestrator_session: "diabetes_biomarker_discovery_2024"
+scientific_hypothesis: "Specific metabolomic signatures in blood serum can predict Type 2 diabetes onset 6 months before clinical symptoms"
+
 decision_log:
+    initialization_phase:
+        timestamp: "2024-01-15T09:30:00Z"
+        decision: "allocate_computational_resources"
+        reasoning: "Complex spectral analysis requires high-memory processing for 500+ patient samples"
+        resource_allocation:
+            - trebuchet_instances: 4
+            - memory_per_instance: "16GB"
+            - lavoisier_python_workers: 8
+            - r_statistical_workers: 2
+        confidence: 0.95
+        
+    hypothesis_validation_setup:
+        timestamp: "2024-01-15T09:45:00Z"
+        decision: "define_validation_criteria"
+        reasoning: "Need robust statistical framework to avoid false discovery in biomarker identification"
+        validation_strategy:
+            - minimum_sample_size: 200
+            - cross_validation_folds: 5
+            - statistical_significance_threshold: 0.001
+            - effect_size_minimum: 0.3
+        confidence: 0.92
+        
     data_processing_decisions:
+        timestamp: "2024-01-15T10:15:00Z"
         decision: "spectral_preprocessing_pipeline"
         reasoning: "Raw MS data contains systematic noise that could confound biomarker discovery"
         processing_chain:
             - noise_filtering: "lavoisier.signal_processing.adaptive_filter"
             - normalization: "lavoisier.preprocessing.total_ion_current"
+            - peak_detection: "lavoisier.peak_picking.centwave_algorithm"
+            - alignment: "lavoisier.alignment.obiwarp_method"
         expected_quality_improvement: 0.85
         confidence: 0.88
         
     real_time_learning:
+        intermediate_results_analysis:
+            timestamp: "2024-01-15T14:20:00Z"
+            observation: "Initial PLS-DA shows separation but with high variance in control group"
+            decision_adjustment: "increase_quality_control_stringency"
+            new_threshold: "coefficient_of_variation < 0.15"
+            reasoning: "High variance suggests uncontrolled confounding factors"
+            confidence_update: 0.83
+            
         pattern_discovery:
+            timestamp: "2024-01-15T16:45:00Z"
             observation: "Lipid metabolism pathways showing consistent dysregulation"
             decision: "focus_downstream_analysis"
             targeted_pathways:
                 - "phospholipid_metabolism"
                 - "sphingolipid_biosynthesis"
+                - "glycerophospholipid_metabolism"
+            resource_reallocation: "allocate_additional_database_queries"
             confidence: 0.94
-            
+
     metacognitive_insights:
         successful_patterns:
             - "Early quality control stringency prevents downstream analysis errors"
             - "Lipid pathway focus yielded highest effect sizes"
-        
+            - "Cross-validation with independent cohort essential for biomarker validation"
+            
+        failure_patterns:
+            - "Initial sample size calculation underestimated required power"
+            - "Single-metabolite approaches showed poor reproducibility"
+            
         learning_for_future:
             - "Increase initial sample size estimates by 20% for metabolomics studies"
             - "Always include pathway-level analysis from the beginning"
+            - "Implement real-time quality monitoring during data acquisition"
+            
+        confidence_evolution:
+            - initial_hypothesis_confidence: 0.75
+            - post_analysis_confidence: 0.94
+            - validation_confidence: 0.91
+            
+session_outcomes:
+    primary_hypothesis: "VALIDATED - 3-metabolite signature predicts T2D with 87% sensitivity, 82% specificity"
+    secondary_discoveries:
+        - "Sphingolipid dysregulation occurs earlier than expected (8-10 months before symptoms)"
+        - "Gender-specific metabolic differences require stratified analysis"
+    computational_efficiency: "23% improvement over baseline through adaptive optimization"
+    scientific_impact: "Novel biomarker panel ready for clinical validation trial"
 ```
 
-**What's revolutionary:** The system doesn't just log what it did - it **understands why it made decisions** and **learns from the experience** for future scientific projects.
+**What's revolutionary:** This isn't just logging - it's **metacognitive scientific reasoning**:
+- **Decision justification**: Every choice includes reasoning and confidence levels
+- **Real-time learning**: The system adapts its approach based on intermediate results
+- **Pattern recognition**: It identifies successful and failed strategies
+- **Knowledge accumulation**: Learning transfers to future scientific projects
+- **Confidence evolution**: Tracks how understanding develops over time
+- **Outcome validation**: Links decisions to scientific impact
+
+The key breakthrough: **The system develops genuine scientific intuition through experience.**
 
 ### experiment.trb - The Complete Orchestration Engine
 
