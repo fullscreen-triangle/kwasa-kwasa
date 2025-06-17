@@ -1,0 +1,348 @@
+// File: experiment.trb  
+// Kwasa-Kwasa Orchestration Script: Mass Spectrometry Diabetes Biomarker Discovery
+// 
+// 🎯 PURPOSE: Orchestrate existing computational tools toward scientific hypothesis validation
+// 🧠 VALUE: Add scientific reasoning, hypothesis testing, semantic interpretation
+// 🔧 COORDINATES: Lavoisier (Python), R Statistical Suite, External APIs, Literature DBs
+//
+// ⚠️  KEY POINT: This script COORDINATES tools - it doesn't replace them!
+
+import orchestrator.harare     // Decision logging and metacognitive learning
+import orchestrator.trebuchet  // Computational resource management
+import visualization.fullscreen // System architecture visualization
+import external.gerhard        // External API and dependency management
+
+// 🎯 SCIENTIFIC HYPOTHESIS - The cognitive framework that guides everything
+hypothesis DiabetesBiomarkerDiscovery:
+    claim: "Specific metabolomic signatures in blood serum can predict Type 2 diabetes onset 6 months before clinical symptoms appear"
+    
+    success_criteria:
+        - sensitivity > 0.85
+        - specificity > 0.80  
+        - positive_predictive_value > 0.75
+        - independent_validation_required: true
+    
+    experimental_design:
+        - cross_validation_folds: 5
+        - statistical_significance: p_value < 0.001
+        - effect_size_minimum: 0.3
+        - minimum_sample_size: 200
+
+// 🚀 MAIN ORCHESTRATION FUNCTION
+funxn diabetes_biomarker_discovery():
+    print("🎯 SCIENTIFIC MISSION: Validate diabetes biomarker prediction hypothesis")
+    print("🔧 ORCHESTRATING: Lavoisier + R + External APIs + Semantic Analysis")
+    print("📋 Hypothesis: {}", DiabetesBiomarkerDiscovery.claim)
+    
+    // Step 1: 🖥️ Provision computational resources via Trebuchet
+    item compute_resources = trebuchet.provision_analysis_environment(
+        python_workers: 8,      // For Lavoisier mass spec analysis
+        r_workers: 4,           // For advanced statistics  
+        memory_per_worker: "16GB",
+        external_api_workers: 2 // For database queries
+    )
+    
+    harare.log_decision(
+        "resource_provisioning",
+        "Allocated {} Python workers for Lavoisier, {} R workers for statistics",
+        compute_resources.python_workers, compute_resources.r_workers,
+        confidence: 0.95
+    )
+    
+    // Step 2: 📊 Load experimental datasets
+    item spectrum_files = load_spectrum_dataset("data/diabetes_study_cohort/")
+    item clinical_metadata = load_clinical_records("data/patient_metadata.json")
+    
+    print("📊 Loaded: {} spectra with clinical metadata", len(spectrum_files))
+    
+    // Step 3: 🐍 DELEGATE MASS SPEC ANALYSIS TO LAVOISIER (Python)
+    print("🐍 Delegating mass spectrometry analysis to Lavoisier...")
+    harare.log_decision(
+        "delegate_to_lavoisier",
+        "Using Lavoisier for MS analysis - specialized algorithms we don't need to reimplement",
+        confidence: 0.98
+    )
+    
+    item lavoisier_results = trebuchet.execute_external_tool(
+        tool: "python",
+        script: "supporting_scripts/lavoisier_analysis.py",
+        arguments: [
+            json_encode(spectrum_files),
+            json_encode(clinical_metadata)
+        ],
+        compute_resource: compute_resources.python_workers,
+        timeout: 7200  // 2 hours for complex analysis
+    )
+    
+    // Validate Lavoisier succeeded
+    given lavoisier_results.exit_code != 0:
+        harare.log_decision("lavoisier_failure", lavoisier_results.stderr, confidence: 0.0)
+        return error("Lavoisier analysis failed: {}", lavoisier_results.stderr)
+    
+    item ms_analysis = json_decode(lavoisier_results.stdout)
+    print("✅ Lavoisier: {} compounds identified, {} biomarker candidates", 
+          len(ms_analysis.identified_compounds), len(ms_analysis.biomarker_candidates))
+    
+    // Step 4: 📊 DELEGATE STATISTICAL VALIDATION TO R
+    print("📊 Delegating statistical validation to R...")
+    harare.log_decision(
+        "delegate_to_r",
+        "Using R for advanced statistics - specialized biomarker validation packages",
+        confidence: 0.97
+    )
+    
+    item statistical_results = trebuchet.execute_external_tool(
+        tool: "Rscript",
+        script: "supporting_scripts/statistical_analysis.r",
+        arguments: [
+            write_temp_file(ms_analysis, "lavoisier_results.json"),
+            write_temp_file(clinical_metadata, "clinical_data.json")
+        ],
+        compute_resource: compute_resources.r_workers,
+        timeout: 1800  // 30 minutes
+    )
+    
+    item stats_analysis = json_decode(statistical_results.stdout)
+    print("✅ R Statistics: {:.1f}% cross-validation accuracy",
+          stats_analysis.summary.cross_validation_accuracy * 100)
+    
+    // Step 5: 🌐 QUERY EXTERNAL DATABASES (via Gerhard)
+    print("🌐 Querying external databases for literature context...")
+    item literature_context = gerhard.query_external_apis(
+        pubmed_query: "diabetes metabolomics biomarkers prediction",
+        hmdb_compounds: ms_analysis.biomarker_candidates.map(c => c.compound_id),
+        kegg_pathways: ms_analysis.pathway_results.enriched_pathways,
+        max_papers: 50
+    )
+    
+    // Step 6: 🧠 KWASA-KWASA SEMANTIC LAYER - Scientific reasoning over raw results
+    print("🧠 Applying semantic analysis and hypothesis validation...")
+    item semantic_interpretation = apply_cognitive_analysis(
+        computational_results: {
+            "mass_spec": ms_analysis,
+            "statistics": stats_analysis,
+            "literature": literature_context
+        },
+        hypothesis: DiabetesBiomarkerDiscovery
+    )
+    
+    return semantic_interpretation
+
+// 🧠 COGNITIVE ANALYSIS - Kwasa-Kwasa's unique value: scientific reasoning
+funxn apply_cognitive_analysis(computational_results, hypothesis):
+    print("🧠 === SEMANTIC INTERPRETATION OF COMPUTATIONAL RESULTS ===")
+    print("   (This is Kwasa-Kwasa's unique contribution: scientific reasoning)")
+    
+    item ms_data = computational_results.mass_spec
+    item stats_data = computational_results.statistics  
+    item literature_data = computational_results.literature
+    
+    // 🔬 PROPOSITION-BASED HYPOTHESIS TESTING
+    proposition HypothesisValidation:
+        motion SensitivityTest("Prediction sensitivity meets hypothesis criteria")
+        motion SpecificityTest("Prediction specificity meets hypothesis criteria")
+        motion StatisticalRobustness("Results are statistically robust")
+        motion BiologicalPlausibility("Biomarkers have biological relevance")
+        motion LiteratureSupport("Findings align with existing knowledge")
+        
+        // Test computational results against scientific hypothesis
+        within stats_data.summary:
+            given cross_validation_accuracy >= hypothesis.success_criteria.sensitivity:
+                support SensitivityTest with_confidence(0.95)
+                harare.log_decision(
+                    "sensitivity_validated",
+                    "CV accuracy {:.1f}% exceeds target {:.1f}%",
+                    cross_validation_accuracy * 100,
+                    hypothesis.success_criteria.sensitivity * 100,
+                    confidence: 0.95
+                )
+                print("✅ SENSITIVITY: {:.1f}% > {:.1f}% (MEETS HYPOTHESIS)", 
+                      cross_validation_accuracy * 100,
+                      hypothesis.success_criteria.sensitivity * 100)
+            
+            given random_forest_accuracy >= hypothesis.success_criteria.specificity:
+                support SpecificityTest with_confidence(0.90)
+                print("✅ SPECIFICITY: {:.1f}% > {:.1f}% (MEETS HYPOTHESIS)",
+                      random_forest_accuracy * 100,
+                      hypothesis.success_criteria.specificity * 100)
+                
+            given num_significant_biomarkers >= 3:
+                support StatisticalRobustness with_confidence(0.92)
+                print("✅ STATISTICAL ROBUSTNESS: {} significant biomarkers found",
+                      num_significant_biomarkers)
+        
+        // Biological validation using literature context
+        within literature_data:
+            item known_biomarkers = extract_known_biomarkers(relevant_papers)
+            item overlap_score = calculate_biomarker_overlap(
+                ms_data.biomarker_candidates, known_biomarkers
+            )
+            
+            given overlap_score > 0.4:
+                support BiologicalPlausibility with_confidence(0.85)
+                print("✅ BIOLOGICAL PLAUSIBILITY: {:.1f}% overlap with known biomarkers", 
+                      overlap_score * 100)
+            
+            given num_supporting_papers > 10:
+                support LiteratureSupport with_confidence(0.88)
+                print("✅ LITERATURE SUPPORT: {} supporting papers found",
+                      num_supporting_papers)
+    
+    // 🔬 SEMANTIC UNDERSTANDING of biological mechanisms
+    item biological_semantics = interpret_biological_mechanisms(
+        ms_data.pathway_results,
+        literature_data.known_pathways
+    )
+    
+    // 🏥 CLINICAL IMPLICATIONS beyond statistical metrics
+    item clinical_semantics = interpret_clinical_implications(
+        ms_data.biomarker_candidates,
+        stats_data.panel_optimization
+    )
+    
+    // 🎯 SCIENTIFIC HYPOTHESIS JUDGMENT
+    item hypothesis_evaluation = evaluate_scientific_hypothesis(
+        HypothesisValidation,
+        biological_semantics,
+        clinical_semantics
+    )
+    
+    return {
+        "hypothesis_outcome": hypothesis_evaluation,
+        "biological_interpretation": biological_semantics,
+        "clinical_implications": clinical_semantics,
+        "computational_summary": computational_results,
+        "scientific_recommendations": generate_recommendations(hypothesis_evaluation)
+    }
+
+// 🔬 Biological mechanism interpretation (semantic layer over pathway data)
+funxn interpret_biological_mechanisms(pathway_results, known_pathways):
+    item enriched_pathways = pathway_results.enriched_pathways
+    
+    // Semantic analysis of pathway relationships  
+    item diabetes_pathways = filter_pathways_by_relevance(enriched_pathways, "diabetes")
+    item metabolic_network = construct_metabolic_network(diabetes_pathways)
+    
+    // Generate biological narrative
+    item mechanism_narrative = ""
+    given len(diabetes_pathways) >= 3:
+        mechanism_narrative = "Analysis reveals coordinated dysregulation across {} diabetes-related pathways, suggesting systematic metabolic dysfunction."
+        mechanism_narrative = format(mechanism_narrative, len(diabetes_pathways))
+    
+    return {
+        "dysregulated_pathways": diabetes_pathways,
+        "metabolic_network": metabolic_network,
+        "mechanistic_narrative": mechanism_narrative
+    }
+
+// 🎯 Scientific hypothesis evaluation (core cognitive function)
+funxn evaluate_scientific_hypothesis(validation_results, biological_evidence, clinical_evidence):
+    item supported_motions = validation_results.get_supported_motions()
+    item total_motions = validation_results.get_total_motions()
+    
+    item statistical_support = len(supported_motions) / total_motions
+    item biological_support = calculate_biological_support_score(biological_evidence)
+    item clinical_support = calculate_clinical_support_score(clinical_evidence)
+    
+    // Weighted combination of evidence types
+    item overall_support = (
+        statistical_support * 0.4 +
+        biological_support * 0.3 +
+        clinical_support * 0.3
+    )
+    
+    item hypothesis_supported = overall_support > 0.75
+    
+    return {
+        "supported": hypothesis_supported,
+        "confidence": overall_support,
+        "evidence_breakdown": {
+            "statistical": statistical_support,
+            "biological": biological_support,
+            "clinical": clinical_support
+        }
+    }
+
+// 📋 Generate actionable scientific recommendations
+funxn generate_recommendations(hypothesis_evaluation):
+    item recommendations = []
+    
+    given hypothesis_evaluation.supported and hypothesis_evaluation.confidence > 0.85:
+        recommendations.append("🎯 Hypothesis STRONGLY supported - proceed to clinical validation")
+        recommendations.append("🏥 Design multi-center validation study")
+        recommendations.append("📋 Prepare regulatory submission materials")
+    
+    given hypothesis_evaluation.supported and hypothesis_evaluation.confidence > 0.70:
+        recommendations.append("⚠️ Hypothesis MODERATELY supported - strengthen evidence")
+        recommendations.append("📊 Expand sample size for improved power")
+        recommendations.append("🔬 Optimize biomarker panel composition")
+    
+    given not hypothesis_evaluation.supported:
+        recommendations.append("❌ Hypothesis NOT supported - revise approach")
+        recommendations.append("🤔 Reassess hypothesis parameters")
+        recommendations.append("🔍 Explore alternative biomarker strategies")
+    
+    return recommendations
+
+// 🚀 MAIN EXECUTION showing full orchestration
+funxn main():
+    print("🚀 KWASA-KWASA SCIENTIFIC ORCHESTRATION SYSTEM")
+    print("==============================================")
+    print("🎯 MISSION: Validate scientific hypothesis using coordinated tools")
+    print("🔧 ORCHESTRATED TOOLS:")
+    print("   • Lavoisier (Python): Mass spectrometry analysis")
+    print("   • R Statistical Suite: Advanced statistics & ML validation")
+    print("   • External APIs: PubMed, HMDB, KEGG databases") 
+    print("   • Kwasa-Kwasa: Hypothesis testing & semantic interpretation")
+    print("🧠 UNIQUE VALUE: Scientific reasoning layer over raw computation")
+    print("")
+    
+    // Initialize orchestration systems
+    harare.initialize_session("diabetes_biomarker_discovery_2024", 
+                            hypothesis: DiabetesBiomarkerDiscovery)
+    fullscreen.initialize_visualization("experiment.fs")
+    
+    // Execute coordinated scientific analysis
+    item results = diabetes_biomarker_discovery()
+    
+    // 🎯 SCIENTIFIC CONCLUSION
+    print("\n🎯 === SCIENTIFIC HYPOTHESIS EVALUATION ===")
+    print("Original Hypothesis: {}", DiabetesBiomarkerDiscovery.claim)
+    print("")
+    print("🔬 COMPUTATIONAL ANALYSIS SUMMARY:")
+    print("   • Mass Spectrometry: {} biomarker candidates identified", 
+          len(results.computational_summary.mass_spec.biomarker_candidates))
+    print("   • Statistical Validation: {:.1f}% cross-validation accuracy",
+          results.computational_summary.statistics.summary.cross_validation_accuracy * 100)
+    print("   • Literature Context: {} relevant papers analyzed",
+          len(results.computational_summary.literature.relevant_papers))
+    print("")
+    print("🎯 HYPOTHESIS OUTCOME:")
+    print("   Supported: {}", results.hypothesis_outcome.supported ? "YES ✅" : "NO ❌")
+    print("   Confidence: {:.1f}%", results.hypothesis_outcome.confidence * 100)
+    print("")
+    
+    if results.hypothesis_outcome.supported:
+        print("🎉 SCIENTIFIC SUCCESS: Hypothesis validated!")
+        print("🚀 NEXT STEPS:")
+        for each recommendation in results.scientific_recommendations:
+            print("   {}", recommendation)
+    else:
+        print("🔄 SCIENTIFIC LEARNING: Hypothesis requires refinement")
+        print("📋 RECOMMENDED ACTIONS:")
+        for each recommendation in results.scientific_recommendations:
+            print("   {}", recommendation)
+    
+    print("\n📊 TOOL COORDINATION SUMMARY:")
+    print("   ✅ Lavoisier: Mass spectrometry analysis completed")
+    print("   ✅ R Statistical Suite: Validation analysis completed") 
+    print("   ✅ External APIs: Literature context retrieved")
+    print("   ✅ Kwasa-Kwasa: Scientific reasoning & hypothesis evaluation")
+    print("\n💡 This demonstrates Kwasa-Kwasa orchestrating existing tools")
+    print("   while adding the crucial scientific reasoning layer!")
+    
+    // Finalize orchestration and learning
+    fullscreen.update_complete("experiment.fs", results)
+    harare.finalize_session(results)
+    
+    return results 

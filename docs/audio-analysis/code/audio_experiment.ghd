@@ -1,0 +1,172 @@
+# Gerhard Dependencies: Heihachi Audio Analysis External Resources
+# Managing APIs, databases, and external services for comprehensive audio intelligence
+
+gerhard_dependencies HeiachiAudioAnalysis {
+    
+    music_information_apis: {
+        musicbrainz: {
+            endpoint: "https://musicbrainz.org/ws/2/",
+            purpose: "Track identification and metadata enrichment",
+            data_types: ["artist_info", "album_data", "track_metadata", "release_dates"],
+            rate_limit: "1 request/second",
+            authentication: "none_required",
+            integration_priority: "high"
+        },
+        
+        spotify_web_api: {
+            endpoint: "https://api.spotify.com/v1/",
+            purpose: "Audio features and popularity metrics",
+            data_types: ["audio_features", "track_popularity", "artist_followers", "playlist_data"],
+            authentication: "oauth2_client_credentials",
+            rate_limit: "100 requests/second",
+            integration_priority: "high"
+        },
+        
+        last_fm_api: {
+            endpoint: "https://ws.audioscrobbler.com/2.0/",
+            purpose: "Social listening data and music recommendations",
+            data_types: ["play_counts", "user_listening_history", "music_tags", "similar_artists"],
+            authentication: "api_key",
+            rate_limit: "5 requests/second",
+            integration_priority: "medium"
+        },
+        
+        discogs_api: {
+            endpoint: "https://api.discogs.com/",
+            purpose: "Record database and vinyl release information",
+            data_types: ["release_info", "label_data", "format_details", "market_prices"],
+            authentication: "oauth",
+            rate_limit: "60 requests/minute",
+            integration_priority: "medium"
+        }
+    }
+
+    machine_learning_services: {
+        huggingface_api: {
+            endpoint: "https://api-inference.huggingface.co/",
+            purpose: "Advanced audio ML model inference",
+            models: [
+                "microsoft/BEATs-base",
+                "openai/whisper-large-v3",
+                "laion/clap-htsat-fused",
+                "DunnBC22/wav2vec2-base-Drum_Kit_Sounds"
+            ],
+            authentication: "bearer_token",
+            rate_limit: "1000 requests/hour",
+            integration_priority: "critical"
+        },
+        
+        openai_api: {
+            endpoint: "https://api.openai.com/v1/",
+            purpose: "Natural language processing for music descriptions",
+            models: ["gpt-4", "text-embedding-ada-002"],
+            authentication: "bearer_token", 
+            rate_limit: "90000 tokens/minute",
+            integration_priority: "high"
+        }
+    }
+
+    audio_databases: {
+        freesound_org: {
+            endpoint: "https://freesound.org/apiv2/",
+            purpose: "Sound effect and sample database for reference analysis",
+            data_types: ["sound_samples", "audio_features", "user_tags", "similarity_searches"],
+            authentication: "oauth2",
+            rate_limit: "60 requests/hour",
+            integration_priority: "medium"
+        },
+        
+        acousticbrainz: {
+            endpoint: "https://acousticbrainz.org/",
+            purpose: "Audio feature database for music tracks",
+            data_types: ["low_level_features", "high_level_features", "rhythm_features"],
+            authentication: "none_required",
+            rate_limit: "unlimited",
+            integration_priority: "high"
+        }
+    }
+
+    real_time_services: {
+        soundcloud_api: {
+            endpoint: "https://api.soundcloud.com/",
+            purpose: "Electronic music track streaming and metadata",
+            data_types: ["track_streams", "waveform_data", "user_comments", "track_metadata"],
+            authentication: "oauth2",
+            rate_limit: "15000 requests/hour",
+            integration_priority: "medium"
+        },
+        
+        bandcamp_api: {
+            endpoint: "https://bandcamp.com/api/",
+            purpose: "Independent electronic music releases",
+            data_types: ["album_info", "track_data", "fan_engagement", "sales_data"],
+            authentication: "api_key",
+            rate_limit: "1000 requests/hour", 
+            integration_priority: "low"
+        }
+    }
+
+    scientific_databases: {
+        music_cognition_db: {
+            endpoint: "https://osf.io/api/v2/",
+            purpose: "Music cognition research datasets",
+            data_types: ["experimental_data", "behavioral_responses", "neural_recordings"],
+            authentication: "api_token",
+            integration_priority: "high"
+        },
+        
+        rhythmic_pattern_corpus: {
+            endpoint: "https://github.com/urinieto/msaf-data",
+            purpose: "Structural segmentation ground truth",
+            data_types: ["segment_annotations", "beat_annotations", "structural_analysis"],
+            authentication: "none_required",
+            integration_priority: "medium"
+        }
+    }
+
+    dependency_management: {
+        initialization_sequence: [
+            "Initialize HuggingFace API connections",
+            "Authenticate with Spotify Web API", 
+            "Connect to MusicBrainz database",
+            "Setup OpenAI API for natural language processing",
+            "Initialize AcousticBrainz feature database",
+            "Configure rate limiting for all services"
+        ],
+        
+        fallback_strategies: {
+            api_failure: "Switch to cached data or local computation",
+            rate_limit_exceeded: "Queue requests and implement exponential backoff",
+            authentication_error: "Use public endpoints where available",
+            network_timeout: "Retry with increased timeout values"
+        },
+        
+        resource_monitoring: {
+            api_usage_tracking: "Monitor rate limits and costs",
+            response_time_monitoring: "Track API performance",
+            data_quality_assessment: "Validate returned data integrity",
+            cache_management: "Optimize local data storage"
+        }
+    }
+
+    coordination_with_heihachi: {
+        data_flow: "Gerhard provides metadata -> Heihachi processes audio -> Enhanced analysis",
+        synchronization: "API calls coordinated with audio processing pipeline",
+        error_handling: "Graceful degradation when external services unavailable",
+        performance_optimization: "Parallel API calls where possible"
+    }
+
+    scientific_enhancement: {
+        hypothesis_support: "External data validates rhythm processing predictions",
+        cross_validation: "Multiple data sources confirm analysis results", 
+        contextual_enrichment: "Metadata adds semantic meaning to audio features",
+        cognitive_insights: "Social and cultural data enhances musical understanding"
+    }
+}
+
+# Integration Notes:
+# 1. All external dependencies are managed through Gerhard to maintain clean separation
+# 2. APIs provide contextual enhancement rather than replacing core audio processing
+# 3. Rate limiting and authentication handled centrally for reliability
+# 4. Fallback strategies ensure system continues operating even with service outages
+# 5. Scientific databases provide validation data for hypothesis testing 

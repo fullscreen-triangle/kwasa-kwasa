@@ -78,6 +78,31 @@ Kwasa-Kwasa is a text processing framework that treats text as a computational m
 - [Mass Spectrometry](massspec.md) - Chemical analysis and mass spectrometry
 - [Scientific Data Extensions](examples/SCIENTIFIC_DATA_EXTENSIONS.md) - Scientific computing applications
 
+### Complete Framework Demonstrations
+
+#### Mass Spectrometry Framework Example
+**🚀 New: Complete Orchestration Example**
+
+This comprehensive example demonstrates how Kwasa-Kwasa works as a **cognitive orchestration layer** that coordinates existing computational tools while adding scientific reasoning and hypothesis testing.
+
+- **[Complete Framework Tutorial](mass-spectrometry/COMPLETE_FRAMEWORK_TUTORIAL.md)** - Step-by-step walkthrough showing orchestration approach
+- **[Project Structure](mass-spectrometry/project-structure.md)** - Complete file organization and architecture
+- **[Lavoisier Integration](mass-spectrometry/lavoisier.md)** - How the framework coordinates with existing Python tools
+
+**Key Files:**
+- `experiment.trb` - Turbulance orchestration script coordinating all tools toward scientific hypothesis
+- `experiment.fs` - Fullscreen network graph showing complete system architecture  
+- `experiment.ghd` - Gerhard dependencies managing external APIs and databases
+- `experiment.hre` - Harare decision log tracking orchestrator decisions and learning
+- `supporting_scripts/` - Existing Python, R, and JavaScript tools that do actual computation
+
+**What This Example Shows:**
+- Kwasa-Kwasa **does NOT replace** your existing tools (Python, R, etc.)
+- Instead, it provides **intelligent orchestration** over existing computational resources
+- Scientific hypotheses guide the entire analysis process
+- Proposition-based testing validates results with semantic understanding
+- Metacognitive logging tracks decision-making and resource allocation
+
 ## Examples and Tutorials
 
 ### Getting Started
