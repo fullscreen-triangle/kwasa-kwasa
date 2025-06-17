@@ -67,12 +67,12 @@ impl VibrioProcessor {
         joints.insert("elbow".to_string(), super::Joint3D { x: 20.0, y: 60.0, z: 0.0, confidence: 0.8, visibility: true });
         joints.insert("wrist".to_string(), super::Joint3D { x: 40.0, y: 40.0, z: 0.0, confidence: 0.75, visibility: true });
 
-        Ok(vec![super::PoseFrame {
+        Ok(vec![space_computer::PoseFrame {
             frame_number: self.tracking_state.frame_count,
             timestamp_ms: std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH)?.as_millis() as u64,
             joints,
             confidence: 0.85,
-            bounding_box: super::BoundingBox { x: 10.0, y: 10.0, width: 100.0, height: 200.0, confidence: 0.9 },
+            bounding_box: space_computer::BoundingBox { x: 10.0, y: 10.0, width: 100.0, height: 200.0, confidence: 0.9 },
         }])
     }
 

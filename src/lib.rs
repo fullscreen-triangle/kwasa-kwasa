@@ -50,7 +50,7 @@ pub mod templates;
 // **NEW IMPLEMENTATION MODULES**
 pub mod fullscreen;      // Module 1: Network graph visualization (.fs files)
 pub mod harare;          // Module 2: Meta orchestrator logging (.hre files)
-pub mod spectacular;     // Module 3: Video processing (Moriarty + Vibrio + Space Computer + Morphine)
+pub mod space_computer;     // Module 3: Video processing (Moriarty + Vibrio + Space Computer + Morphine)
 pub mod nebuchadnezzar;  // Module 4: Orchestrator-controlled AI assistant
 pub mod trebuchet;       // Module 5: Microservices execution engine
 pub mod sighthound;      // Module 6: Geospatial processing
@@ -812,7 +812,7 @@ pub struct KwasaKwasa {
     // Implementation modules
     pub fullscreen: fullscreen::FullscreenSystem,
     pub harare: harare::HarareOrchestrator,
-    pub spectacular: spectacular::SpectacularSystem,
+    pub spectacular: space_computer::SpectacularSystem,
     pub nebuchadnezzar: nebuchadnezzar::NebuchadnezzarAssistant,
     pub trebuchet: trebuchet::TrebuchetSystem,
     pub sighthound: sighthound::SighthoundSystem,
@@ -833,7 +833,7 @@ pub struct KwasaKwasaConfig {
     // Module-specific configurations
     pub fullscreen_config: Option<fullscreen::FullscreenConfig>,
     pub harare_config: harare::OrchestratorConfig,
-    pub spectacular_config: spectacular::SpectacularConfig,
+    pub spectacular_config: space_computer::SpectacularConfig,
     pub nebuchadnezzar_config: nebuchadnezzar::AssistantConfig,
     pub trebuchet_config: trebuchet::TrebuchetConfig,
     pub sighthound_config: sighthound::SighthoundConfig,
@@ -877,7 +877,7 @@ impl KwasaKwasa {
         
         let harare = harare::HarareOrchestrator::new(config.harare_config.clone()).await?;
         
-        let spectacular = spectacular::SpectacularSystem::new(config.spectacular_config.clone()).await?;
+        let spectacular = space_computer::SpectacularSystem::new(config.spectacular_config.clone()).await?;
         
         let nebuchadnezzar = nebuchadnezzar::NebuchadnezzarAssistant::new(
             config.nebuchadnezzar_config.clone()
@@ -954,7 +954,7 @@ impl KwasaKwasa {
     }
 
     /// Process video with Spectacular
-    pub async fn process_video(&mut self, task: spectacular::VideoTask) -> Result<spectacular::ProcessingResults> {
+    pub async fn process_video(&mut self, task: space_computer::VideoTask) -> Result<space_computer::ProcessingResults> {
         self.spectacular.process_video(task).await
     }
 
@@ -1015,12 +1015,12 @@ impl KwasaKwasa {
             }
             SemanticOperation::VideoAnalysis { video_path, analysis_options } => {
                 // Use Spectacular for video processing
-                let task = spectacular::VideoTask {
+                let task = space_computer::VideoTask {
                     id: Uuid::new_v4(),
                     input_path: video_path,
                     output_path: self.workspace_path.join("video_output"),
-                    task_type: spectacular::VideoTaskType::PoseAnalysis,
-                    processing_config: spectacular::ProcessingConfig {
+                    task_type: space_computer::VideoTaskType::PoseAnalysis,
+                    processing_config: space_computer::ProcessingConfig {
                         enable_pose_detection: true,
                         enable_biomechanical_analysis: true,
                         enable_motion_tracking: true,
@@ -1029,7 +1029,7 @@ impl KwasaKwasa {
                         enable_streaming: false,
                         custom_parameters: HashMap::new(),
                     },
-                    metadata: spectacular::VideoMetadata {
+                    metadata: space_computer::VideoMetadata {
                         duration_seconds: 0.0,
                         frame_count: 0,
                         frame_rate: 0.0,
@@ -1039,7 +1039,7 @@ impl KwasaKwasa {
                         creation_time: std::time::SystemTime::now(),
                         subject_info: None,
                     },
-                    status: spectacular::TaskStatus::Queued,
+                    status: space_computer::TaskStatus::Queued,
                     progress: 0.0,
                     results: None,
                 };
@@ -1103,11 +1103,11 @@ impl KwasaKwasa {
                 metacognitive_interval_ms: 1000,
                 hre_output_path: workspace_path.join("logs"),
             },
-            spectacular_config: spectacular::SpectacularConfig {
-                processing_mode: spectacular::ProcessingMode::Hybrid,
+            spectacular_config: space_computer::SpectacularConfig {
+                processing_mode: space_computer::ProcessingMode::Hybrid,
                 video_formats: vec!["mp4".to_string(), "avi".to_string(), "mov".to_string()],
                 output_formats: vec!["json".to_string(), "csv".to_string(), "video".to_string()],
-                quality_settings: spectacular::QualitySettings {
+                quality_settings: space_computer::QualitySettings {
                     input_resolution: (1920, 1080),
                     output_resolution: (1920, 1080),
                     frame_rate: 30.0,
@@ -1115,7 +1115,7 @@ impl KwasaKwasa {
                     pose_detection_accuracy: 0.9,
                     biomechanical_precision: 0.95,
                 },
-                performance_settings: spectacular::PerformanceSettings {
+                performance_settings: space_computer::PerformanceSettings {
                     max_concurrent_videos: 4,
                     gpu_acceleration: true,
                     cpu_thread_count: 8,
@@ -1123,14 +1123,14 @@ impl KwasaKwasa {
                     cache_size_mb: 2048,
                     parallel_processing: true,
                 },
-                ai_models: spectacular::AIModelConfig {
+                ai_models: space_computer::AIModelConfig {
                     pose_detection_model: "mediapipe_blazepose".to_string(),
                     object_tracking_model: "deepsort".to_string(),
                     biomechanical_analysis_model: "custom_biomech".to_string(),
                     motion_prediction_model: "lstm_motion".to_string(),
                     annotation_ai_model: "gpt4_vision".to_string(),
                 },
-                streaming_config: spectacular::StreamingConfig {
+                streaming_config: space_computer::StreamingConfig {
                     enable_streaming: false,
                     stream_protocols: vec!["rtmp".to_string(), "webrtc".to_string()],
                     buffer_size_seconds: 5.0,
@@ -1185,7 +1185,7 @@ pub enum SemanticOperation {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum SemanticResult {
     TextResult(serde_json::Value),
-    VideoResult(spectacular::ProcessingResults),
+    VideoResult(space_computer::ProcessingResults),
     GeospatialResult(sighthound::ProcessingResults),
     CodeResult(zangalewa::ExecutionSession),
 }

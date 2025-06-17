@@ -29,9 +29,9 @@ Welcome to the complete documentation for Kwasa-Kwasa, a revolutionary text proc
 - [Diadochi - Multi-Domain LLM Orchestration](metacognitive-orchestrator/diadochi.md) - Expert collaboration via specialized external LLMs
 
 **For Developers:**
-- [Implementation Status](implementation_status.md) - Development progress
+- [Implementation Status](../implementation_status.md) - Development progress
 - [Scientific Extensions](examples/SCIENTIFIC_DATA_EXTENSIONS.md) - Scientific computing
-- [Pattern Analysis](DOMAIN_EXPANSION.md) - Advanced techniques
+- [Pattern Analysis](../DOMAIN_EXPANSION.md) - Advanced techniques
 
 ## Getting Started
 
@@ -39,6 +39,8 @@ Welcome to the complete documentation for Kwasa-Kwasa, a revolutionary text proc
 - **[Complete System Guide](complete_system_guide.md)** - Comprehensive explanation of the entire Kwasa-Kwasa system from text units to metacognitive orchestration
 - **[Practical Getting Started](examples/getting_started_practical.md)** - Hands-on guide with installation, first programs, and running Turbulance code
 - **[Basic Usage](examples/basic-usage.md)** - Fundamental operations and concepts
+- **[Installation Guide](installation.md)** - Detailed installation instructions for all platforms
+- **[Usage Guide](examples/USAGE_GUIDE.md)** - Comprehensive usage documentation
 
 ### Installation
 - **System Requirements**: Rust 1.70+, Python 3.8+, Git
@@ -55,6 +57,23 @@ Welcome to the complete documentation for Kwasa-Kwasa, a revolutionary text proc
 ### Technical Specifications
 - **[Operations Specification](spec/operations.md)** - Complete specification of all text operations, mathematical functions, and specialized operations
 - **[Turbulance Syntax Specification](spec/turbulance-syntax.md)** - Formal grammar, syntax rules, and language structure specification
+
+## Core Documentation
+
+### Foundational Concepts
+- **[System Architecture Analysis](SYSTEM_ARCHITECTURE_ANALYSIS.md)** - Complete architectural overview
+- **[Four-Sided Triangle](four-sided-triangle.md)** - Advanced theoretical framework
+- **[Hegel](hegel.md)** - Dialectical reasoning in text processing
+- **[Meta](meta.md)** - Meta-cognitive processing concepts
+- **[Generated](generated.md)** - Auto-generated documentation
+- **[Original](original.md)** - Original project documentation
+- **[Notes](notes.md)** - Development notes and insights
+
+### Domain-Specific Documentation
+- **[Domains](domains.md)** - Domain-specific processing capabilities
+- **[Genomics](genomics.md)** - Genomic data analysis and processing
+- **[Mass Spectrometry](massspec.md)** - Chemical analysis and mass spectrometry
+- **[Errors](errors.md)** - Comprehensive error handling guide
 
 ## Core Concepts
 
@@ -126,6 +145,10 @@ item processed = raw_text |>
 
 **📁 [Browse All Revolutionary Paradigms →](paradigms/) - Complete directory of revolutionary concepts**
 
+### Additional Paradigm Documentation
+- **[Hybrid-Imperative](paradigms/hybrid-imperative.md)** - Comprehensive hybrid processing framework
+- **[Paradigms README](paradigms/README.md)** - Overview of all paradigm concepts
+
 ### Fundamental Breakthrough: Moving Beyond Deterministic Text Processing
 
 Kwasa-Kwasa introduces four revolutionary paradigms that fundamentally change how text processing and semantic analysis are approached:
@@ -189,7 +212,17 @@ This represents the first computational framework to treat language as **inheren
 
 ### Metacognitive Orchestration
 - **[Metacognitive Orchestration](metacognitive-orchestration.md)** - Intelligent control system with three-layer architecture
+- **[Complete Intelligence Modules Overview](metacognitive-orchestrator/index.md)** - All metacognitive intelligence modules
 - **[Gerhard Module - Cognitive DNA Library](metacognitive-orchestrator/gerhard.md)** - Revolutionary template preservation and sharing system
+
+#### All Intelligence Modules
+- **[Champagne Module](metacognitive-orchestrator/champagne.md)** - Dream-state processing and insight generation
+- **[Clothesline Module](metacognitive-orchestrator/clothesline.md)** - Creative connection-making between disparate concepts
+- **[Diadochi Module](metacognitive-orchestrator/diadochi.md)** - Multi-domain expert orchestration
+- **[Diggiden Adversarial System](metacognitive-orchestrator/diggiden-adversarial-system.md)** - Counter-argument and validation system
+- **[Mzekezeke Bayesian Engine](metacognitive-orchestrator/mzekezeke-bayesian-engine.md)** - Probabilistic inference and belief updating
+- **[Tres Commas Module](metacognitive-orchestrator/tres-commas.md)** - Elite analytical thinking patterns
+- **[Zengeza Module](metacognitive-orchestrator/zengeza.md)** - Intelligent noise reduction and signal clarity
 
 **Three-Layer Processing:**
 1. **Context Layer**: Domain understanding and knowledge base
@@ -223,8 +256,15 @@ item tutorial_goal = Goal.new("Create beginner-friendly tutorial") {
 ### Comprehensive Examples
 - **[Cross-Domain Analysis](examples/cross_domain_analysis.md)** - Drug discovery combining genomics, chemistry, and physics
 - **[Evidence Integration](examples/evidence_integration.md)** - Sophisticated evidence handling with uncertainty quantification
+- **[Basic Example](examples/basic_example.md)** - Simple getting started example
+- **[Pattern Analysis](examples/pattern_analysis.md)** - Advanced pattern recognition examples
 
-### Domain-Specific Applications
+### Domain-Specific Examples
+- **[Chemistry Analysis](examples/chemistry_analysis.md)** - Chemical structure and property analysis
+- **[Genomic Analysis](examples/genomic_analysis.md)** - DNA/RNA sequence analysis and bioinformatics
+
+### Examples Index
+- **[Examples Directory](examples/index.md)** - Complete index of all available examples
 
 #### Academic Writing Assistant
 ```turbulance
@@ -272,10 +312,10 @@ proposition DrugLikeness:
 ## Development and Extensions
 
 ### Pattern Analysis
-- **[Pattern-Based Analysis](DOMAIN_EXPANSION.md)** - Advanced pattern recognition and analysis techniques
+- **[Pattern-Based Analysis](../DOMAIN_EXPANSION.md)** - Advanced pattern recognition and analysis techniques
 
 ### Scientific Data Extensions
-- **[Scientific Data Extensions](SCIENTIFIC_DATA_EXTENSIONS.md)** - Working with scientific datasets and specialized data types
+- **[Scientific Data Extensions](examples/SCIENTIFIC_DATA_EXTENSIONS.md)** - Working with scientific datasets and specialized data types
 
 ### Performance and Optimization
 - **Parallel Processing**: Automatic parallelization of text operations
@@ -356,3 +396,14 @@ pub enum TemplateType {
 🧬 **Welcome to the age of Cognitive Evolution**  
 🌟 **Where every method becomes immortal DNA**  
 🚀 **And intelligence grows through genetic sharing**
+
+---
+
+## Additional Resources
+
+- **[README](README.md)** - Project overview and basic information
+- **[Contributing Guide](../CONTRIBUTING.md)** - How to contribute to the project
+- **[Development Roadmap](../development_roadmap.md)** - Future development plans
+- **[Implementation Notes](../implementation_notes.md)** - Technical implementation details
+- **[Revolutionary Paradigms Implementation](../REVOLUTIONARY_PARADIGMS_IMPLEMENTATION.md)** - Implementation of revolutionary concepts
+- **[Setup Guide](../setup.md)** - Development environment setup
