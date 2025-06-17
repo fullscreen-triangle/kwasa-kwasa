@@ -249,68 +249,46 @@ impl HeihachiEngine {
     }
 
     fn analyze_spectrum(&self, audio: &[f32]) -> Result<SpectralFeatures> {
-        let num_frames = (audio.len() - self.config.fft_size) / self.config.hop_size + 1;
+        let frames = self.frame_audio(audio);
         let mut frequency_bins = Vec::new();
         let mut magnitudes = Vec::new();
         let mut phases = Vec::new();
         
-        // Initialize FFT frequencies
-        for i in 0..self.config.fft_size / 2 + 1 {
-            let freq = i as f64 * self.config.sample_rate as f64 / self.config.fft_size as f64;
-            frequency_bins.push(freq);
-        }
+        // Compute FFT for each frame and average
+        let mut spectral_centroid_sum = 0.0;
+        let mut spectral_bandwidth_sum = 0.0;
+        let mut frame_count = 0;
         
-        // Analyze first frame for demonstration
-        if audio.len() >= self.config.fft_size {
-            let frame = &audio[0..self.config.fft_size];
-            let windowed: Vec<f64> = frame.iter()
-                .zip(self.spectral_analyzer.window.iter())
-                .map(|(sample, window)| *sample as f64 * window)
-                .collect();
+        for frame in &frames {
+            let (frame_freqs, frame_mags, frame_phases) = self.compute_fft(frame)?;
             
-            // Simplified FFT computation (in real implementation would use rustfft)
-            for i in 0..self.config.fft_size / 2 + 1 {
-                let mut real = 0.0;
-                let mut imag = 0.0;
-                
-                for (j, &sample) in windowed.iter().enumerate() {
-                    let angle = -2.0 * std::f64::consts::PI * i as f64 * j as f64 / self.config.fft_size as f64;
-                    real += sample * angle.cos();
-                    imag += sample * angle.sin();
-                }
-                
-                let magnitude = (real * real + imag * imag).sqrt();
-                let phase = imag.atan2(real);
-                
-                magnitudes.push(magnitude);
-                phases.push(phase);
+            // For the first frame, initialize bins
+            if frequency_bins.is_empty() {
+                frequency_bins = frame_freqs;
+                magnitudes = vec![0.0; frame_mags.len()];
+                phases = vec![0.0; frame_phases.len()];
             }
+            
+            // Accumulate magnitudes and phases
+            for (i, (&mag, &phase)) in frame_mags.iter().zip(frame_phases.iter()).enumerate() {
+                magnitudes[i] += mag;
+                phases[i] += phase;
+            }
+            
+            // Calculate spectral features for this frame
+            spectral_centroid_sum += self.calculate_spectral_centroid(&frequency_bins, &frame_mags);
+            spectral_bandwidth_sum += self.calculate_spectral_bandwidth(&frequency_bins, &frame_mags);
+            frame_count += 1;
         }
         
-        // Calculate spectral centroid
-        let mut weighted_sum = 0.0;
-        let mut magnitude_sum = 0.0;
-        for (i, &mag) in magnitudes.iter().enumerate() {
-            weighted_sum += frequency_bins[i] * mag;
-            magnitude_sum += mag;
+        // Average the accumulated values
+        for i in 0..magnitudes.len() {
+            magnitudes[i] /= frame_count as f64;
+            phases[i] /= frame_count as f64;
         }
-        let spectral_centroid = if magnitude_sum > 0.0 {
-            weighted_sum / magnitude_sum
-        } else {
-            0.0
-        };
         
-        // Calculate spectral bandwidth
-        let mut bandwidth_sum = 0.0;
-        for (i, &mag) in magnitudes.iter().enumerate() {
-            let diff = frequency_bins[i] - spectral_centroid;
-            bandwidth_sum += diff * diff * mag;
-        }
-        let spectral_bandwidth = if magnitude_sum > 0.0 {
-            (bandwidth_sum / magnitude_sum).sqrt()
-        } else {
-            0.0
-        };
+        let spectral_centroid = spectral_centroid_sum / frame_count as f64;
+        let spectral_bandwidth = spectral_bandwidth_sum / frame_count as f64;
         
         Ok(SpectralFeatures {
             frequency_bins,
@@ -319,6 +297,97 @@ impl HeihachiEngine {
             spectral_centroid,
             spectral_bandwidth,
         })
+    }
+    
+    /// Frame audio for analysis
+    fn frame_audio(&self, audio: &[f32]) -> Vec<Vec<f32>> {
+        let mut frames = Vec::new();
+        let frame_size = self.config.fft_size;
+        let hop_size = self.config.hop_size;
+        
+        let mut start = 0;
+        while start + frame_size <= audio.len() {
+            let mut frame = audio[start..start + frame_size].to_vec();
+            
+            // Apply Hanning window
+            for (i, sample) in frame.iter_mut().enumerate() {
+                *sample *= self.spectral_analyzer.window[i] as f32;
+            }
+            
+            frames.push(frame);
+            start += hop_size;
+        }
+        
+        frames
+    }
+    
+    /// Compute FFT for a frame
+    fn compute_fft(&self, frame: &[f32]) -> Result<(Vec<f64>, Vec<f64>, Vec<f64>)> {
+        use rustfft::{FftPlanner, num_complex::Complex};
+        
+        let mut planner = FftPlanner::new();
+        let fft = planner.plan_fft_forward(frame.len());
+        
+        // Convert to complex numbers
+        let mut buffer: Vec<Complex<f32>> = frame.iter()
+            .map(|&x| Complex::new(x, 0.0))
+            .collect();
+        
+        // Perform FFT
+        fft.process(&mut buffer);
+        
+        // Extract frequency bins, magnitudes, and phases
+        let sample_rate = self.config.sample_rate as f64;
+        let freq_bin_width = sample_rate / frame.len() as f64;
+        
+        let frequency_bins: Vec<f64> = (0..buffer.len() / 2)
+            .map(|i| i as f64 * freq_bin_width)
+            .collect();
+            
+        let magnitudes: Vec<f64> = buffer[..buffer.len() / 2].iter()
+            .map(|c| (c.re * c.re + c.im * c.im).sqrt() as f64)
+            .collect();
+            
+        let phases: Vec<f64> = buffer[..buffer.len() / 2].iter()
+            .map(|c| c.im.atan2(c.re) as f64)
+            .collect();
+        
+        Ok((frequency_bins, magnitudes, phases))
+    }
+    
+    /// Calculate spectral centroid
+    fn calculate_spectral_centroid(&self, frequency_bins: &[f64], magnitudes: &[f64]) -> f64 {
+        let weighted_sum: f64 = frequency_bins.iter()
+            .zip(magnitudes.iter())
+            .map(|(freq, mag)| freq * mag)
+            .sum();
+            
+        let magnitude_sum: f64 = magnitudes.iter().sum();
+        
+        if magnitude_sum > 0.0 {
+            weighted_sum / magnitude_sum
+        } else {
+            0.0
+        }
+    }
+    
+    /// Calculate spectral bandwidth
+    fn calculate_spectral_bandwidth(&self, frequency_bins: &[f64], magnitudes: &[f64]) -> f64 {
+        let centroid = self.calculate_spectral_centroid(frequency_bins, magnitudes);
+        let magnitude_sum: f64 = magnitudes.iter().sum();
+        
+        if magnitude_sum > 0.0 {
+            let variance: f64 = frequency_bins.iter()
+                .zip(magnitudes.iter())
+                .map(|(freq, mag)| {
+                    let diff = freq - centroid;
+                    diff * diff * mag
+                })
+                .sum::<f64>() / magnitude_sum;
+            variance.sqrt()
+        } else {
+            0.0
+        }
     }
 
     fn analyze_temporal(&self, audio: &[f32]) -> Result<TemporalFeatures> {
