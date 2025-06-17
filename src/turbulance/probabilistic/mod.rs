@@ -6,6 +6,9 @@
 use std::collections::HashMap;
 use crate::turbulance::interpreter::Value;
 use crate::turbulance::{Result, TurbulanceError};
+use uuid::Uuid;
+use rand::prelude::*;
+use rand_distr::{Normal, Uniform, Beta, Gamma};
 
 /// A Point represents text with inherent uncertainty and multiple interpretations
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
@@ -401,9 +404,21 @@ pub fn point(content: &str, confidence: f64) -> TextPoint {
 }
 
 /// Create a resolution context with the given domain
-    pub fn context(domain: &str) -> ResolutionContext {
-        ResolutionContext {
-            domain: Some(domain.to_string()),
+pub fn context(domain: &str) -> ResolutionContext {
+    ResolutionContext {
+        domain: Some(domain.to_string()),
+        culture: None,
+        time_period: None,
+        purpose: None,
+        parameters: HashMap::new(),
+        resolution_strategy: ResolutionStrategy::MaximumLikelihood,
+    }
+}
+
+impl Default for ResolutionContext {
+    fn default() -> Self {
+        Self {
+            domain: None,
             culture: None,
             time_period: None,
             purpose: None,
@@ -411,19 +426,7 @@ pub fn point(content: &str, confidence: f64) -> TextPoint {
             resolution_strategy: ResolutionStrategy::MaximumLikelihood,
         }
     }
-
-    impl Default for ResolutionContext {
-        fn default() -> Self {
-            Self {
-                domain: None,
-                culture: None,
-                time_period: None,
-                purpose: None,
-                parameters: HashMap::new(),
-                resolution_strategy: ResolutionStrategy::MaximumLikelihood,
-            }
-        }
-    }
+}
 
 #[cfg(test)]
 mod tests {
