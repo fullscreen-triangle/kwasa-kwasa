@@ -120,7 +120,7 @@ pub struct DrumHit {
 }
 
 /// Types of drum sounds
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum DrumType {
     /// Kick drum
     Kick,
@@ -543,7 +543,7 @@ impl BeatProcessor {
     fn load_audio(&self, audio_path: &Path) -> Result<Vec<f32>> {
         // Placeholder implementation - would use actual audio loading library
         // like symphonia, rodio, or hound
-        Err(Error::RuntimeError("Audio loading not implemented".to_string()))
+        Err(Error::Runtime("Audio loading not implemented".to_string()))
     }
 
     fn detect_onsets(&self, audio_data: &[f32]) -> Result<Vec<f64>> {
@@ -639,7 +639,7 @@ impl BeatProcessor {
 
     fn load_amen_reference(&self) -> Result<Vec<f32>> {
         // Load reference Amen break sample for comparison
-        Err(Error::RuntimeError("Amen reference loading not implemented".to_string()))
+        Err(Error::Runtime("Amen reference loading not implemented".to_string()))
     }
 
     fn cross_correlate_amen(&self, audio: &[f32], reference: &[f32]) -> Result<Vec<f64>> {
