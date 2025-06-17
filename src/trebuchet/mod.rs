@@ -38,6 +38,10 @@ pub struct TrebuchetConfig {
     pub security_config: SecurityConfig,
     pub monitoring_config: MonitoringConfig,
     pub resource_limits: GlobalResourceLimits,
+    pub max_concurrent_services: u32,
+    pub default_timeout_ms: u64,
+    pub enable_load_balancing: bool,
+    pub service_discovery_enabled: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -341,109 +345,26 @@ pub enum CommandPriority {
 pub struct ServiceExecutionRequest {
     pub request_id: Uuid,
     pub service_name: String,
-    pub operation: String,
-    pub input_data: serde_json::Value,
-    pub execution_context: ExecutionContext,
-    pub resource_requirements: ResourceRequirements,
-    pub performance_requirements: PerformanceRequirements,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ExecutionContext {
-    pub user_id: Option<String>,
-    pub session_id: Option<Uuid>,
-    pub trace_id: String,
-    pub parent_span_id: Option<String>,
-    pub environment: String,
-    pub metadata: HashMap<String, String>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ResourceRequirements {
-    pub min_cpu_cores: f64,
-    pub min_memory_mb: u64,
-    pub max_execution_time_ms: u64,
-    pub requires_gpu: bool,
-    pub network_access_required: bool,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct PerformanceRequirements {
-    pub max_latency_ms: u64,
-    pub min_throughput_rps: f64,
-    pub reliability_target: f64,
-    pub consistency_level: ConsistencyLevel,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub enum ConsistencyLevel {
-    Strong,
-    Eventual,
-    Session,
-    Bounded,
+    pub parameters: std::collections::HashMap<String, serde_json::Value>,
+    pub timeout_ms: Option<u64>,
 }
 
 /// Service execution response
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServiceExecutionResponse {
     pub request_id: Uuid,
-    pub execution_id: Uuid,
+    pub service_name: String,
+    pub result: serde_json::Value,
+    pub execution_time_ms: u64,
     pub status: ExecutionStatus,
-    pub result: Option<serde_json::Value>,
-    pub error: Option<ExecutionError>,
-    pub metrics: ExecutionMetrics,
-    pub trace_data: TraceData,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum ExecutionStatus {
-    Queued,
-    Running,
-    Completed,
+    Success,
     Failed,
     Timeout,
-    Cancelled,
-    ResourceLimited,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ExecutionError {
-    pub error_code: String,
-    pub error_message: String,
-    pub error_details: HashMap<String, serde_json::Value>,
-    pub stack_trace: Option<String>,
-    pub retry_recommended: bool,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ExecutionMetrics {
-    pub execution_time_ms: u64,
-    pub cpu_time_ms: u64,
-    pub memory_peak_mb: u64,
-    pub network_bytes_in: u64,
-    pub network_bytes_out: u64,
-    pub disk_reads_mb: u64,
-    pub disk_writes_mb: u64,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct TraceData {
-    pub trace_id: String,
-    pub span_id: String,
-    pub parent_span_id: Option<String>,
-    pub operation_name: String,
-    pub start_time: SystemTime,
-    pub end_time: Option<SystemTime>,
-    pub tags: HashMap<String, String>,
-    pub logs: Vec<TraceLog>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct TraceLog {
-    pub timestamp: SystemTime,
-    pub level: String,
-    pub message: String,
-    pub fields: HashMap<String, serde_json::Value>,
+    ServiceUnavailable,
 }
 
 impl TrebuchetSystem {
