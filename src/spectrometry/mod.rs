@@ -17,6 +17,13 @@ pub mod prelude {
         high_throughput::{
             HighThroughputSpectrometry, DeconvolutedPeak, Feature, AlignedSpectrum, AlignedPeak
         },
+        // Add exports for hybrid processing components
+        hybrid_ms2_annotation::{
+            HybridMS2Annotator, MS2AnnotationResult, AnnotatedFragment, PeptidePrediction
+        },
+        hybrid_protein_inference::{
+            HybridProteinInferenceEngine, ProteinInferenceResult, ProteinGroup, ProteinIdentification
+        },
     };
 }
 
@@ -643,6 +650,8 @@ pub mod analysis;
 pub mod peak;
 pub mod calibration;
 pub mod database;
+pub mod hybrid_ms2_annotation;
+pub mod hybrid_protein_inference;
 
 // Re-export main types from each module
 pub use mass_spec::{MassSpecAnalyzer, MassSpecConfig, MassSpecAnalysisResult};
@@ -653,6 +662,16 @@ pub use analysis::{SpectrometryAnalyzer, AnalysisConfig};
 pub use peak::{PeakPicking};
 pub use calibration::{CalibrationManager, CalibrationCurve, StandardReference};
 pub use database::{SpectralDatabase, DatabaseConfig};
+pub use hybrid_ms2_annotation::{
+    HybridMS2Annotator, MS2AnnotationConfig, MS2AnnotationResult, 
+    AnnotatedFragment, PeptidePrediction, FragmentAssignment,
+    create_default_ms2_annotator
+};
+pub use hybrid_protein_inference::{
+    HybridProteinInferenceEngine, ProteinInferenceConfig, ProteinInferenceResult,
+    ProteinGroup, ProteinIdentification, InferenceCategory,
+    create_default_protein_inference_engine
+};
 
 use serde::{Deserialize, Serialize};
 use thiserror::Error;

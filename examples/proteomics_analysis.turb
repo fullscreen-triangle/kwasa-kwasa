@@ -1,0 +1,402 @@
+// Proteomics Analysis using Hybrid Spectrometry Processing
+// 
+// This example demonstrates the revolutionary hybrid programming paradigm
+// applied to complex MS2 fragment annotation and protein inference.
+//
+// Key features:
+// - Probabilistic floors for uncertainty-aware data structures
+// - Hybrid loops that adapt between deterministic and probabilistic modes
+// - Resolution functions for handling scientific uncertainty
+// - Iterative refinement for difficult analytical problems
+
+use spectrometry::{MassSpectrum, Peak, MS2AnnotationResult, ProteinInferenceResult}
+use probabilistic::{TextPoint, ProbabilisticFloor, ResolutionResult}
+
+// Main proteomics analysis function
+funxn analyze_proteomics_sample(spectra: [MassSpectrum]) -> ProteinInferenceResult {
+    item annotated_spectra = []
+    item total_processing_time = 0.0
+    
+    // Phase 1: Hybrid MS2 Fragment Annotation
+    for spectrum in spectra {
+        item annotation_start = time::now()
+        
+        // Create probabilistic floor from spectral peaks
+        item fragment_floor = ProbabilisticFloor::from_spectrum(spectrum, threshold=0.7)
+        
+        // Populate floor with peak evidence
+        for peak in spectrum.peaks() {
+            item peak_confidence = calculate_peak_confidence(peak)
+            item peak_point = TextPoint::new(
+                content=format!("m/z {:.4} intensity {:.0}", peak.mz, peak.intensity),
+                confidence=peak_confidence
+            )
+            fragment_floor.add_point(
+                id=format!("peak_{}", peak.mz),
+                point=peak_point,
+                weight=peak_confidence
+            )
+        }
+        
+        // Hybrid annotation processing
+        item fragment_assignments = []
+        
+        // Cycle through high-confidence peaks (deterministic mode)
+        cycle peak over fragment_floor:
+            given peak.confidence > 0.8:
+                // Deterministic fragment assignment
+                item assignment = resolution.annotate_deterministic(peak)
+                fragment_assignments.append(assignment)
+            else:
+                // Switch to probabilistic mode for uncertain peaks
+                continue_to_probabilistic_mode()
+        
+        // Drift through uncertain spectral regions (probabilistic mode)
+        drift uncertain_peak in spectrum.uncertain_peaks():
+            resolution.probabilistic_annotation(uncertain_peak)
+            
+            // Adaptive iterative refinement for difficult cases
+            if uncertain_peak.uncertainty > 0.7:
+                roll until settled:
+                    item refined_assignment = resolution.iterative_refinement(uncertain_peak)
+                    item confidence_improvement = refined_assignment.confidence - uncertain_peak.confidence
+                    
+                    if refined_assignment.confidence > 0.85:
+                        break settled(refined_assignment)
+                    else if confidence_improvement < 0.01:
+                        break unsettled("insufficient_evidence")
+                    else:
+                        resolution.gather_additional_evidence(uncertain_peak)
+        
+        // Flow processing for peptide sequence prediction
+        flow fragment_set in fragment_assignments.grouped_by_peptide():
+            resolution.peptide_sequence_prediction(fragment_set)
+            
+            considering sequence_candidate in fragment_set.potential_sequences():
+                given sequence_candidate.support_score > 0.6:
+                    resolution.validate_sequence(sequence_candidate)
+                else:
+                    resolution.mark_as_uncertain(sequence_candidate)
+        
+        item annotation_time = time::now() - annotation_start
+        total_processing_time += annotation_time
+        
+        annotated_spectra.append(spectrum_annotation_result)
+    }
+    
+    // Phase 2: Hybrid Protein Inference
+    item inference_start = time::now()
+    
+    // Create peptide evidence floor for protein inference
+    item peptide_floor = ProbabilisticFloor::from_peptides(
+        peptides=annotated_spectra.all_peptides(),
+        threshold=0.75
+    )
+    
+    for peptide in annotated_spectra.all_peptides() {
+        item uniqueness_score = calculate_peptide_uniqueness(peptide.sequence)
+        item evidence_strength = peptide.confidence * uniqueness_score
+        
+        item peptide_point = TextPoint::new(
+            content=format!("peptide {} conf {:.3}", peptide.sequence, peptide.confidence),
+            confidence=evidence_strength
+        )
+        
+        peptide_floor.add_point(
+            id=peptide.sequence,
+            point=peptide_point,
+            weight=evidence_strength
+        )
+    }
+    
+    item protein_identifications = []
+    
+    // Cycle through unique peptides (deterministic protein assignment)
+    cycle peptide over peptide_floor:
+        given peptide.uniqueness > 0.9:
+            // High-confidence unique peptide - deterministic assignment
+            item protein_assignment = resolution.unique_protein_assignment(peptide)
+            protein_identifications.append(protein_assignment)
+        else:
+            // Continue to shared peptide analysis
+            continue_to_shared_peptide_analysis()
+    
+    // Drift through shared peptides (probabilistic protein grouping)
+    drift shared_peptide in annotated_spectra.shared_peptides():
+        resolution.probabilistic_protein_grouping(shared_peptide)
+        
+        // Iterative parsimony analysis for complex cases
+        if shared_peptide.protein_matches.length > 3:
+            roll until settled:
+                item parsimony_result = resolution.apply_parsimony_principle(shared_peptide)
+                item group_confidence = calculate_group_confidence(parsimony_result)
+                
+                if group_confidence > 0.8:
+                    break settled(parsimony_result)
+                else:
+                    resolution.refine_protein_grouping(shared_peptide)
+    
+    // Flow processing for final protein grouping
+    flow protein_candidate in potential_proteins:
+        resolution.final_protein_evaluation(protein_candidate)
+        
+        considering group_member in protein_candidate.protein_group:
+            given group_member.parsimony_score > 0.8:
+                resolution.include_in_final_set(group_member)
+            else given group_member.subsumable_by_others():
+                resolution.mark_as_subsumable(group_member)
+            else:
+                resolution.mark_as_indistinguishable(group_member)
+    
+    item inference_time = time::now() - inference_start
+    total_processing_time += inference_time
+    
+    // Compile comprehensive results
+    return ProteinInferenceResult {
+        analysis_id: generate_analysis_id(),
+        protein_identifications: protein_identifications,
+        protein_groups: create_protein_groups(protein_identifications),
+        peptide_evidence: summarize_peptide_evidence(annotated_spectra),
+        overall_confidence: calculate_overall_confidence(protein_identifications),
+        processing_metadata: ProcessingMetadata {
+            total_processing_time_ms: total_processing_time,
+            spectra_processed: spectra.length,
+            peptides_identified: annotated_spectra.total_peptides(),
+            proteins_identified: protein_identifications.length,
+            uncertainty_metrics: calculate_uncertainty_metrics(protein_identifications)
+        }
+    }
+}
+
+// Helper function for peak confidence calculation
+funxn calculate_peak_confidence(peak: Peak) -> f64 {
+    item base_confidence = if peak.snr.is_some() {
+        sigmoid(peak.snr.unwrap() / 10.0)
+    } else {
+        sigmoid(peak.intensity / 1000.0)
+    }
+    
+    // Adjust based on m/z region (some regions are more reliable)
+    item mz_factor = if peak.mz > 100.0 && peak.mz < 2000.0 {
+        1.0
+    } else {
+        0.8
+    }
+    
+    return base_confidence * mz_factor
+}
+
+// Helper function for peptide uniqueness calculation
+funxn calculate_peptide_uniqueness(sequence: str) -> f64 {
+    // Query protein database for sequence matches
+    item matching_proteins = protein_database.search(sequence)
+    
+    if matching_proteins.is_empty() {
+        return 0.0  // Not found in database
+    } else {
+        // Uniqueness is inverse of number of matches
+        return 1.0 / matching_proteins.length.as_f64()
+    }
+}
+
+// Sigmoid activation function for confidence scaling
+funxn sigmoid(x: f64) -> f64 {
+    return 1.0 / (1.0 + exp(-x))
+}
+
+// Resolution function for deterministic fragment annotation
+resolution annotate_deterministic(peak: TextPoint) -> FragmentAssignment {
+    // Parse peak information
+    item peak_mz = extract_mz_from_content(peak.content)
+    item peak_intensity = extract_intensity_from_content(peak.content)
+    
+    // Deterministic assignment based on known fragmentation patterns
+    if peak_mz > 100.0 && peak_mz < 200.0 {
+        return FragmentAssignment {
+            fragment_type: "b_ion",
+            assignment_confidence: peak.confidence * 0.9,
+            theoretical_mz: peak_mz,
+            mass_error_ppm: calculate_mass_error(peak_mz, theoretical_b_ion_mz)
+        }
+    } else if peak_mz > 200.0 && peak_mz < 500.0 {
+        return FragmentAssignment {
+            fragment_type: "y_ion",
+            assignment_confidence: peak.confidence * 0.95,
+            theoretical_mz: peak_mz,
+            mass_error_ppm: calculate_mass_error(peak_mz, theoretical_y_ion_mz)
+        }
+    } else {
+        return FragmentAssignment {
+            fragment_type: "unknown",
+            assignment_confidence: peak.confidence * 0.5,
+            theoretical_mz: peak_mz,
+            mass_error_ppm: 0.0
+        }
+    }
+}
+
+// Resolution function for probabilistic fragment annotation
+resolution probabilistic_annotation(peak: TextPoint) -> ResolutionResult {
+    item peak_data = parse_peak_data(peak.content)
+    
+    // Create multiple hypotheses with different probabilities
+    item hypotheses = [
+        (FragmentAssignment { fragment_type: "b_ion", confidence: 0.4 }, 0.4),
+        (FragmentAssignment { fragment_type: "y_ion", confidence: 0.3 }, 0.3),
+        (FragmentAssignment { fragment_type: "neutral_loss", confidence: 0.2 }, 0.2),
+        (FragmentAssignment { fragment_type: "noise", confidence: 0.1 }, 0.1)
+    ]
+    
+    return ResolutionResult::Uncertain {
+        possibilities: hypotheses,
+        confidence_interval: (peak.confidence * 0.8, peak.confidence * 1.2),
+        aggregated_confidence: peak.confidence
+    }
+}
+
+// Resolution function for iterative refinement
+resolution iterative_refinement(peak: TextPoint) -> FragmentAssignment {
+    item current_confidence = peak.confidence
+    item refinement_iterations = 0
+    
+    while current_confidence < 0.85 && refinement_iterations < 5 {
+        // Apply additional evidence gathering
+        item additional_evidence = gather_contextual_evidence(peak)
+        current_confidence = combine_evidence(current_confidence, additional_evidence)
+        refinement_iterations += 1
+    }
+    
+    return FragmentAssignment {
+        fragment_type: determine_most_likely_type(peak),
+        assignment_confidence: current_confidence,
+        theoretical_mz: extract_mz_from_content(peak.content),
+        mass_error_ppm: calculate_mass_error_with_context(peak)
+    }
+}
+
+// Resolution function for unique protein assignment
+resolution unique_protein_assignment(peptide: TextPoint) -> ProteinIdentification {
+    item peptide_sequence = extract_sequence_from_content(peptide.content)
+    item matching_proteins = protein_database.search_unique(peptide_sequence)
+    
+    if matching_proteins.length == 1 {
+        return ProteinIdentification {
+            protein_id: matching_proteins[0].id,
+            protein_name: matching_proteins[0].name,
+            confidence: peptide.confidence * 0.95,  // High confidence for unique matches
+            inference_category: InferenceCategory::HighConfidence,
+            supporting_peptides: [peptide_sequence],
+            sequence_coverage: calculate_coverage(matching_proteins[0], [peptide_sequence])
+        }
+    } else {
+        // Shouldn't happen for unique peptides, but handle gracefully
+        return ProteinIdentification {
+            protein_id: "AMBIGUOUS",
+            protein_name: "Ambiguous Protein",
+            confidence: peptide.confidence * 0.3,
+            inference_category: InferenceCategory::Uncertain,
+            supporting_peptides: [peptide_sequence],
+            sequence_coverage: 0.0
+        }
+    }
+}
+
+// Resolution function for probabilistic protein grouping
+resolution probabilistic_protein_grouping(peptide: TextPoint) -> ResolutionResult {
+    item peptide_sequence = extract_sequence_from_content(peptide.content)
+    item matching_proteins = protein_database.search(peptide_sequence)
+    
+    if matching_proteins.is_empty() {
+        return ResolutionResult::Certain("no_protein_match")
+    }
+    
+    // Create weighted possibilities for each matching protein
+    item total_weight = matching_proteins.length.as_f64()
+    item possibilities = []
+    
+    for protein in matching_proteins {
+        item protein_weight = calculate_protein_likelihood(protein, peptide_sequence)
+        item normalized_weight = protein_weight / total_weight
+        
+        possibilities.append((
+            ProteinIdentification {
+                protein_id: protein.id,
+                protein_name: protein.name,
+                confidence: peptide.confidence * normalized_weight,
+                inference_category: InferenceCategory::MediumConfidence,
+                supporting_peptides: [peptide_sequence],
+                sequence_coverage: calculate_coverage(protein, [peptide_sequence])
+            },
+            normalized_weight
+        ))
+    }
+    
+    return ResolutionResult::Uncertain {
+        possibilities: possibilities,
+        confidence_interval: (peptide.confidence * 0.6, peptide.confidence * 0.9),
+        aggregated_confidence: peptide.confidence * 0.75
+    }
+}
+
+// Resolution function for parsimony principle application
+resolution apply_parsimony_principle(shared_peptide: TextPoint) -> ProteinGroup {
+    item peptide_sequence = extract_sequence_from_content(shared_peptide.content)
+    item matching_proteins = protein_database.search(peptide_sequence)
+    
+    // Apply parsimony: prefer minimal set of proteins that explains observations
+    item minimal_protein_set = find_minimal_covering_set(matching_proteins, [peptide_sequence])
+    
+    item group_confidence = calculate_parsimony_confidence(minimal_protein_set, shared_peptide.confidence)
+    
+    return ProteinGroup {
+        group_id: generate_group_id(),
+        proteins: minimal_protein_set,
+        shared_peptides: [peptide_sequence],
+        unique_peptides: [],
+        group_confidence: group_confidence,
+        parsimony_score: calculate_parsimony_score(minimal_protein_set),
+        evidence_strength: shared_peptide.confidence
+    }
+}
+
+// Example usage and testing
+funxn main() {
+    // Create sample MS2 spectra
+    item sample_spectra = [
+        create_sample_spectrum("high_quality_spectrum", high_confidence_peaks()),
+        create_sample_spectrum("medium_quality_spectrum", medium_confidence_peaks()),
+        create_sample_spectrum("complex_spectrum", complex_mixed_peaks())
+    ]
+    
+    // Run comprehensive proteomics analysis
+    item analysis_start = time::now()
+    item results = analyze_proteomics_sample(sample_spectra)
+    item analysis_time = time::now() - analysis_start
+    
+    // Display results
+    print("🔬 Proteomics Analysis Complete 🔬")
+    print(format!("Analysis ID: {}", results.analysis_id))
+    print(format!("Processing time: {:.2}ms", analysis_time))
+    print(format!("Proteins identified: {}", results.protein_identifications.length))
+    print(format!("Overall confidence: {:.3}", results.overall_confidence))
+    
+    for (i, protein) in results.protein_identifications.enumerate() {
+        print(format!("{}. {} ({})", i + 1, protein.protein_name, protein.inference_category))
+        print(format!("   Confidence: {:.3}", protein.confidence))
+        print(format!("   Coverage: {:.1}%", protein.sequence_coverage * 100.0))
+    }
+    
+    print("\n🌊 Uncertainty Analysis:")
+    print(format!("Average uncertainty: {:.3}", results.processing_metadata.uncertainty_metrics.average_uncertainty))
+    print(format!("Max uncertainty: {:.3}", results.processing_metadata.uncertainty_metrics.max_uncertainty))
+    print(format!("Uncertainty distribution: {:?}", results.processing_metadata.uncertainty_metrics.uncertainty_distribution))
+}
+
+// This example demonstrates:
+// 1. Probabilistic floors for spectral data organization
+// 2. Hybrid loops that adapt processing modes based on confidence
+// 3. Resolution functions for handling scientific uncertainty
+// 4. Iterative refinement for difficult analytical problems
+// 5. Complex scientific reasoning patterns using revolutionary loop constructs
+// 6. Uncertainty propagation throughout the analysis pipeline
+// 7. Adaptive computation that optimizes performance while maintaining accuracy

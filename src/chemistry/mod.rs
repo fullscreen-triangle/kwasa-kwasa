@@ -11,6 +11,9 @@ pub mod prelude {
     pub use super::{
         Molecule, Atom, Bond, MoleculeMetadata, MoleculeBoundaryDetector, MoleculeOperations,
     };
+    pub use super::graph_theory::{ChemicalGraphAnalyzer, GraphAnalysisConfig, ChemicalGraphAnalysisResult};
+    pub use super::probabilistic_chemistry::{ProbabilisticChemicalEngine, ChemicalUncertaintyAnalysis};
+    pub use super::reaction_mining::{ReactionMiner, ReactionPattern, ReactionPredictionEngine};
 }
 
 /// Bond type
@@ -1895,4 +1898,19 @@ pub enum ChemicalInput {
     
     /// Multiple molecules
     MoleculeSet(Vec<String>),
-} 
+}
+
+/// Graph theory module for advanced molecular analysis
+pub mod graph_theory;
+
+/// Probabilistic chemistry for fuzzy/deterministic hybrid analysis
+pub mod probabilistic_chemistry;
+
+/// Reaction mining and pattern discovery
+pub mod reaction_mining;
+
+/// Molecular fingerprinting and similarity analysis
+pub mod fingerprinting;
+
+/// Advanced property prediction with uncertainty quantification
+pub mod property_prediction; 
