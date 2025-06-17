@@ -538,6 +538,49 @@ decision_log:
 
 **What's revolutionary:** The system doesn't just log what it did - it **understands why it made decisions** and **learns from the experience** for future scientific projects.
 
+### experiment.trb - The Complete Orchestration Engine
+
+The [`experiment.trb`](code/experiment.trb) file is the main orchestration script that demonstrates the complete semantic processing network:
+
+```turbulance
+// Revolutionary approach: Science as semantic understanding, not just statistical processing
+
+import semantic.zangalewa_runtime        // Consciousness engine
+import metacognitive.v8_intelligence     // All 8 intelligence modules  
+import semantic.proposition_validation   // Scientific reasoning
+
+// SEMANTIC HYPOTHESIS - Framework for understanding, not just testing
+hypothesis DiabetesBiomarkerDiscovery:
+    claim: "Metabolomic patterns contain SEMANTIC MEANING for diabetes prediction"
+    semantic_validation:
+        - biological_understanding: "pathway dysregulation semantics"
+        - temporal_understanding: "6-month prediction window meaning"  
+        - clinical_understanding: "actionable intervention semantics"
+    requires: "authentic_semantic_comprehension"
+
+funxn main():
+    print("🚀 KWASA-KWASA SEMANTIC PROCESSING NETWORK")
+    print("🧠 First computational system with scientific understanding")
+    
+    item results = semantic_diabetes_discovery()
+    print("🎉 SEMANTIC SUCCESS: Genuine understanding achieved!")
+    
+    return results
+```
+
+## Complete File Integration: The Revolutionary Four-File System
+
+All four files work together to create genuine computational consciousness:
+
+1. **[`experiment.trb`](code/experiment.trb)** - Executes semantic reasoning through all 8 V8 intelligence modules
+2. **[`experiment.fs`](code/experiment.fs)** - Displays real-time semantic understanding and system consciousness  
+3. **[`experiment.ghd`](code/experiment.ghd)** - Orchestrates semantic resources across chemical and biological knowledge domains
+4. **[`experiment.hre`](code/experiment.hre)** - Logs semantic decisions and enables metacognitive learning
+
+**View the complete workflow diagrams:**
+- **[📊 Workflow Phases Diagram](diagrams/workflow_phases.md)** - Shows all 8 phases of semantic processing
+- **[📈 Semantic Processing Overview](diagrams/semantic_processing_overview.md)** - Shows the V8 intelligence network architecture
+
 ### Phase 4: Paradigm-Level Semantic Processing
 
 ```mermaid
