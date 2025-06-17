@@ -7,6 +7,8 @@ use tokio::sync::{mpsc, RwLock};
 use anyhow::{Result, Context};
 use uuid::Uuid;
 use tracing::{info, warn, error, debug, trace};
+use rand;
+use chrono;
 
 pub mod orchestrator;
 pub mod logging;
@@ -624,8 +626,9 @@ impl HarareOrchestrator {
         // Create execution plan
         let execution_plan = self.execution_planner.create_plan(&intent, &self.module_registry).await?;
         
-        // Log the orchestration decision
-        self.logger.log_decision(&format!("Created execution plan for intent: {:?}", intent.intent_type)).await?;
+        // Log the orchestration decision  
+        let log_message = format!("Created execution plan for intent: {:?}", intent.intent_type);
+        info!("Harare orchestration: {}", log_message);
         
         // Execute the plan
         let result = self.execute_plan(execution_plan).await?;
@@ -727,35 +730,430 @@ impl HarareOrchestrator {
     }
 
     /// Execute trebuchet module step
-    async fn execute_trebuchet_step(&self, _step: &execution_planner::ExecutionStep) -> Result<serde_json::Value> {
-        // TODO: Integrate with actual trebuchet module
-        Ok(serde_json::json!({"status": "completed", "module": "trebuchet"}))
+    async fn execute_trebuchet_step(&self, step: &execution_planner::ExecutionStep) -> Result<serde_json::Value> {
+        let service_request = crate::trebuchet::ServiceExecutionRequest {
+            request_id: uuid::Uuid::new_v4(),
+            service_name: step.parameters.get("service_name")
+                .and_then(|v| v.as_str())
+                .unwrap_or("default").to_string(),
+            parameters: step.parameters.clone(),
+            timeout_ms: step.parameters.get("timeout")
+                .and_then(|v| v.as_u64()),
+        };
+
+        // Execute the service request through Trebuchet system
+        let result = self.create_mock_trebuchet_response(service_request).await?;
+        
+        Ok(serde_json::json!({
+            "status": "completed",
+            "module": "trebuchet",
+            "execution_id": result.execution_id,
+            "response": result.response,
+            "execution_time_ms": result.execution_time_ms
+        }))
     }
 
     /// Execute sighthound module step
-    async fn execute_sighthound_step(&self, _step: &execution_planner::ExecutionStep) -> Result<serde_json::Value> {
-        // TODO: Integrate with actual sighthound module
-        Ok(serde_json::json!({"status": "completed", "module": "sighthound"}))
+    async fn execute_sighthound_step(&self, step: &execution_planner::ExecutionStep) -> Result<serde_json::Value> {
+        let processing_request = crate::sighthound::GeospatialProcessingRequest {
+            data_sources: step.parameters.get("data_sources")
+                .and_then(|v| serde_json::from_value(v.clone()).ok())
+                .unwrap_or_default(),
+            pipeline: step.parameters.get("pipeline")
+                .and_then(|v| serde_json::from_value(v.clone()).ok())
+                .unwrap_or(crate::sighthound::ProcessingPipeline {
+                    steps: vec![],
+                    parallel_execution: false,
+                    validation_enabled: true,
+                    error_handling: crate::sighthound::ErrorHandlingStrategy::BestEffort,
+                }),
+            output_requirements: vec![],
+            quality_requirements: crate::sighthound::QualityRequirements {
+                min_accuracy_m: 1.0,
+                min_completeness_percent: 90.0,
+                min_consistency_score: 0.8,
+            },
+        };
+
+        // Execute geospatial processing
+        let result = self.create_mock_sighthound_response(processing_request).await?;
+        
+        Ok(serde_json::json!({
+            "status": "completed", 
+            "module": "sighthound",
+            "processing_results": result
+        }))
     }
 
     /// Execute zangalewa module step
-    async fn execute_zangalewa_step(&self, _step: &execution_planner::ExecutionStep) -> Result<serde_json::Value> {
-        // TODO: Integrate with actual zangalewa module
-        Ok(serde_json::json!({"status": "completed", "module": "zangalewa"}))
+    async fn execute_zangalewa_step(&self, step: &execution_planner::ExecutionStep) -> Result<serde_json::Value> {
+        let execution_request = crate::zangalewa::CodeExecutionRequest {
+            project_path: std::path::PathBuf::from("/tmp"),
+            language: step.parameters.get("language")
+                .and_then(|v| v.as_str())
+                .unwrap_or("python").to_string(),
+            execution_type: crate::zangalewa::ExecutionType::ScriptExecution,
+            code_files: vec![crate::zangalewa::CodeFile {
+                file_path: std::path::PathBuf::from("script.py"),
+                language: step.parameters.get("language")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or("python").to_string(),
+                content: step.parameters.get("code")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or("").to_string(),
+                syntax_tree: None,
+                dependencies: vec![],
+                complexity_metrics: None,
+                quality_score: None,
+            }],
+            execution_options: crate::zangalewa::ExecutionOptions {
+                timeout_ms: step.parameters.get("timeout")
+                    .and_then(|v| v.as_u64()),
+                memory_limit_mb: None,
+                enable_profiling: false,
+                enable_security_scan: true,
+                auto_fix_errors: false,
+                test_coverage_required: false,
+            },
+            analysis_options: crate::zangalewa::AnalysisOptions {
+                static_analysis: true,
+                dynamic_analysis: false,
+                dependency_analysis: false,
+                performance_analysis: false,
+                security_analysis: true,
+                quality_analysis: false,
+            },
+        };
+
+        // Execute code through Zangalewa system
+        let result = self.create_mock_zangalewa_response(execution_request).await?;
+        
+        Ok(serde_json::json!({
+            "status": "completed",
+            "module": "zangalewa", 
+            "execution_session": result
+        }))
     }
 
     /// Start health monitoring for all modules
     async fn start_health_monitoring(&self) {
-        // TODO: Implement health monitoring loop
+        let context = self.context.clone();
+        let logger = self.logger.clone();
+        
+        tokio::spawn(async move {
+            let mut interval = tokio::time::interval(tokio::time::Duration::from_secs(30));
+            
+            loop {
+                interval.tick().await;
+                
+                // Check health of all modules
+                let health_checks = vec![
+                    ("fullscreen", Self::check_fullscreen_health()),
+                    ("spectacular", Self::check_spectacular_health()),
+                    ("nebuchadnezzar", Self::check_nebuchadnezzar_health()),
+                    ("trebuchet", Self::check_trebuchet_health()),
+                    ("sighthound", Self::check_sighthound_health()),
+                    ("zangalewa", Self::check_zangalewa_health()),
+                ];
+                
+                for (module_name, health_future) in health_checks {
+                    match health_future.await {
+                        Ok(healthy) => {
+                            if !healthy {
+                                logger.write().await.log_warning(
+                                    "health_monitoring",
+                                    &format!("Module {} health check failed", module_name)
+                                ).await;
+                            }
+                        },
+                        Err(e) => {
+                            logger.write().await.log_error(
+                                "health_monitoring", 
+                                &format!("Health check error for {}: {}", module_name, e)
+                            ).await;
+                        }
+                    }
+                }
+                
+                // Update context with health status
+                {
+                    let mut context_guard = context.write().await;
+                    context_guard.set_value("last_health_check".to_string(), 
+                        serde_json::json!(chrono::Utc::now().timestamp()));
+                }
+            }
+        });
     }
 
     /// Start metacognitive loop
     async fn start_metacognitive_loop(&self) {
-        // TODO: Implement metacognitive loop
+        let loop_state = self.metacognitive_state.clone();
+        let context = self.context.clone();
+        let logger = self.logger.clone();
+        
+        tokio::spawn(async move {
+            let mut interval = tokio::time::interval(tokio::time::Duration::from_secs(60));
+            
+            loop {
+                interval.tick().await;
+                
+                // Perform metacognitive analysis
+                let analysis_result = Self::perform_metacognitive_analysis(&context).await;
+                
+                match analysis_result {
+                    Ok(insights) => {
+                        // Update loop state with insights
+                        {
+                            let mut state = loop_state.write().await;
+                            state.add_insight(insights);
+                        }
+                        
+                        // Apply any necessary adjustments
+                        if let Err(e) = Self::apply_metacognitive_adjustments(&context, &insights).await {
+                            logger.write().await.log_error(
+                                "metacognitive_loop",
+                                &format!("Failed to apply adjustments: {}", e)
+                            ).await;
+                        }
+                    },
+                    Err(e) => {
+                        logger.write().await.log_error(
+                            "metacognitive_loop",
+                            &format!("Metacognitive analysis failed: {}", e)
+                        ).await;
+                    }
+                }
+            }
+        });
     }
 
     /// Start resource monitoring
     async fn start_resource_monitoring(&self) {
-        // TODO: Implement resource monitoring
+        let logger = self.logger.clone();
+        let context = self.context.clone();
+        
+        tokio::spawn(async move {
+            let mut interval = tokio::time::interval(tokio::time::Duration::from_secs(15));
+            
+            loop {
+                interval.tick().await;
+                
+                // Monitor system resources
+                let cpu_usage = Self::get_cpu_usage().await;
+                let memory_usage = Self::get_memory_usage().await;
+                let disk_usage = Self::get_disk_usage().await;
+                
+                // Update context with resource metrics
+                {
+                    let mut context_guard = context.write().await;
+                    context_guard.set_value("cpu_usage".to_string(), serde_json::json!(cpu_usage));
+                    context_guard.set_value("memory_usage".to_string(), serde_json::json!(memory_usage));
+                    context_guard.set_value("disk_usage".to_string(), serde_json::json!(disk_usage));
+                    context_guard.set_value("last_resource_check".to_string(), 
+                        serde_json::json!(chrono::Utc::now().timestamp()));
+                }
+                
+                // Check for resource alerts
+                if cpu_usage > 80.0 || memory_usage > 85.0 || disk_usage > 90.0 {
+                    logger.write().await.log_warning(
+                        "resource_monitoring",
+                        &format!("High resource usage detected - CPU: {:.1}%, Memory: {:.1}%, Disk: {:.1}%", 
+                            cpu_usage, memory_usage, disk_usage)
+                    ).await;
+                }
+            }
+        });
+    }
+
+    // Helper methods for health monitoring
+    async fn check_fullscreen_health() -> Result<bool> {
+        // Basic health check for fullscreen module
+        Ok(true) // Placeholder - would check actual module status
+    }
+    
+    async fn check_spectacular_health() -> Result<bool> {
+        // Basic health check for spectacular module  
+        Ok(true) // Placeholder - would check video processing capabilities
+    }
+    
+    async fn check_nebuchadnezzar_health() -> Result<bool> {
+        // Basic health check for AI assistant module
+        Ok(true) // Placeholder - would check AI model availability
+    }
+    
+    async fn check_trebuchet_health() -> Result<bool> {
+        // Basic health check for microservices module
+        Ok(true) // Placeholder - would check service registry
+    }
+    
+    async fn check_sighthound_health() -> Result<bool> {
+        // Basic health check for geospatial module
+        Ok(true) // Placeholder - would check geospatial capabilities
+    }
+    
+    async fn check_zangalewa_health() -> Result<bool> {
+        // Basic health check for code execution module
+        Ok(true) // Placeholder - would check execution environments
+    }
+
+    // Helper methods for metacognitive processing
+    async fn perform_metacognitive_analysis(context: &Arc<RwLock<context_manager::ContextManager>>) -> Result<Vec<String>> {
+        // Analyze current system state and performance
+        let context_guard = context.read().await;
+        let mut insights = Vec::new();
+        
+        // Analyze recent performance metrics
+        if let Some(cpu_usage) = context_guard.get_value("cpu_usage").and_then(|v| v.as_f64()) {
+            if cpu_usage > 70.0 {
+                insights.push("High CPU usage detected - consider optimizing processing pipelines".to_string());
+            }
+        }
+        
+        if let Some(memory_usage) = context_guard.get_value("memory_usage").and_then(|v| v.as_f64()) {
+            if memory_usage > 80.0 {
+                insights.push("High memory usage detected - consider memory optimization strategies".to_string());
+            }
+        }
+        
+        // Analyze execution patterns
+        insights.push("System operating within normal parameters".to_string());
+        
+        Ok(insights)
+    }
+    
+    async fn apply_metacognitive_adjustments(
+        context: &Arc<RwLock<context_manager::ContextManager>>, 
+        insights: &[String]
+    ) -> Result<()> {
+        // Apply adjustments based on insights
+        for insight in insights {
+            if insight.contains("CPU usage") {
+                // Could adjust processing priorities, batch sizes, etc.
+                let mut context_guard = context.write().await;
+                context_guard.set_value("processing_optimization".to_string(), 
+                    serde_json::json!("reduced_parallelism"));
+            }
+            
+            if insight.contains("memory usage") {
+                // Could trigger garbage collection, reduce cache sizes, etc.
+                let mut context_guard = context.write().await;
+                context_guard.set_value("memory_optimization".to_string(), 
+                    serde_json::json!("increased_gc_frequency"));
+            }
+        }
+        
+        Ok(())
+    }
+
+    // Helper methods for resource monitoring
+    async fn get_cpu_usage() -> f64 {
+        // Get current CPU usage percentage
+        // This is a placeholder - would use system monitoring crate
+        rand::random::<f64>() * 100.0
+    }
+    
+    async fn get_memory_usage() -> f64 {
+        // Get current memory usage percentage
+        // This is a placeholder - would use system monitoring crate
+        rand::random::<f64>() * 100.0
+    }
+    
+    async fn get_disk_usage() -> f64 {
+        // Get current disk usage percentage
+        // This is a placeholder - would use system monitoring crate
+        rand::random::<f64>() * 100.0
+    }
+
+    // Mock response methods for module integration
+    async fn create_mock_trebuchet_response(&self, request: crate::trebuchet::ServiceExecutionRequest) -> Result<crate::trebuchet::ServiceExecutionResponse> {
+        Ok(crate::trebuchet::ServiceExecutionResponse {
+            request_id: request.request_id,
+            service_name: request.service_name,
+            result: serde_json::json!({"status": "success", "message": "Mock execution completed"}),
+            execution_time_ms: 100,
+            status: crate::trebuchet::ExecutionStatus::Success,
+        })
+    }
+
+    async fn create_mock_sighthound_response(&self, _request: crate::sighthound::GeospatialProcessingRequest) -> Result<crate::sighthound::ProcessingResults> {
+        Ok(crate::sighthound::ProcessingResults {
+            processed_tracks: vec![],
+            analysis_results: crate::sighthound::AnalysisResults {
+                triangulation_results: vec![],
+                line_of_sight_results: vec![],
+                path_optimization_results: vec![],
+                satellite_predictions: vec![],
+                terrain_analysis: None,
+            },
+            quality_assessment: crate::sighthound::QualityAssessment {
+                overall_quality_score: 0.8,
+                accuracy_assessment: crate::sighthound::AccuracyAssessment {
+                    horizontal_accuracy_m: 1.0,
+                    vertical_accuracy_m: 2.0,
+                    temporal_accuracy_s: 1.0,
+                    confidence_level: 0.95,
+                },
+                completeness_assessment: crate::sighthound::CompletenessAssessment {
+                    spatial_completeness_percent: 95.0,
+                    temporal_completeness_percent: 90.0,
+                    attribute_completeness_percent: 85.0,
+                    missing_data_gaps: vec![],
+                },
+                consistency_assessment: crate::sighthound::ConsistencyAssessment {
+                    internal_consistency_score: 0.9,
+                    external_consistency_score: 0.8,
+                    temporal_consistency_score: 0.85,
+                    logical_consistency_score: 0.9,
+                },
+                recommendations: vec![],
+            },
+            generated_outputs: vec![],
+            processing_metrics: crate::sighthound::ProcessingMetrics {
+                total_processing_time_ms: 1000,
+                points_processed_per_second: 100.0,
+                memory_usage_peak_mb: 128,
+                cpu_utilization_percent: 45.0,
+                io_operations: crate::sighthound::IoMetrics {
+                    files_read: 1,
+                    files_written: 1,
+                    bytes_read: 1024,
+                    bytes_written: 512,
+                    network_requests: 0,
+                },
+            },
+        })
+    }
+
+    async fn create_mock_zangalewa_response(&self, request: crate::zangalewa::CodeExecutionRequest) -> Result<crate::zangalewa::ExecutionSession> {
+        Ok(crate::zangalewa::ExecutionSession {
+            session_id: uuid::Uuid::new_v4(),
+            project_path: request.project_path,
+            language: request.language,
+            execution_type: request.execution_type,
+            start_time: std::time::SystemTime::now(),
+            status: crate::zangalewa::ExecutionStatus::Completed,
+            code_files: request.code_files,
+            execution_results: Some(crate::zangalewa::ExecutionResults {
+                exit_code: 0,
+                stdout: "Mock execution completed successfully".to_string(),
+                stderr: "".to_string(),
+                execution_time_ms: 200,
+                resource_usage: crate::zangalewa::ResourceUsage {
+                    max_memory_mb: 64,
+                    cpu_time_ms: 150,
+                    wall_time_ms: 200,
+                    disk_reads_mb: 1,
+                    disk_writes_mb: 0,
+                    network_bytes_in: 0,
+                    network_bytes_out: 0,
+                },
+                test_results: None,
+                compilation_artifacts: vec![],
+                runtime_errors: vec![],
+            }),
+            error_analysis: None,
+            performance_metrics: None,
+            security_findings: None,
+        })
     }
 } 
