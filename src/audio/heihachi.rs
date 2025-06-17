@@ -230,22 +230,212 @@ impl HeihachiEngine {
 
     // Implementation methods
     fn load_audio(&self, audio_path: &Path) -> Result<Vec<f32>> {
-        // This would use a real audio library like hound or symphonia
-        // For now, generate test signal
-        let duration = 3.0; // 3 seconds
-        let sample_count = (duration * self.config.sample_rate as f64) as usize;
-        let mut audio = Vec::with_capacity(sample_count);
+        use symphonia::core::audio::{AudioBuffer, Signal};
+        use symphonia::core::codecs::{Decoder, DecoderOptions};
+        use symphonia::core::formats::{FormatOptions, FormatReader};
+        use symphonia::core::io::MediaSourceStream;
+        use symphonia::core::meta::MetadataOptions;
+        use symphonia::core::probe::Hint;
+        use std::fs::File;
         
-        for i in 0..sample_count {
-            let t = i as f64 / self.config.sample_rate as f64;
-            // Generate a test signal with multiple harmonics
-            let signal = 0.5 * (2.0 * std::f64::consts::PI * 440.0 * t).sin() +
-                        0.3 * (2.0 * std::f64::consts::PI * 880.0 * t).sin() +
-                        0.1 * (2.0 * std::f64::consts::PI * 1320.0 * t).sin();
-            audio.push(signal as f32);
+        // Open the audio file
+        let file = File::open(audio_path)
+            .map_err(|e| Error::Processing(format!("Failed to open audio file: {}", e)))?;
+        
+        // Create a media source stream
+        let mss = MediaSourceStream::new(Box::new(file), Default::default());
+        
+        // Create a probe hint using the file extension
+        let mut hint = Hint::new();
+        if let Some(extension) = audio_path.extension() {
+            if let Some(extension_str) = extension.to_str() {
+                hint.with_extension(extension_str);
+            }
         }
         
-        Ok(audio)
+        // Use the default options for metadata and format readers
+        let meta_opts: MetadataOptions = Default::default();
+        let fmt_opts: FormatOptions = Default::default();
+        
+        // Probe the media source
+        let probed = symphonia::default::get_probe()
+            .format(&hint, mss, &fmt_opts, &meta_opts)
+            .map_err(|e| Error::Processing(format!("Failed to probe audio format: {}", e)))?;
+            
+        // Get the instantiated format reader
+        let mut format = probed.format;
+        
+        // Find the first audio track with a known codec
+        let track = format
+            .tracks()
+            .iter()
+            .find(|t| t.codec_params.codec != symphonia::core::codecs::CODEC_TYPE_NULL)
+            .ok_or_else(|| Error::Processing("No supported audio tracks found".to_string()))?;
+            
+        let track_id = track.id;
+        
+        // Use the default options for the decoder
+        let dec_opts: DecoderOptions = Default::default();
+        
+        // Create a decoder for the track
+        let mut decoder = symphonia::default::get_codecs()
+            .make(&track.codec_params, &dec_opts)
+            .map_err(|e| Error::Processing(format!("Failed to create decoder: {}", e)))?;
+            
+        // Store decoded audio samples
+        let mut audio_samples = Vec::new();
+        let target_sample_rate = self.config.sample_rate;
+        
+        // Decode the packets
+        loop {
+            // Get the next packet from the media format
+            let packet = match format.next_packet() {
+                Ok(packet) => packet,
+                Err(symphonia::core::errors::Error::ResetRequired) => {
+                    // The track list has been changed. Re-examine it and create a new set of decoders,
+                    // then restart the decode loop. This is an advanced feature and we'll just break.
+                    break;
+                }
+                Err(symphonia::core::errors::Error::IoError(err)) => {
+                    // The packet reader has reached EOF
+                    if err.kind() == std::io::ErrorKind::UnexpectedEof {
+                        break;
+                    }
+                    return Err(Error::Processing(format!("IO error: {}", err)));
+                }
+                Err(err) => {
+                    return Err(Error::Processing(format!("Decode error: {}", err)));
+                }
+            };
+            
+            // Only decode packets for the selected track
+            if packet.track_id() != track_id {
+                continue;
+            }
+            
+            // Decode the packet into audio samples
+            match decoder.decode(&packet) {
+                Ok(decoded) => {
+                    // Convert audio buffer to f32 samples
+                    self.convert_audio_buffer_to_samples(&decoded, &mut audio_samples)?;
+                }
+                Err(symphonia::core::errors::Error::IoError(_)) => {
+                    // End of stream
+                    break;
+                }
+                Err(symphonia::core::errors::Error::DecodeError(_)) => {
+                    // Decode error, try to continue
+                    continue;
+                }
+                Err(err) => {
+                    return Err(Error::Processing(format!("Decoder error: {}", err)));
+                }
+            }
+        }
+        
+        // Resample if necessary
+        if let Some(source_sample_rate) = track.codec_params.sample_rate {
+            if source_sample_rate != target_sample_rate {
+                audio_samples = self.resample_audio(audio_samples, source_sample_rate, target_sample_rate)?;
+            }
+        }
+        
+        Ok(audio_samples)
+    }
+    
+    /// Convert audio buffer to f32 samples
+    fn convert_audio_buffer_to_samples(&self, decoded: &symphonia::core::audio::AudioBufferRef, samples: &mut Vec<f32>) -> Result<()> {
+        use symphonia::core::audio::{AudioBufferRef, Signal};
+        use symphonia::core::sample::{Sample, i24, u24};
+        
+        match decoded {
+            AudioBufferRef::U8(buf) => {
+                for &sample in buf.chan(0) {
+                    samples.push(sample.to_f32());
+                }
+            }
+            AudioBufferRef::U16(buf) => {
+                for &sample in buf.chan(0) {
+                    samples.push(sample.to_f32());
+                }
+            }
+            AudioBufferRef::U24(buf) => {
+                for &sample in buf.chan(0) {
+                    samples.push(sample.to_f32());
+                }
+            }
+            AudioBufferRef::U32(buf) => {
+                for &sample in buf.chan(0) {
+                    samples.push(sample.to_f32());
+                }
+            }
+            AudioBufferRef::S8(buf) => {
+                for &sample in buf.chan(0) {
+                    samples.push(sample.to_f32());
+                }
+            }
+            AudioBufferRef::S16(buf) => {
+                for &sample in buf.chan(0) {
+                    samples.push(sample.to_f32());
+                }
+            }
+            AudioBufferRef::S24(buf) => {
+                for &sample in buf.chan(0) {
+                    samples.push(sample.to_f32());
+                }
+            }
+            AudioBufferRef::S32(buf) => {
+                for &sample in buf.chan(0) {
+                    samples.push(sample.to_f32());
+                }
+            }
+            AudioBufferRef::F32(buf) => {
+                for &sample in buf.chan(0) {
+                    samples.push(sample);
+                }
+            }
+            AudioBufferRef::F64(buf) => {
+                for &sample in buf.chan(0) {
+                    samples.push(sample as f32);
+                }
+            }
+        }
+        
+        Ok(())
+    }
+    
+    /// Resample audio to target sample rate
+    fn resample_audio(&self, input: Vec<f32>, source_rate: u32, target_rate: u32) -> Result<Vec<f32>> {
+        use rubato::{Resampler, SincFixedIn, InterpolationType, InterpolationParameters, WindowFunction};
+        
+        if source_rate == target_rate {
+            return Ok(input);
+        }
+        
+        let ratio = target_rate as f64 / source_rate as f64;
+        let params = InterpolationParameters {
+            sinc_len: 256,
+            f_cutoff: 0.95,
+            interpolation: InterpolationType::Linear,
+            oversampling_factor: 160,
+            window: WindowFunction::BlackmanHarris2,
+        };
+        
+        let mut resampler = SincFixedIn::<f32>::new(
+            ratio,
+            2.0, // max_resample_ratio_relative
+            params,
+            input.len(),
+            1, // channels
+        ).map_err(|e| Error::Processing(format!("Failed to create resampler: {}", e)))?;
+        
+        // Convert to the format expected by rubato (vector of channel vectors)
+        let input_channels = vec![input];
+        
+        let output_channels = resampler.process(&input_channels, None)
+            .map_err(|e| Error::Processing(format!("Resampling failed: {}", e)))?;
+        
+        Ok(output_channels[0].clone())
     }
 
     fn analyze_spectrum(&self, audio: &[f32]) -> Result<SpectralFeatures> {
@@ -453,57 +643,259 @@ impl HeihachiEngine {
     }
 
     fn reconstruct_from_features(&self, spectral_features: &SpectralFeatures) -> Result<Vec<f32>> {
-        // Simplified reconstruction using inverse FFT
-        let frame_size = spectral_features.magnitudes.len() * 2 - 2;
-        let mut reconstructed = vec![0.0; frame_size];
+        match self.reconstructor.method {
+            ReconstructionMethod::PhaseVocoder => {
+                self.phase_vocoder_reconstruction(spectral_features)
+            },
+            ReconstructionMethod::GriffinLim => {
+                self.griffin_lim_reconstruction(spectral_features)
+            },
+            ReconstructionMethod::Hybrid => {
+                // Try Griffin-Lim first, fallback to phase vocoder
+                match self.griffin_lim_reconstruction(spectral_features) {
+                    Ok(audio) => Ok(audio),
+                    Err(_) => self.phase_vocoder_reconstruction(spectral_features),
+                }
+            },
+        }
+    }
+    
+    /// Phase vocoder reconstruction
+    fn phase_vocoder_reconstruction(&self, spectral_features: &SpectralFeatures) -> Result<Vec<f32>> {
+        use rustfft::{FftPlanner, num_complex::Complex};
         
-        // Reconstruct from magnitude and phase
-        for i in 0..spectral_features.magnitudes.len() {
-            let magnitude = spectral_features.magnitudes[i];
-            let phase = spectral_features.phases[i];
-            
-            for j in 0..frame_size {
-                let angle = 2.0 * std::f64::consts::PI * i as f64 * j as f64 / frame_size as f64 + phase;
-                reconstructed[j] += (magnitude * angle.cos()) as f32;
-            }
+        let frame_size = self.config.fft_size;
+        let hop_size = self.config.hop_size;
+        let mut planner = FftPlanner::new();
+        let ifft = planner.plan_fft_inverse(frame_size);
+        
+        // Reconstruct complex spectrum
+        let mut complex_spectrum = Vec::new();
+        for (i, (&magnitude, &phase)) in spectral_features.magnitudes.iter()
+            .zip(spectral_features.phases.iter()).enumerate() {
+            let real = magnitude * phase.cos();
+            let imag = magnitude * phase.sin();
+            complex_spectrum.push(Complex::new(real as f32, imag as f32));
         }
         
-        // Normalize
-        let max_val = reconstructed.iter().map(|x| x.abs()).fold(0.0, f32::max);
-        if max_val > 0.0 {
-            for sample in &mut reconstructed {
-                *sample /= max_val;
+        // Mirror for negative frequencies
+        let mut full_spectrum = complex_spectrum.clone();
+        for i in (1..complex_spectrum.len() - 1).rev() {
+            full_spectrum.push(Complex::new(
+                complex_spectrum[i].re,
+                -complex_spectrum[i].im,
+            ));
+        }
+        
+        // Ensure correct length
+        full_spectrum.resize(frame_size, Complex::new(0.0, 0.0));
+        
+        // Perform IFFT
+        let mut buffer = full_spectrum;
+        ifft.process(&mut buffer);
+        
+        // Extract real part
+        let reconstructed: Vec<f32> = buffer.iter()
+            .map(|c| c.re / frame_size as f32)
+            .collect();
+        
+        Ok(reconstructed)
+    }
+    
+    /// Griffin-Lim reconstruction algorithm
+    fn griffin_lim_reconstruction(&self, spectral_features: &SpectralFeatures) -> Result<Vec<f32>> {
+        use rustfft::{FftPlanner, num_complex::Complex};
+        
+        let frame_size = self.config.fft_size;
+        let hop_size = self.config.hop_size;
+        let iterations = self.reconstructor.iterations.min(50); // Cap iterations
+        
+        let mut planner = FftPlanner::new();
+        let fft = planner.plan_fft_forward(frame_size);
+        let ifft = planner.plan_fft_inverse(frame_size);
+        
+        // Initialize with random phases
+        let mut phases = spectral_features.phases.clone();
+        
+        // Estimate audio length
+        let estimated_length = frame_size + hop_size * 10; // Rough estimate
+        let mut reconstructed = vec![0.0f32; estimated_length];
+        
+        for _ in 0..iterations {
+            // Reconstruct frames
+            for (frame_idx, (&magnitude, &phase)) in spectral_features.magnitudes.iter()
+                .zip(phases.iter()).enumerate() {
+                
+                // Create complex spectrum for this "frame" (simplified)
+                let mut complex_spectrum = vec![Complex::new(0.0, 0.0); frame_size];
+                
+                // Only use first component for simplification
+                if frame_idx < frame_size / 2 {
+                    let real = magnitude * phase.cos();
+                    let imag = magnitude * phase.sin();
+                    complex_spectrum[frame_idx] = Complex::new(real as f32, imag as f32);
+                    
+                    // Mirror for negative frequencies
+                    if frame_idx > 0 && frame_idx < frame_size / 2 {
+                        complex_spectrum[frame_size - frame_idx] = Complex::new(
+                            real as f32,
+                            -(imag as f32),
+                        );
+                    }
+                }
+                
+                // IFFT to time domain
+                let mut frame_buffer = complex_spectrum;
+                ifft.process(&mut frame_buffer);
+                
+                // Overlap-add to output
+                let start_idx = frame_idx * hop_size;
+                for (i, sample) in frame_buffer.iter().enumerate() {
+                    if start_idx + i < reconstructed.len() {
+                        reconstructed[start_idx + i] += sample.re / frame_size as f32;
+                    }
+                }
             }
+            
+            // Update phases based on reconstructed audio
+            self.update_phases_from_audio(&reconstructed, &mut phases, &fft)?;
         }
         
         Ok(reconstructed)
     }
+    
+    /// Update phases from current audio estimate
+    fn update_phases_from_audio(&self, audio: &[f32], phases: &mut [f64], fft: &std::sync::Arc<dyn rustfft::Fft<f32>>) -> Result<()> {
+        use rustfft::num_complex::Complex;
+        
+        let frame_size = self.config.fft_size;
+        let hop_size = self.config.hop_size;
+        
+        // Process overlapping frames
+        let mut frame_idx = 0;
+        let mut start = 0;
+        
+        while start + frame_size <= audio.len() && frame_idx < phases.len() {
+            // Extract frame
+            let mut frame: Vec<Complex<f32>> = audio[start..start + frame_size].iter()
+                .enumerate()
+                .map(|(i, &sample)| {
+                    let windowed = sample * self.spectral_analyzer.window[i] as f32;
+                    Complex::new(windowed, 0.0)
+                })
+                .collect();
+            
+            // Forward FFT
+            let mut frame_copy = frame.clone();
+            fft.process(&mut frame_copy);
+            
+            // Update phase for this frequency bin
+            if frame_copy.len() > frame_idx {
+                phases[frame_idx] = frame_copy[frame_idx].im.atan2(frame_copy[frame_idx].re) as f64;
+            }
+            
+            frame_idx += 1;
+            start += hop_size;
+        }
+        
+        Ok(())
+    }
 
     fn calculate_fidelity(&self, original: &[f32], reconstructed: &[f32]) -> Result<f64> {
+        // Ensure same length for comparison
         let min_len = original.len().min(reconstructed.len());
-        if min_len == 0 {
-            return Ok(0.0);
-        }
+        let original = &original[..min_len];
+        let reconstructed = &reconstructed[..min_len];
         
-        let mut signal_power = 0.0;
-        let mut noise_power = 0.0;
+        // Calculate multiple fidelity metrics
+        let snr = self.calculate_snr(original, reconstructed)?;
+        let correlation = self.calculate_correlation(original, reconstructed);
+        let spectral_distance = self.calculate_spectral_distance(original, reconstructed)?;
         
-        for i in 0..min_len {
-            let orig = original[i] as f64;
-            let recon = reconstructed[i] as f64;
-            signal_power += orig * orig;
-            let diff = orig - recon;
-            noise_power += diff * diff;
-        }
+        // Composite fidelity score (0.0 to 1.0)
+        let snr_normalized = (snr / 30.0).min(1.0).max(0.0); // 30 dB is excellent
+        let correlation_normalized = correlation.abs();
+        let spectral_distance_normalized = (1.0 - spectral_distance.min(1.0)).max(0.0);
         
-        if noise_power == 0.0 {
-            Ok(1.0)
-        } else if signal_power == 0.0 {
-            Ok(0.0)
-        } else {
+        // Weighted combination
+        let fidelity = 0.4 * snr_normalized + 0.4 * correlation_normalized + 0.2 * spectral_distance_normalized;
+        
+        Ok(fidelity)
+    }
+    
+    /// Calculate Signal-to-Noise Ratio in dB
+    fn calculate_snr(&self, original: &[f32], reconstructed: &[f32]) -> Result<f64> {
+        let signal_power: f64 = original.iter()
+            .map(|&x| (x as f64).powi(2))
+            .sum::<f64>() / original.len() as f64;
+            
+        let noise_power: f64 = original.iter()
+            .zip(reconstructed.iter())
+            .map(|(&orig, &recon)| ((orig - recon) as f64).powi(2))
+            .sum::<f64>() / original.len() as f64;
+        
+        if noise_power > 0.0 && signal_power > 0.0 {
             let snr = 10.0 * (signal_power / noise_power).log10();
-            Ok((snr / 60.0).min(1.0).max(0.0))
+            Ok(snr)
+        } else if noise_power == 0.0 {
+            Ok(f64::INFINITY) // Perfect reconstruction
+        } else {
+            Ok(0.0) // No signal
         }
+    }
+    
+    /// Calculate spectral distance between original and reconstructed
+    fn calculate_spectral_distance(&self, original: &[f32], reconstructed: &[f32]) -> Result<f64> {
+        let orig_spectrum = self.compute_spectrum_for_comparison(original)?;
+        let recon_spectrum = self.compute_spectrum_for_comparison(reconstructed)?;
+        
+        // Calculate spectral difference
+        let spectral_distance = orig_spectrum.iter()
+            .zip(recon_spectrum.iter())
+            .map(|(&orig_mag, &recon_mag)| (orig_mag - recon_mag).powi(2))
+            .sum::<f64>().sqrt();
+            
+        // Normalize by original spectrum magnitude
+        let original_magnitude = orig_spectrum.iter()
+            .map(|&x| x.powi(2))
+            .sum::<f64>().sqrt();
+            
+        if original_magnitude > 0.0 {
+            Ok(spectral_distance / original_magnitude)
+        } else {
+            Ok(1.0)
+        }
+    }
+    
+    /// Compute spectrum for comparison
+    fn compute_spectrum_for_comparison(&self, audio: &[f32]) -> Result<Vec<f64>> {
+        use rustfft::{FftPlanner, num_complex::Complex};
+        
+        let fft_size = self.config.fft_size.min(audio.len());
+        let mut planner = FftPlanner::new();
+        let fft = planner.plan_fft_forward(fft_size);
+        
+        // Take the first frame for comparison
+        let mut frame: Vec<Complex<f32>> = audio[..fft_size].iter()
+            .enumerate()
+            .map(|(i, &sample)| {
+                let window_val = if i < self.spectral_analyzer.window.len() {
+                    self.spectral_analyzer.window[i] as f32
+                } else {
+                    1.0
+                };
+                Complex::new(sample * window_val, 0.0)
+            })
+            .collect();
+        
+        fft.process(&mut frame);
+        
+        // Extract magnitude spectrum
+        let spectrum: Vec<f64> = frame[..fft_size / 2].iter()
+            .map(|c| (c.re * c.re + c.im * c.im).sqrt() as f64)
+            .collect();
+            
+        Ok(spectrum)
     }
 
     fn calculate_understanding_quality(&self, spectral: &SpectralFeatures, temporal: &TemporalFeatures, fidelity: f64) -> f64 {
