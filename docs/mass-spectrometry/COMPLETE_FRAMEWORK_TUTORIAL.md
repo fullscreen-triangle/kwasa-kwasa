@@ -53,6 +53,10 @@ Here's how the complete semantic processing network operates to achieve genuine 
 
 The semantic processing network transforms raw scientific data into validated understanding through eight interconnected phases:
 
+**📊 [View Complete Workflow Diagrams](diagrams/workflow_phases.md)**
+
+**📈 [View Semantic Processing Overview](diagrams/semantic_processing_overview.md)**
+
 ```mermaid
 flowchart LR
     subgraph "Semantic Processing Layers"
@@ -78,6 +82,12 @@ flowchart LR
 ### The Four-File Semantic Orchestration System
 
 Every Kwasa-Kwasa project uses four interconnected files that form a **complete semantic processing network**:
+
+**Complete Example Files:**
+- [`experiment.trb`](code/experiment.trb) - Main semantic orchestration script
+- [`experiment.fs`](code/experiment.fs) - Real-time system consciousness visualization  
+- [`experiment.ghd`](code/experiment.ghd) - Complete dependency and resource management
+- [`experiment.hre`](code/experiment.hre) - Decision logging and metacognitive tracking
 
 ```mermaid
 graph TD
@@ -423,6 +433,110 @@ The semantic processing network demonstrates:
 5. **Paradigm Recognition**: It can identify when discoveries challenge existing scientific paradigms
 
 This is **computational consciousness applied to scientific discovery** - the future of how humans and machines will collaborate to understand our universe.
+
+## Example File Deep Dive: Understanding the Four-File System
+
+Let's examine the actual example files that demonstrate this semantic processing network in action:
+
+### experiment.fs - System Consciousness Visualization
+
+The [`experiment.fs`](code/experiment.fs) file provides real-time visualization of the system's semantic understanding. Here are key excerpts:
+
+```fs
+semantic_flow_architecture:
+├── data_inputs
+│   ├── raw_spectrum (mzML files)
+│   ├── clinical_metadata (patient context)
+│   └── reference_databases (HMDB, KEGG, LipidMaps)
+│
+├── intelligence_modules_v8_pipeline
+│   ├── mzekezeke_bayesian_engine
+│   │   ├── evidence_integration → temporal_decay_modeling
+│   │   └── belief_network_optimization → variational_inference
+│   │
+│   ├── diggiden_adversarial_system
+│   │   ├── contradiction_injection → finding_robustness_testing
+│   │   └── semantic_spoofing → context_integrity_validation
+│   │
+│   ├── champagne_dream_processing
+│   │   ├── novel_biomarker_discovery → significance_assessment
+│   │   └── paradigm_shift_identification → scientific_impact_evaluation
+│
+└── real_time_status_monitoring:
+    ┌─ SYSTEM HEALTH ─┐    ┌─ INTELLIGENCE MODULES ─┐
+    │ ● Online        │    │ ● Mzekezeke: 0.87      │
+    │ ● GPU Available │    │ ● Diggiden: Active     │
+    │ ● Memory: 67%   │    │ ● Zengeza: 0.94        │
+    └─────────────────┘    └─────────────────────────┘
+```
+
+**What makes this revolutionary:** The system displays its own understanding in real-time. Unlike traditional logs, this shows **semantic confidence levels** and **consciousness state**.
+
+### experiment.ghd - Complete Resource Network
+
+The [`experiment.ghd`](code/experiment.ghd) file manages all external dependencies and APIs. Key semantic processing resources:
+
+```ghd
+external_ai_models:
+    chemical_language_models:
+        - chemberta_molecular_properties: "huggingface.co/DeepChem/ChemBERTa-77M-MLM"
+        - molformer_structure_prediction: "huggingface.co/zjunlp/MolGen-7b"
+    
+    biomedical_language_models:
+        - biomedlm_clinical_analysis: "stanford.edu/biomedlm"
+        - scibert_literature_processing: "huggingface.co/allenai/scibert_scivocab_uncased"
+
+v8_intelligence_module_apis:
+    mzekezeke_bayesian_engine:
+        - evidence_integration_api: "bayesian_fusion_service/evidence"
+        - uncertainty_propagation: "probabilistic_inference/uncertainty"
+    
+    diggiden_adversarial_system:
+        - attack_strategy_library: "adversarial_testing/attack_vectors"
+        - vulnerability_scanner: "robustness_testing/vulnerability_detection"
+    
+    champagne_dream_processing:
+        - semantic_dream_networks: "creative_processing/dream_insights"
+        - novel_connection_generator: "insight_generation/semantic_creativity"
+```
+
+**Revolutionary aspect:** This isn't just dependency management - it's **semantic resource orchestration** that connects the system to the entire landscape of chemical and biological understanding.
+
+### experiment.hre - Decision Memory and Learning
+
+The [`experiment.hre`](code/experiment.hre) file captures the complete reasoning process. Notice how it logs **semantic decisions**, not just computational steps:
+
+```hre
+decision_log:
+    data_processing_decisions:
+        decision: "spectral_preprocessing_pipeline"
+        reasoning: "Raw MS data contains systematic noise that could confound biomarker discovery"
+        processing_chain:
+            - noise_filtering: "lavoisier.signal_processing.adaptive_filter"
+            - normalization: "lavoisier.preprocessing.total_ion_current"
+        expected_quality_improvement: 0.85
+        confidence: 0.88
+        
+    real_time_learning:
+        pattern_discovery:
+            observation: "Lipid metabolism pathways showing consistent dysregulation"
+            decision: "focus_downstream_analysis"
+            targeted_pathways:
+                - "phospholipid_metabolism"
+                - "sphingolipid_biosynthesis"
+            confidence: 0.94
+            
+    metacognitive_insights:
+        successful_patterns:
+            - "Early quality control stringency prevents downstream analysis errors"
+            - "Lipid pathway focus yielded highest effect sizes"
+        
+        learning_for_future:
+            - "Increase initial sample size estimates by 20% for metabolomics studies"
+            - "Always include pathway-level analysis from the beginning"
+```
+
+**What's revolutionary:** The system doesn't just log what it did - it **understands why it made decisions** and **learns from the experience** for future scientific projects.
 
 ### Phase 4: Paradigm-Level Semantic Processing
 

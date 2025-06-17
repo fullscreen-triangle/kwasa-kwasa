@@ -29,11 +29,11 @@ This tutorial demonstrates **the most important concept about Kwasa-Kwasa**: it 
 └── Zengeza: Signal clarity enhancement
 
 ⚡ Computational Engines (PERFORMERS)
-├── Heihachi: Specialized neurofunk analysis (Python/C++)
-├── HuggingFace: Neural audio models (APIs)
-├── librosa: Core audio processing (Python)
-├── essentia: Advanced feature extraction (C++)
-├── D3.js: Interactive visualizations (JavaScript)
+├── Heihachi: Core audio understanding through reconstruction (Rust)
+├── Symphonia: Audio decoding and format support (Rust)
+├── RustFFT: Fast Fourier Transform implementation (Rust)
+├── External ML APIs: HuggingFace neural models
+├── Python Bindings: Interface for ML model integration
 └── External APIs: Spotify, MusicBrainz, AcousticBrainz
 
 🎯 Scientific Framework (PURPOSE)
@@ -57,8 +57,8 @@ audio-analysis/
 │   ├── audio_experiment.hre         # Harare decision tracking log
 │   └── audio_experiment.trb         # Turbulance orchestration script
 ├── supporting_scripts/
-│   ├── heihachi_analysis.py         # Python: Actual audio computation
-│   ├── visualization_engine.js      # JavaScript: Interactive visualizations
+│   ├── heihachi_analysis.py         # Python: Heihachi API bindings and ML integration
+│   ├── visualization_engine.js      # JavaScript: Interactive visualizations  
 │   └── statistical_validation.r     # R: Advanced statistical analysis
 ├── configs/
 │   ├── heihachi_config.yaml         # Heihachi framework configuration
@@ -96,11 +96,13 @@ fullscreen_graph HeiachiAudioOrchestration {
         ]
     }
 
-    audio_processing_engines: "Existing Computational Tools" {
-        primary_engine: "Heihachi Framework" {
-            neurofunk_specialization: true,
-            ml_models: ["microsoft/BEATs", "openai/whisper-large-v3"],
-            languages: ["Python", "C++"]
+    audio_processing_engines: "Core Audio Understanding System" {
+        primary_engine: "Heihachi Engine" {
+            understanding_method: "reconstruction_based_proof",
+            audio_decoder: "symphonia",
+            fft_implementation: "rustfft", 
+            reconstruction_methods: ["PhaseVocoder", "GriffinLim", "Hybrid"],
+            language: "Rust"
         }
     }
 }
@@ -186,41 +188,72 @@ funxn orchestrate_audio_analysis(audio_file, hypothesis):
 
 **Revolutionary Approach:** The .trb script shows how computational tools serve scientific hypotheses rather than just processing data.
 
-### Step 5: Computational Execution (Python)
+### Step 5: Core Audio Understanding Engine (Rust)
 
-**Heihachi** does the actual audio processing while being coordinated by Kwasa-Kwasa:
+**Heihachi** implements understanding through reconstruction - the engine proves it has truly "listened" by being able to reconstruct the audio:
 
-```python
-class HeiachiAnalysisEngine:
-    def analyze_audio_file(self, audio_path: str) -> Dict:
-        # Load audio using librosa
-        y, sr = librosa.load(audio_path, sr=self.sample_rate)
+```rust
+// The actual Heihachi engine implementation
+pub struct HeihachiEngine {
+    pub config: HeihachiConfig,
+    pub spectral_analyzer: SpectralAnalyzer,
+    pub temporal_analyzer: TemporalAnalyzer,
+    pub reconstructor: AudioReconstructor,
+    pub validator: ReconstructionValidator,
+}
+
+impl HeihachiEngine {
+    /// Understand audio through reconstruction
+    pub fn understand_audio(&mut self, audio_path: &Path) -> Result<AudioUnderstandingResult> {
+        // Load audio data using Symphonia audio decoder
+        let audio_data = self.load_audio(audio_path)?;
         
-        # Heihachi's specialized neurofunk analysis
-        self.results["rhythm_analysis"] = self.analyze_rhythm_patterns(y, sr)
-        self.results["drum_analysis"] = self.analyze_drum_patterns(y, sr)
-        self.results["bass_analysis"] = self.analyze_bass_components(y, sr)
+        // Spectral analysis: FFT, frequency bins, magnitudes, phases
+        let spectral_features = self.analyze_spectrum(&audio_data)?;
         
-        # Neural classification using HuggingFace models
-        drum_classifications = self.classify_drum_hits(spectral_features)
+        // Temporal analysis: onsets, envelope, zero crossing rate
+        let temporal_features = self.analyze_temporal(&audio_data)?;
         
-        return self.results
+        // Pattern detection: identify repeating structures
+        let patterns = self.detect_patterns(&audio_data)?;
         
-    def analyze_rhythm_patterns(self, y: np.ndarray, sr: int) -> Dict:
-        # Beat tracking using librosa
-        tempo, beats = librosa.beat.beat_track(y=y, sr=sr)
+        // Autonomous reconstruction to prove understanding
+        let reconstructed = self.autonomous_reconstruction(&spectral_features)?;
         
-        # Heihachi's microtiming analysis (specialized for neurofunk)
-        microtiming_deviations = self.calculate_microtiming_deviations(beats)
+        // Validate reconstruction fidelity
+        let fidelity = self.reconstruction_fidelity(&audio_data, &reconstructed)?;
         
-        return {
-            "tempo": float(tempo),
-            "microtiming_mean": float(np.mean(microtiming_deviations)),
-            "groove_strength": self.quantify_groove(y, beats, sr)
+        // Calculate overall understanding quality
+        let understanding_quality = self.calculate_understanding_quality(
+            &spectral_features, &temporal_features, fidelity
+        );
+        
+        Ok(AudioUnderstandingResult {
+            understanding_quality,
+            reconstruction_fidelity: fidelity,
+            confidence: if fidelity > self.config.target_fidelity { 0.95 } else { 0.6 },
+            spectral_features,
+            temporal_features,
+            detected_patterns: patterns,
+        })
+    }
+    
+    /// Autonomous reconstruction using Phase Vocoder or Griffin-Lim
+    pub fn autonomous_reconstruction(&self, spectral_features: &SpectralFeatures) -> Result<Vec<f32>> {
+        match self.reconstructor.method {
+            ReconstructionMethod::PhaseVocoder => self.phase_vocoder_reconstruction(spectral_features),
+            ReconstructionMethod::GriffinLim => self.griffin_lim_reconstruction(spectral_features),
+            ReconstructionMethod::Hybrid => {
+                // Try phase vocoder first, fallback to Griffin-Lim if needed
+                self.phase_vocoder_reconstruction(spectral_features)
+                    .or_else(|_| self.griffin_lim_reconstruction(spectral_features))
+            }
         }
+    }
+}
 ```
 
-**Critical Understanding:** Heihachi (Python) does the computation. Kwasa-Kwasa (Turbulance) provides the intelligence, coordination, and scientific purpose.
+**Critical Understanding:** Heihachi (Rust) proves audio understanding through successful reconstruction. Kwasa-Kwasa (Turbulance) provides the cognitive orchestration and scientific framework.
 
 ### Step 6: Interactive Visualization (JavaScript)
 
