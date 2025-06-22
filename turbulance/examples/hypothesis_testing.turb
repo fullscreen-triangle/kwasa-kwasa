@@ -1,0 +1,82 @@
+# Scientific Hypothesis Testing Example
+# This demonstrates Turbulance syntax for experimental design
+
+project HypothesisTest(
+    title: "Effect of Temperature on Reaction Rate",
+    researcher: "Dr. Example",
+    domain: "chemistry"
+):
+
+# Define our research hypothesis
+proposition TemperatureEffect:
+    motion Hypothesis("Higher temperature increases reaction rate")
+    motion Prediction("Doubling temperature should double the rate")
+    motion Variables("temperature, reaction_rate, catalyst_concentration")
+    
+    # Load and examine the data
+    item data = load_data("temperature_experiment.csv")
+    item temperatures = data.temperature
+    item rates = data.reaction_rate
+    
+    # Basic descriptive statistics
+    given temperatures:
+        item mean_temp = mean(temperatures)
+        item std_temp = std(temperatures)
+        ensure mean_temp > 273  # Kelvin check
+    
+    # Test the hypothesis using correlation
+    item correlation = pearson(temperatures, rates)
+    item p_value = t_test(correlation, temperatures | length)
+    
+    # Evaluate significance
+    given p_value < 0.05:
+        research "Significant positive correlation found"
+        item effect_size = cohen_d(temperatures, rates)
+        
+        within rates:
+            item outliers = data / noise > 2
+            considering outliers:
+                ensure outliers | length < (data | length * 0.1)
+        
+        return {
+            hypothesis_supported: true,
+            correlation: correlation,
+            p_value: p_value,
+            effect_size: effect_size,
+            confidence: 0.95
+        }
+    alternatively:
+        research "No significant relationship found"
+        return {
+            hypothesis_supported: false,
+            correlation: correlation,
+            p_value: p_value,
+            confidence: 0.05
+        }
+
+# Helper function for cross-validation
+funxn validate_results():
+    item cross_val = cross_validate(
+        temperatures, 
+        rates, 
+        folds: 5
+    )
+    
+    return cross_val
+
+# Run the analysis
+item results = TemperatureEffect
+item validation = validate_results()
+
+# Final assessment
+given results.hypothesis_supported and validation.mean_r2 > 0.7:
+    research "Strong evidence supports the hypothesis"
+    item quality_score = assess_quality(results, validation)
+    ensure quality_score > 0.8
+alternatively:
+    research "Hypothesis requires further investigation"
+
+sources:
+    local("temperature_experiment.csv")
+    scientific("pubmed_search:temperature+kinetics")
+    web("https://example.com/reaction-data") 

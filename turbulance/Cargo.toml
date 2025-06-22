@@ -1,0 +1,85 @@
+[package]
+name = "turbulance"
+version = "0.1.0"
+edition = "2021"
+authors = ["Kundai"]
+description = "Universal Scientific Experiment DSL - A domain-specific language for formalizing scientific methods and experiments"
+readme = "README.md"
+license = "MIT"
+repository = "https://github.com/fullscreen-triangle/kwasa-kwasa"
+keywords = ["dsl", "science", "experiment", "language", "scientific-computing"]
+categories = ["science", "parser-implementations", "development-tools"]
+
+[lib]
+name = "turbulance"
+crate-type = ["cdylib", "rlib"]
+
+[[bin]]
+name = "turbulance"
+path = "src/bin/main.rs"
+
+[dependencies]
+# Language Implementation (Core DSL)
+logos = "0.13.0"
+chumsky = "0.9.2"
+
+# Text Processing
+unicode-segmentation = "1.10.1"
+unicode-normalization = "0.1.22"
+regex = "1.8.1"
+
+# Serialization
+serde = { version = "1.0.163", features = ["derive"] }
+serde_json = "1.0.96"
+serde_yaml = "0.9.25"
+
+# CLI
+clap = { version = "4.3.0", features = ["derive"] }
+colored = "2.0.0"
+
+# Error handling
+thiserror = "1.0.40"
+anyhow = "1.0.71"
+
+# Async runtime (lightweight)
+tokio = { version = "1.28.2", features = ["rt", "fs", "io-util"] }
+
+# Utilities
+log = "0.4.18"
+env_logger = "0.10.0"
+uuid = { version = "1.0", features = ["v4", "serde"] }
+chrono = { version = "0.4.31", features = ["serde"] }
+
+# Data structures
+indexmap = "2.0"
+dashmap = "5.0"
+
+# WebAssembly support (optional)
+wasm-bindgen = { version = "0.2.87", optional = true }
+web-sys = { version = "0.3.64", features = ["Window", "Performance", "console"], optional = true }
+js-sys = { version = "0.3.64", optional = true }
+serde-wasm-bindgen = { version = "0.5.0", optional = true }
+console_error_panic_hook = { version = "0.1.7", optional = true }
+
+[dev-dependencies]
+criterion = "0.5.1"
+proptest = "1.0"
+tempfile = "3.5.0"
+
+[features]
+default = ["std"]
+std = []
+wasm = ["wasm-bindgen", "web-sys", "js-sys", "serde-wasm-bindgen", "console_error_panic_hook"]
+scientific-stdlib = []  # Extended scientific functions
+minimal = []  # Minimal feature set for embedded use
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+strip = true
+
+# Benchmark configuration
+[[bench]]
+name = "language_performance"
+harness = false 

@@ -8,7 +8,16 @@ readme = "README.md"
 license = "MIT"
 repository = "https://github.com/fullscreen-triangle/kwasa-kwasa"
 
+[workspace]
+members = [
+    ".",
+    "turbulance"
+]
+
 [dependencies]
+# Use the standalone Turbulance crate
+turbulance = { path = "./turbulance", version = "0.1.0" }
+
 # Core Reasoning Engine - The Thinking Substrate
 autobahn = { version = "0.1.0", path = "../autobahn", features = ["membrane", "consciousness", "biological", "temporal"] }
 
