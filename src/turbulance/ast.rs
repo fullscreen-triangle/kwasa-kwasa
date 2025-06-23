@@ -147,6 +147,51 @@ pub enum Node {
         sources: Vec<Source>,
         span: Span,
     },
+    
+    // Scientific reasoning constructs
+    PropositionDecl {
+        name: String,
+        description: Option<String>,
+        requirements: Option<Box<Node>>,
+        body: Option<Box<Node>>,
+        span: Span,
+    },
+    EvidenceDecl {
+        name: String,
+        collection_method: Box<Node>,
+        data_structure: Box<Node>,
+        span: Span,
+    },
+    PatternDecl {
+        name: String,
+        signature: Box<Node>,
+        within_clause: Option<Box<Node>>,
+        match_clauses: Vec<MatchClause>,
+        span: Span,
+    },
+    MatchClause {
+        condition: Box<Node>,
+        action: Box<Node>,
+        span: Span,
+    },
+    SupportStmt {
+        hypothesis: Box<Node>,
+        evidence: Box<Node>,
+        span: Span,
+    },
+    ContradictStmt {
+        hypothesis: Box<Node>,
+        evidence: Box<Node>,
+        span: Span,
+    },
+    InconclusiveStmt {
+        message: String,
+        recommendations: Option<Box<Node>>,
+        span: Span,
+    },
+    MetaAnalysis(MetaAnalysis),
+    DeriveHypotheses(DeriveHypotheses),
+    
     Motion {
         name: String,
         content: Box<Node>,
@@ -186,6 +231,7 @@ pub enum Node {
     GivenBlock {
         condition: Box<Node>,
         body: Box<Node>,
+        else_branch: Option<Box<Node>>,
         span: Span,
     },
     EnsureStmt {
@@ -221,6 +267,28 @@ pub enum Node {
         index: Box<Node>,
         span: Span,
     },
+    
+    // Complex data structures for scientific data
+    StructuredData {
+        fields: HashMap<String, Node>,
+        span: Span,
+    },
+    
+    // Array/List literals
+    ArrayLiteral {
+        elements: Vec<Node>,
+        span: Span,
+    },
+    
+    // Advanced orchestration statements
+    Flow(FlowStatement),
+    Catalyze(CatalyzeStatement), 
+    CrossScaleCoordinate(CrossScaleCoordinate),
+    Drift(DriftStatement),
+    Cycle(CycleStatement),
+    Roll(RollStatement),
+    Resolve(ResolveStatement),
+    Point(PointDeclaration),
 }
 
 /// Represents a function definition
@@ -406,6 +474,141 @@ pub fn allow_stmt(value: Node, span: Span) -> Node {
         value: Box::new(value),
         span,
     }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct MatchClause {
+    pub condition: Box<Node>,
+    pub action: Box<Node>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct DeriveHypotheses {
+    pub hypotheses: Vec<String>,
+    pub span: Span,
+}
+
+// Advanced orchestration constructs
+#[derive(Debug, Clone, PartialEq)]
+pub struct FlowStatement {
+    pub variable: String,
+    pub collection: Box<Node>,
+    pub body: Box<Node>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct CatalyzeStatement {
+    pub target: Box<Node>,
+    pub scale: ScaleType,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum ScaleType {
+    Quantum,
+    Molecular,
+    Environmental,
+    Hardware,
+    Cognitive,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct CrossScaleCoordinate {
+    pub pairs: Vec<CoordinationPair>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct CoordinationPair {
+    pub scale1: ScaleType,
+    pub scale2: ScaleType,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct DriftStatement {
+    pub parameters: Box<Node>,
+    pub condition: Box<Node>,
+    pub body: Box<Node>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct CycleStatement {
+    pub variable: String,
+    pub collection: Box<Node>,
+    pub body: Box<Node>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct RollStatement {
+    pub variable: String,
+    pub condition: Box<Node>,
+    pub body: Box<Node>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ResolveStatement {
+    pub function_call: Box<Node>,
+    pub context: Option<Box<Node>>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct PointDeclaration {
+    pub name: String,
+    pub properties: Box<Node>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct InformationCatalysis {
+    pub input_filter: Box<Node>,
+    pub output_filter: Box<Node>,
+    pub context: Option<Box<Node>>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct PatternRecognizer {
+    pub pattern: Box<Node>,
+    pub sensitivity: Option<Box<Node>>,
+    pub specificity: Option<Box<Node>>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ActionChanneler {
+    pub amplification: Box<Node>,
+    pub focus: Option<Box<Node>>,
+    pub scope: Option<Box<Node>>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct EnvironmentalCapture {
+    pub region: Option<Box<Node>>,
+    pub focus: Option<Box<Node>>,
+    pub context: Option<Box<Node>>,
+    pub parameters: Vec<(String, Box<Node>)>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct RangeSpecification {
+    pub start: Box<Node>,
+    pub end: Box<Node>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ParameterMap {
+    pub parameters: Vec<(String, Box<Node>)>,
+    pub span: Span,
 }
 
 #[cfg(test)]

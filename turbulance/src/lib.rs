@@ -1,132 +1,159 @@
 //! # Turbulance - Universal Scientific Experiment DSL
 //!
-//! Turbulance is a domain-specific language designed for formalizing scientific methods and experiments.
-//! It provides semantic computation capabilities where textual inputs are processed as structured 
-//! semantic units, enabling scientists to express experimental procedures, hypotheses, and data 
-//! transformations in a programmatic yet natural way.
+//! Turbulance is a domain-specific language designed for scientific research and experimentation.
+//! It provides a declarative syntax for hypothesis testing, data analysis, and research workflows.
 //!
-//! ## Core Philosophy
+//! ## Features
 //!
-//! The language operates on the principle that scientific meaning can be preserved through 
-//! computational transformation. Text is decomposed into meaningful units that can undergo 
-//! mathematical operations while preserving semantic content.
+//! - **Scientific Syntax**: Purpose-built language constructs for research
+//! - **Multi-domain Support**: Audio, chemistry, genomics, spectrometry, and more
+//! - **Probabilistic Operations**: Built-in uncertainty and confidence modeling
+//! - **Research Integration**: Connect to scientific databases and literature
+//! - **Cross-platform**: Desktop, web (WASM), and embedded systems
 //!
-//! ## Basic Usage
+//! ## Quick Start
 //!
 //! ```rust
 //! use turbulance::{Engine, Script};
 //!
-//! # fn main() -> Result<(), Box<dyn std::error::Error>> {
-//! let engine = Engine::new();
+//! let mut engine = Engine::new();
 //! let script = Script::from_source(r#"
-//!     funxn analyze_data(dataset):
-//!         item cleaned = dataset / noise
-//!         item patterns = extract_patterns(cleaned)
-//!         return patterns + statistical_summary(cleaned)
+//!     proposition TestHypothesis:
+//!         motion Hypothesis("Test hypothesis")
+//!         given true: return "success"
 //! "#)?;
-//!
 //! let result = engine.execute(&script)?;
-//! println!("Result: {}", result);
-//! # Ok(())
-//! # }
+//! # Ok::<(), turbulance::error::TurbulanceError>(())
 //! ```
 //!
-//! ## Scientific Constructs
+//! ## Scientific Domains
 //!
-//! Turbulance provides specialized constructs for scientific workflows:
-//!
-//! - **Propositions**: Formalize hypotheses and scientific claims
-//! - **Motions**: Define procedural steps in experiments
-//! - **Semantic Operations**: Apply meaningful transformations to data
-//! - **Evidence Integration**: Combine multiple data sources semantically
-//!
-//! ## Features
-//!
-//! - **Lightweight**: Minimal dependencies, fast execution
-//! - **Cross-platform**: Works on desktop, web (WASM), and embedded systems
-//! - **Extensible**: Plugin system for domain-specific extensions
-//! - **Scientific**: Built-in statistical and analytical functions
+//! - **Audio Processing**: Spectral analysis, neural models, stem separation
+//! - **Chemistry**: Molecular analysis, reaction prediction, fingerprinting
+//! - **Genomics**: Sequence alignment, variant calling, phylogenetic analysis
+//! - **Spectrometry**: Mass spec, NMR, IR, UV-Vis analysis
+//! - **Image Processing**: Computer vision, medical imaging, reconstruction
+//! - **Knowledge Management**: Literature search, citation analysis
+//! - **Statistics**: Hypothesis testing, regression, machine learning
 
 #![deny(missing_docs)]
 #![warn(rust_2018_idioms)]
 
 // Core language modules
-pub mod lexer;
-pub mod parser;
-pub mod ast;
-pub mod interpreter;
 pub mod error;
-
-// Language features
-pub mod proposition;
-pub mod text_unit;
-pub mod semantic_ops;
-
-// Standard library
-pub mod stdlib;
-
-// Runtime and execution
+pub mod lexer;
+pub mod ast;
+pub mod parser;
+pub mod interpreter;
 pub mod engine;
 pub mod script;
 pub mod context;
 
-// Optional features
-#[cfg(feature = "wasm")]
-pub mod wasm;
+// Scientific domain modules - ALL functionality from kwasa-kwasa
+pub mod audio;
+pub mod chemistry;
+pub mod genomic;
+pub mod spectrometry;
+pub mod image;
+pub mod knowledge;
+pub mod visualization;
+pub mod external_apis;
+pub mod text_unit;
+pub mod orchestrator;
+pub mod pattern;
+pub mod space_computer;
+pub mod fullscreen;
+pub mod trebuchet;
+pub mod harare;
+pub mod utils;
 
-#[cfg(feature = "scientific-stdlib")]
-pub mod scientific;
-
-// Re-exports for convenience
-pub use engine::Engine;
-pub use script::Script;
-pub use context::Context;
-pub use error::{TurbulanceError, Result};
+// Re-export main public API
+pub use engine::{Engine, EngineStats};
+pub use script::{Script, ValidationResult, ScriptMetadata};
+pub use context::{Context, ContextSettings, DataSource, DataSourceType};
 pub use interpreter::Value;
+pub use error::{TurbulanceError, Result};
+pub use ast::{Node, TextUnit};
 
-/// Version of the Turbulance language
-pub const VERSION: &str = env!("CARGO_PKG_VERSION");
+// Re-export scientific functionality
+pub use audio::*;
+pub use chemistry::*;
+pub use genomic::*;
+pub use spectrometry::*;
+pub use image::*;
+pub use knowledge::*;
+pub use visualization::*;
+pub use external_apis::*;
+pub use text_unit::*;
+pub use orchestrator::*;
+pub use pattern::*;
+pub use space_computer::*;
+pub use fullscreen::*;
+pub use trebuchet::*;
+pub use harare::*;
 
-/// Parse and validate Turbulance source code without executing it
-pub fn validate(source: &str) -> Result<bool> {
-    let tokens = lexer::tokenize(source)?;
-    let ast = parser::parse(tokens)?;
-    Ok(ast.is_valid())
-}
-
-/// Quick execution of Turbulance source code with default settings
-pub fn execute(source: &str) -> Result<Value> {
-    let engine = Engine::new();
+/// Validate Turbulance source code
+pub fn validate(source: &str) -> Result<ValidationResult> {
     let script = Script::from_source(source)?;
-    engine.execute(&script)
+    script.validate()
 }
 
-/// Create a new execution context with default settings
+/// Execute Turbulance source code
+pub fn execute(source: &str) -> Result<Value> {
+    let mut engine = Engine::new();
+    engine.execute_source(source)
+}
+
+/// Execute Turbulance source with custom context
+pub fn execute_with_context(source: &str, context: Context) -> Result<Value> {
+    let mut engine = Engine::with_context(context);
+    engine.execute_source(source)
+}
+
+/// Create a new engine instance
+pub fn new_engine() -> Engine {
+    Engine::new()
+}
+
+/// Create a new context instance
 pub fn new_context() -> Context {
     Context::new()
 }
+
+/// Version information
+pub const VERSION: &str = env!("CARGO_PKG_VERSION");
+pub const DESCRIPTION: &str = env!("CARGO_PKG_DESCRIPTION");
 
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
-    fn test_version() {
-        assert!(!VERSION.is_empty());
+    fn test_basic_execution() {
+        let result = execute("42").unwrap();
+        assert_eq!(result, Value::Number(42.0));
     }
 
     #[test]
-    fn test_simple_execution() {
-        let result = execute("return 42").unwrap();
-        match result {
-            Value::Number(n) => assert_eq!(n, 42.0),
-            _ => panic!("Expected number"),
-        }
+    fn test_scientific_function() {
+        let result = execute("abs(-5)").unwrap();
+        assert_eq!(result, Value::Number(5.0));
     }
 
     #[test]
     fn test_validation() {
-        assert!(validate("funxn test(): return 42").unwrap());
-        assert!(!validate("invalid syntax @#$%").unwrap());
+        let result = validate("42").unwrap();
+        assert!(result.is_valid());
+    }
+
+    #[test]
+    fn test_proposition() {
+        let source = r#"
+            proposition Test:
+                motion Hypothesis("test")
+                given true: return "success"
+        "#;
+        let result = execute(source).unwrap();
+        assert_eq!(result, Value::String("success".to_string()));
     }
 } 

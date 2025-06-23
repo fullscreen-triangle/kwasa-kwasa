@@ -64,6 +64,23 @@ impl Parser {
             return self.motion_declaration();
         }
         
+        // New scientific reasoning constructs
+        if self.match_token(&[TokenKind::Proposition]) {
+            return self.proposition_declaration();
+        }
+        
+        if self.match_token(&[TokenKind::Evidence]) {
+            return self.evidence_declaration();
+        }
+        
+        if self.match_token(&[TokenKind::Pattern]) {
+            return self.pattern_declaration();
+        }
+        
+        if self.match_token(&[TokenKind::Meta]) {
+            return self.meta_analysis_declaration();
+        }
+        
         self.statement()
     }
     
@@ -255,8 +272,21 @@ impl Parser {
             return self.allow_statement();
         }
         
-        if self.match_token(&[TokenKind::LeftBrace]) {
-            return self.block();
+        // Scientific reasoning statements
+        if self.match_token(&[TokenKind::Support]) {
+            return self.support_statement();
+        }
+        
+        if self.match_token(&[TokenKind::Contradict]) {
+            return self.contradict_statement();
+        }
+        
+        if self.match_token(&[TokenKind::Inconclusive]) {
+            return self.inconclusive_statement();
+        }
+        
+        if self.match_token(&[TokenKind::DeriveHypotheses]) {
+            return self.derive_hypotheses_statement();
         }
         
         self.expression_statement()
@@ -1246,7 +1276,8 @@ impl Parser {
         
         let value = self.expression()?;
         
-        let end_span = self.previous().span.clone();
+        let token = self.peek();
+        let end_span = token.span.clone();
         
         let span = Span::new(
             Position::new(0, 0, start_span.start),
@@ -1255,6 +1286,390 @@ impl Parser {
         
         Ok(Node::AllowStmt {
             value: Box::new(value),
+            span,
+        })
+    }
+    
+    /// Parse a proposition declaration
+    fn proposition_declaration(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        // Parse proposition name
+        let name = if self.match_token(&[TokenKind::Identifier]) {
+            self.previous().lexeme.clone()
+        } else {
+            return Err(self.error("Expected proposition name"));
+        };
+        
+        self.consume(TokenKind::LeftBrace, "Expected '{' after proposition name")?;
+        
+        // Parse optional description (first string literal)
+        let mut description = None;
+        let mut requirements = None;
+        let mut body = None;
+        
+        while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+            if self.match_token(&[TokenKind::StringLiteral]) {
+                if description.is_none() {
+                    description = Some(self.previous().lexeme.trim_matches('"').to_string());
+                }
+            } else if self.match_token(&[TokenKind::Requirements]) {
+                self.consume(TokenKind::LeftBrace, "Expected '{' after requirements")?;
+                requirements = Some(Box::new(self.structured_data()?));
+                self.consume(TokenKind::RightBrace, "Expected '}' after requirements")?;
+            } else {
+                // Parse other statements as body
+                if body.is_none() {
+                    let mut statements = Vec::new();
+                    while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+                        statements.push(self.statement()?);
+                    }
+                    let end_pos = self.peek().span.end;
+                    let body_span = Span::new(
+                        Position::new(0, 0, start_span.start),
+                        Position::new(0, 0, end_pos),
+                    );
+                    body = Some(Box::new(Node::Block { statements, span: body_span }));
+                    break;
+                }
+            }
+        }
+        
+        self.consume(TokenKind::RightBrace, "Expected '}' after proposition body")?;
+        
+        let end_span = self.previous().span.clone();
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, end_span.end),
+        );
+        
+        Ok(Node::PropositionDecl {
+            name,
+            description,
+            requirements,
+            body,
+            span,
+        })
+    }
+    
+    /// Parse an evidence declaration
+    fn evidence_declaration(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        // Parse evidence name
+        let name = if self.match_token(&[TokenKind::Identifier]) {
+            self.previous().lexeme.clone()
+        } else {
+            return Err(self.error("Expected evidence name"));
+        };
+        
+        self.consume(TokenKind::Assign, "Expected '=' after evidence name")?;
+        
+        // Parse collection method (function call)
+        let collection_method = self.expression()?;
+        
+        self.consume(TokenKind::LeftBrace, "Expected '{' after collection method")?;
+        
+        // Parse data structure
+        let data_structure = self.structured_data()?;
+        
+        self.consume(TokenKind::RightBrace, "Expected '}' after evidence data")?;
+        
+        let end_span = self.previous().span.clone();
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, end_span.end),
+        );
+        
+        Ok(Node::EvidenceDecl {
+            name,
+            collection_method: Box::new(collection_method),
+            data_structure: Box::new(data_structure),
+            span,
+        })
+    }
+    
+    /// Parse a pattern declaration
+    fn pattern_declaration(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        // Parse pattern name
+        let name = if self.match_token(&[TokenKind::Identifier]) {
+            self.previous().lexeme.clone()
+        } else {
+            return Err(self.error("Expected pattern name"));
+        };
+        
+        self.consume(TokenKind::LeftBrace, "Expected '{' after pattern name")?;
+        
+        // Parse signature
+        self.consume(TokenKind::Signature, "Expected 'signature' in pattern")?;
+        self.consume(TokenKind::Colon, "Expected ':' after signature")?;
+        self.consume(TokenKind::LeftBrace, "Expected '{' after signature:")?;
+        let signature = self.structured_data()?;
+        self.consume(TokenKind::RightBrace, "Expected '}' after signature")?;
+        
+        // Parse optional within clause
+        let mut within_clause = None;
+        if self.match_token(&[TokenKind::Within]) {
+            within_clause = Some(Box::new(self.expression()?));
+        }
+        
+        // Parse match clauses
+        let mut match_clauses = Vec::new();
+        while self.match_token(&[TokenKind::Match]) {
+            let condition = self.expression()?;
+            self.consume(TokenKind::LeftBrace, "Expected '{' after match condition")?;
+            let action = self.structured_data()?;
+            self.consume(TokenKind::RightBrace, "Expected '}' after match action")?;
+            
+            let match_span = Span::new(
+                Position::new(0, 0, start_span.start),
+                Position::new(0, 0, self.previous().span.end),
+            );
+            
+            match_clauses.push(ast::MatchClause {
+                condition: Box::new(condition),
+                action: Box::new(action),
+                span: match_span,
+            });
+        }
+        
+        self.consume(TokenKind::RightBrace, "Expected '}' after pattern body")?;
+        
+        let end_span = self.previous().span.clone();
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, end_span.end),
+        );
+        
+        Ok(Node::PatternDecl {
+            name,
+            signature: Box::new(signature),
+            within_clause,
+            match_clauses,
+            span,
+        })
+    }
+    
+    /// Parse a meta analysis declaration
+    fn meta_analysis_declaration(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        // Parse meta analysis name
+        let name = if self.match_token(&[TokenKind::Identifier]) {
+            self.previous().lexeme.clone()
+        } else {
+            return Err(self.error("Expected meta analysis name"));
+        };
+        
+        self.consume(TokenKind::LeftBrace, "Expected '{' after meta analysis name")?;
+        
+        // Parse studies
+        self.consume(TokenKind::Identifier, "Expected 'studies' field")?;
+        if self.previous().lexeme != "studies" {
+            return Err(self.error("Expected 'studies' field in meta analysis"));
+        }
+        self.consume(TokenKind::Colon, "Expected ':' after 'studies'")?;
+        let studies = self.expression()?;
+        
+        self.consume(TokenKind::Semicolon, "Expected ';' after studies")?;
+        
+        // Parse analysis
+        let analysis = self.structured_data()?;
+        
+        self.consume(TokenKind::RightBrace, "Expected '}' after meta analysis body")?;
+        
+        let end_span = self.previous().span.clone();
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, end_span.end),
+        );
+        
+        Ok(Node::MetaAnalysis {
+            name,
+            studies: Box::new(studies),
+            analysis: Box::new(analysis),
+            span,
+        })
+    }
+    
+    /// Parse structured data (objects with key-value pairs)
+    fn structured_data(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.peek().span.clone();
+        let mut fields = HashMap::new();
+        
+        while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+            // Parse field name
+            let field_name = if self.match_token(&[TokenKind::Identifier]) {
+                self.previous().lexeme.clone()
+            } else {
+                return Err(self.error("Expected field name in structured data"));
+            };
+            
+            self.consume(TokenKind::Colon, "Expected ':' after field name")?;
+            
+            // Parse field value
+            let field_value = if self.match_token(&[TokenKind::LeftBrace]) {
+                // Nested structured data
+                let nested = self.structured_data()?;
+                self.consume(TokenKind::RightBrace, "Expected '}' after nested data")?;
+                nested
+            } else if self.match_token(&[TokenKind::LeftBracket]) {
+                // Array literal
+                let mut elements = Vec::new();
+                while !self.check(&TokenKind::RightBracket) && !self.is_at_end() {
+                    elements.push(self.expression()?);
+                    if !self.match_token(&[TokenKind::Comma]) && !self.check(&TokenKind::RightBracket) {
+                        return Err(self.error("Expected ',' or ']' in array"));
+                    }
+                }
+                self.consume(TokenKind::RightBracket, "Expected ']' after array elements")?;
+                
+                let array_span = Span::new(
+                    Position::new(0, 0, start_span.start),
+                    Position::new(0, 0, self.previous().span.end),
+                );
+                
+                Node::ArrayLiteral {
+                    elements,
+                    span: array_span,
+                }
+            } else {
+                self.expression()?
+            };
+            
+            fields.insert(field_name, field_value);
+            
+            // Optional semicolon separator
+            self.match_token(&[TokenKind::Semicolon]);
+        }
+        
+        let end_span = self.peek().span.clone();
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, end_span.end),
+        );
+        
+        Ok(Node::StructuredData { fields, span })
+    }
+    
+    /// Parse a support statement
+    fn support_statement(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        // Parse hypothesis
+        let hypothesis = self.expression()?;
+        
+        self.consume(TokenKind::With, "Expected 'with' after hypothesis in support statement")?;
+        
+        // Parse evidence
+        self.consume(TokenKind::LeftBrace, "Expected '{' after 'with'")?;
+        let evidence = self.structured_data()?;
+        self.consume(TokenKind::RightBrace, "Expected '}' after evidence")?;
+        
+        let end_span = self.previous().span.clone();
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, end_span.end),
+        );
+        
+        Ok(Node::SupportStmt {
+            hypothesis: Box::new(hypothesis),
+            evidence: Box::new(evidence),
+            span,
+        })
+    }
+    
+    /// Parse a contradict statement
+    fn contradict_statement(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        // Parse hypothesis
+        let hypothesis = self.expression()?;
+        
+        self.consume(TokenKind::With, "Expected 'with' after hypothesis in contradict statement")?;
+        
+        // Parse evidence
+        self.consume(TokenKind::LeftBrace, "Expected '{' after 'with'")?;
+        let evidence = self.structured_data()?;
+        self.consume(TokenKind::RightBrace, "Expected '}' after evidence")?;
+        
+        let end_span = self.previous().span.clone();
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, end_span.end),
+        );
+        
+        Ok(Node::ContradictStmt {
+            hypothesis: Box::new(hypothesis),
+            evidence: Box::new(evidence),
+            span,
+        })
+    }
+    
+    /// Parse an inconclusive statement
+    fn inconclusive_statement(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        // Parse message (string literal)
+        let message = if self.match_token(&[TokenKind::StringLiteral]) {
+            self.previous().lexeme.trim_matches('"').to_string()
+        } else {
+            return Err(self.error("Expected message string in inconclusive statement"));
+        };
+        
+        // Parse optional recommendations
+        let mut recommendations = None;
+        if self.match_token(&[TokenKind::With]) {
+            self.consume(TokenKind::LeftBrace, "Expected '{' after 'with'")?;
+            recommendations = Some(Box::new(self.structured_data()?));
+            self.consume(TokenKind::RightBrace, "Expected '}' after recommendations")?;
+        }
+        
+        let end_span = self.previous().span.clone();
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, end_span.end),
+        );
+        
+        Ok(Node::InconclusiveStmt {
+            message,
+            recommendations,
+            span,
+        })
+    }
+    
+    /// Parse a derive hypotheses statement
+    fn derive_hypotheses_statement(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        self.consume(TokenKind::LeftBrace, "Expected '{' after 'derive_hypotheses'")?;
+        
+        // Parse list of hypothesis strings
+        let mut hypotheses = Vec::new();
+        while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+            if self.match_token(&[TokenKind::StringLiteral]) {
+                hypotheses.push(self.previous().lexeme.trim_matches('"').to_string());
+            } else {
+                return Err(self.error("Expected hypothesis string"));
+            }
+            
+            if !self.match_token(&[TokenKind::Semicolon]) && !self.check(&TokenKind::RightBrace) {
+                return Err(self.error("Expected ';' or '}' after hypothesis"));
+            }
+        }
+        
+        self.consume(TokenKind::RightBrace, "Expected '}' after hypotheses")?;
+        
+        let end_span = self.previous().span.clone();
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, end_span.end),
+        );
+        
+        Ok(Node::DeriveHypotheses {
+            hypotheses,
             span,
         })
     }

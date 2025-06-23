@@ -14,6 +14,181 @@ pub enum TokenKind {
     #[token("proposition")]
     Proposition,
 
+    // New scientific reasoning keywords
+    #[token("evidence")]
+    Evidence,
+
+    #[token("pattern")]
+    Pattern,
+
+    #[token("support")]
+    Support,
+
+    #[token("contradict")]
+    Contradict,
+
+    #[token("inconclusive")]
+    Inconclusive,
+
+    #[token("requirements")]
+    Requirements,
+
+    #[token("signature")]
+    Signature,
+
+    #[token("match")]
+    Match,
+
+    #[token("meta")]
+    Meta,
+
+    #[token("derive_hypotheses")]
+    DeriveHypotheses,
+
+    #[token("alternatively")]
+    Alternatively,
+
+    #[token("with")]
+    With,
+
+    #[token("classify_as")]
+    ClassifyAs,
+
+    #[token("confidence")]
+    Confidence,
+
+    #[token("emergent_behaviors")]
+    EmergentBehaviors,
+
+    #[token("mechanisms")]
+    Mechanisms,
+
+    #[token("clinical_relevance")]
+    ClinicalRelevance,
+
+    #[token("refined_hypotheses")]
+    RefinedHypotheses,
+
+    #[token("recommendations")]
+    Recommendations,
+
+    // Advanced orchestration keywords  
+    #[token("flow")]
+    Flow,
+
+    #[token("on")]
+    On,
+
+    #[token("catalyze")]
+    Catalyze,
+
+    #[token("cross_scale")]
+    CrossScale,
+
+    #[token("coordinate")]
+    Coordinate,
+
+    #[token("drift")]
+    Drift,
+
+    #[token("until")]
+    Until,
+
+    #[token("cycle")]
+    Cycle,
+
+    #[token("roll")]
+    Roll,
+
+    #[token("resolve")]
+    Resolve,
+
+    #[token("execute_information_catalysis")]
+    ExecuteInformationCatalysis,
+
+    #[token("create_pattern_recognizer")]
+    CreatePatternRecognizer,
+
+    #[token("create_action_channeler")]
+    CreateActionChanneler,
+
+    #[token("capture_screen_pixels")]
+    CaptureScreenPixels,
+
+    #[token("point")]
+    Point,
+
+    #[token("content")]
+    Content,
+
+    #[token("certainty")]
+    Certainty,
+
+    #[token("evidence_strength")]
+    EvidenceStrength,
+
+    #[token("contextual_relevance")]
+    ContextualRelevance,
+
+    #[token("urgency_factor")]
+    UrgencyFactor,
+
+    // Scale identifiers
+    #[token("quantum")]
+    Quantum,
+
+    #[token("molecular")]
+    Molecular,
+
+    #[token("environmental")]
+    Environmental,
+
+    #[token("hardware")]
+    Hardware,
+
+    #[token("cognitive")]
+    Cognitive,
+
+    // Context and loading keywords
+    #[token("load_sequence")]
+    LoadSequence,
+
+    #[token("load_molecules")]
+    LoadMolecules,
+
+    #[token("context")]
+    Context,
+
+    #[token("region")]
+    Region,
+
+    #[token("focus")]
+    Focus,
+
+    #[token("wavelength_range")]
+    WavelengthRange,
+
+    #[token("wavelength_scan")]
+    WavelengthScan,
+
+    #[token("sensitivity")]
+    Sensitivity,
+
+    #[token("specificity")]
+    Specificity,
+
+    #[token("amplification")]
+    Amplification,
+
+    #[token("duration")]
+    Duration,
+
+    #[token("size")]
+    Size,
+
+    #[token("diversity")]
+    Diversity,
+
     #[token("var")]
     Var,
 
@@ -160,6 +335,9 @@ pub enum TokenKind {
     #[token(":")]
     Colon,
 
+    #[token(";")]
+    Semicolon,
+
     #[token(".")]
     Dot,
 
@@ -198,6 +376,25 @@ impl fmt::Display for TokenKind {
             TokenKind::FunctionDecl => write!(f, "funxn"),
             TokenKind::ProjectDecl => write!(f, "project"),
             TokenKind::Proposition => write!(f, "proposition"),
+            TokenKind::Evidence => write!(f, "evidence"),
+            TokenKind::Pattern => write!(f, "pattern"),
+            TokenKind::Support => write!(f, "support"),
+            TokenKind::Contradict => write!(f, "contradict"),
+            TokenKind::Inconclusive => write!(f, "inconclusive"),
+            TokenKind::Requirements => write!(f, "requirements"),
+            TokenKind::Signature => write!(f, "signature"),
+            TokenKind::Match => write!(f, "match"),
+            TokenKind::Meta => write!(f, "meta"),
+            TokenKind::DeriveHypotheses => write!(f, "derive_hypotheses"),
+            TokenKind::Alternatively => write!(f, "alternatively"),
+            TokenKind::With => write!(f, "with"),
+            TokenKind::ClassifyAs => write!(f, "classify_as"),
+            TokenKind::Confidence => write!(f, "confidence"),
+            TokenKind::EmergentBehaviors => write!(f, "emergent_behaviors"),
+            TokenKind::Mechanisms => write!(f, "mechanisms"),
+            TokenKind::ClinicalRelevance => write!(f, "clinical_relevance"),
+            TokenKind::RefinedHypotheses => write!(f, "refined_hypotheses"),
+            TokenKind::Recommendations => write!(f, "recommendations"),
             TokenKind::Var => write!(f, "var"),
             TokenKind::True => write!(f, "true"),
             TokenKind::False => write!(f, "false"),
@@ -246,6 +443,7 @@ impl fmt::Display for TokenKind {
             TokenKind::RightBracket => write!(f, "]"),
             TokenKind::Comma => write!(f, ","),
             TokenKind::Colon => write!(f, ":"),
+            TokenKind::Semicolon => write!(f, ";"),
             TokenKind::Dot => write!(f, "."),
             TokenKind::Identifier => write!(f, "identifier"),
             TokenKind::StringLiteral => write!(f, "string"),
@@ -253,6 +451,44 @@ impl fmt::Display for TokenKind {
             TokenKind::Comment => write!(f, "comment"),
             TokenKind::Whitespace => write!(f, "whitespace"),
             TokenKind::Error => write!(f, "error"),
+            TokenKind::Flow => write!(f, "flow"),
+            TokenKind::On => write!(f, "on"),
+            TokenKind::Catalyze => write!(f, "catalyze"),
+            TokenKind::CrossScale => write!(f, "cross_scale"),
+            TokenKind::Coordinate => write!(f, "coordinate"),
+            TokenKind::Drift => write!(f, "drift"),
+            TokenKind::Until => write!(f, "until"),
+            TokenKind::Cycle => write!(f, "cycle"),
+            TokenKind::Roll => write!(f, "roll"),
+            TokenKind::Resolve => write!(f, "resolve"),
+            TokenKind::ExecuteInformationCatalysis => write!(f, "execute_information_catalysis"),
+            TokenKind::CreatePatternRecognizer => write!(f, "create_pattern_recognizer"),
+            TokenKind::CreateActionChanneler => write!(f, "create_action_channeler"),
+            TokenKind::CaptureScreenPixels => write!(f, "capture_screen_pixels"),
+            TokenKind::Point => write!(f, "point"),
+            TokenKind::Content => write!(f, "content"),
+            TokenKind::Certainty => write!(f, "certainty"),
+            TokenKind::EvidenceStrength => write!(f, "evidence_strength"),
+            TokenKind::ContextualRelevance => write!(f, "contextual_relevance"),
+            TokenKind::UrgencyFactor => write!(f, "urgency_factor"),
+            TokenKind::Quantum => write!(f, "quantum"),
+            TokenKind::Molecular => write!(f, "molecular"),
+            TokenKind::Environmental => write!(f, "environmental"),
+            TokenKind::Hardware => write!(f, "hardware"),
+            TokenKind::Cognitive => write!(f, "cognitive"),
+            TokenKind::LoadSequence => write!(f, "load_sequence"),
+            TokenKind::LoadMolecules => write!(f, "load_molecules"),
+            TokenKind::Context => write!(f, "context"),
+            TokenKind::Region => write!(f, "region"),
+            TokenKind::Focus => write!(f, "focus"),
+            TokenKind::WavelengthRange => write!(f, "wavelength_range"),
+            TokenKind::WavelengthScan => write!(f, "wavelength_scan"),
+            TokenKind::Sensitivity => write!(f, "sensitivity"),
+            TokenKind::Specificity => write!(f, "specificity"),
+            TokenKind::Amplification => write!(f, "amplification"),
+            TokenKind::Duration => write!(f, "duration"),
+            TokenKind::Size => write!(f, "size"),
+            TokenKind::Diversity => write!(f, "diversity"),
             _ => write!(f, "{:?}", self),
         }
     }
