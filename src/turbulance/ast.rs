@@ -303,6 +303,18 @@ pub enum Node {
     For(ForStatement),
     While(WhileStatement),
     Import(ImportStatement),
+    
+    // Bene Gesserit masterclass constructs
+    SuccessFramework(SuccessFrameworkDeclaration),
+    BiologicalComputer(BiologicalComputerDeclaration),
+    PatternAnalysis(PatternAnalysisBlock),
+    SpatiotemporalAnalysis(SpatiotemporalAnalysisBlock),
+    DataProcessing(DataProcessingBlock),
+    EvidenceIntegration(EvidenceIntegrationBlock),
+    UncertaintyPropagation(UncertaintyPropagationBlock),
+    CausalAnalysis(CausalAnalysisBlock),
+    BiasAnalysis(BiasAnalysisBlock),
+    QuantumClassicalInterface(QuantumClassicalInterfaceBlock),
 }
 
 /// Represents a function definition

@@ -612,6 +612,519 @@ pub enum TokenKind {
 
     // Error token (without the error attribute as Logos 0.13+ doesn't require it)
     Error,
+
+    // Bene Gesserit masterclass keywords
+    #[token("success_framework")]
+    SuccessFramework,
+
+    #[token("primary_threshold")]
+    PrimaryThreshold,
+
+    #[token("secondary_threshold")]
+    SecondaryThreshold,
+
+    #[token("safety_threshold")]
+    SafetyThreshold,
+
+    #[token("evidence_quality_modulation")]
+    EvidenceQualityModulation,
+
+    #[token("uncertainty_penalty")]
+    UncertaintyPenalty,
+
+    #[token("fda_guidance_compliance")]
+    FdaGuidanceCompliance,
+
+    #[token("ema_scientific_advice_integration")]
+    EmaScientificAdviceIntegration,
+
+    #[token("biological_computer")]
+    BiologicalComputer,
+
+    #[token("atp_budget")]
+    AtpBudget,
+
+    #[token("time_horizon")]
+    TimeHorizon,
+
+    #[token("quantum_targets")]
+    QuantumTargets,
+
+    #[token("oscillatory_dynamics")]
+    OscillatoryDynamics,
+
+    #[token("atp_available")]
+    AtpAvailable,
+
+    #[token("quantum_coherence")]
+    QuantumCoherence,
+
+    #[token("quantum_enhanced")]
+    QuantumEnhanced,
+
+    #[token("quantum_mechanical")]
+    QuantumMechanical,
+
+    #[token("quantum_tunneling")]
+    QuantumTunneling,
+
+    #[token("enabled")]
+    Enabled,
+
+    #[token("biological_maxwells_demon")]
+    BiologicalMaxwellsDemon,
+
+    #[token("input_patterns")]
+    InputPatterns,
+
+    #[token("recognition_threshold")]
+    RecognitionThreshold,
+
+    #[token("catalysis_efficiency")]
+    CatalysisEfficiency,
+
+    #[token("optimize")]
+    Optimize,
+
+    #[token("atp_efficiency")]
+    AtpEfficiency,
+
+    #[token("track")]
+    Track,
+
+    #[token("oscillation_endpoints")]
+    OscillationEndpoints,
+
+    #[token("quantum_fidelity")]
+    QuantumFidelity,
+
+    #[token("calculate")]
+    Calculate,
+
+    #[token("information_catalysis_efficiency")]
+    InformationCatalysisEfficiency,
+
+    // Multi-source evidence integration
+    #[token("molecular_sources")]
+    MolecularSources,
+
+    #[token("clinical_sources")]
+    ClinicalSources,
+
+    #[token("real_world_sources")]
+    RealWorldSources,
+
+    #[token("omics_sources")]
+    OmicsSources,
+
+    #[token("protein_structures")]
+    ProteinStructures,
+
+    #[token("molecular_dynamics")]
+    MolecularDynamics,
+
+    #[token("binding_affinity")]
+    BindingAffinity,
+
+    #[token("cellular_assays")]
+    CellularAssays,
+
+    #[token("animal_models")]
+    AnimalModels,
+
+    #[token("phase1_data")]
+    Phase1Data,
+
+    #[token("phase2_data")]
+    Phase2Data,
+
+    #[token("biomarker_data")]
+    BiomarkerData,
+
+    #[token("cognitive_assessments")]
+    CognitiveAssessments,
+
+    #[token("electronic_health_records")]
+    ElectronicHealthRecords,
+
+    #[token("insurance_claims")]
+    InsuranceClaims,
+
+    #[token("patient_registries")]
+    PatientRegistries,
+
+    #[token("wearable_data")]
+    WearableData,
+
+    #[token("gwas_data")]
+    GwasData,
+
+    #[token("transcriptomics")]
+    Transcriptomics,
+
+    #[token("proteomics")]
+    Proteomics,
+
+    #[token("metabolomics")]
+    Metabolomics,
+
+    // Data processing pipeline
+    #[token("data_processing")]
+    DataProcessing,
+
+    #[token("quality_control")]
+    QualityControl,
+
+    #[token("missing_data_threshold")]
+    MissingDataThreshold,
+
+    #[token("adaptive_threshold")]
+    AdaptiveThreshold,
+
+    #[token("outlier_detection")]
+    OutlierDetection,
+
+    #[token("isolation_forest")]
+    IsolationForest,
+
+    #[token("contamination")]
+    Contamination,
+
+    #[token("batch_effect_correction")]
+    BatchEffectCorrection,
+
+    #[token("combat_seq")]
+    CombatSeq,
+
+    #[token("technical_replicate_correlation")]
+    TechnicalReplicateCorrelation,
+
+    #[token("harmonization")]
+    Harmonization,
+
+    #[token("unit_standardization")]
+    UnitStandardization,
+
+    #[token("si_units_conversion")]
+    SiUnitsConversion,
+
+    #[token("temporal_alignment")]
+    TemporalAlignment,
+
+    #[token("time_series_synchronization")]
+    TimeSeriesSynchronization,
+
+    #[token("population_stratification")]
+    PopulationStratification,
+
+    #[token("ancestry_matching")]
+    AncestryMatching,
+
+    #[token("covariate_adjustment")]
+    CovariateAdjustment,
+
+    #[token("propensity_score_matching")]
+    PropensityScoreMatching,
+
+    #[token("feature_engineering")]
+    FeatureEngineering,
+
+    #[token("molecular_descriptors")]
+    MolecularDescriptors,
+
+    #[token("rdkit_descriptors")]
+    RdkitDescriptors,
+
+    #[token("custom_descriptors")]
+    CustomDescriptors,
+
+    #[token("clinical_composite_scores")]
+    ClinicalCompositeScores,
+
+    #[token("principal_component_analysis")]
+    PrincipalComponentAnalysis,
+
+    #[token("time_series_features")]
+    TimeSeriesFeatures,
+
+    #[token("tsfresh_extraction")]
+    TsfreshExtraction,
+
+    #[token("network_features")]
+    NetworkFeatures,
+
+    #[token("protein_interaction_centrality")]
+    ProteinInteractionCentrality,
+
+    // Pattern analysis
+    #[token("pattern_analysis")]
+    PatternAnalysis,
+
+    #[token("molecular_patterns")]
+    MolecularPatterns,
+
+    #[token("binding_pose_clustering")]
+    BindingPoseClustering,
+
+    #[token("dbscan")]
+    Dbscan,
+
+    #[token("eps")]
+    Eps,
+
+    #[token("min_samples")]
+    MinSamples,
+
+    #[token("pharmacophore_identification")]
+    PharmacophoreIdentification,
+
+    #[token("shape_based_clustering")]
+    ShapeBasedClustering,
+
+    #[token("admet_pattern_detection")]
+    AdmetPatternDetection,
+
+    #[token("random_forest_feature_importance")]
+    RandomForestFeatureImportance,
+
+    #[token("clinical_patterns")]
+    ClinicalPatterns,
+
+    #[token("responder_phenotyping")]
+    ResponderPhenotyping,
+
+    #[token("gaussian_mixture_models")]
+    GaussianMixtureModels,
+
+    #[token("n_components")]
+    NComponents,
+
+    #[token("disease_progression_trajectories")]
+    DiseaseProgressionTrajectories,
+
+    #[token("latent_class_growth_modeling")]
+    LatentClassGrowthModeling,
+
+    #[token("adverse_event_clustering")]
+    AdverseEventClustering,
+
+    #[token("network_analysis")]
+    NetworkAnalysis,
+
+    #[token("omics_integration")]
+    OmicsIntegration,
+
+    #[token("multi_block_pls")]
+    MultiBlockPls,
+
+    #[token("integrate_omics_blocks")]
+    IntegrateOmicsBlocks,
+
+    #[token("network_medicine_analysis")]
+    NetworkMedicineAnalysis,
+
+    #[token("disease_module_identification")]
+    DiseaseModuleIdentification,
+
+    #[token("pathway_enrichment")]
+    PathwayEnrichment,
+
+    #[token("hypergeometric_test_with_fdr")]
+    HypergeometricTestWithFdr,
+
+    // Advanced hypothesis testing
+    #[token("confidence_interval")]
+    ConfidenceInterval,
+
+    #[token("bootstrap_confidence_interval")]
+    BootstrapConfidenceInterval,
+
+    #[token("n_bootstrap")]
+    NBootstrap,
+
+    #[token("lower_bound")]
+    LowerBound,
+
+    #[token("bbb_permeability")]
+    BbbPermeability,
+
+    #[token("efflux_ratio")]
+    EffluxRatio,
+
+    #[token("ensemble_prediction")]
+    EnsemblePrediction,
+
+    #[token("ensemble_vote")]
+    EnsembleVote,
+
+    #[token("random_forest_prediction")]
+    RandomForestPrediction,
+
+    #[token("svm_prediction")]
+    SvmPrediction,
+
+    #[token("neural_network_prediction")]
+    NeuralNetworkPrediction,
+
+    #[token("ensemble_agreement")]
+    EnsembleAgreement,
+
+    #[token("adas_cog_change")]
+    AdasCogChange,
+
+    #[token("p_value")]
+    PValue,
+
+    #[token("effect_size")]
+    EffectSize,
+
+    #[token("cohens_d")]
+    CohensD,
+
+    #[token("treatment_group")]
+    TreatmentGroup,
+
+    #[token("placebo_group")]
+    PlaceboGroup,
+
+    #[token("number_needed_to_treat")]
+    NumberNeededToTreat,
+
+    #[token("calculate_nnt")]
+    CalculateNnt,
+
+    #[token("response_rate")]
+    ResponseRate,
+
+    #[token("clinical_significance")]
+    ClinicalSignificance,
+
+    #[token("meaningful")]
+    Meaningful,
+
+    #[token("modest")]
+    Modest,
+
+    #[token("csf_tau_reduction")]
+    CsfTauReduction,
+
+    #[token("plasma_neurofilament_stable")]
+    PlasmaNeurofilamentStable,
+
+    #[token("longitudinal_model")]
+    LongitudinalModel,
+
+    #[token("mixed_effects_model")]
+    MixedEffectsModel,
+
+    #[token("fixed_effects")]
+    FixedEffects,
+
+    #[token("treatment")]
+    Treatment,
+
+    #[token("time")]
+    Time,
+
+    #[token("treatment_x_time")]
+    TreatmentXTime,
+
+    #[token("random_effects")]
+    RandomEffects,
+
+    #[token("patient_intercept")]
+    PatientIntercept,
+
+    #[token("patient_slope")]
+    PatientSlope,
+
+    #[token("treatment_effect")]
+    TreatmentEffect,
+
+    // Spatiotemporal analysis
+    #[token("spatiotemporal_analysis")]
+    SpatiotemporalAnalysis,
+
+    #[token("spatial_modeling")]
+    SpatialModeling,
+
+    #[token("local_adaptation")]
+    LocalAdaptation,
+
+    #[token("isolation_by_distance_modeling")]
+    IsolationByDistanceModeling,
+
+    #[token("environmental_gradients")]
+    EnvironmentalGradients,
+
+    #[token("gradient_forest_analysis")]
+    GradientForestAnalysis,
+
+    #[token("population_structure")]
+    PopulationStructure,
+
+    #[token("spatial_principal_components")]
+    SpatialPrincipalComponents,
+
+    #[token("migration_patterns")]
+    MigrationPatterns,
+
+    #[token("gravity_model_migration")]
+    GravityModelMigration,
+
+    #[token("temporal_modeling")]
+    TemporalModeling,
+
+    #[token("evolutionary_trajectories")]
+    EvolutionaryTrajectories,
+
+    #[token("coalescent_simulation")]
+    CoalescentSimulation,
+
+    #[token("selection_dynamics")]
+    SelectionDynamics,
+
+    #[token("forward_simulation")]
+    ForwardSimulation,
+
+    #[token("demographic_inference")]
+    DemographicInference,
+
+    #[token("composite_likelihood")]
+    CompositeLikelihood,
+
+    #[token("cultural_evolution")]
+    CulturalEvolution,
+
+    #[token("dual_inheritance_modeling")]
+    DualInheritanceModeling,
+
+    #[token("association_analysis")]
+    AssociationAnalysis,
+
+    #[token("environmental_gwas")]
+    EnvironmentalGwas,
+
+    #[token("genome_environment_association")]
+    GenomeEnvironmentAssociation,
+
+    #[token("polygenic_adaptation")]
+    PolygenicAdaptation,
+
+    #[token("polygenic_score_evolution")]
+    PolygenicScoreEvolution,
+
+    #[token("balancing_selection")]
+    BalancingSelection,
+
+    #[token("tajimas_d_analysis")]
+    TajimasDAnalysis,
+
+    #[token("introgression_analysis")]
+    IntrogressionAnalysis,
+
+    #[token("admixture_mapping")]
+    AdmixtureMapping,
 }
 
 /// Token represents a token with its type and span (location in source)
@@ -819,6 +1332,175 @@ impl fmt::Display for TokenKind {
             TokenKind::Selectivity => write!(f, "selectivity"),
             TokenKind::TransportRate => write!(f, "transport_rate"),
             TokenKind::EnergyRequirement => write!(f, "energy_requirement"),
+            TokenKind::SuccessFramework => write!(f, "success_framework"),
+            TokenKind::PrimaryThreshold => write!(f, "primary_threshold"),
+            TokenKind::SecondaryThreshold => write!(f, "secondary_threshold"),
+            TokenKind::SafetyThreshold => write!(f, "safety_threshold"),
+            TokenKind::EvidenceQualityModulation => write!(f, "evidence_quality_modulation"),
+            TokenKind::UncertaintyPenalty => write!(f, "uncertainty_penalty"),
+            TokenKind::FdaGuidanceCompliance => write!(f, "fda_guidance_compliance"),
+            TokenKind::EmaScientificAdviceIntegration => write!(f, "ema_scientific_advice_integration"),
+            TokenKind::BiologicalComputer => write!(f, "biological_computer"),
+            TokenKind::AtpBudget => write!(f, "atp_budget"),
+            TokenKind::TimeHorizon => write!(f, "time_horizon"),
+            TokenKind::QuantumTargets => write!(f, "quantum_targets"),
+            TokenKind::OscillatoryDynamics => write!(f, "oscillatory_dynamics"),
+            TokenKind::AtpAvailable => write!(f, "atp_available"),
+            TokenKind::QuantumCoherence => write!(f, "quantum_coherence"),
+            TokenKind::QuantumEnhanced => write!(f, "quantum_enhanced"),
+            TokenKind::QuantumMechanical => write!(f, "quantum_mechanical"),
+            TokenKind::QuantumTunneling => write!(f, "quantum_tunneling"),
+            TokenKind::Enabled => write!(f, "enabled"),
+            TokenKind::BiologicalMaxwellsDemon => write!(f, "biological_maxwells_demon"),
+            TokenKind::InputPatterns => write!(f, "input_patterns"),
+            TokenKind::RecognitionThreshold => write!(f, "recognition_threshold"),
+            TokenKind::CatalysisEfficiency => write!(f, "catalysis_efficiency"),
+            TokenKind::Optimize => write!(f, "optimize"),
+            TokenKind::AtpEfficiency => write!(f, "atp_efficiency"),
+            TokenKind::Track => write!(f, "track"),
+            TokenKind::OscillationEndpoints => write!(f, "oscillation_endpoints"),
+            TokenKind::QuantumFidelity => write!(f, "quantum_fidelity"),
+            TokenKind::Calculate => write!(f, "calculate"),
+            TokenKind::InformationCatalysisEfficiency => write!(f, "information_catalysis_efficiency"),
+            TokenKind::MolecularSources => write!(f, "molecular_sources"),
+            TokenKind::ClinicalSources => write!(f, "clinical_sources"),
+            TokenKind::RealWorldSources => write!(f, "real_world_sources"),
+            TokenKind::OmicsSources => write!(f, "omics_sources"),
+            TokenKind::ProteinStructures => write!(f, "protein_structures"),
+            TokenKind::MolecularDynamics => write!(f, "molecular_dynamics"),
+            TokenKind::BindingAffinity => write!(f, "binding_affinity"),
+            TokenKind::CellularAssays => write!(f, "cellular_assays"),
+            TokenKind::AnimalModels => write!(f, "animal_models"),
+            TokenKind::Phase1Data => write!(f, "phase1_data"),
+            TokenKind::Phase2Data => write!(f, "phase2_data"),
+            TokenKind::BiomarkerData => write!(f, "biomarker_data"),
+            TokenKind::CognitiveAssessments => write!(f, "cognitive_assessments"),
+            TokenKind::ElectronicHealthRecords => write!(f, "electronic_health_records"),
+            TokenKind::InsuranceClaims => write!(f, "insurance_claims"),
+            TokenKind::PatientRegistries => write!(f, "patient_registries"),
+            TokenKind::WearableData => write!(f, "wearable_data"),
+            TokenKind::GwasData => write!(f, "gwas_data"),
+            TokenKind::Transcriptomics => write!(f, "transcriptomics"),
+            TokenKind::Proteomics => write!(f, "proteomics"),
+            TokenKind::Metabolomics => write!(f, "metabolomics"),
+            TokenKind::DataProcessing => write!(f, "data_processing"),
+            TokenKind::QualityControl => write!(f, "quality_control"),
+            TokenKind::MissingDataThreshold => write!(f, "missing_data_threshold"),
+            TokenKind::AdaptiveThreshold => write!(f, "adaptive_threshold"),
+            TokenKind::OutlierDetection => write!(f, "outlier_detection"),
+            TokenKind::IsolationForest => write!(f, "isolation_forest"),
+            TokenKind::Contamination => write!(f, "contamination"),
+            TokenKind::BatchEffectCorrection => write!(f, "batch_effect_correction"),
+            TokenKind::CombatSeq => write!(f, "combat_seq"),
+            TokenKind::TechnicalReplicateCorrelation => write!(f, "technical_replicate_correlation"),
+            TokenKind::Harmonization => write!(f, "harmonization"),
+            TokenKind::UnitStandardization => write!(f, "unit_standardization"),
+            TokenKind::SiUnitsConversion => write!(f, "si_units_conversion"),
+            TokenKind::TemporalAlignment => write!(f, "temporal_alignment"),
+            TokenKind::TimeSeriesSynchronization => write!(f, "time_series_synchronization"),
+            TokenKind::PopulationStratification => write!(f, "population_stratification"),
+            TokenKind::AncestryMatching => write!(f, "ancestry_matching"),
+            TokenKind::CovariateAdjustment => write!(f, "covariate_adjustment"),
+            TokenKind::PropensityScoreMatching => write!(f, "propensity_score_matching"),
+            TokenKind::FeatureEngineering => write!(f, "feature_engineering"),
+            TokenKind::MolecularDescriptors => write!(f, "molecular_descriptors"),
+            TokenKind::RdkitDescriptors => write!(f, "rdkit_descriptors"),
+            TokenKind::CustomDescriptors => write!(f, "custom_descriptors"),
+            TokenKind::ClinicalCompositeScores => write!(f, "clinical_composite_scores"),
+            TokenKind::PrincipalComponentAnalysis => write!(f, "principal_component_analysis"),
+            TokenKind::TimeSeriesFeatures => write!(f, "time_series_features"),
+            TokenKind::TsfreshExtraction => write!(f, "tsfresh_extraction"),
+            TokenKind::NetworkFeatures => write!(f, "network_features"),
+            TokenKind::ProteinInteractionCentrality => write!(f, "protein_interaction_centrality"),
+            TokenKind::PatternAnalysis => write!(f, "pattern_analysis"),
+            TokenKind::MolecularPatterns => write!(f, "molecular_patterns"),
+            TokenKind::BindingPoseClustering => write!(f, "binding_pose_clustering"),
+            TokenKind::Dbscan => write!(f, "dbscan"),
+            TokenKind::Eps => write!(f, "eps"),
+            TokenKind::MinSamples => write!(f, "min_samples"),
+            TokenKind::PharmacophoreIdentification => write!(f, "pharmacophore_identification"),
+            TokenKind::ShapeBasedClustering => write!(f, "shape_based_clustering"),
+            TokenKind::AdmetPatternDetection => write!(f, "admet_pattern_detection"),
+            TokenKind::RandomForestFeatureImportance => write!(f, "random_forest_feature_importance"),
+            TokenKind::ClinicalPatterns => write!(f, "clinical_patterns"),
+            TokenKind::ResponderPhenotyping => write!(f, "responder_phenotyping"),
+            TokenKind::GaussianMixtureModels => write!(f, "gaussian_mixture_models"),
+            TokenKind::NComponents => write!(f, "n_components"),
+            TokenKind::DiseaseProgressionTrajectories => write!(f, "disease_progression_trajectories"),
+            TokenKind::LatentClassGrowthModeling => write!(f, "latent_class_growth_modeling"),
+            TokenKind::AdverseEventClustering => write!(f, "adverse_event_clustering"),
+            TokenKind::NetworkAnalysis => write!(f, "network_analysis"),
+            TokenKind::OmicsIntegration => write!(f, "omics_integration"),
+            TokenKind::MultiBlockPls => write!(f, "multi_block_pls"),
+            TokenKind::IntegrateOmicsBlocks => write!(f, "integrate_omics_blocks"),
+            TokenKind::NetworkMedicineAnalysis => write!(f, "network_medicine_analysis"),
+            TokenKind::DiseaseModuleIdentification => write!(f, "disease_module_identification"),
+            TokenKind::PathwayEnrichment => write!(f, "pathway_enrichment"),
+            TokenKind::HypergeometricTestWithFdr => write!(f, "hypergeometric_test_with_fdr"),
+            TokenKind::ConfidenceInterval => write!(f, "confidence_interval"),
+            TokenKind::BootstrapConfidenceInterval => write!(f, "bootstrap_confidence_interval"),
+            TokenKind::NBootstrap => write!(f, "n_bootstrap"),
+            TokenKind::LowerBound => write!(f, "lower_bound"),
+            TokenKind::BbbPermeability => write!(f, "bbb_permeability"),
+            TokenKind::EffluxRatio => write!(f, "efflux_ratio"),
+            TokenKind::EnsemblePrediction => write!(f, "ensemble_prediction"),
+            TokenKind::EnsembleVote => write!(f, "ensemble_vote"),
+            TokenKind::RandomForestPrediction => write!(f, "random_forest_prediction"),
+            TokenKind::SvmPrediction => write!(f, "svm_prediction"),
+            TokenKind::NeuralNetworkPrediction => write!(f, "neural_network_prediction"),
+            TokenKind::EnsembleAgreement => write!(f, "ensemble_agreement"),
+            TokenKind::AdasCogChange => write!(f, "adas_cog_change"),
+            TokenKind::PValue => write!(f, "p_value"),
+            TokenKind::EffectSize => write!(f, "effect_size"),
+            TokenKind::CohensD => write!(f, "cohens_d"),
+            TokenKind::TreatmentGroup => write!(f, "treatment_group"),
+            TokenKind::PlaceboGroup => write!(f, "placebo_group"),
+            TokenKind::NumberNeededToTreat => write!(f, "number_needed_to_treat"),
+            TokenKind::CalculateNnt => write!(f, "calculate_nnt"),
+            TokenKind::ResponseRate => write!(f, "response_rate"),
+            TokenKind::ClinicalSignificance => write!(f, "clinical_significance"),
+            TokenKind::Meaningful => write!(f, "meaningful"),
+            TokenKind::Modest => write!(f, "modest"),
+            TokenKind::CsfTauReduction => write!(f, "csf_tau_reduction"),
+            TokenKind::PlasmaNeurofilamentStable => write!(f, "plasma_neurofilament_stable"),
+            TokenKind::LongitudinalModel => write!(f, "longitudinal_model"),
+            TokenKind::MixedEffectsModel => write!(f, "mixed_effects_model"),
+            TokenKind::FixedEffects => write!(f, "fixed_effects"),
+            TokenKind::Treatment => write!(f, "treatment"),
+            TokenKind::Time => write!(f, "time"),
+            TokenKind::TreatmentXTime => write!(f, "treatment_x_time"),
+            TokenKind::RandomEffects => write!(f, "random_effects"),
+            TokenKind::PatientIntercept => write!(f, "patient_intercept"),
+            TokenKind::PatientSlope => write!(f, "patient_slope"),
+            TokenKind::TreatmentEffect => write!(f, "treatment_effect"),
+            TokenKind::SpatiotemporalAnalysis => write!(f, "spatiotemporal_analysis"),
+            TokenKind::SpatialModeling => write!(f, "spatial_modeling"),
+            TokenKind::LocalAdaptation => write!(f, "local_adaptation"),
+            TokenKind::IsolationByDistanceModeling => write!(f, "isolation_by_distance_modeling"),
+            TokenKind::EnvironmentalGradients => write!(f, "environmental_gradients"),
+            TokenKind::GradientForestAnalysis => write!(f, "gradient_forest_analysis"),
+            TokenKind::PopulationStructure => write!(f, "population_structure"),
+            TokenKind::SpatialPrincipalComponents => write!(f, "spatial_principal_components"),
+            TokenKind::MigrationPatterns => write!(f, "migration_patterns"),
+            TokenKind::GravityModelMigration => write!(f, "gravity_model_migration"),
+            TokenKind::TemporalModeling => write!(f, "temporal_modeling"),
+            TokenKind::EvolutionaryTrajectories => write!(f, "evolutionary_trajectories"),
+            TokenKind::CoalescentSimulation => write!(f, "coalescent_simulation"),
+            TokenKind::SelectionDynamics => write!(f, "selection_dynamics"),
+            TokenKind::ForwardSimulation => write!(f, "forward_simulation"),
+            TokenKind::DemographicInference => write!(f, "demographic_inference"),
+            TokenKind::CompositeLikelihood => write!(f, "composite_likelihood"),
+            TokenKind::CulturalEvolution => write!(f, "cultural_evolution"),
+            TokenKind::DualInheritanceModeling => write!(f, "dual_inheritance_modeling"),
+            TokenKind::AssociationAnalysis => write!(f, "association_analysis"),
+            TokenKind::EnvironmentalGwas => write!(f, "environmental_gwas"),
+            TokenKind::GenomeEnvironmentAssociation => write!(f, "genome_environment_association"),
+            TokenKind::PolygenicAdaptation => write!(f, "polygenic_adaptation"),
+            TokenKind::PolygenicScoreEvolution => write!(f, "polygenic_score_evolution"),
+            TokenKind::BalancingSelection => write!(f, "balancing_selection"),
+            TokenKind::TajimasDAnalysis => write!(f, "tajimas_d_analysis"),
+            TokenKind::IntrogressionAnalysis => write!(f, "introgression_analysis"),
+            TokenKind::AdmixtureMapping => write!(f, "admixture_mapping"),
             _ => write!(f, "{:?}", self),
         }
     }
