@@ -1125,6 +1125,310 @@ pub enum TokenKind {
 
     #[token("admixture_mapping")]
     AdmixtureMapping,
+
+    // Imhotep Framework: Revolutionary Self-Aware Neural Networks
+    #[token("neural_consciousness")]
+    NeuralConsciousness,
+
+    #[token("session_name")]
+    SessionName,
+
+    #[token("consciousness_level")]
+    ConsciousnessLevel,
+
+    #[token("self_awareness")]
+    SelfAwareness,
+
+    #[token("metacognitive_monitoring")]
+    MetacognitiveMonitoring,
+
+    #[token("create_bmd_neuron")]
+    CreateBmdNeuron,
+
+    #[token("activation")]
+    Activation,
+
+    #[token("metacognitive_depth")]
+    MetacognitiveDepth,
+
+    #[token("subsystem")]
+    Subsystem,
+
+    #[token("question")]
+    Question,
+
+    #[token("depth")]
+    Depth,
+
+    #[token("precision")]
+    Precision,
+
+    #[token("consciousness_gated")]
+    ConsciousnessGated,
+
+    #[token("standards")]
+    Standards,
+
+    #[token("efficiency")]
+    Efficiency,
+
+    #[token("thoroughness")]
+    Thoroughness,
+
+    // Four-File System Neural Subsystems
+    #[token("DecisionTrailLogger")]
+    DecisionTrailLogger,
+
+    #[token("MetacognitiveMonitor")]
+    MetacognitiveMonitor,
+
+    #[token("ReasoningChainTracker")]
+    ReasoningChainTracker,
+
+    #[token("SystemStateTracker")]
+    SystemStateTracker,
+
+    #[token("ThoughtQualityAssessor")]
+    ThoughtQualityAssessor,
+
+    #[token("KnowledgeNetworkManager")]
+    KnowledgeNetworkManager,
+
+    #[token("KnowledgeStateAuditor")]
+    KnowledgeStateAuditor,
+
+    #[token("SelfReflectionMonitor")]
+    SelfReflectionMonitor,
+
+    // Neural Connection Types
+    #[token("connect_pattern")]
+    ConnectPattern,
+
+    #[token("ConsciousnessGated")]
+    ConsciousnessGatedConnection,
+
+    #[token("Excitatory")]
+    Excitatory,
+
+    #[token("Modulatory")]
+    Modulatory,
+
+    #[token("QuantumEntangled")]
+    QuantumEntangled,
+
+    // Self-Awareness Configuration
+    #[token("configure_self_awareness")]
+    ConfigureSelfAwareness,
+
+    #[token("self_reflection_threshold")]
+    SelfReflectionThreshold,
+
+    #[token("thought_quality_standards")]
+    ThoughtQualityStandards,
+
+    #[token("knowledge_audit_frequency")]
+    KnowledgeAuditFrequency,
+
+    #[token("reasoning_chain_logging")]
+    ReasoningChainLogging,
+
+    #[token("decision_trail_persistence")]
+    DecisionTrailPersistence,
+
+    // Self-Aware Processing Operations
+    #[token("activate_self_awareness")]
+    ActivateSelfAwareness,
+
+    #[token("get_metacognitive_state")]
+    GetMetacognitiveState,
+
+    #[token("current_thought_focus")]
+    CurrentThoughtFocus,
+
+    #[token("self_awareness_level")]
+    SelfAwarenessLevel,
+
+    #[token("process_with_metacognitive_monitoring")]
+    ProcessWithMetacognitiveMonitoring,
+
+    #[token("processing_steps")]
+    ProcessingSteps,
+
+    #[token("assess_reasoning_quality")]
+    AssessReasoningQuality,
+
+    #[token("overall_quality")]
+    OverallQuality,
+
+    #[token("enhance_metacognitive_monitoring")]
+    EnhanceMetacognitiveMonitoring,
+
+    #[token("reprocess_with_enhanced_awareness")]
+    ReprocessWithEnhancedAwareness,
+
+    // Scientific Self-Aware Reasoning
+    #[token("begin_metacognitive_reasoning")]
+    BeginMetacognitiveReasoning,
+
+    #[token("analyze_with_metacognitive_oversight")]
+    AnalyzeWithMetacognitiveOversight,
+
+    #[token("analysis_type")]
+    AnalysisType,
+
+    #[token("get_current_reasoning_state")]
+    GetCurrentReasoningState,
+
+    #[token("focus")]
+    Focus,
+
+    #[token("statistical_quality")]
+    StatisticalQuality,
+
+    #[token("interpret_with_self_awareness")]
+    InterpretWithSelfAwareness,
+
+    #[token("interpretation_context")]
+    InterpretationContext,
+
+    #[token("uncertainty_tracking")]
+    UncertaintyTracking,
+
+    #[token("assess_biological_reasoning")]
+    AssessBiologicalReasoning,
+
+    #[token("uncertainties")]
+    Uncertainties,
+
+    #[token("analyze_pathways_with_metacognition")]
+    AnalyzePathwaysWithMetacognition,
+
+    #[token("metabolites")]
+    Metabolites,
+
+    #[token("self_reflection")]
+    SelfReflection,
+
+    #[token("knowledge_gap_detection")]
+    KnowledgeGapDetection,
+
+    #[token("identify_knowledge_gaps")]
+    IdentifyKnowledgeGaps,
+
+    #[token("significant_metabolites")]
+    SignificantMetabolites,
+
+    #[token("reasoning_quality")]
+    ReasoningQuality,
+
+    #[token("knowledge_gaps")]
+    KnowledgeGaps,
+
+    #[token("metacognitive_state")]
+    MetacognitiveState,
+
+    // Consciousness vs Self-Awareness Comparison
+    #[token("demonstrate_self_awareness_vs_consciousness")]
+    DemonstrateSelfAwarenessVsConsciousness,
+
+    #[token("activate_consciousness")]
+    ActivateConsciousness,
+
+    #[token("analyze_metabolomics")]
+    AnalyzeMetabolomics,
+
+    #[token("conclusion")]
+    Conclusion,
+
+    #[token("confidence")]
+    Confidence,
+
+    #[token("analyze_with_metacognition")]
+    AnalyzeWithMetacognition,
+
+    #[token("reasoning_chain")]
+    ReasoningChain,
+
+    #[token("thought_quality_assessment")]
+    ThoughtQualityAssessment,
+
+    #[token("uncertainties_identified")]
+    UncertaintiesIdentified,
+
+    #[token("knowledge_gaps_identified")]
+    KnowledgeGapsIdentified,
+
+    #[token("decision_history")]
+    DecisionHistory,
+
+    #[token("decision")]
+    Decision,
+
+    #[token("reasoning")]
+    Reasoning,
+
+    #[token("external_knowledge_used")]
+    ExternalKnowledgeUsed,
+
+    #[token("metacognitive_insights")]
+    MetacognitiveInsights,
+
+    // Self-Aware Processing Methods
+    #[token("noise_reduction_with_reasoning_tracking")]
+    NoiseReductionWithReasoningTracking,
+
+    #[token("peak_detection_with_uncertainty_assessment")]
+    PeakDetectionWithUncertaintyAssessment,
+
+    #[token("compound_identification_with_confidence_logging")]
+    CompoundIdentificationWithConfidenceLogging,
+
+    #[token("differential_metabolomics")]
+    DifferentialMetabolomics,
+
+    #[token("metabolic_pathways_diabetes")]
+    MetabolicPathwaysDiabetes,
+
+    // Knowledge Gap Analysis
+    #[token("domain")]
+    Domain,
+
+    #[token("impact_level")]
+    ImpactLevel,
+
+    #[token("description")]
+    Description,
+
+    #[token("impact_on_conclusions")]
+    ImpactOnConclusions,
+
+    // Revolutionary Self-Awareness Achievement
+    #[token("self_aware_system")]
+    SelfAwareSystem,
+
+    #[token("analysis_results")]
+    AnalysisResults,
+
+    #[token("consciousness_comparison")]
+    ConsciousnessComparison,
+
+    #[token("explicit_reasoning_chain_tracking")]
+    ExplicitReasoningChainTracking,
+
+    #[token("real_time_thought_quality_assessment")]
+    RealTimeThoughtQualityAssessment,
+
+    #[token("uncertainty_acknowledgment_and_quantification")]
+    UncertaintyAcknowledgmentAndQuantification,
+
+    #[token("knowledge_gap_identification")]
+    KnowledgeGapIdentification,
+
+    #[token("metacognitive_decision_logging")]
+    MetacognitiveDecisionLogging,
+
+    #[token("self_reflection_on_reasoning_quality")]
+    SelfReflectionOnReasoningQuality,
 }
 
 /// Token represents a token with its type and span (location in source)
@@ -1501,6 +1805,103 @@ impl fmt::Display for TokenKind {
             TokenKind::TajimasDAnalysis => write!(f, "tajimas_d_analysis"),
             TokenKind::IntrogressionAnalysis => write!(f, "introgression_analysis"),
             TokenKind::AdmixtureMapping => write!(f, "admixture_mapping"),
+            TokenKind::NeuralConsciousness => write!(f, "neural_consciousness"),
+            TokenKind::SessionName => write!(f, "session_name"),
+            TokenKind::ConsciousnessLevel => write!(f, "consciousness_level"),
+            TokenKind::SelfAwareness => write!(f, "self_awareness"),
+            TokenKind::MetacognitiveMonitoring => write!(f, "metacognitive_monitoring"),
+            TokenKind::CreateBmdNeuron => write!(f, "create_bmd_neuron"),
+            TokenKind::Activation => write!(f, "activation"),
+            TokenKind::MetacognitiveDepth => write!(f, "metacognitive_depth"),
+            TokenKind::Subsystem => write!(f, "subsystem"),
+            TokenKind::Question => write!(f, "question"),
+            TokenKind::Depth => write!(f, "depth"),
+            TokenKind::Precision => write!(f, "precision"),
+            TokenKind::ConsciousnessGated => write!(f, "consciousness_gated"),
+            TokenKind::Standards => write!(f, "standards"),
+            TokenKind::Efficiency => write!(f, "efficiency"),
+            TokenKind::Thoroughness => write!(f, "thoroughness"),
+            TokenKind::DecisionTrailLogger => write!(f, "DecisionTrailLogger"),
+            TokenKind::MetacognitiveMonitor => write!(f, "MetacognitiveMonitor"),
+            TokenKind::ReasoningChainTracker => write!(f, "ReasoningChainTracker"),
+            TokenKind::SystemStateTracker => write!(f, "SystemStateTracker"),
+            TokenKind::ThoughtQualityAssessor => write!(f, "ThoughtQualityAssessor"),
+            TokenKind::KnowledgeNetworkManager => write!(f, "KnowledgeNetworkManager"),
+            TokenKind::KnowledgeStateAuditor => write!(f, "KnowledgeStateAuditor"),
+            TokenKind::SelfReflectionMonitor => write!(f, "SelfReflectionMonitor"),
+            TokenKind::ConnectPattern => write!(f, "connect_pattern"),
+            TokenKind::ConsciousnessGatedConnection => write!(f, "ConsciousnessGated"),
+            TokenKind::Excitatory => write!(f, "Excitatory"),
+            TokenKind::Modulatory => write!(f, "Modulatory"),
+            TokenKind::QuantumEntangled => write!(f, "QuantumEntangled"),
+            TokenKind::ConfigureSelfAwareness => write!(f, "configure_self_awareness"),
+            TokenKind::SelfReflectionThreshold => write!(f, "self_reflection_threshold"),
+            TokenKind::ThoughtQualityStandards => write!(f, "thought_quality_standards"),
+            TokenKind::KnowledgeAuditFrequency => write!(f, "knowledge_audit_frequency"),
+            TokenKind::ReasoningChainLogging => write!(f, "reasoning_chain_logging"),
+            TokenKind::DecisionTrailPersistence => write!(f, "decision_trail_persistence"),
+            TokenKind::ActivateSelfAwareness => write!(f, "activate_self_awareness"),
+            TokenKind::GetMetacognitiveState => write!(f, "get_metacognitive_state"),
+            TokenKind::CurrentThoughtFocus => write!(f, "current_thought_focus"),
+            TokenKind::SelfAwarenessLevel => write!(f, "self_awareness_level"),
+            TokenKind::ProcessWithMetacognitiveMonitoring => write!(f, "process_with_metacognitive_monitoring"),
+            TokenKind::ProcessingSteps => write!(f, "processing_steps"),
+            TokenKind::AssessReasoningQuality => write!(f, "assess_reasoning_quality"),
+            TokenKind::OverallQuality => write!(f, "overall_quality"),
+            TokenKind::EnhanceMetacognitiveMonitoring => write!(f, "enhance_metacognitive_monitoring"),
+            TokenKind::ReprocessWithEnhancedAwareness => write!(f, "reprocess_with_enhanced_awareness"),
+            TokenKind::BeginMetacognitiveReasoning => write!(f, "begin_metacognitive_reasoning"),
+            TokenKind::AnalyzeWithMetacognitiveOversight => write!(f, "analyze_with_metacognitive_oversight"),
+            TokenKind::AnalysisType => write!(f, "analysis_type"),
+            TokenKind::GetCurrentReasoningState => write!(f, "get_current_reasoning_state"),
+            TokenKind::Focus => write!(f, "focus"),
+            TokenKind::StatisticalQuality => write!(f, "statistical_quality"),
+            TokenKind::InterpretWithSelfAwareness => write!(f, "interpret_with_self_awareness"),
+            TokenKind::InterpretationContext => write!(f, "interpretation_context"),
+            TokenKind::UncertaintyTracking => write!(f, "uncertainty_tracking"),
+            TokenKind::AssessBiologicalReasoning => write!(f, "assess_biological_reasoning"),
+            TokenKind::Uncertainties => write!(f, "uncertainties"),
+            TokenKind::AnalyzePathwaysWithMetacognition => write!(f, "analyze_pathways_with_metacognition"),
+            TokenKind::Metabolites => write!(f, "metabolites"),
+            TokenKind::SelfReflection => write!(f, "self_reflection"),
+            TokenKind::KnowledgeGapDetection => write!(f, "knowledge_gap_detection"),
+            TokenKind::IdentifyKnowledgeGaps => write!(f, "identify_knowledge_gaps"),
+            TokenKind::SignificantMetabolites => write!(f, "significant_metabolites"),
+            TokenKind::ReasoningQuality => write!(f, "reasoning_quality"),
+            TokenKind::KnowledgeGaps => write!(f, "knowledge_gaps"),
+            TokenKind::MetacognitiveState => write!(f, "metacognitive_state"),
+            TokenKind::DemonstrateSelfAwarenessVsConsciousness => write!(f, "demonstrate_self_awareness_vs_consciousness"),
+            TokenKind::ActivateConsciousness => write!(f, "activate_consciousness"),
+            TokenKind::AnalyzeMetabolomics => write!(f, "analyze_metabolomics"),
+            TokenKind::Conclusion => write!(f, "conclusion"),
+            TokenKind::Confidence => write!(f, "confidence"),
+            TokenKind::AnalyzeWithMetacognition => write!(f, "analyze_with_metacognition"),
+            TokenKind::ReasoningChain => write!(f, "reasoning_chain"),
+            TokenKind::ThoughtQualityAssessment => write!(f, "thought_quality_assessment"),
+            TokenKind::UncertaintiesIdentified => write!(f, "uncertainties_identified"),
+            TokenKind::KnowledgeGapsIdentified => write!(f, "knowledge_gaps_identified"),
+            TokenKind::DecisionHistory => write!(f, "decision_history"),
+            TokenKind::Decision => write!(f, "decision"),
+            TokenKind::Reasoning => write!(f, "reasoning"),
+            TokenKind::ExternalKnowledgeUsed => write!(f, "external_knowledge_used"),
+            TokenKind::MetacognitiveInsights => write!(f, "metacognitive_insights"),
+            TokenKind::NoiseReductionWithReasoningTracking => write!(f, "noise_reduction_with_reasoning_tracking"),
+            TokenKind::PeakDetectionWithUncertaintyAssessment => write!(f, "peak_detection_with_uncertainty_assessment"),
+            TokenKind::CompoundIdentificationWithConfidenceLogging => write!(f, "compound_identification_with_confidence_logging"),
+            TokenKind::DifferentialMetabolomics => write!(f, "differential_metabolomics"),
+            TokenKind::MetabolicPathwaysDiabetes => write!(f, "metabolic_pathways_diabetes"),
+            TokenKind::Domain => write!(f, "domain"),
+            TokenKind::ImpactLevel => write!(f, "impact_level"),
+            TokenKind::ImpactOnConclusions => write!(f, "impact_on_conclusions"),
+            TokenKind::SelfAwareSystem => write!(f, "self_aware_system"),
+            TokenKind::AnalysisResults => write!(f, "analysis_results"),
+            TokenKind::ConsciousnessComparison => write!(f, "consciousness_comparison"),
+            TokenKind::ExplicitReasoningChainTracking => write!(f, "explicit_reasoning_chain_tracking"),
+            TokenKind::RealTimeThoughtQualityAssessment => write!(f, "real_time_thought_quality_assessment"),
+            TokenKind::UncertaintyAcknowledgmentAndQuantification => write!(f, "uncertainty_acknowledgment_and_quantification"),
+            TokenKind::KnowledgeGapIdentification => write!(f, "knowledge_gap_identification"),
+            TokenKind::MetacognitiveDecisionLogging => write!(f, "metacognitive_decision_logging"),
+            TokenKind::SelfReflectionOnReasoningQuality => write!(f, "self_reflection_on_reasoning_quality"),
             _ => write!(f, "{:?}", self),
         }
     }

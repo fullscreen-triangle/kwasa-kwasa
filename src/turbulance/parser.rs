@@ -363,6 +363,92 @@ impl Parser {
             return self.import_statement();
         }
         
+        // Bene Gesserit masterclass constructs
+        if self.match_token(&[TokenKind::SuccessFramework]) {
+            return self.success_framework_declaration();
+        }
+        
+        if self.match_token(&[TokenKind::BiologicalComputer]) {
+            return self.biological_computer_declaration();
+        }
+        
+        if self.match_token(&[TokenKind::PatternAnalysis]) {
+            return self.pattern_analysis_block();
+        }
+        
+        if self.match_token(&[TokenKind::SpatiotemporalAnalysis]) {
+            return self.spatiotemporal_analysis_block();
+        }
+        
+        if self.match_token(&[TokenKind::DataProcessing]) {
+            return self.data_processing_block();
+        }
+        
+        if self.match_token(&[TokenKind::UncertaintyPropagation]) {
+            return self.uncertainty_propagation_block();
+        }
+        
+        if self.match_token(&[TokenKind::CausalAnalysis]) {
+            return self.causal_analysis_block();
+        }
+        
+        if self.match_token(&[TokenKind::BiasAnalysis]) {
+            return self.bias_analysis_block();
+        }
+        
+        if self.match_token(&[TokenKind::QuantumClassicalInterface]) {
+            return self.quantum_classical_interface_block();
+        }
+        
+        // Imhotep Framework: Revolutionary Self-Aware Neural Networks
+        if self.match_token(&[TokenKind::NeuralConsciousness]) {
+            return self.neural_consciousness_declaration();
+        }
+        
+        if self.match_token(&[TokenKind::CreateBmdNeuron]) {
+            return self.create_bmd_neuron_statement();
+        }
+        
+        if self.match_token(&[TokenKind::ConnectPattern]) {
+            return self.connect_pattern_statement();
+        }
+        
+        if self.match_token(&[TokenKind::ConfigureSelfAwareness]) {
+            return self.configure_self_awareness_statement();
+        }
+        
+        if self.match_token(&[TokenKind::ActivateSelfAwareness]) {
+            return self.activate_self_awareness_statement();
+        }
+        
+        if self.match_token(&[TokenKind::ProcessWithMetacognitiveMonitoring]) {
+            return self.process_with_metacognitive_monitoring_statement();
+        }
+        
+        if self.match_token(&[TokenKind::AssessReasoningQuality]) {
+            return self.assess_reasoning_quality_statement();
+        }
+        
+        if self.match_token(&[TokenKind::BeginMetacognitiveReasoning]) {
+            return self.begin_metacognitive_reasoning_statement();
+        }
+        
+        if self.match_token(&[TokenKind::AnalyzeWithMetacognitiveOversight]) {
+            return self.analyze_with_metacognitive_oversight_statement();
+        }
+        
+        if self.match_token(&[TokenKind::InterpretWithSelfAwareness]) {
+            return self.interpret_with_self_awareness_statement();
+        }
+        
+        if self.match_token(&[TokenKind::AnalyzePathwaysWithMetacognition]) {
+            return self.analyze_pathways_with_metacognition_statement();
+        }
+        
+        if self.match_token(&[TokenKind::DemonstrateSelfAwarenessVsConsciousness]) {
+            return self.demonstrate_self_awareness_vs_consciousness_statement();
+        }
+        
         self.expression_statement()
     }
     
@@ -1131,6 +1217,1511 @@ impl Parser {
             value: Box::new(content),
             span,
         })
+    }
+
+    fn parse_boolean(&mut self) -> Result<bool, ParseError> {
+        if let Some(token) = self.advance() {
+            match token.kind {
+                TokenKind::True => Ok(true),
+                TokenKind::False => Ok(false),
+                TokenKind::Identifier(name) if name == "true" => Ok(true),
+                TokenKind::Identifier(name) if name == "false" => Ok(false),
+                _ => Err(ParseError::UnexpectedToken(format!("Expected boolean value, found {:?}", token.kind))),
+            }
+        } else {
+            Err(ParseError::UnexpectedToken("Expected boolean value".to_string()))
+        }
+    }
+
+    // Helper parsing methods for Bene Gesserit constructs
+    fn parse_quantum_targets(&mut self) -> Result<Vec<QuantumTarget>, ParseError> {
+        let mut targets = Vec::new();
+        
+        if self.match_token(&[TokenKind::LeftBrace]) {
+            while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+                let start_pos = self.current_position();
+                
+                let name = if let Some(token) = self.advance() {
+                    match token.kind {
+                        TokenKind::Identifier(name) => name,
+                        _ => return Err(ParseError::UnexpectedToken("Expected quantum target name".to_string())),
+                    }
+                } else {
+                    return Err(ParseError::UnexpectedToken("Expected quantum target name".to_string()));
+                };
+                
+                self.consume(TokenKind::Colon, "Expected ':' after quantum target name")?;
+                
+                let quantum_state = if let Some(token) = self.advance() {
+                    match token.kind {
+                        TokenKind::String(s) => s,
+                        TokenKind::Identifier(name) => name,
+                        _ => return Err(ParseError::UnexpectedToken("Expected quantum state".to_string())),
+                    }
+                } else {
+                    return Err(ParseError::UnexpectedToken("Expected quantum state".to_string()));
+                };
+                
+                let end_pos = self.current_position();
+                
+                targets.push(QuantumTarget {
+                    name,
+                    quantum_state,
+                    span: Span::new(start_pos, end_pos),
+                });
+                
+                if self.match_token(&[TokenKind::Comma]) {
+                    continue;
+                }
+                break;
+            }
+            
+            self.consume(TokenKind::RightBrace, "Expected '}' after quantum targets")?;
+        }
+        
+        Ok(targets)
+    }
+
+    fn parse_oscillatory_dynamics(&mut self) -> Result<Vec<OscillatoryDynamic>, ParseError> {
+        let mut dynamics = Vec::new();
+        
+        if self.match_token(&[TokenKind::LeftBrace]) {
+            while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+                let start_pos = self.current_position();
+                
+                let name = if let Some(token) = self.advance() {
+                    match token.kind {
+                        TokenKind::Identifier(name) => name,
+                        _ => return Err(ParseError::UnexpectedToken("Expected oscillatory dynamic name".to_string())),
+                    }
+                } else {
+                    return Err(ParseError::UnexpectedToken("Expected oscillatory dynamic name".to_string()));
+                };
+                
+                self.consume(TokenKind::Colon, "Expected ':' after oscillatory dynamic name")?;
+                
+                let frequency = self.expression()?;
+                
+                let end_pos = self.current_position();
+                
+                dynamics.push(OscillatoryDynamic {
+                    name,
+                    frequency,
+                    span: Span::new(start_pos, end_pos),
+                });
+                
+                if self.match_token(&[TokenKind::Comma]) {
+                    continue;
+                }
+                break;
+            }
+            
+            self.consume(TokenKind::RightBrace, "Expected '}' after oscillatory dynamics")?;
+        }
+        
+        Ok(dynamics)
+    }
+
+    fn parse_molecular_patterns(&mut self) -> Result<MolecularPatternAnalysis, ParseError> {
+        let start_pos = self.current_position();
+        
+        let mut binding_pose_clustering = None;
+        let mut pharmacophore_identification = None;
+        let mut admet_pattern_detection = None;
+        
+        if self.match_token(&[TokenKind::LeftBrace]) {
+            while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+                if self.match_token(&[TokenKind::BindingPoseClustering]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'binding_pose_clustering'")?;
+                    binding_pose_clustering = Some(self.parse_clustering_parameters()?);
+                } else if self.match_token(&[TokenKind::PharmacophoreIdentification]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'pharmacophore_identification'")?;
+                    pharmacophore_identification = Some(self.expression()?);
+                } else if self.match_token(&[TokenKind::AdmetPatternDetection]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'admet_pattern_detection'")?;
+                    admet_pattern_detection = Some(self.expression()?);
+                } else {
+                    break;
+                }
+                
+                if self.match_token(&[TokenKind::Comma]) {
+                    continue;
+                }
+            }
+            
+            self.consume(TokenKind::RightBrace, "Expected '}' after molecular patterns")?;
+        }
+        
+        let end_pos = self.current_position();
+        
+        Ok(MolecularPatternAnalysis {
+            binding_pose_clustering,
+            pharmacophore_identification,
+            admet_pattern_detection,
+            span: Span::new(start_pos, end_pos),
+        })
+    }
+
+    fn parse_clustering_parameters(&mut self) -> Result<ClusteringParameters, ParseError> {
+        let start_pos = self.current_position();
+        
+        let method = if let Some(token) = self.advance() {
+            match token.kind {
+                TokenKind::Identifier(name) => name,
+                TokenKind::String(s) => s,
+                _ => return Err(ParseError::UnexpectedToken("Expected clustering method".to_string())),
+            }
+        } else {
+            return Err(ParseError::UnexpectedToken("Expected clustering method".to_string()));
+        };
+        
+        let mut eps = None;
+        let mut min_samples = None;
+        
+        if self.match_token(&[TokenKind::LeftParen]) {
+            while !self.check(&TokenKind::RightParen) && !self.is_at_end() {
+                if self.match_token(&[TokenKind::Eps]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'eps'")?;
+                    eps = Some(self.expression()?);
+                } else if self.match_token(&[TokenKind::MinSamples]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'min_samples'")?;
+                    min_samples = Some(self.expression()?);
+                } else {
+                    break;
+                }
+                
+                if self.match_token(&[TokenKind::Comma]) {
+                    continue;
+                }
+            }
+            
+            self.consume(TokenKind::RightParen, "Expected ')' after clustering parameters")?;
+        }
+        
+        let end_pos = self.current_position();
+        
+        Ok(ClusteringParameters {
+            method,
+            eps,
+            min_samples,
+            span: Span::new(start_pos, end_pos),
+        })
+    }
+
+    fn parse_clinical_patterns(&mut self) -> Result<ClinicalPatternAnalysis, ParseError> {
+        let start_pos = self.current_position();
+        
+        let mut responder_phenotyping = None;
+        let mut disease_progression_trajectories = None;
+        let mut adverse_event_clustering = None;
+        
+        if self.match_token(&[TokenKind::LeftBrace]) {
+            while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+                if self.match_token(&[TokenKind::ResponderPhenotyping]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'responder_phenotyping'")?;
+                    responder_phenotyping = Some(self.parse_gaussian_mixture_parameters()?);
+                } else if self.match_token(&[TokenKind::DiseaseProgressionTrajectories]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'disease_progression_trajectories'")?;
+                    disease_progression_trajectories = Some(self.expression()?);
+                } else if self.match_token(&[TokenKind::AdverseEventClustering]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'adverse_event_clustering'")?;
+                    adverse_event_clustering = Some(self.expression()?);
+                } else {
+                    break;
+                }
+                
+                if self.match_token(&[TokenKind::Comma]) {
+                    continue;
+                }
+            }
+            
+            self.consume(TokenKind::RightBrace, "Expected '}' after clinical patterns")?;
+        }
+        
+        let end_pos = self.current_position();
+        
+        Ok(ClinicalPatternAnalysis {
+            responder_phenotyping,
+            disease_progression_trajectories,
+            adverse_event_clustering,
+            span: Span::new(start_pos, end_pos),
+        })
+    }
+
+    fn parse_gaussian_mixture_parameters(&mut self) -> Result<GaussianMixtureParameters, ParseError> {
+        let start_pos = self.current_position();
+        
+        if self.match_token(&[TokenKind::LeftParen]) {
+            self.consume(TokenKind::NComponents, "Expected 'n_components' parameter")?;
+            self.consume(TokenKind::Colon, "Expected ':' after 'n_components'")?;
+            let n_components = self.expression()?;
+            self.consume(TokenKind::RightParen, "Expected ')' after gaussian mixture parameters")?;
+            
+            let end_pos = self.current_position();
+            
+            Ok(GaussianMixtureParameters {
+                n_components,
+                span: Span::new(start_pos, end_pos),
+            })
+        } else {
+            Err(ParseError::UnexpectedToken("Expected '(' after gaussian mixture model".to_string()))
+        }
+    }
+
+    fn parse_omics_integration(&mut self) -> Result<OmicsIntegrationAnalysis, ParseError> {
+        let start_pos = self.current_position();
+        
+        let mut multi_block_pls = None;
+        let mut network_medicine_analysis = None;
+        let mut pathway_enrichment = None;
+        
+        if self.match_token(&[TokenKind::LeftBrace]) {
+            while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+                if self.match_token(&[TokenKind::MultiBlockPls]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'multi_block_pls'")?;
+                    multi_block_pls = Some(self.expression()?);
+                } else if self.match_token(&[TokenKind::NetworkMedicineAnalysis]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'network_medicine_analysis'")?;
+                    network_medicine_analysis = Some(self.expression()?);
+                } else if self.match_token(&[TokenKind::PathwayEnrichment]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'pathway_enrichment'")?;
+                    pathway_enrichment = Some(self.expression()?);
+                } else {
+                    break;
+                }
+                
+                if self.match_token(&[TokenKind::Comma]) {
+                    continue;
+                }
+            }
+            
+            self.consume(TokenKind::RightBrace, "Expected '}' after omics integration")?;
+        }
+        
+        let end_pos = self.current_position();
+        
+        Ok(OmicsIntegrationAnalysis {
+            multi_block_pls,
+            network_medicine_analysis,
+            pathway_enrichment,
+            span: Span::new(start_pos, end_pos),
+        })
+    }
+
+    fn parse_spatial_modeling(&mut self) -> Result<SpatialModelingAnalysis, ParseError> {
+        let start_pos = self.current_position();
+        
+        let mut local_adaptation = None;
+        let mut environmental_gradients = None;
+        let mut population_structure = None;
+        let mut migration_patterns = None;
+        
+        if self.match_token(&[TokenKind::LeftBrace]) {
+            while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+                if self.match_token(&[TokenKind::LocalAdaptation]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'local_adaptation'")?;
+                    local_adaptation = Some(self.expression()?);
+                } else if self.match_token(&[TokenKind::EnvironmentalGradients]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'environmental_gradients'")?;
+                    environmental_gradients = Some(self.expression()?);
+                } else if self.match_token(&[TokenKind::PopulationStructure]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'population_structure'")?;
+                    population_structure = Some(self.expression()?);
+                } else if self.match_token(&[TokenKind::MigrationPatterns]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'migration_patterns'")?;
+                    migration_patterns = Some(self.expression()?);
+                } else {
+                    break;
+                }
+                
+                if self.match_token(&[TokenKind::Comma]) {
+                    continue;
+                }
+            }
+            
+            self.consume(TokenKind::RightBrace, "Expected '}' after spatial modeling")?;
+        }
+        
+        let end_pos = self.current_position();
+        
+        Ok(SpatialModelingAnalysis {
+            local_adaptation,
+            environmental_gradients,
+            population_structure,
+            migration_patterns,
+            span: Span::new(start_pos, end_pos),
+        })
+    }
+
+    fn parse_temporal_modeling(&mut self) -> Result<TemporalModelingAnalysis, ParseError> {
+        let start_pos = self.current_position();
+        
+        let mut evolutionary_trajectories = None;
+        let mut selection_dynamics = None;
+        let mut demographic_inference = None;
+        let mut cultural_evolution = None;
+        
+        if self.match_token(&[TokenKind::LeftBrace]) {
+            while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+                if self.match_token(&[TokenKind::EvolutionaryTrajectories]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'evolutionary_trajectories'")?;
+                    evolutionary_trajectories = Some(self.expression()?);
+                } else if self.match_token(&[TokenKind::SelectionDynamics]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'selection_dynamics'")?;
+                    selection_dynamics = Some(self.expression()?);
+                } else if self.match_token(&[TokenKind::DemographicInference]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'demographic_inference'")?;
+                    demographic_inference = Some(self.expression()?);
+                } else if self.match_token(&[TokenKind::CulturalEvolution]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'cultural_evolution'")?;
+                    cultural_evolution = Some(self.expression()?);
+                } else {
+                    break;
+                }
+                
+                if self.match_token(&[TokenKind::Comma]) {
+                    continue;
+                }
+            }
+            
+            self.consume(TokenKind::RightBrace, "Expected '}' after temporal modeling")?;
+        }
+        
+        let end_pos = self.current_position();
+        
+        Ok(TemporalModelingAnalysis {
+            evolutionary_trajectories,
+            selection_dynamics,
+            demographic_inference,
+            cultural_evolution,
+            span: Span::new(start_pos, end_pos),
+        })
+    }
+
+    fn parse_association_analysis(&mut self) -> Result<AssociationAnalysis, ParseError> {
+        let start_pos = self.current_position();
+        
+        let mut environmental_gwas = None;
+        let mut polygenic_adaptation = None;
+        let mut balancing_selection = None;
+        let mut introgression_analysis = None;
+        
+        if self.match_token(&[TokenKind::LeftBrace]) {
+            while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+                if self.match_token(&[TokenKind::EnvironmentalGwas]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'environmental_gwas'")?;
+                    environmental_gwas = Some(self.expression()?);
+                } else if self.match_token(&[TokenKind::PolygenicAdaptation]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'polygenic_adaptation'")?;
+                    polygenic_adaptation = Some(self.expression()?);
+                } else if self.match_token(&[TokenKind::BalancingSelection]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'balancing_selection'")?;
+                    balancing_selection = Some(self.expression()?);
+                } else if self.match_token(&[TokenKind::IntrogressionAnalysis]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'introgression_analysis'")?;
+                    introgression_analysis = Some(self.expression()?);
+                } else {
+                    break;
+                }
+                
+                if self.match_token(&[TokenKind::Comma]) {
+                    continue;
+                }
+            }
+            
+            self.consume(TokenKind::RightBrace, "Expected '}' after association analysis")?;
+        }
+        
+        let end_pos = self.current_position();
+        
+        Ok(AssociationAnalysis {
+            environmental_gwas,
+            polygenic_adaptation,
+            balancing_selection,
+            introgression_analysis,
+            span: Span::new(start_pos, end_pos),
+        })
+    }
+
+    fn parse_quality_control(&mut self) -> Result<QualityControlParameters, ParseError> {
+        let start_pos = self.current_position();
+        
+        let mut missing_data_threshold = None;
+        let mut outlier_detection = None;
+        let mut batch_effect_correction = None;
+        let mut technical_replicate_correlation = None;
+        
+        if self.match_token(&[TokenKind::LeftBrace]) {
+            while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+                if self.match_token(&[TokenKind::MissingDataThreshold]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'missing_data_threshold'")?;
+                    missing_data_threshold = Some(self.expression()?);
+                } else if self.match_token(&[TokenKind::OutlierDetection]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'outlier_detection'")?;
+                    outlier_detection = Some(self.parse_outlier_detection_parameters()?);
+                } else if self.match_token(&[TokenKind::BatchEffectCorrection]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'batch_effect_correction'")?;
+                    batch_effect_correction = Some(self.expression()?);
+                } else if self.match_token(&[TokenKind::TechnicalReplicateCorrelation]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'technical_replicate_correlation'")?;
+                    technical_replicate_correlation = Some(self.expression()?);
+                } else {
+                    break;
+                }
+                
+                if self.match_token(&[TokenKind::Comma]) {
+                    continue;
+                }
+            }
+            
+            self.consume(TokenKind::RightBrace, "Expected '}' after quality control")?;
+        }
+        
+        let end_pos = self.current_position();
+        
+        Ok(QualityControlParameters {
+            missing_data_threshold,
+            outlier_detection,
+            batch_effect_correction,
+            technical_replicate_correlation,
+            span: Span::new(start_pos, end_pos),
+        })
+    }
+
+    fn parse_outlier_detection_parameters(&mut self) -> Result<OutlierDetectionParameters, ParseError> {
+        let start_pos = self.current_position();
+        
+        let method = if let Some(token) = self.advance() {
+            match token.kind {
+                TokenKind::Identifier(name) => name,
+                TokenKind::String(s) => s,
+                _ => return Err(ParseError::UnexpectedToken("Expected outlier detection method".to_string())),
+            }
+        } else {
+            return Err(ParseError::UnexpectedToken("Expected outlier detection method".to_string()));
+        };
+        
+        let mut contamination = None;
+        
+        if self.match_token(&[TokenKind::LeftParen]) {
+            while !self.check(&TokenKind::RightParen) && !self.is_at_end() {
+                if self.match_token(&[TokenKind::Contamination]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'contamination'")?;
+                    contamination = Some(self.expression()?);
+                } else {
+                    break;
+                }
+                
+                if self.match_token(&[TokenKind::Comma]) {
+                    continue;
+                }
+            }
+            
+            self.consume(TokenKind::RightParen, "Expected ')' after outlier detection parameters")?;
+        }
+        
+        let end_pos = self.current_position();
+        
+        Ok(OutlierDetectionParameters {
+            method,
+            contamination,
+            span: Span::new(start_pos, end_pos),
+        })
+    }
+
+    fn parse_harmonization(&mut self) -> Result<HarmonizationParameters, ParseError> {
+        let start_pos = self.current_position();
+        
+        let mut unit_standardization = None;
+        let mut temporal_alignment = None;
+        let mut population_stratification = None;
+        let mut covariate_adjustment = None;
+        
+        if self.match_token(&[TokenKind::LeftBrace]) {
+            while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+                if self.match_token(&[TokenKind::UnitStandardization]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'unit_standardization'")?;
+                    unit_standardization = Some(self.expression()?);
+                } else if self.match_token(&[TokenKind::TemporalAlignment]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'temporal_alignment'")?;
+                    temporal_alignment = Some(self.expression()?);
+                } else if self.match_token(&[TokenKind::PopulationStratification]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'population_stratification'")?;
+                    population_stratification = Some(self.expression()?);
+                } else if self.match_token(&[TokenKind::CovariateAdjustment]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'covariate_adjustment'")?;
+                    covariate_adjustment = Some(self.expression()?);
+                } else {
+                    break;
+                }
+                
+                if self.match_token(&[TokenKind::Comma]) {
+                    continue;
+                }
+            }
+            
+            self.consume(TokenKind::RightBrace, "Expected '}' after harmonization")?;
+        }
+        
+        let end_pos = self.current_position();
+        
+        Ok(HarmonizationParameters {
+            unit_standardization,
+            temporal_alignment,
+            population_stratification,
+            covariate_adjustment,
+            span: Span::new(start_pos, end_pos),
+        })
+    }
+
+    fn parse_feature_engineering(&mut self) -> Result<FeatureEngineeringParameters, ParseError> {
+        let start_pos = self.current_position();
+        
+        let mut molecular_descriptors = None;
+        let mut clinical_composite_scores = None;
+        let mut time_series_features = None;
+        let mut network_features = None;
+        
+        if self.match_token(&[TokenKind::LeftBrace]) {
+            while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+                if self.match_token(&[TokenKind::MolecularDescriptors]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'molecular_descriptors'")?;
+                    molecular_descriptors = Some(self.expression()?);
+                } else if self.match_token(&[TokenKind::ClinicalCompositeScores]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'clinical_composite_scores'")?;
+                    clinical_composite_scores = Some(self.expression()?);
+                } else if self.match_token(&[TokenKind::TimeSeriesFeatures]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'time_series_features'")?;
+                    time_series_features = Some(self.expression()?);
+                } else if self.match_token(&[TokenKind::NetworkFeatures]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'network_features'")?;
+                    network_features = Some(self.expression()?);
+                } else {
+                    break;
+                }
+                
+                if self.match_token(&[TokenKind::Comma]) {
+                    continue;
+                }
+            }
+            
+            self.consume(TokenKind::RightBrace, "Expected '}' after feature engineering")?;
+        }
+        
+        let end_pos = self.current_position();
+        
+        Ok(FeatureEngineeringParameters {
+            molecular_descriptors,
+            clinical_composite_scores,
+            time_series_features,
+            network_features,
+            span: Span::new(start_pos, end_pos),
+        })
+    }
+
+    fn parse_uncertainty_component(&mut self) -> Result<UncertaintyComponent, ParseError> {
+        let start_pos = self.current_position();
+        
+        if self.match_token(&[TokenKind::LeftBrace]) {
+            let mut source = String::new();
+            let mut quantification = String::new();
+            let mut propagation = String::new();
+            
+            while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+                if self.check(&TokenKind::Identifier) {
+                    if let Some(token) = self.peek() {
+                        if let TokenKind::Identifier(name) = &token.kind {
+                            match name.as_str() {
+                                "source" => {
+                                    self.advance();
+                                    self.consume(TokenKind::Colon, "Expected ':' after 'source'")?;
+                                    source = self.parse_string_value()?;
+                                }
+                                "quantification" => {
+                                    self.advance();
+                                    self.consume(TokenKind::Colon, "Expected ':' after 'quantification'")?;
+                                    quantification = self.parse_string_value()?;
+                                }
+                                "propagation" => {
+                                    self.advance();
+                                    self.consume(TokenKind::Colon, "Expected ':' after 'propagation'")?;
+                                    propagation = self.parse_string_value()?;
+                                }
+                                _ => break,
+                            }
+                        }
+                    }
+                } else {
+                    break;
+                }
+                
+                if self.match_token(&[TokenKind::Comma]) {
+                    continue;
+                }
+            }
+            
+            self.consume(TokenKind::RightBrace, "Expected '}' after uncertainty component")?;
+            
+            let end_pos = self.current_position();
+            
+            Ok(UncertaintyComponent {
+                source,
+                quantification,
+                propagation,
+                span: Span::new(start_pos, end_pos),
+            })
+        } else {
+            Err(ParseError::UnexpectedToken("Expected '{' for uncertainty component".to_string()))
+        }
+    }
+
+    fn parse_causal_method(&mut self) -> Result<CausalMethod, ParseError> {
+        let start_pos = self.current_position();
+        
+        if self.match_token(&[TokenKind::LeftBrace]) {
+            let mut method = String::new();
+            let mut adjustment = None;
+            let mut validation = None;
+            
+            while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+                if self.check(&TokenKind::Identifier) {
+                    if let Some(token) = self.peek() {
+                        if let TokenKind::Identifier(name) = &token.kind {
+                            match name.as_str() {
+                                "method" => {
+                                    self.advance();
+                                    self.consume(TokenKind::Colon, "Expected ':' after 'method'")?;
+                                    method = self.parse_string_value()?;
+                                }
+                                "adjustment" => {
+                                    self.advance();
+                                    self.consume(TokenKind::Colon, "Expected ':' after 'adjustment'")?;
+                                    adjustment = Some(self.parse_string_value()?);
+                                }
+                                "validation" => {
+                                    self.advance();
+                                    self.consume(TokenKind::Colon, "Expected ':' after 'validation'")?;
+                                    validation = Some(self.parse_string_value()?);
+                                }
+                                _ => break,
+                            }
+                        }
+                    }
+                } else {
+                    break;
+                }
+                
+                if self.match_token(&[TokenKind::Comma]) {
+                    continue;
+                }
+            }
+            
+            self.consume(TokenKind::RightBrace, "Expected '}' after causal method")?;
+            
+            let end_pos = self.current_position();
+            
+            Ok(CausalMethod {
+                method,
+                adjustment,
+                validation,
+                span: Span::new(start_pos, end_pos),
+            })
+        } else {
+            Err(ParseError::UnexpectedToken("Expected '{' for causal method".to_string()))
+        }
+    }
+
+    fn parse_bias_component(&mut self) -> Result<BiasComponent, ParseError> {
+        let start_pos = self.current_position();
+        
+        if self.match_token(&[TokenKind::LeftBrace]) {
+            let mut detection = String::new();
+            let mut severity_assessment = String::new();
+            let mut mitigation = String::new();
+            let mut monitoring = String::new();
+            
+            while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+                if self.check(&TokenKind::Identifier) {
+                    if let Some(token) = self.peek() {
+                        if let TokenKind::Identifier(name) = &token.kind {
+                            match name.as_str() {
+                                "detection" => {
+                                    self.advance();
+                                    self.consume(TokenKind::Colon, "Expected ':' after 'detection'")?;
+                                    detection = self.parse_string_value()?;
+                                }
+                                "severity_assessment" => {
+                                    self.advance();
+                                    self.consume(TokenKind::Colon, "Expected ':' after 'severity_assessment'")?;
+                                    severity_assessment = self.parse_string_value()?;
+                                }
+                                "mitigation" => {
+                                    self.advance();
+                                    self.consume(TokenKind::Colon, "Expected ':' after 'mitigation'")?;
+                                    mitigation = self.parse_string_value()?;
+                                }
+                                "monitoring" => {
+                                    self.advance();
+                                    self.consume(TokenKind::Colon, "Expected ':' after 'monitoring'")?;
+                                    monitoring = self.parse_string_value()?;
+                                }
+                                _ => break,
+                            }
+                        }
+                    }
+                } else {
+                    break;
+                }
+                
+                if self.match_token(&[TokenKind::Comma]) {
+                    continue;
+                }
+            }
+            
+            self.consume(TokenKind::RightBrace, "Expected '}' after bias component")?;
+            
+            let end_pos = self.current_position();
+            
+            Ok(BiasComponent {
+                detection,
+                severity_assessment,
+                mitigation,
+                monitoring,
+                span: Span::new(start_pos, end_pos),
+            })
+        } else {
+            Err(ParseError::UnexpectedToken("Expected '{' for bias component".to_string()))
+        }
+    }
+
+    fn parse_coherence_analysis(&mut self) -> Result<CoherenceAnalysis, ParseError> {
+        let start_pos = self.current_position();
+        
+        if self.match_token(&[TokenKind::LeftBrace]) {
+            let mut coherence_time_measurement = String::new();
+            let mut decoherence_pathway_analysis = String::new();
+            let mut environmental_coupling_analysis = String::new();
+            let mut coherence_protection_mechanisms = String::new();
+            
+            while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+                if self.check(&TokenKind::Identifier) {
+                    if let Some(token) = self.peek() {
+                        if let TokenKind::Identifier(name) = &token.kind {
+                            match name.as_str() {
+                                "coherence_time_measurement" => {
+                                    self.advance();
+                                    self.consume(TokenKind::Colon, "Expected ':' after 'coherence_time_measurement'")?;
+                                    coherence_time_measurement = self.parse_string_value()?;
+                                }
+                                "decoherence_pathway_analysis" => {
+                                    self.advance();
+                                    self.consume(TokenKind::Colon, "Expected ':' after 'decoherence_pathway_analysis'")?;
+                                    decoherence_pathway_analysis = self.parse_string_value()?;
+                                }
+                                "environmental_coupling_analysis" => {
+                                    self.advance();
+                                    self.consume(TokenKind::Colon, "Expected ':' after 'environmental_coupling_analysis'")?;
+                                    environmental_coupling_analysis = self.parse_string_value()?;
+                                }
+                                "coherence_protection_mechanisms" => {
+                                    self.advance();
+                                    self.consume(TokenKind::Colon, "Expected ':' after 'coherence_protection_mechanisms'")?;
+                                    coherence_protection_mechanisms = self.parse_string_value()?;
+                                }
+                                _ => break,
+                            }
+                        }
+                    }
+                } else {
+                    break;
+                }
+                
+                if self.match_token(&[TokenKind::Comma]) {
+                    continue;
+                }
+            }
+            
+            self.consume(TokenKind::RightBrace, "Expected '}' after coherence analysis")?;
+            
+            let end_pos = self.current_position();
+            
+            Ok(CoherenceAnalysis {
+                coherence_time_measurement,
+                decoherence_pathway_analysis,
+                environmental_coupling_analysis,
+                coherence_protection_mechanisms,
+                span: Span::new(start_pos, end_pos),
+            })
+        } else {
+            Err(ParseError::UnexpectedToken("Expected '{' for coherence analysis".to_string()))
+        }
+    }
+
+    fn parse_neural_quantum_correlation(&mut self) -> Result<NeuralQuantumCorrelation, ParseError> {
+        let start_pos = self.current_position();
+        
+        if self.match_token(&[TokenKind::LeftBrace]) {
+            let mut phase_locking_analysis = String::new();
+            let mut quantum_neural_synchronization = String::new();
+            let mut information_theoretic_analysis = String::new();
+            let mut causal_analysis = String::new();
+            
+            while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+                if self.check(&TokenKind::Identifier) {
+                    if let Some(token) = self.peek() {
+                        if let TokenKind::Identifier(name) = &token.kind {
+                            match name.as_str() {
+                                "phase_locking_analysis" => {
+                                    self.advance();
+                                    self.consume(TokenKind::Colon, "Expected ':' after 'phase_locking_analysis'")?;
+                                    phase_locking_analysis = self.parse_string_value()?;
+                                }
+                                "quantum_neural_synchronization" => {
+                                    self.advance();
+                                    self.consume(TokenKind::Colon, "Expected ':' after 'quantum_neural_synchronization'")?;
+                                    quantum_neural_synchronization = self.parse_string_value()?;
+                                }
+                                "information_theoretic_analysis" => {
+                                    self.advance();
+                                    self.consume(TokenKind::Colon, "Expected ':' after 'information_theoretic_analysis'")?;
+                                    information_theoretic_analysis = self.parse_string_value()?;
+                                }
+                                "causal_analysis" => {
+                                    self.advance();
+                                    self.consume(TokenKind::Colon, "Expected ':' after 'causal_analysis'")?;
+                                    causal_analysis = self.parse_string_value()?;
+                                }
+                                _ => break,
+                            }
+                        }
+                    }
+                } else {
+                    break;
+                }
+                
+                if self.match_token(&[TokenKind::Comma]) {
+                    continue;
+                }
+            }
+            
+            self.consume(TokenKind::RightBrace, "Expected '}' after neural quantum correlation")?;
+            
+            let end_pos = self.current_position();
+            
+            Ok(NeuralQuantumCorrelation {
+                phase_locking_analysis,
+                quantum_neural_synchronization,
+                information_theoretic_analysis,
+                causal_analysis,
+                span: Span::new(start_pos, end_pos),
+            })
+        } else {
+            Err(ParseError::UnexpectedToken("Expected '{' for neural quantum correlation".to_string()))
+        }
+    }
+
+    fn parse_consciousness_classification(&mut self) -> Result<ConsciousnessClassification, ParseError> {
+        let start_pos = self.current_position();
+        
+        if self.match_token(&[TokenKind::LeftBrace]) {
+            let mut machine_learning_classification = String::new();
+            let mut bayesian_state_estimation = String::new();
+            let mut hidden_markov_modeling = String::new();
+            let mut neural_network_analysis = String::new();
+            
+            while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+                if self.check(&TokenKind::Identifier) {
+                    if let Some(token) = self.peek() {
+                        if let TokenKind::Identifier(name) = &token.kind {
+                            match name.as_str() {
+                                "machine_learning_classification" => {
+                                    self.advance();
+                                    self.consume(TokenKind::Colon, "Expected ':' after 'machine_learning_classification'")?;
+                                    machine_learning_classification = self.parse_string_value()?;
+                                }
+                                "bayesian_state_estimation" => {
+                                    self.advance();
+                                    self.consume(TokenKind::Colon, "Expected ':' after 'bayesian_state_estimation'")?;
+                                    bayesian_state_estimation = self.parse_string_value()?;
+                                }
+                                "hidden_markov_modeling" => {
+                                    self.advance();
+                                    self.consume(TokenKind::Colon, "Expected ':' after 'hidden_markov_modeling'")?;
+                                    hidden_markov_modeling = self.parse_string_value()?;
+                                }
+                                "neural_network_analysis" => {
+                                    self.advance();
+                                    self.consume(TokenKind::Colon, "Expected ':' after 'neural_network_analysis'")?;
+                                    neural_network_analysis = self.parse_string_value()?;
+                                }
+                                _ => break,
+                            }
+                        }
+                    }
+                } else {
+                    break;
+                }
+                
+                if self.match_token(&[TokenKind::Comma]) {
+                    continue;
+                }
+            }
+            
+            self.consume(TokenKind::RightBrace, "Expected '}' after consciousness classification")?;
+            
+            let end_pos = self.current_position();
+            
+            Ok(ConsciousnessClassification {
+                machine_learning_classification,
+                bayesian_state_estimation,
+                hidden_markov_modeling,
+                neural_network_analysis,
+                span: Span::new(start_pos, end_pos),
+            })
+        } else {
+            Err(ParseError::UnexpectedToken("Expected '{' for consciousness classification".to_string()))
+        }
+    }
+
+    fn parse_string_value(&mut self) -> Result<String, ParseError> {
+        if let Some(token) = self.advance() {
+            match token.kind {
+                TokenKind::String(s) => Ok(s),
+                TokenKind::Identifier(name) => Ok(name),
+                _ => Err(ParseError::UnexpectedToken(format!("Expected string value, found {:?}", token.kind))),
+            }
+        } else {
+            Err(ParseError::UnexpectedToken("Expected string value".to_string()))
+        }
+    }
+
+    // Imhotep Framework: Revolutionary Self-Aware Neural Networks Parser Methods
+    
+    fn neural_consciousness_declaration(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        self.consume(TokenKind::LeftParen, "Expected '(' after 'neural_consciousness'")?;
+        
+        let mut session_name = String::new();
+        let mut consciousness_level = None;
+        let mut self_awareness = false;
+        let mut metacognitive_monitoring = false;
+        
+        while !self.check(&TokenKind::RightParen) && !self.is_at_end() {
+            if self.match_token(&[TokenKind::SessionName]) {
+                self.consume(TokenKind::Colon, "Expected ':' after 'session_name'")?;
+                session_name = self.string_literal()?;
+            } else if self.match_token(&[TokenKind::ConsciousnessLevel]) {
+                self.consume(TokenKind::Colon, "Expected ':' after 'consciousness_level'")?;
+                consciousness_level = Some(self.expression()?);
+            } else if self.match_token(&[TokenKind::SelfAwareness]) {
+                self.consume(TokenKind::Colon, "Expected ':' after 'self_awareness'")?;
+                self_awareness = self.parse_boolean()?;
+            } else if self.match_token(&[TokenKind::MetacognitiveMonitoring]) {
+                self.consume(TokenKind::Colon, "Expected ':' after 'metacognitive_monitoring'")?;
+                metacognitive_monitoring = self.parse_boolean()?;
+            } else {
+                break;
+            }
+            
+            if self.match_token(&[TokenKind::Comma]) {
+                continue;
+            }
+        }
+        
+        self.consume(TokenKind::RightParen, "Expected ')' after neural consciousness parameters")?;
+        
+        let end_span = self.previous().span.clone();
+        
+        Ok(Node::SelfAware(SelfAwareStatement::NeuralConsciousnessDecl(
+            NeuralConsciousnessSession {
+                session_name,
+                consciousness_level: Box::new(consciousness_level.unwrap_or(Node::NumberLiteral(0.9, start_span.clone()))),
+                self_awareness,
+                metacognitive_monitoring,
+                bmd_neurons: Vec::new(),
+                neural_connections: Vec::new(),
+                self_awareness_config: None,
+                span: Span::new(
+                    Position::new(0, 0, start_span.start),
+                    Position::new(0, 0, end_span.end),
+                ),
+            }
+        )))
+    }
+    
+    fn create_bmd_neuron_statement(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        self.consume(TokenKind::LeftParen, "Expected '(' after 'create_bmd_neuron'")?;
+        
+        let name = self.string_literal()?;
+        self.consume(TokenKind::Comma, "Expected ',' after neuron name")?;
+        
+        let mut activation = String::new();
+        let mut parameters = Vec::new();
+        let mut subsystem = String::new();
+        let mut question = String::new();
+        
+        if self.match_token(&[TokenKind::LeftBrace]) {
+            while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+                if self.match_token(&[TokenKind::Activation]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'activation'")?;
+                    activation = self.string_literal()?;
+                } else if self.match_token(&[TokenKind::Subsystem]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'subsystem'")?;
+                    subsystem = self.string_literal()?;
+                } else if self.match_token(&[TokenKind::Question]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'question'")?;
+                    question = self.string_literal()?;
+                } else if self.check(&TokenKind::Identifier) {
+                    // Parse other neuron parameters
+                    let param_name = self.string_literal()?;
+                    self.consume(TokenKind::Colon, "Expected ':' after parameter name")?;
+                    let param_value = self.expression()?;
+                    parameters.push(NeuronParameter {
+                        name: param_name,
+                        value: Box::new(param_value),
+                        span: self.previous().span.clone(),
+                    });
+                } else {
+                    break;
+                }
+                
+                if self.match_token(&[TokenKind::Comma]) {
+                    continue;
+                }
+            }
+            
+            self.consume(TokenKind::RightBrace, "Expected '}' after neuron parameters")?;
+        }
+        
+        self.consume(TokenKind::RightParen, "Expected ')' after create_bmd_neuron")?;
+        
+        let end_span = self.previous().span.clone();
+        
+        Ok(Node::SelfAware(SelfAwareStatement::CreateBmdNeuron {
+            name,
+            activation,
+            parameters,
+            subsystem,
+            question,
+            span: Span::new(
+                Position::new(0, 0, start_span.start),
+                Position::new(0, 0, end_span.end),
+            ),
+        }))
+    }
+    
+    fn connect_pattern_statement(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        self.consume(TokenKind::LeftParen, "Expected '(' after 'connect_pattern'")?;
+        
+        let mut connections = Vec::new();
+        
+        if self.match_token(&[TokenKind::LeftBracket]) {
+            while !self.check(&TokenKind::RightBracket) && !self.is_at_end() {
+                if self.match_token(&[TokenKind::LeftParen]) {
+                    let from_neuron = self.string_literal()?;
+                    self.consume(TokenKind::Comma, "Expected ',' after from neuron")?;
+                    let to_neuron = self.string_literal()?;
+                    self.consume(TokenKind::Comma, "Expected ',' after to neuron")?;
+                    let connection_type = self.string_literal()?;
+                    self.consume(TokenKind::RightParen, "Expected ')' after connection")?;
+                    
+                    connections.push(NeuralConnection {
+                        from_neuron,
+                        to_neuron,
+                        connection_type,
+                        span: self.previous().span.clone(),
+                    });
+                } else {
+                    break;
+                }
+                
+                if self.match_token(&[TokenKind::Comma]) {
+                    continue;
+                }
+            }
+            
+            self.consume(TokenKind::RightBracket, "Expected ']' after connections")?;
+        }
+        
+        self.consume(TokenKind::RightParen, "Expected ')' after connect_pattern")?;
+        
+        let end_span = self.previous().span.clone();
+        
+        Ok(Node::SelfAware(SelfAwareStatement::ConnectPattern {
+            connections,
+            span: Span::new(
+                Position::new(0, 0, start_span.start),
+                Position::new(0, 0, end_span.end),
+            ),
+        }))
+    }
+    
+    fn configure_self_awareness_statement(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        self.consume(TokenKind::LeftParen, "Expected '(' after 'configure_self_awareness'")?;
+        
+        let mut metacognitive_depth = None;
+        let mut self_reflection_threshold = None;
+        let mut thought_quality_standards = None;
+        let mut knowledge_audit_frequency = None;
+        let mut reasoning_chain_logging = None;
+        let mut decision_trail_persistence = None;
+        
+        if self.match_token(&[TokenKind::LeftBrace]) {
+            while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+                if self.match_token(&[TokenKind::MetacognitiveDepth]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'metacognitive_depth'")?;
+                    metacognitive_depth = Some(self.expression()?);
+                } else if self.match_token(&[TokenKind::SelfReflectionThreshold]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'self_reflection_threshold'")?;
+                    self_reflection_threshold = Some(self.expression()?);
+                } else if self.match_token(&[TokenKind::ThoughtQualityStandards]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'thought_quality_standards'")?;
+                    thought_quality_standards = Some(self.expression()?);
+                } else if self.match_token(&[TokenKind::KnowledgeAuditFrequency]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'knowledge_audit_frequency'")?;
+                    knowledge_audit_frequency = Some(self.expression()?);
+                } else if self.match_token(&[TokenKind::ReasoningChainLogging]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'reasoning_chain_logging'")?;
+                    reasoning_chain_logging = Some(self.parse_boolean()?);
+                } else if self.match_token(&[TokenKind::DecisionTrailPersistence]) {
+                    self.consume(TokenKind::Colon, "Expected ':' after 'decision_trail_persistence'")?;
+                    decision_trail_persistence = Some(self.parse_boolean()?);
+                } else {
+                    break;
+                }
+                
+                if self.match_token(&[TokenKind::Comma]) {
+                    continue;
+                }
+            }
+            
+            self.consume(TokenKind::RightBrace, "Expected '}' after self-awareness config")?;
+        }
+        
+        self.consume(TokenKind::RightParen, "Expected ')' after configure_self_awareness")?;
+        
+        let end_span = self.previous().span.clone();
+        
+        Ok(Node::SelfAware(SelfAwareStatement::ConfigureSelfAwareness(
+            SelfAwarenessConfiguration {
+                metacognitive_depth: metacognitive_depth.map(Box::new),
+                self_reflection_threshold: self_reflection_threshold.map(Box::new),
+                thought_quality_standards: thought_quality_standards.map(Box::new),
+                knowledge_audit_frequency: knowledge_audit_frequency.map(Box::new),
+                reasoning_chain_logging,
+                decision_trail_persistence,
+                span: Span::new(
+                    Position::new(0, 0, start_span.start),
+                    Position::new(0, 0, end_span.end),
+                ),
+            }
+        )))
+    }
+    
+    fn activate_self_awareness_statement(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        self.consume(TokenKind::LeftParen, "Expected '(' after 'activate_self_awareness'")?;
+        let session = self.string_literal()?;
+        self.consume(TokenKind::RightParen, "Expected ')' after session name")?;
+        
+        let end_span = self.previous().span.clone();
+        
+        Ok(Node::SelfAware(SelfAwareStatement::ActivateSelfAwareness {
+            session,
+            span: Span::new(
+                Position::new(0, 0, start_span.start),
+                Position::new(0, 0, end_span.end),
+            ),
+        }))
+    }
+    
+    fn process_with_metacognitive_monitoring_statement(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        self.consume(TokenKind::LeftParen, "Expected '(' after 'process_with_metacognitive_monitoring'")?;
+        
+        let mut data = None;
+        let mut processing_steps = Vec::new();
+        
+        while !self.check(&TokenKind::RightParen) && !self.is_at_end() {
+            if self.check(&TokenKind::Identifier) {
+                if let Some(token) = self.peek() {
+                    if let TokenKind::Identifier(name) = &token.kind {
+                        match name.as_str() {
+                            "data" => {
+                                self.advance();
+                                self.consume(TokenKind::Colon, "Expected ':' after 'data'")?;
+                                data = Some(self.expression()?);
+                            }
+                            "processing_steps" => {
+                                self.advance();
+                                self.consume(TokenKind::Colon, "Expected ':' after 'processing_steps'")?;
+                                processing_steps = self.string_array()?;
+                            }
+                            _ => break,
+                        }
+                    }
+                }
+            } else {
+                break;
+            }
+            
+            if self.match_token(&[TokenKind::Comma]) {
+                continue;
+            }
+        }
+        
+        self.consume(TokenKind::RightParen, "Expected ')' after process_with_metacognitive_monitoring")?;
+        
+        let end_span = self.previous().span.clone();
+        
+        Ok(Node::SelfAware(SelfAwareStatement::ProcessWithMetacognitiveMonitoring {
+            data: Box::new(data.unwrap_or(Node::StringLiteral("null".to_string(), start_span.clone()))),
+            processing_steps,
+            span: Span::new(
+                Position::new(0, 0, start_span.start),
+                Position::new(0, 0, end_span.end),
+            ),
+        }))
+    }
+    
+    fn assess_reasoning_quality_statement(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        self.consume(TokenKind::LeftParen, "Expected '(' after 'assess_reasoning_quality'")?;
+        let session = self.string_literal()?;
+        self.consume(TokenKind::RightParen, "Expected ')' after session name")?;
+        
+        let end_span = self.previous().span.clone();
+        
+        Ok(Node::SelfAware(SelfAwareStatement::AssessReasoningQuality {
+            session,
+            span: Span::new(
+                Position::new(0, 0, start_span.start),
+                Position::new(0, 0, end_span.end),
+            ),
+        }))
+    }
+    
+    fn begin_metacognitive_reasoning_statement(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        self.consume(TokenKind::LeftParen, "Expected '(' after 'begin_metacognitive_reasoning'")?;
+        let session = self.string_literal()?;
+        self.consume(TokenKind::Comma, "Expected ',' after session name")?;
+        let analysis_name = self.string_literal()?;
+        self.consume(TokenKind::RightParen, "Expected ')' after analysis name")?;
+        
+        let end_span = self.previous().span.clone();
+        
+        Ok(Node::SelfAware(SelfAwareStatement::BeginMetacognitiveReasoning {
+            session,
+            analysis_name,
+            span: Span::new(
+                Position::new(0, 0, start_span.start),
+                Position::new(0, 0, end_span.end),
+            ),
+        }))
+    }
+    
+    fn analyze_with_metacognitive_oversight_statement(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        self.consume(TokenKind::LeftParen, "Expected '(' after 'analyze_with_metacognitive_oversight'")?;
+        
+        let mut data = None;
+        let mut analysis_type = String::new();
+        let mut metacognitive_monitoring = false;
+        
+        while !self.check(&TokenKind::RightParen) && !self.is_at_end() {
+            if self.check(&TokenKind::Identifier) {
+                if let Some(token) = self.peek() {
+                    if let TokenKind::Identifier(name) = &token.kind {
+                        match name.as_str() {
+                            "data" => {
+                                self.advance();
+                                self.consume(TokenKind::Colon, "Expected ':' after 'data'")?;
+                                data = Some(self.expression()?);
+                            }
+                            "analysis_type" => {
+                                self.advance();
+                                self.consume(TokenKind::Colon, "Expected ':' after 'analysis_type'")?;
+                                analysis_type = self.string_literal()?;
+                            }
+                            "metacognitive_monitoring" => {
+                                self.advance();
+                                self.consume(TokenKind::Colon, "Expected ':' after 'metacognitive_monitoring'")?;
+                                metacognitive_monitoring = self.parse_boolean()?;
+                            }
+                            _ => break,
+                        }
+                    }
+                }
+            } else {
+                break;
+            }
+            
+            if self.match_token(&[TokenKind::Comma]) {
+                continue;
+            }
+        }
+        
+        self.consume(TokenKind::RightParen, "Expected ')' after analyze_with_metacognitive_oversight")?;
+        
+        let end_span = self.previous().span.clone();
+        
+        Ok(Node::SelfAware(SelfAwareStatement::AnalyzeWithMetacognitiveOversight {
+            data: Box::new(data.unwrap_or(Node::StringLiteral("null".to_string(), start_span.clone()))),
+            analysis_type,
+            metacognitive_monitoring,
+            span: Span::new(
+                Position::new(0, 0, start_span.start),
+                Position::new(0, 0, end_span.end),
+            ),
+        }))
+    }
+    
+    fn interpret_with_self_awareness_statement(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        self.consume(TokenKind::LeftParen, "Expected '(' after 'interpret_with_self_awareness'")?;
+        
+        let mut results = None;
+        let mut interpretation_context = String::new();
+        let mut uncertainty_tracking = false;
+        
+        while !self.check(&TokenKind::RightParen) && !self.is_at_end() {
+            if self.check(&TokenKind::Identifier) {
+                if let Some(token) = self.peek() {
+                    if let TokenKind::Identifier(name) = &token.kind {
+                        match name.as_str() {
+                            "results" => {
+                                self.advance();
+                                self.consume(TokenKind::Colon, "Expected ':' after 'results'")?;
+                                results = Some(self.expression()?);
+                            }
+                            "interpretation_context" => {
+                                self.advance();
+                                self.consume(TokenKind::Colon, "Expected ':' after 'interpretation_context'")?;
+                                interpretation_context = self.string_literal()?;
+                            }
+                            "uncertainty_tracking" => {
+                                self.advance();
+                                self.consume(TokenKind::Colon, "Expected ':' after 'uncertainty_tracking'")?;
+                                uncertainty_tracking = self.parse_boolean()?;
+                            }
+                            _ => break,
+                        }
+                    }
+                }
+            } else {
+                break;
+            }
+            
+            if self.match_token(&[TokenKind::Comma]) {
+                continue;
+            }
+        }
+        
+        self.consume(TokenKind::RightParen, "Expected ')' after interpret_with_self_awareness")?;
+        
+        let end_span = self.previous().span.clone();
+        
+        Ok(Node::SelfAware(SelfAwareStatement::InterpretWithSelfAwareness {
+            results: Box::new(results.unwrap_or(Node::StringLiteral("null".to_string(), start_span.clone()))),
+            interpretation_context,
+            uncertainty_tracking,
+            span: Span::new(
+                Position::new(0, 0, start_span.start),
+                Position::new(0, 0, end_span.end),
+            ),
+        }))
+    }
+    
+    fn analyze_pathways_with_metacognition_statement(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        self.consume(TokenKind::LeftParen, "Expected '(' after 'analyze_pathways_with_metacognition'")?;
+        
+        let mut metabolites = None;
+        let mut self_reflection = false;
+        let mut knowledge_gap_detection = false;
+        
+        while !self.check(&TokenKind::RightParen) && !self.is_at_end() {
+            if self.check(&TokenKind::Identifier) {
+                if let Some(token) = self.peek() {
+                    if let TokenKind::Identifier(name) = &token.kind {
+                        match name.as_str() {
+                            "metabolites" => {
+                                self.advance();
+                                self.consume(TokenKind::Colon, "Expected ':' after 'metabolites'")?;
+                                metabolites = Some(self.expression()?);
+                            }
+                            "self_reflection" => {
+                                self.advance();
+                                self.consume(TokenKind::Colon, "Expected ':' after 'self_reflection'")?;
+                                self_reflection = self.parse_boolean()?;
+                            }
+                            "knowledge_gap_detection" => {
+                                self.advance();
+                                self.consume(TokenKind::Colon, "Expected ':' after 'knowledge_gap_detection'")?;
+                                knowledge_gap_detection = self.parse_boolean()?;
+                            }
+                            _ => break,
+                        }
+                    }
+                }
+            } else {
+                break;
+            }
+            
+            if self.match_token(&[TokenKind::Comma]) {
+                continue;
+            }
+        }
+        
+        self.consume(TokenKind::RightParen, "Expected ')' after analyze_pathways_with_metacognition")?;
+        
+        let end_span = self.previous().span.clone();
+        
+        Ok(Node::SelfAware(SelfAwareStatement::AnalyzePathwaysWithMetacognition {
+            metabolites: Box::new(metabolites.unwrap_or(Node::StringLiteral("null".to_string(), start_span.clone()))),
+            self_reflection,
+            knowledge_gap_detection,
+            span: Span::new(
+                Position::new(0, 0, start_span.start),
+                Position::new(0, 0, end_span.end),
+            ),
+        }))
+    }
+    
+    fn demonstrate_self_awareness_vs_consciousness_statement(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        self.consume(TokenKind::LeftParen, "Expected '(' after 'demonstrate_self_awareness_vs_consciousness'")?;
+        let traditional_session = self.string_literal()?;
+        self.consume(TokenKind::Comma, "Expected ',' after traditional session")?;
+        let self_aware_session = self.string_literal()?;
+        self.consume(TokenKind::RightParen, "Expected ')' after self-aware session")?;
+        
+        let end_span = self.previous().span.clone();
+        
+        Ok(Node::SelfAware(SelfAwareStatement::DemonstrateSelfAwarenessVsConsciousness {
+            traditional_session,
+            self_aware_session,
+            span: Span::new(
+                Position::new(0, 0, start_span.start),
+                Position::new(0, 0, end_span.end),
+            ),
+        }))
     }
 }
 
@@ -2476,73 +4067,71 @@ impl Parser {
         }))
     }
 
-    fn import_statement(&mut self) -> Result<Node, TurbulanceError> {
-        let start_span = self.previous().span.clone();
+    fn import_statement(&mut self) -> Result<Box<Node>, ParseError> {
+        let start_pos = self.current_position();
         
-        let module = if let Some(TokenKind::Identifier(name)) = self.peek().kind.clone() {
-            self.advance();
-            name
-        } else if let Some(TokenKind::String(name)) = self.peek().kind.clone() {
-            self.advance();
-            name
-        } else {
-            return Err(self.error("Expected module name after 'import'"));
-        };
+        // 'import' already consumed
+        let mut items = Vec::new();
+        let mut alias = None;
         
-        let (items, alias) = if self.check(&TokenKind::From) {
-            // Handle "from module import items" syntax
-            let from_items = if self.check(&TokenKind::LeftBrace) {
-                self.advance(); // consume '{'
-                let mut import_items = Vec::new();
-                
-                while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
-                    if let Some(TokenKind::Identifier(item)) = self.peek().kind.clone() {
-                        self.advance();
-                        import_items.push(item);
-                    }
-                    
-                    if self.check(&TokenKind::Comma) {
-                        self.advance();
-                    } else {
-                        break;
+        // Parse import items
+        if self.match_token(&[TokenKind::LeftBrace]) {
+            // Selective import: import { item1, item2, item3 }
+            while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+                if let Some(token) = self.advance() {
+                    if let TokenKind::Identifier(name) = token.kind {
+                        items.push(name);
                     }
                 }
                 
-                self.consume(TokenKind::RightBrace, "Expected '}' after import items")?;
-                Some(import_items)
-            } else {
-                None
-            };
-            
-            let import_alias = if self.check(&TokenKind::As) {
-                self.advance(); // consume 'as'
-                if let Some(TokenKind::Identifier(alias_name)) = self.peek().kind.clone() {
-                    self.advance();
-                    Some(alias_name)
-                } else {
-                    None
+                if self.match_token(&[TokenKind::Comma]) {
+                    continue;
                 }
-            } else {
-                None
-            };
+                break;
+            }
             
-            (from_items, import_alias)
+            self.consume(TokenKind::RightBrace, "Expected '}' after import items")?;
         } else {
-            (None, None)
+            // Single import
+            if let Some(token) = self.advance() {
+                if let TokenKind::Identifier(name) = token.kind {
+                    items.push(name);
+                }
+            }
+        }
+        
+        // Check for 'as' alias
+        if self.match_token(&[TokenKind::As]) {
+            if let Some(token) = self.advance() {
+                if let TokenKind::Identifier(name) = token.kind {
+                    alias = Some(name);
+                }
+            }
+        }
+        
+        // Parse 'from' clause
+        self.consume(TokenKind::From, "Expected 'from' after import items")?;
+        
+        let module = if let Some(token) = self.advance() {
+            match token.kind {
+                TokenKind::String(s) => s,
+                TokenKind::Identifier(name) => name,
+                _ => return Err(ParseError::UnexpectedToken(format!("Expected module name, found {:?}", token.kind))),
+            }
+        } else {
+            return Err(ParseError::UnexpectedToken("Expected module name".to_string()));
         };
         
-        let end_span = self.previous().span.clone();
+        let end_pos = self.current_position();
         
-        let span = Span::new(
-            Position::new(0, 0, start_span.start),
-            Position::new(0, 0, end_span.end),
-        );
-        
-        Ok(Node::Import(ImportStatement {
-            module,
-            items,
-            alias,
-            span,
+        Ok(Box::new(Node {
+            kind: NodeKind::Import(ImportStatement {
+                items,
+                module,
+                alias,
+                span: Span::new(start_pos, end_pos),
+            }),
+            span: Span::new(start_pos, end_pos),
         }))
     }
 

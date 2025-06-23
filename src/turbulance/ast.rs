@@ -314,7 +314,10 @@ pub enum Node {
     UncertaintyPropagation(UncertaintyPropagationBlock),
     CausalAnalysis(CausalAnalysisBlock),
     BiasAnalysis(BiasAnalysisBlock),
-    QuantumClassicalInterface(QuantumClassicalInterfaceBlock),
+    QuantumClassicalInterface(QuantumClassicalInterface),
+    
+    // Imhotep Framework: Revolutionary Self-Aware Neural Networks
+    SelfAware(SelfAwareStatement),
 }
 
 /// Represents a function definition
@@ -838,6 +841,549 @@ pub enum QuantumOperationType {
     ApplyCnot,
     Measure,
     MeasureEntanglement,
+}
+
+// Bene Gesserit masterclass constructs
+#[derive(Debug, Clone, PartialEq)]
+pub struct SuccessFrameworkDeclaration {
+    pub primary_threshold: Option<Box<Node>>,
+    pub secondary_threshold: Option<Box<Node>>,
+    pub safety_threshold: Option<Box<Node>>,
+    pub evidence_quality_modulation: bool,
+    pub uncertainty_penalty: Option<Box<Node>>,
+    pub fda_guidance_compliance: bool,
+    pub ema_scientific_advice_integration: bool,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct BiologicalComputerDeclaration {
+    pub name: String,
+    pub atp_budget: Option<Box<Node>>,
+    pub time_horizon: Option<Box<Node>>,
+    pub quantum_targets: Vec<QuantumTarget>,
+    pub oscillatory_dynamics: Vec<OscillatoryDynamic>,
+    pub operations: Vec<BiologicalComputerOperation>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct QuantumTarget {
+    pub name: String,
+    pub quantum_state: String,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct OscillatoryDynamic {
+    pub name: String,
+    pub frequency: Box<Node>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum BiologicalComputerOperation {
+    QuantumMolecularDocking {
+        protein: String,
+        ligand: Box<Node>,
+        conformational_sampling: String,
+        scoring_function: String,
+    },
+    QuantumMembraneSimulation {
+        membrane_model: String,
+        compound: Box<Node>,
+        transport_mechanisms: Vec<String>,
+        quantum_tunneling: bool,
+    },
+    BiologicalMaxwellsDemon {
+        input_patterns: Box<Node>,
+        recognition_threshold: Box<Node>,
+        catalysis_efficiency: Box<Node>,
+    },
+    OptimizeATPEfficiency,
+    TrackOscillationEndpoints,
+    MeasureQuantumFidelity,
+    CalculateInformationCatalysisEfficiency,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct PatternAnalysisBlock {
+    pub name: String,
+    pub molecular_patterns: Option<MolecularPatternAnalysis>,
+    pub clinical_patterns: Option<ClinicalPatternAnalysis>,
+    pub omics_integration: Option<OmicsIntegrationAnalysis>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct MolecularPatternAnalysis {
+    pub binding_pose_clustering: Option<ClusteringParameters>,
+    pub pharmacophore_identification: Option<Box<Node>>,
+    pub admet_pattern_detection: Option<Box<Node>>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ClusteringParameters {
+    pub method: String,
+    pub eps: Option<Box<Node>>,
+    pub min_samples: Option<Box<Node>>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ClinicalPatternAnalysis {
+    pub responder_phenotyping: Option<GaussianMixtureParameters>,
+    pub disease_progression_trajectories: Option<Box<Node>>,
+    pub adverse_event_clustering: Option<Box<Node>>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct GaussianMixtureParameters {
+    pub n_components: Box<Node>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct OmicsIntegrationAnalysis {
+    pub multi_block_pls: Option<Box<Node>>,
+    pub network_medicine_analysis: Option<Box<Node>>,
+    pub pathway_enrichment: Option<Box<Node>>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct SpatiotemporalAnalysisBlock {
+    pub name: String,
+    pub spatial_modeling: Option<SpatialModelingAnalysis>,
+    pub temporal_modeling: Option<TemporalModelingAnalysis>,
+    pub association_analysis: Option<AssociationAnalysis>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct SpatialModelingAnalysis {
+    pub local_adaptation: Option<Box<Node>>,
+    pub environmental_gradients: Option<Box<Node>>,
+    pub population_structure: Option<Box<Node>>,
+    pub migration_patterns: Option<Box<Node>>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct TemporalModelingAnalysis {
+    pub evolutionary_trajectories: Option<Box<Node>>,
+    pub selection_dynamics: Option<Box<Node>>,
+    pub demographic_inference: Option<Box<Node>>,
+    pub cultural_evolution: Option<Box<Node>>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct AssociationAnalysis {
+    pub environmental_gwas: Option<Box<Node>>,
+    pub polygenic_adaptation: Option<Box<Node>>,
+    pub balancing_selection: Option<Box<Node>>,
+    pub introgression_analysis: Option<Box<Node>>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct DataProcessingBlock {
+    pub quality_control: Option<QualityControlParameters>,
+    pub harmonization: Option<HarmonizationParameters>,
+    pub feature_engineering: Option<FeatureEngineeringParameters>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct QualityControlParameters {
+    pub missing_data_threshold: Option<Box<Node>>,
+    pub outlier_detection: Option<OutlierDetectionParameters>,
+    pub batch_effect_correction: Option<Box<Node>>,
+    pub technical_replicate_correlation: Option<Box<Node>>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct OutlierDetectionParameters {
+    pub method: String,
+    pub contamination: Option<Box<Node>>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct HarmonizationParameters {
+    pub unit_standardization: Option<Box<Node>>,
+    pub temporal_alignment: Option<Box<Node>>,
+    pub population_stratification: Option<Box<Node>>,
+    pub covariate_adjustment: Option<Box<Node>>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct FeatureEngineeringParameters {
+    pub molecular_descriptors: Option<Box<Node>>,
+    pub clinical_composite_scores: Option<Box<Node>>,
+    pub time_series_features: Option<Box<Node>>,
+    pub network_features: Option<Box<Node>>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct EvidenceIntegrationBlock {
+    pub molecular_sources: Vec<DataSource>,
+    pub clinical_sources: Vec<DataSource>,
+    pub real_world_sources: Vec<DataSource>,
+    pub omics_sources: Vec<DataSource>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct DataSource {
+    pub name: String,
+    pub database_type: String,
+    pub database_name: String,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct UncertaintyPropagationBlock {
+    pub aleatory_uncertainty: Option<UncertaintyComponent>,
+    pub epistemic_uncertainty: Option<UncertaintyComponent>,
+    pub model_uncertainty: Option<UncertaintyComponent>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct UncertaintyComponent {
+    pub source: String,
+    pub quantification: String,
+    pub propagation: String,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct CausalAnalysisBlock {
+    pub confounding_control: Option<CausalMethod>,
+    pub reverse_causation: Option<CausalMethod>,
+    pub mediation_analysis: Option<CausalMethod>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct CausalMethod {
+    pub method: String,
+    pub adjustment: Option<String>,
+    pub validation: Option<String>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct BiasAnalysisBlock {
+    pub selection_bias: Option<BiasComponent>,
+    pub confirmation_bias: Option<BiasComponent>,
+    pub publication_bias: Option<BiasComponent>,
+    pub measurement_bias: Option<BiasComponent>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct BiasComponent {
+    pub detection: String,
+    pub severity_assessment: String,
+    pub mitigation: String,
+    pub monitoring: String,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct QuantumClassicalInterface {
+    pub coherence_analysis: Option<CoherenceAnalysis>,
+    pub neural_quantum_correlation: Option<NeuralQuantumCorrelation>,
+    pub consciousness_classification: Option<ConsciousnessClassification>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct CoherenceAnalysis {
+    pub coherence_time_measurement: String,
+    pub decoherence_pathway_analysis: String,
+    pub environmental_coupling_analysis: String,
+    pub coherence_protection_mechanisms: String,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct NeuralQuantumCorrelation {
+    pub phase_locking_analysis: String,
+    pub quantum_neural_synchronization: String,
+    pub information_theoretic_analysis: String,
+    pub causal_analysis: String,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ConsciousnessClassification {
+    pub machine_learning_classification: String,
+    pub bayesian_state_estimation: String,
+    pub hidden_markov_modeling: String,
+    pub neural_network_analysis: String,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct AdvancedHypothesisTesting {
+    pub confidence_interval: Option<ConfidenceIntervalAnalysis>,
+    pub ensemble_prediction: Option<EnsemblePredictionAnalysis>,
+    pub effect_size_analysis: Option<EffectSizeAnalysis>,
+    pub longitudinal_modeling: Option<LongitudinalModelingAnalysis>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ConfidenceIntervalAnalysis {
+    pub method: String,
+    pub n_bootstrap: Option<Box<Node>>,
+    pub lower_bound: Option<Box<Node>>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct EnsemblePredictionAnalysis {
+    pub methods: Vec<String>,
+    pub ensemble_agreement: Option<Box<Node>>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct EffectSizeAnalysis {
+    pub method: String,
+    pub treatment_group: Box<Node>,
+    pub placebo_group: Box<Node>,
+    pub clinical_significance: Option<String>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct LongitudinalModelingAnalysis {
+    pub fixed_effects: Vec<String>,
+    pub random_effects: Vec<String>,
+    pub treatment_effect: Option<Box<Node>>,
+    pub span: Span,
+}
+
+// Imhotep Framework: Revolutionary Self-Aware Neural Networks
+#[derive(Debug, Clone, PartialEq)]
+pub struct NeuralConsciousnessSession {
+    pub session_name: String,
+    pub consciousness_level: Box<Node>,
+    pub self_awareness: bool,
+    pub metacognitive_monitoring: bool,
+    pub bmd_neurons: Vec<BmdNeuron>,
+    pub neural_connections: Vec<NeuralConnection>,
+    pub self_awareness_config: Option<SelfAwarenessConfiguration>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct BmdNeuron {
+    pub name: String,
+    pub activation: String,
+    pub parameters: Vec<NeuronParameter>,
+    pub subsystem: String,
+    pub question: String,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct NeuronParameter {
+    pub name: String,
+    pub value: Box<Node>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct NeuralConnection {
+    pub from_neuron: String,
+    pub to_neuron: String,
+    pub connection_type: String,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct SelfAwarenessConfiguration {
+    pub metacognitive_depth: Option<Box<Node>>,
+    pub self_reflection_threshold: Option<Box<Node>>,
+    pub thought_quality_standards: Option<Box<Node>>,
+    pub knowledge_audit_frequency: Option<Box<Node>>,
+    pub reasoning_chain_logging: Option<bool>,
+    pub decision_trail_persistence: Option<bool>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct MetacognitiveState {
+    pub current_thought_focus: String,
+    pub self_awareness_level: Box<Node>,
+    pub reasoning_chain: Vec<String>,
+    pub thought_quality_assessment: Box<Node>,
+    pub uncertainties_identified: Vec<UncertaintyItem>,
+    pub knowledge_gaps_identified: Vec<String>,
+    pub decision_history: Vec<DecisionRecord>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct UncertaintyItem {
+    pub description: String,
+    pub confidence: Box<Node>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct DecisionRecord {
+    pub decision: String,
+    pub reasoning: String,
+    pub confidence: Box<Node>,
+    pub external_knowledge_used: Vec<String>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct SelfAwareProcessing {
+    pub processing_type: String,
+    pub processing_steps: Vec<String>,
+    pub metacognitive_monitoring: bool,
+    pub uncertainty_tracking: bool,
+    pub reasoning_quality_assessment: bool,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ReasoningQualityAssessment {
+    pub overall_quality: Box<Node>,
+    pub statistical_quality: Option<Box<Node>>,
+    pub biological_quality: Option<Box<Node>>,
+    pub uncertainties: Vec<UncertaintyItem>,
+    pub knowledge_gaps: Vec<KnowledgeGap>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct KnowledgeGap {
+    pub domain: String,
+    pub impact_level: String,
+    pub impact_on_conclusions: String,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ConsciousnessComparison {
+    pub traditional_result: Box<Node>,
+    pub self_aware_result: Box<Node>,
+    pub metacognitive_insights: MetacognitiveState,
+    pub span: Span,
+}
+
+// Imhotep Framework: Revolutionary Self-Aware Neural Networks
+#[derive(Debug, Clone, PartialEq)]
+pub enum SelfAwareStatement {
+    // Neural Consciousness Creation
+    NeuralConsciousnessDecl(NeuralConsciousnessSession),
+    
+    // BMD Neuron Creation
+    CreateBmdNeuron {
+        name: String,
+        activation: String,
+        parameters: Vec<NeuronParameter>,
+        subsystem: String,
+        question: String,
+        span: Span,
+    },
+    
+    // Neural Connection Pattern
+    ConnectPattern {
+        connections: Vec<NeuralConnection>,
+        span: Span,
+    },
+    
+    // Self-Awareness Configuration
+    ConfigureSelfAwareness(SelfAwarenessConfiguration),
+    
+    // Self-Aware Processing Operations
+    ActivateSelfAwareness {
+        session: String,
+        span: Span,
+    },
+    
+    ProcessWithMetacognitiveMonitoring {
+        data: Box<Node>,
+        processing_steps: Vec<String>,
+        span: Span,
+    },
+    
+    AssessReasoningQuality {
+        session: String,
+        span: Span,
+    },
+    
+    EnhanceMetacognitiveMonitoring {
+        session: String,
+        span: Span,
+    },
+    
+    // Scientific Self-Aware Reasoning
+    BeginMetacognitiveReasoning {
+        session: String,
+        analysis_name: String,
+        span: Span,
+    },
+    
+    AnalyzeWithMetacognitiveOversight {
+        data: Box<Node>,
+        analysis_type: String,
+        metacognitive_monitoring: bool,
+        span: Span,
+    },
+    
+    InterpretWithSelfAwareness {
+        results: Box<Node>,
+        interpretation_context: String,
+        uncertainty_tracking: bool,
+        span: Span,
+    },
+    
+    AnalyzePathwaysWithMetacognition {
+        metabolites: Box<Node>,
+        self_reflection: bool,
+        knowledge_gap_detection: bool,
+        span: Span,
+    },
+    
+    // Consciousness vs Self-Awareness Comparison
+    DemonstrateSelfAwarenessVsConsciousness {
+        traditional_session: String,
+        self_aware_session: String,
+        span: Span,
+    },
+    
+    // Metacognitive State Access
+    GetMetacognitiveState {
+        session: String,
+        span: Span,
+    },
+    
+    GetCurrentReasoningState {
+        session: String,
+        span: Span,
+    },
+    
+    IdentifyKnowledgeGaps {
+        session: String,
+        span: Span,
+    },
 }
 
 #[cfg(test)]
