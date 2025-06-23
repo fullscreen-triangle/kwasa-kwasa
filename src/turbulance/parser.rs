@@ -289,6 +289,80 @@ impl Parser {
             return self.derive_hypotheses_statement();
         }
         
+        // Advanced orchestration statements
+        if self.match_token(&[TokenKind::Flow]) {
+            return self.flow_statement();
+        }
+        
+        if self.match_token(&[TokenKind::Catalyze]) {
+            return self.catalyze_statement();
+        }
+        
+        if self.match_token(&[TokenKind::CrossScale]) {
+            return self.cross_scale_coordinate();
+        }
+        
+        if self.match_token(&[TokenKind::Drift]) {
+            return self.drift_statement();
+        }
+        
+        if self.match_token(&[TokenKind::Cycle]) {
+            return self.cycle_statement();
+        }
+        
+        if self.match_token(&[TokenKind::Roll]) {
+            return self.roll_statement();
+        }
+        
+        if self.match_token(&[TokenKind::Resolve]) {
+            return self.resolve_statement();
+        }
+        
+        if self.match_token(&[TokenKind::Point]) {
+            return self.point_declaration();
+        }
+        
+        // Autobahn reference statements
+        if self.match_token(&[TokenKind::Funxn]) {
+            return self.funxn_declaration();
+        }
+        
+        if self.match_token(&[TokenKind::Goal]) {
+            return self.goal_declaration();
+        }
+        
+        if self.match_token(&[TokenKind::Metacognitive]) {
+            return self.metacognitive_block();
+        }
+        
+        if self.match_token(&[TokenKind::Try]) {
+            return self.try_statement();
+        }
+        
+        if self.match_token(&[TokenKind::Parallel]) {
+            return self.parallel_block();
+        }
+        
+        if self.match_token(&[TokenKind::QuantumState]) {
+            return self.quantum_state_declaration();
+        }
+        
+        if self.match_token(&[TokenKind::OptimizeUntil]) {
+            return self.optimize_until_statement();
+        }
+        
+        if self.match_token(&[TokenKind::For]) {
+            return self.for_statement();
+        }
+        
+        if self.match_token(&[TokenKind::While]) {
+            return self.while_statement();
+        }
+        
+        if self.match_token(&[TokenKind::Import]) {
+            return self.import_statement();
+        }
+        
         self.expression_statement()
     }
     
@@ -1642,36 +1716,946 @@ impl Parser {
     
     /// Parse a derive hypotheses statement
     fn derive_hypotheses_statement(&mut self) -> Result<Node, TurbulanceError> {
-        let start_span = self.previous().span.clone();
+        let start = self.current_token().span.start;
+        self.advance(); // consume 'derive_hypotheses'
         
-        self.consume(TokenKind::LeftBrace, "Expected '{' after 'derive_hypotheses'")?;
-        
-        // Parse list of hypothesis strings
         let mut hypotheses = Vec::new();
-        while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
-            if self.match_token(&[TokenKind::StringLiteral]) {
-                hypotheses.push(self.previous().lexeme.trim_matches('"').to_string());
+        
+        while !self.check(&TokenKind::Semicolon) && !self.is_at_end() {
+            if let TokenKind::String(hypothesis) = &self.current_token().kind {
+                hypotheses.push(hypothesis.clone());
+                self.advance();
             } else {
                 return Err(self.error("Expected hypothesis string"));
             }
             
-            if !self.match_token(&[TokenKind::Semicolon]) && !self.check(&TokenKind::RightBrace) {
-                return Err(self.error("Expected ';' or '}' after hypothesis"));
+            if self.check(&TokenKind::Comma) {
+                self.advance();
+            } else {
+                break;
             }
         }
         
-        self.consume(TokenKind::RightBrace, "Expected '}' after hypotheses")?;
+        self.consume(TokenKind::Semicolon, "Expected ';' after derive_hypotheses statement")?;
+        let end = self.previous().span.end;
         
+        Ok(Node::DeriveHypotheses {
+            hypotheses,
+            span: Span { start, end },
+        })
+    }
+
+    // Advanced orchestration parsing methods
+    fn flow_statement(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        let variable = if let Some(TokenKind::Identifier(name)) = self.peek().kind.clone() {
+            self.advance();
+            name
+        } else {
+            return Err(self.error("Expected variable name after 'flow'"));
+        };
+        
+        self.consume(TokenKind::On, "Expected 'on' after flow variable")?;
+        let collection = Box::new(self.expression()?);
+        
+        self.consume(TokenKind::LeftBrace, "Expected '{' after flow collection")?;
+        let body = Box::new(self.block()?);
         let end_span = self.previous().span.clone();
+        
         let span = Span::new(
             Position::new(0, 0, start_span.start),
             Position::new(0, 0, end_span.end),
         );
         
-        Ok(Node::DeriveHypotheses {
-            hypotheses,
+        Ok(Node::Flow(FlowStatement {
+            variable,
+            collection,
+            body,
             span,
+        }))
+    }
+
+    fn catalyze_statement(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        let target = Box::new(self.expression()?);
+        self.consume(TokenKind::With, "Expected 'with' after catalyze target")?;
+        
+        let scale = match &self.peek().kind {
+            TokenKind::Quantum => ScaleType::Quantum,
+            TokenKind::Molecular => ScaleType::Molecular,
+            TokenKind::Environmental => ScaleType::Environmental,
+            TokenKind::Hardware => ScaleType::Hardware,
+            TokenKind::Cognitive => ScaleType::Cognitive,
+            _ => return Err(self.error("Expected valid scale type after 'catalyze'")),
+        };
+        
+        let end_span = self.advance().span.clone();
+        
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, end_span.end),
+        );
+        
+        Ok(Node::Catalyze(CatalyzeStatement {
+            target,
+            scale,
+            span,
+        }))
+    }
+
+    fn cross_scale_coordinate(&mut self) -> Result<Node, TurbulanceError> {
+        let start = self.current_token().span.start;
+        self.advance(); // consume 'cross_scale'
+        self.consume(TokenKind::Coordinate, "Expected 'coordinate' after 'cross_scale'")?;
+        
+        let mut pairs = Vec::new();
+        
+        loop {
+            let pair_start = self.current_token().span.start;
+            
+            let scale1 = match &self.current_token().kind {
+                TokenKind::Quantum => ScaleType::Quantum,
+                TokenKind::Molecular => ScaleType::Molecular,
+                TokenKind::Environmental => ScaleType::Environmental,
+                TokenKind::Hardware => ScaleType::Hardware,
+                TokenKind::Cognitive => ScaleType::Cognitive,
+                _ => return Err(self.error("Expected valid scale type in coordinate pair")),
+            };
+            self.advance();
+            
+            self.consume(TokenKind::With, "Expected 'with' between scale types")?;
+            
+            let scale2 = match &self.current_token().kind {
+                TokenKind::Quantum => ScaleType::Quantum,
+                TokenKind::Molecular => ScaleType::Molecular,
+                TokenKind::Environmental => ScaleType::Environmental,
+                TokenKind::Hardware => ScaleType::Hardware,
+                TokenKind::Cognitive => ScaleType::Cognitive,
+                _ => return Err(self.error("Expected valid scale type in coordinate pair")),
+            };
+            let pair_end = self.advance().span.end;
+            
+            pairs.push(CoordinationPair {
+                scale1,
+                scale2,
+                span: Span { start: pair_start, end: pair_end },
+            });
+            
+            if !self.check(&TokenKind::Comma) {
+                break;
+            }
+            self.advance();
+        }
+        
+        let end = self.previous().span.end;
+        
+        Ok(Node::CrossScaleCoordinate(CrossScaleCoordinate {
+            pairs,
+            span: Span { start, end },
+        }))
+    }
+
+    fn drift_statement(&mut self) -> Result<Node, TurbulanceError> {
+        let start = self.current_token().span.start;
+        self.advance(); // consume 'drift'
+        
+        let parameters = Box::new(self.expression()?);
+        self.consume(TokenKind::Until, "Expected 'until' after drift parameters")?;
+        let condition = Box::new(self.expression()?);
+        
+        let body = Box::new(self.block()?);
+        let end = self.previous().span.end;
+        
+        Ok(Node::Drift(DriftStatement {
+            parameters,
+            condition,
+            body,
+            span: Span { start, end },
+        }))
+    }
+
+    fn cycle_statement(&mut self) -> Result<Node, TurbulanceError> {
+        let start = self.current_token().span.start;
+        self.advance(); // consume 'cycle'
+        
+        let variable = self.consume_identifier("Expected variable name after 'cycle'")?;
+        self.consume(TokenKind::On, "Expected 'on' after cycle variable")?;
+        let collection = Box::new(self.expression()?);
+        
+        let body = Box::new(self.block()?);
+        let end = self.previous().span.end;
+        
+        Ok(Node::Cycle(CycleStatement {
+            variable,
+            collection,
+            body,
+            span: Span { start, end },
+        }))
+    }
+
+    fn roll_statement(&mut self) -> Result<Node, TurbulanceError> {
+        let start = self.current_token().span.start;
+        self.advance(); // consume 'roll'
+        
+        let variable = self.consume_identifier("Expected variable name after 'roll'")?;
+        self.consume(TokenKind::Until, "Expected 'until' after roll variable")?;
+        let condition = Box::new(self.expression()?);
+        
+        let body = Box::new(self.block()?);
+        let end = self.previous().span.end;
+        
+        Ok(Node::Roll(RollStatement {
+            variable,
+            condition,
+            body,
+            span: Span { start, end },
+        }))
+    }
+
+    fn resolve_statement(&mut self) -> Result<Node, TurbulanceError> {
+        let start = self.current_token().span.start;
+        self.advance(); // consume 'resolve'
+        
+        let function_call = Box::new(self.expression()?);
+        
+        let context = if self.check(&TokenKind::Given) {
+            self.advance(); // consume 'given'
+            Some(Box::new(self.expression()?))
+        } else {
+            None
+        };
+        
+        let end = self.previous().span.end;
+        
+        Ok(Node::Resolve(ResolveStatement {
+            function_call,
+            context,
+            span: Span { start, end },
+        }))
+    }
+
+    fn point_declaration(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        let name = if let Some(TokenKind::Identifier(name)) = self.peek().kind.clone() {
+            self.advance();
+            name
+        } else {
+            return Err(self.error("Expected point name after 'point'"));
+        };
+        
+        self.consume(TokenKind::Assign, "Expected '=' after point name")?;
+        
+        let properties = Box::new(self.expression()?);
+        let end_span = self.previous().span.clone();
+        
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, end_span.end),
+        );
+        
+        Ok(Node::Point(PointDeclaration {
+            name,
+            properties,
+            span,
+        }))
+    }
+
+    // Helper method for structured data with parameters
+    fn parse_function_with_parameters(&mut self) -> Result<Node, TurbulanceError> {
+        let start = self.current_token().span.start;
+        let name = self.consume_identifier("Expected function name")?;
+        
+        self.consume(TokenKind::LeftParen, "Expected '(' after function name")?;
+        
+        let mut parameters = Vec::new();
+        
+        while !self.check(&TokenKind::RightParen) && !self.is_at_end() {
+            if let TokenKind::Identifier(param_name) = &self.current_token().kind {
+                let param_name = param_name.clone();
+                self.advance();
+                
+                if self.check(&TokenKind::Colon) {
+                    self.advance(); // consume ':'
+                    let param_value = self.expression()?;
+                    parameters.push((param_name, Box::new(param_value)));
+                } else {
+                    // Positional parameter
+                    parameters.push((param_name, Box::new(Node::Identifier { 
+                        name: param_name.clone(), 
+                        span: self.previous().span 
+                    })));
+                }
+            } else {
+                let param_value = self.expression()?;
+                parameters.push((String::new(), Box::new(param_value)));
+            }
+            
+            if self.check(&TokenKind::Comma) {
+                self.advance();
+            } else {
+                break;
+            }
+        }
+        
+        self.consume(TokenKind::RightParen, "Expected ')' after parameters")?;
+        let end = self.previous().span.end;
+        
+        Ok(Node::FunctionCall {
+            name,
+            args: parameters.into_iter().map(|(_, v)| *v).collect(),
+            span: Span { start, end },
         })
+    }
+
+    // Helper method for range specifications
+    fn parse_range(&mut self) -> Result<Node, TurbulanceError> {
+        let start = self.current_token().span.start;
+        self.consume(TokenKind::LeftBracket, "Expected '[' for range")?;
+        
+        let range_start = Box::new(self.expression()?);
+        self.consume(TokenKind::Comma, "Expected ',' in range")?;
+        let range_end = Box::new(self.expression()?);
+        
+        self.consume(TokenKind::RightBracket, "Expected ']' after range")?;
+        let end = self.previous().span.end;
+        
+        Ok(Node::ArrayLiteral(ArrayLiteral {
+            elements: vec![*range_start, *range_end],
+            span: Span { start, end },
+        }))
+    }
+
+    // Autobahn reference parsing methods
+    fn funxn_declaration(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        let name = if let Some(TokenKind::Identifier(name)) = self.peek().kind.clone() {
+            self.advance();
+            name
+        } else {
+            return Err(self.error("Expected function name after 'funxn'"));
+        };
+        
+        self.consume(TokenKind::LeftParen, "Expected '(' after function name")?;
+        
+        let mut parameters = Vec::new();
+        while !self.check(&TokenKind::RightParen) && !self.is_at_end() {
+            let param_start = self.current_token().span.start;
+            
+            let param_name = if let Some(TokenKind::Identifier(name)) = self.peek().kind.clone() {
+                self.advance();
+                name
+            } else {
+                return Err(self.error("Expected parameter name"));
+            };
+            
+            let param_type = if self.check(&TokenKind::Colon) {
+                self.advance(); // consume ':'
+                if let Some(TokenKind::Identifier(type_name)) = self.peek().kind.clone() {
+                    self.advance();
+                    Some(type_name)
+                } else {
+                    None
+                }
+            } else {
+                None
+            };
+            
+            let default_value = if self.check(&TokenKind::Assign) {
+                self.advance(); // consume '='
+                Some(Box::new(self.expression()?))
+            } else {
+                None
+            };
+            
+            let param_end = self.previous().span.end;
+            
+            parameters.push(Parameter {
+                name: param_name,
+                param_type,
+                default_value,
+                span: Span { start: param_start, end: param_end },
+            });
+            
+            if self.check(&TokenKind::Comma) {
+                self.advance();
+            } else {
+                break;
+            }
+        }
+        
+        self.consume(TokenKind::RightParen, "Expected ')' after parameters")?;
+        self.consume(TokenKind::Colon, "Expected ':' after function signature")?;
+        
+        let body = Box::new(self.block()?);
+        let end_span = self.previous().span.clone();
+        
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, end_span.end),
+        );
+        
+        Ok(Node::Funxn(FunxnDeclaration {
+            name,
+            parameters,
+            body,
+            span,
+        }))
+    }
+
+    fn goal_declaration(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        let name = if let Some(TokenKind::Identifier(name)) = self.peek().kind.clone() {
+            self.advance();
+            name
+        } else {
+            return Err(self.error("Expected goal name after 'goal'"));
+        };
+        
+        self.consume(TokenKind::Colon, "Expected ':' after goal name")?;
+        
+        let mut description = None;
+        let mut success_threshold = None;
+        let mut metrics = Vec::new();
+        let mut subgoals = Vec::new();
+        let mut constraints = Vec::new();
+        
+        while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+            if self.check(&TokenKind::Description) {
+                self.advance();
+                self.consume(TokenKind::Colon, "Expected ':' after 'description'")?;
+                if let Some(TokenKind::String(desc)) = self.peek().kind.clone() {
+                    self.advance();
+                    description = Some(desc);
+                }
+            } else if self.check(&TokenKind::SuccessThreshold) {
+                self.advance();
+                self.consume(TokenKind::Colon, "Expected ':' after 'success_threshold'")?;
+                success_threshold = Some(Box::new(self.expression()?));
+            } else if self.check(&TokenKind::Metrics) {
+                self.advance();
+                self.consume(TokenKind::Colon, "Expected ':' after 'metrics'")?;
+                // Parse metrics object
+                metrics = self.parse_key_value_pairs()?;
+            } else if self.check(&TokenKind::Subgoals) {
+                self.advance();
+                self.consume(TokenKind::Colon, "Expected ':' after 'subgoals'")?;
+                // Parse subgoals
+                subgoals = self.parse_subgoals()?;
+            } else if self.check(&TokenKind::Constraints) {
+                self.advance();
+                self.consume(TokenKind::Colon, "Expected ':' after 'constraints'")?;
+                // Parse constraints array
+                constraints = self.parse_constraint_array()?;
+            } else {
+                break;
+            }
+        }
+        
+        let end_span = self.previous().span.clone();
+        
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, end_span.end),
+        );
+        
+        Ok(Node::Goal(GoalDeclaration {
+            name,
+            description,
+            success_threshold,
+            metrics,
+            subgoals,
+            constraints,
+            span,
+        }))
+    }
+
+    fn metacognitive_block(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        let name = if let Some(TokenKind::Identifier(name)) = self.peek().kind.clone() {
+            self.advance();
+            name
+        } else {
+            return Err(self.error("Expected metacognitive block name"));
+        };
+        
+        self.consume(TokenKind::Colon, "Expected ':' after metacognitive block name")?;
+        
+        let mut operations = Vec::new();
+        
+        while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+            let operation = match &self.peek().kind {
+                TokenKind::TrackReasoning => {
+                    self.advance();
+                    self.consume(TokenKind::LeftParen, "Expected '(' after track_reasoning")?;
+                    if let Some(TokenKind::String(topic)) = self.peek().kind.clone() {
+                        self.advance();
+                        self.consume(TokenKind::RightParen, "Expected ')' after topic")?;
+                        MetacognitiveOperation::TrackReasoning(topic)
+                    } else {
+                        return Err(self.error("Expected topic string for track_reasoning"));
+                    }
+                },
+                TokenKind::EvaluateConfidence => {
+                    self.advance();
+                    MetacognitiveOperation::EvaluateConfidence
+                },
+                TokenKind::DetectBias => {
+                    self.advance();
+                    self.consume(TokenKind::LeftParen, "Expected '(' after detect_bias")?;
+                    if let Some(TokenKind::String(bias_type)) = self.peek().kind.clone() {
+                        self.advance();
+                        self.consume(TokenKind::RightParen, "Expected ')' after bias type")?;
+                        MetacognitiveOperation::DetectBias(bias_type)
+                    } else {
+                        return Err(self.error("Expected bias type string for detect_bias"));
+                    }
+                },
+                TokenKind::AdaptBehavior => {
+                    self.advance();
+                    self.consume(TokenKind::LeftParen, "Expected '(' after adapt_behavior")?;
+                    if let Some(TokenKind::String(behavior)) = self.peek().kind.clone() {
+                        self.advance();
+                        self.consume(TokenKind::RightParen, "Expected ')' after behavior")?;
+                        MetacognitiveOperation::AdaptBehavior(behavior)
+                    } else {
+                        return Err(self.error("Expected behavior string for adapt_behavior"));
+                    }
+                },
+                TokenKind::AnalyzeDecisionHistory => {
+                    self.advance();
+                    MetacognitiveOperation::AnalyzeDecisionHistory
+                },
+                TokenKind::UpdateDecisionStrategies => {
+                    self.advance();
+                    MetacognitiveOperation::UpdateDecisionStrategies
+                },
+                TokenKind::IncreaseEvidenceRequirements => {
+                    self.advance();
+                    MetacognitiveOperation::IncreaseEvidenceRequirements
+                },
+                TokenKind::ReduceComputationalOverhead => {
+                    self.advance();
+                    MetacognitiveOperation::ReduceComputationalOverhead
+                },
+                _ => break,
+            };
+            
+            operations.push(operation);
+        }
+        
+        let end_span = self.previous().span.clone();
+        
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, end_span.end),
+        );
+        
+        Ok(Node::Metacognitive(MetacognitiveBlock {
+            name,
+            operations,
+            span,
+        }))
+    }
+
+    fn try_statement(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        self.consume(TokenKind::Colon, "Expected ':' after 'try'")?;
+        let try_block = Box::new(self.block()?);
+        
+        let mut catch_blocks = Vec::new();
+        
+        while self.check(&TokenKind::Catch) {
+            let catch_start = self.advance().span.clone();
+            
+            let (exception_type, exception_name) = if let Some(TokenKind::Identifier(exc_type)) = self.peek().kind.clone() {
+                self.advance();
+                let exc_type = exc_type;
+                
+                let exc_name = if self.check(&TokenKind::As) {
+                    self.advance(); // consume 'as'
+                    if let Some(TokenKind::Identifier(name)) = self.peek().kind.clone() {
+                        self.advance();
+                        Some(name)
+                    } else {
+                        None
+                    }
+                } else {
+                    None
+                };
+                
+                (Some(exc_type), exc_name)
+            } else {
+                (None, None)
+            };
+            
+            self.consume(TokenKind::Colon, "Expected ':' after catch clause")?;
+            let catch_body = Box::new(self.block()?);
+            let catch_end = self.previous().span.clone();
+            
+            catch_blocks.push(CatchBlock {
+                exception_type,
+                exception_name,
+                body: catch_body,
+                span: Span::new(
+                    Position::new(0, 0, catch_start.start),
+                    Position::new(0, 0, catch_end.end),
+                ),
+            });
+        }
+        
+        let finally_block = if self.check(&TokenKind::Finally) {
+            self.advance();
+            self.consume(TokenKind::Colon, "Expected ':' after 'finally'")?;
+            Some(Box::new(self.block()?))
+        } else {
+            None
+        };
+        
+        let end_span = self.previous().span.clone();
+        
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, end_span.end),
+        );
+        
+        Ok(Node::Try(TryStatement {
+            try_block,
+            catch_blocks,
+            finally_block,
+            span,
+        }))
+    }
+
+    fn parallel_block(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        self.consume(TokenKind::ParallelExecute, "Expected 'parallel_execute' after 'parallel'")?;
+        self.consume(TokenKind::Colon, "Expected ':' after 'parallel_execute'")?;
+        
+        let mut tasks = Vec::new();
+        
+        while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+            let task_start = self.current_token().span.start;
+            
+            let task_name = if let Some(TokenKind::Identifier(name)) = self.peek().kind.clone() {
+                self.advance();
+                name
+            } else {
+                return Err(self.error("Expected task name"));
+            };
+            
+            self.consume(TokenKind::Colon, "Expected ':' after task name")?;
+            let task_body = Box::new(self.expression()?);
+            let task_end = self.previous().span.end;
+            
+            tasks.push(ParallelTask {
+                name: task_name,
+                body: task_body,
+                span: Span { start: task_start, end: task_end },
+            });
+        }
+        
+        let end_span = self.previous().span.clone();
+        
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, end_span.end),
+        );
+        
+        Ok(Node::Parallel(ParallelBlock {
+            tasks,
+            span,
+        }))
+    }
+
+    fn quantum_state_declaration(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        let name = if let Some(TokenKind::Identifier(name)) = self.peek().kind.clone() {
+            self.advance();
+            name
+        } else {
+            return Err(self.error("Expected quantum state name"));
+        };
+        
+        self.consume(TokenKind::Colon, "Expected ':' after quantum state name")?;
+        
+        let properties = self.parse_key_value_pairs()?;
+        let end_span = self.previous().span.clone();
+        
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, end_span.end),
+        );
+        
+        Ok(Node::QuantumState(QuantumStateDeclaration {
+            name,
+            properties,
+            span,
+        }))
+    }
+
+    fn optimize_until_statement(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        let condition = Box::new(self.expression()?);
+        self.consume(TokenKind::Colon, "Expected ':' after optimize_until condition")?;
+        
+        let body = Box::new(self.block()?);
+        let end_span = self.previous().span.clone();
+        
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, end_span.end),
+        );
+        
+        Ok(Node::OptimizeUntil(OptimizeUntilStatement {
+            condition,
+            body,
+            span,
+        }))
+    }
+
+    fn for_statement(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        self.consume(TokenKind::Each, "Expected 'each' after 'for'")?;
+        
+        let variable = if let Some(TokenKind::Identifier(name)) = self.peek().kind.clone() {
+            self.advance();
+            name
+        } else {
+            return Err(self.error("Expected variable name after 'each'"));
+        };
+        
+        self.consume(TokenKind::In, "Expected 'in' after variable")?;
+        let collection = Box::new(self.expression()?);
+        self.consume(TokenKind::Colon, "Expected ':' after collection")?;
+        
+        let body = Box::new(self.block()?);
+        let end_span = self.previous().span.clone();
+        
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, end_span.end),
+        );
+        
+        Ok(Node::For(ForStatement {
+            variable,
+            collection,
+            body,
+            span,
+        }))
+    }
+
+    fn while_statement(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        let condition = Box::new(self.expression()?);
+        self.consume(TokenKind::Colon, "Expected ':' after while condition")?;
+        
+        let body = Box::new(self.block()?);
+        let end_span = self.previous().span.clone();
+        
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, end_span.end),
+        );
+        
+        Ok(Node::While(WhileStatement {
+            condition,
+            body,
+            span,
+        }))
+    }
+
+    fn import_statement(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        let module = if let Some(TokenKind::Identifier(name)) = self.peek().kind.clone() {
+            self.advance();
+            name
+        } else if let Some(TokenKind::String(name)) = self.peek().kind.clone() {
+            self.advance();
+            name
+        } else {
+            return Err(self.error("Expected module name after 'import'"));
+        };
+        
+        let (items, alias) = if self.check(&TokenKind::From) {
+            // Handle "from module import items" syntax
+            let from_items = if self.check(&TokenKind::LeftBrace) {
+                self.advance(); // consume '{'
+                let mut import_items = Vec::new();
+                
+                while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+                    if let Some(TokenKind::Identifier(item)) = self.peek().kind.clone() {
+                        self.advance();
+                        import_items.push(item);
+                    }
+                    
+                    if self.check(&TokenKind::Comma) {
+                        self.advance();
+                    } else {
+                        break;
+                    }
+                }
+                
+                self.consume(TokenKind::RightBrace, "Expected '}' after import items")?;
+                Some(import_items)
+            } else {
+                None
+            };
+            
+            let import_alias = if self.check(&TokenKind::As) {
+                self.advance(); // consume 'as'
+                if let Some(TokenKind::Identifier(alias_name)) = self.peek().kind.clone() {
+                    self.advance();
+                    Some(alias_name)
+                } else {
+                    None
+                }
+            } else {
+                None
+            };
+            
+            (from_items, import_alias)
+        } else {
+            (None, None)
+        };
+        
+        let end_span = self.previous().span.clone();
+        
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, end_span.end),
+        );
+        
+        Ok(Node::Import(ImportStatement {
+            module,
+            items,
+            alias,
+            span,
+        }))
+    }
+
+    // Helper methods for parsing complex structures
+    fn parse_key_value_pairs(&mut self) -> Result<Vec<(String, Box<Node>)>, TurbulanceError> {
+        let mut pairs = Vec::new();
+        
+        self.consume(TokenKind::LeftBrace, "Expected '{' for key-value pairs")?;
+        
+        while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+            let key = if let Some(TokenKind::Identifier(key)) = self.peek().kind.clone() {
+                self.advance();
+                key
+            } else if let Some(TokenKind::String(key)) = self.peek().kind.clone() {
+                self.advance();
+                key
+            } else {
+                return Err(self.error("Expected key name"));
+            };
+            
+            self.consume(TokenKind::Colon, "Expected ':' after key")?;
+            let value = Box::new(self.expression()?);
+            
+            pairs.push((key, value));
+            
+            if self.check(&TokenKind::Comma) {
+                self.advance();
+            } else {
+                break;
+            }
+        }
+        
+        self.consume(TokenKind::RightBrace, "Expected '}' after key-value pairs")?;
+        Ok(pairs)
+    }
+
+    fn parse_subgoals(&mut self) -> Result<Vec<SubGoal>, TurbulanceError> {
+        let mut subgoals = Vec::new();
+        
+        self.consume(TokenKind::LeftBrace, "Expected '{' for subgoals")?;
+        
+        while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+            let subgoal_start = self.current_token().span.start;
+            
+            let name = if let Some(TokenKind::Identifier(name)) = self.peek().kind.clone() {
+                self.advance();
+                name
+            } else {
+                return Err(self.error("Expected subgoal name"));
+            };
+            
+            self.consume(TokenKind::Colon, "Expected ':' after subgoal name")?;
+            self.consume(TokenKind::LeftBrace, "Expected '{' for subgoal properties")?;
+            
+            let mut weight = None;
+            let mut threshold = None;
+            
+            while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+                if self.check(&TokenKind::Weight) {
+                    self.advance();
+                    self.consume(TokenKind::Colon, "Expected ':' after 'weight'")?;
+                    weight = Some(Box::new(self.expression()?));
+                } else if self.check(&TokenKind::Threshold) {
+                    self.advance();
+                    self.consume(TokenKind::Colon, "Expected ':' after 'threshold'")?;
+                    threshold = Some(Box::new(self.expression()?));
+                } else {
+                    break;
+                }
+                
+                if self.check(&TokenKind::Comma) {
+                    self.advance();
+                }
+            }
+            
+            self.consume(TokenKind::RightBrace, "Expected '}' after subgoal properties")?;
+            let subgoal_end = self.previous().span.end;
+            
+            subgoals.push(SubGoal {
+                name,
+                weight,
+                threshold,
+                span: Span { start: subgoal_start, end: subgoal_end },
+            });
+            
+            if self.check(&TokenKind::Comma) {
+                self.advance();
+            } else {
+                break;
+            }
+        }
+        
+        self.consume(TokenKind::RightBrace, "Expected '}' after subgoals")?;
+        Ok(subgoals)
+    }
+
+    fn parse_constraint_array(&mut self) -> Result<Vec<Box<Node>>, TurbulanceError> {
+        let mut constraints = Vec::new();
+        
+        self.consume(TokenKind::LeftBracket, "Expected '[' for constraints")?;
+        
+        while !self.check(&TokenKind::RightBracket) && !self.is_at_end() {
+            constraints.push(Box::new(self.expression()?));
+            
+            if self.check(&TokenKind::Comma) {
+                self.advance();
+            } else {
+                break;
+            }
+        }
+        
+        self.consume(TokenKind::RightBracket, "Expected ']' after constraints")?;
+        Ok(constraints)
     }
 }
 

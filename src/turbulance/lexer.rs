@@ -133,6 +133,273 @@ pub enum TokenKind {
     #[token("urgency_factor")]
     UrgencyFactor,
 
+    // Autobahn reference keywords
+    #[token("funxn")]
+    Funxn,
+
+    #[token("metacognitive")]
+    Metacognitive,
+
+    #[token("goal")]
+    Goal,
+
+    #[token("optimize_until")]
+    OptimizeUntil,
+
+    #[token("try")]
+    Try,
+
+    #[token("catch")]
+    Catch,
+
+    #[token("finally")]
+    Finally,
+
+    #[token("parallel")]
+    Parallel,
+
+    #[token("async")]
+    Async,
+
+    #[token("await")]
+    Await,
+
+    #[token("import")]
+    Import,
+
+    #[token("from")]
+    From,
+
+    #[token("otherwise")]
+    Otherwise,
+
+    #[token("within")]
+    Within,
+
+    #[token("each")]
+    Each,
+
+    #[token("all")]
+    All,
+
+    #[token("these")]
+    These,
+
+    #[token("for")]
+    For,
+
+    #[token("while")]
+    While,
+
+    #[token("break")]
+    Break,
+
+    #[token("continue")]
+    Continue,
+
+    #[token("description")]
+    Description,
+
+    #[token("success_threshold")]
+    SuccessThreshold,
+
+    #[token("metrics")]
+    Metrics,
+
+    #[token("subgoals")]
+    Subgoals,
+
+    #[token("weight")]
+    Weight,
+
+    #[token("threshold")]
+    Threshold,
+
+    #[token("constraints")]
+    Constraints,
+
+    #[token("requires_evidence")]
+    RequiresEvidence,
+
+    #[token("support")]
+    Support,
+
+    #[token("with_weight")]
+    WithWeight,
+
+    #[token("collect")]
+    Collect,
+
+    #[token("collect_batch")]
+    CollectBatch,
+
+    #[token("validation_rules")]
+    ValidationRules,
+
+    #[token("processing_pipeline")]
+    ProcessingPipeline,
+
+    #[token("track_reasoning")]
+    TrackReasoning,
+
+    #[token("evaluate_confidence")]
+    EvaluateConfidence,
+
+    #[token("detect_bias")]
+    DetectBias,
+
+    #[token("adapt_behavior")]
+    AdaptBehavior,
+
+    #[token("analyze_decision_history")]
+    AnalyzeDecisionHistory,
+
+    #[token("update_decision_strategies")]
+    UpdateDecisionStrategies,
+
+    #[token("increase_evidence_requirements")]
+    IncreaseEvidenceRequirements,
+
+    #[token("reduce_computational_overhead")]
+    ReduceComputationalOverhead,
+
+    // Biological operations
+    #[token("process_molecule")]
+    ProcessMolecule,
+
+    #[token("harvest_energy")]
+    HarvestEnergy,
+
+    #[token("extract_information")]
+    ExtractInformation,
+
+    #[token("update_membrane_state")]
+    UpdateMembraneState,
+
+    #[token("configure_membrane")]
+    ConfigureMembrane,
+
+    // Scientific functions
+    #[token("calculate_entropy_change")]
+    CalculateEntropyChange,
+
+    #[token("gibbs_free_energy")]
+    GibbsFreeEnergy,
+
+    #[token("shannon")]
+    Shannon,
+
+    #[token("mutual_info")]
+    MutualInfo,
+
+    #[token("info_gain")]
+    InfoGain,
+
+    #[token("calculate_mw")]
+    CalculateMw,
+
+    #[token("calculate_ka")]
+    CalculateKa,
+
+    #[token("analyze_flux")]
+    AnalyzeFlux,
+
+    #[token("calculate_kcat_km")]
+    CalculateKcatKm,
+
+    // Quantum operations
+    #[token("quantum_state")]
+    QuantumState,
+
+    #[token("amplitude")]
+    Amplitude,
+
+    #[token("phase")]
+    Phase,
+
+    #[token("coherence_time")]
+    CoherenceTime,
+
+    #[token("apply_hadamard")]
+    ApplyHadamard,
+
+    #[token("apply_cnot")]
+    ApplyCnot,
+
+    #[token("measure")]
+    Measure,
+
+    #[token("measure_entanglement")]
+    MeasureEntanglement,
+
+    #[token("parallel_execute")]
+    ParallelExecute,
+
+    #[token("await_all_tasks")]
+    AwaitAllTasks,
+
+    // Pattern types
+    #[token("temporal")]
+    Temporal,
+
+    #[token("spatial")]
+    Spatial,
+
+    #[token("oscillatory")]
+    Oscillatory,
+
+    #[token("emergent")]
+    Emergent,
+
+    // Additional scientific keywords
+    #[token("matches")]
+    Matches,
+
+    #[token("contains")]
+    Contains,
+
+    #[token("temperature")]
+    Temperature,
+
+    #[token("ph_level")]
+    PhLevel,
+
+    #[token("concentration")]
+    Concentration,
+
+    #[token("catalyst")]
+    Catalyst,
+
+    #[token("monitor_efficiency")]
+    MonitorEfficiency,
+
+    #[token("target_yield")]
+    TargetYield,
+
+    #[token("adaptive_optimization")]
+    AdaptiveOptimization,
+
+    #[token("processing_method")]
+    ProcessingMethod,
+
+    #[token("noise_filtering")]
+    NoiseFiltering,
+
+    #[token("confidence_threshold")]
+    ConfidenceThreshold,
+
+    #[token("permeability")]
+    Permeability,
+
+    #[token("selectivity")]
+    Selectivity,
+
+    #[token("transport_rate")]
+    TransportRate,
+
+    #[token("energy_requirement")]
+    EnergyRequirement,
+
     // Scale identifiers
     #[token("quantum")]
     Quantum,
@@ -201,9 +468,6 @@ pub enum TokenKind {
     #[token("sources")]
     SourcesDecl,
 
-    #[token("within")]
-    Within,
-
     #[token("given")]
     Given,
 
@@ -213,20 +477,8 @@ pub enum TokenKind {
     #[token("else")]
     Else,
 
-    #[token("for")]
-    For,
-
-    #[token("each")]
-    Each,
-
     #[token("considering")]
     Considering,
-
-    #[token("all")]
-    All,
-
-    #[token("these")]
-    These,
 
     #[token("item")]
     Item,
@@ -489,6 +741,84 @@ impl fmt::Display for TokenKind {
             TokenKind::Duration => write!(f, "duration"),
             TokenKind::Size => write!(f, "size"),
             TokenKind::Diversity => write!(f, "diversity"),
+            TokenKind::Funxn => write!(f, "funxn"),
+            TokenKind::Metacognitive => write!(f, "metacognitive"),
+            TokenKind::Goal => write!(f, "goal"),
+            TokenKind::OptimizeUntil => write!(f, "optimize_until"),
+            TokenKind::Try => write!(f, "try"),
+            TokenKind::Catch => write!(f, "catch"),
+            TokenKind::Finally => write!(f, "finally"),
+            TokenKind::Parallel => write!(f, "parallel"),
+            TokenKind::Async => write!(f, "async"),
+            TokenKind::Await => write!(f, "await"),
+            TokenKind::Import => write!(f, "import"),
+            TokenKind::From => write!(f, "from"),
+            TokenKind::Otherwise => write!(f, "otherwise"),
+            TokenKind::Description => write!(f, "description"),
+            TokenKind::SuccessThreshold => write!(f, "success_threshold"),
+            TokenKind::Metrics => write!(f, "metrics"),
+            TokenKind::Subgoals => write!(f, "subgoals"),
+            TokenKind::Weight => write!(f, "weight"),
+            TokenKind::Threshold => write!(f, "threshold"),
+            TokenKind::Constraints => write!(f, "constraints"),
+            TokenKind::RequiresEvidence => write!(f, "requires_evidence"),
+            TokenKind::WithWeight => write!(f, "with_weight"),
+            TokenKind::Collect => write!(f, "collect"),
+            TokenKind::CollectBatch => write!(f, "collect_batch"),
+            TokenKind::ValidationRules => write!(f, "validation_rules"),
+            TokenKind::ProcessingPipeline => write!(f, "processing_pipeline"),
+            TokenKind::TrackReasoning => write!(f, "track_reasoning"),
+            TokenKind::EvaluateConfidence => write!(f, "evaluate_confidence"),
+            TokenKind::DetectBias => write!(f, "detect_bias"),
+            TokenKind::AdaptBehavior => write!(f, "adapt_behavior"),
+            TokenKind::AnalyzeDecisionHistory => write!(f, "analyze_decision_history"),
+            TokenKind::UpdateDecisionStrategies => write!(f, "update_decision_strategies"),
+            TokenKind::IncreaseEvidenceRequirements => write!(f, "increase_evidence_requirements"),
+            TokenKind::ReduceComputationalOverhead => write!(f, "reduce_computational_overhead"),
+            TokenKind::ProcessMolecule => write!(f, "process_molecule"),
+            TokenKind::HarvestEnergy => write!(f, "harvest_energy"),
+            TokenKind::ExtractInformation => write!(f, "extract_information"),
+            TokenKind::UpdateMembraneState => write!(f, "update_membrane_state"),
+            TokenKind::ConfigureMembrane => write!(f, "configure_membrane"),
+            TokenKind::CalculateEntropyChange => write!(f, "calculate_entropy_change"),
+            TokenKind::GibbsFreeEnergy => write!(f, "gibbs_free_energy"),
+            TokenKind::Shannon => write!(f, "shannon"),
+            TokenKind::MutualInfo => write!(f, "mutual_info"),
+            TokenKind::InfoGain => write!(f, "info_gain"),
+            TokenKind::CalculateMw => write!(f, "calculate_mw"),
+            TokenKind::CalculateKa => write!(f, "calculate_ka"),
+            TokenKind::AnalyzeFlux => write!(f, "analyze_flux"),
+            TokenKind::CalculateKcatKm => write!(f, "calculate_kcat_km"),
+            TokenKind::QuantumState => write!(f, "quantum_state"),
+            TokenKind::Amplitude => write!(f, "amplitude"),
+            TokenKind::Phase => write!(f, "phase"),
+            TokenKind::CoherenceTime => write!(f, "coherence_time"),
+            TokenKind::ApplyHadamard => write!(f, "apply_hadamard"),
+            TokenKind::ApplyCnot => write!(f, "apply_cnot"),
+            TokenKind::Measure => write!(f, "measure"),
+            TokenKind::MeasureEntanglement => write!(f, "measure_entanglement"),
+            TokenKind::ParallelExecute => write!(f, "parallel_execute"),
+            TokenKind::AwaitAllTasks => write!(f, "await_all_tasks"),
+            TokenKind::Temporal => write!(f, "temporal"),
+            TokenKind::Spatial => write!(f, "spatial"),
+            TokenKind::Oscillatory => write!(f, "oscillatory"),
+            TokenKind::Emergent => write!(f, "emergent"),
+            TokenKind::Matches => write!(f, "matches"),
+            TokenKind::Contains => write!(f, "contains"),
+            TokenKind::Temperature => write!(f, "temperature"),
+            TokenKind::PhLevel => write!(f, "ph_level"),
+            TokenKind::Concentration => write!(f, "concentration"),
+            TokenKind::Catalyst => write!(f, "catalyst"),
+            TokenKind::MonitorEfficiency => write!(f, "monitor_efficiency"),
+            TokenKind::TargetYield => write!(f, "target_yield"),
+            TokenKind::AdaptiveOptimization => write!(f, "adaptive_optimization"),
+            TokenKind::ProcessingMethod => write!(f, "processing_method"),
+            TokenKind::NoiseFiltering => write!(f, "noise_filtering"),
+            TokenKind::ConfidenceThreshold => write!(f, "confidence_threshold"),
+            TokenKind::Permeability => write!(f, "permeability"),
+            TokenKind::Selectivity => write!(f, "selectivity"),
+            TokenKind::TransportRate => write!(f, "transport_rate"),
+            TokenKind::EnergyRequirement => write!(f, "energy_requirement"),
             _ => write!(f, "{:?}", self),
         }
     }

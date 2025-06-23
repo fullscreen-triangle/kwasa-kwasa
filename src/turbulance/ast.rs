@@ -289,6 +289,20 @@ pub enum Node {
     Roll(RollStatement),
     Resolve(ResolveStatement),
     Point(PointDeclaration),
+    
+    // Autobahn reference constructs
+    Funxn(FunxnDeclaration),
+    Goal(GoalDeclaration),
+    Metacognitive(MetacognitiveBlock),
+    Try(TryStatement),
+    Parallel(ParallelBlock),
+    QuantumState(QuantumStateDeclaration),
+    BiologicalOperation(BiologicalOperation),
+    OptimizeUntil(OptimizeUntilStatement),
+    Within(WithinStatement),
+    For(ForStatement),
+    While(WhileStatement),
+    Import(ImportStatement),
 }
 
 /// Represents a function definition
@@ -609,6 +623,209 @@ pub struct RangeSpecification {
 pub struct ParameterMap {
     pub parameters: Vec<(String, Box<Node>)>,
     pub span: Span,
+}
+
+// Autobahn reference constructs
+#[derive(Debug, Clone, PartialEq)]
+pub struct FunxnDeclaration {
+    pub name: String,
+    pub parameters: Vec<Parameter>,
+    pub body: Box<Node>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct Parameter {
+    pub name: String,
+    pub param_type: Option<String>,
+    pub default_value: Option<Box<Node>>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct GoalDeclaration {
+    pub name: String,
+    pub description: Option<String>,
+    pub success_threshold: Option<Box<Node>>,
+    pub metrics: Vec<(String, Box<Node>)>,
+    pub subgoals: Vec<SubGoal>,
+    pub constraints: Vec<Box<Node>>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct SubGoal {
+    pub name: String,
+    pub weight: Option<Box<Node>>,
+    pub threshold: Option<Box<Node>>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct MetacognitiveBlock {
+    pub name: String,
+    pub operations: Vec<MetacognitiveOperation>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum MetacognitiveOperation {
+    TrackReasoning(String),
+    EvaluateConfidence,
+    DetectBias(String),
+    AdaptBehavior(String),
+    AnalyzeDecisionHistory,
+    UpdateDecisionStrategies,
+    IncreaseEvidenceRequirements,
+    ReduceComputationalOverhead,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct TryStatement {
+    pub try_block: Box<Node>,
+    pub catch_blocks: Vec<CatchBlock>,
+    pub finally_block: Option<Box<Node>>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct CatchBlock {
+    pub exception_type: Option<String>,
+    pub exception_name: Option<String>,
+    pub body: Box<Node>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ParallelBlock {
+    pub tasks: Vec<ParallelTask>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ParallelTask {
+    pub name: String,
+    pub body: Box<Node>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct QuantumStateDeclaration {
+    pub name: String,
+    pub properties: Vec<(String, Box<Node>)>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct BiologicalOperation {
+    pub operation_type: BiologicalOperationType,
+    pub target: Option<Box<Node>>,
+    pub parameters: Vec<(String, Box<Node>)>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum BiologicalOperationType {
+    ProcessMolecule,
+    HarvestEnergy,
+    ExtractInformation,
+    UpdateMembraneState,
+    ConfigureMembrane,
+    CalculateEntropyChange,
+    GibbsFreeEnergy,
+    Shannon,
+    MutualInfo,
+    InfoGain,
+    CalculateMw,
+    CalculateKa,
+    AnalyzeFlux,
+    CalculateKcatKm,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct OptimizeUntilStatement {
+    pub condition: Box<Node>,
+    pub body: Box<Node>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct WithinStatement {
+    pub target: Box<Node>,
+    pub alias: Option<String>,
+    pub body: Box<Node>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ForStatement {
+    pub variable: String,
+    pub collection: Box<Node>,
+    pub body: Box<Node>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct WhileStatement {
+    pub condition: Box<Node>,
+    pub body: Box<Node>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ImportStatement {
+    pub module: String,
+    pub items: Option<Vec<String>>,
+    pub alias: Option<String>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum PatternType {
+    Temporal,
+    Spatial,
+    Oscillatory,
+    Emergent,
+    Custom(String),
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct PatternExpression {
+    pub pattern_type: PatternType,
+    pub name: String,
+    pub parameters: Vec<Box<Node>>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct EvidenceCollection {
+    pub collection_type: EvidenceCollectionType,
+    pub sources: Vec<String>,
+    pub validation_rules: Vec<Box<Node>>,
+    pub processing_pipeline: Vec<String>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum EvidenceCollectionType {
+    Basic,
+    Batch,
+    Comprehensive,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct QuantumOperation {
+    pub operation_type: QuantumOperationType,
+    pub targets: Vec<Box<Node>>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum QuantumOperationType {
+    ApplyHadamard,
+    ApplyCnot,
+    Measure,
+    MeasureEntanglement,
 }
 
 #[cfg(test)]
