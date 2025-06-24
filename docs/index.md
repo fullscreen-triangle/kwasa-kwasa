@@ -70,13 +70,69 @@ Kwasa-Kwasa is a text processing framework that treats text as a computational m
 ### Domain Extensions
 - [Domain Extensions](examples/domain-extensions.md) - Specialized domain applications
 - [Domains](domains.md) - Domain-specific processing capabilities
-- [Domain Expansion](../DOMAIN_EXPANSION.md) - Advanced domain expansion techniques
-- [Domain Expansion Plan](../domain_expansion_plan.md) - Expansion planning and strategy
+- [Domain Expansion](DOMAIN_EXPANSION.md) - Advanced domain expansion techniques
+- [Domain Expansion Plan](domain_expansion_plan.md) - Expansion planning and strategy
 
 ### Scientific Domains
 - [Genomics](genomics.md) - Genomic data analysis and processing
 - [Mass Spectrometry](massspec.md) - Chemical analysis and mass spectrometry
 - [Scientific Data Extensions](examples/SCIENTIFIC_DATA_EXTENSIONS.md) - Scientific computing applications
+
+## Scientific Research & Advanced Frameworks
+
+### 🧬 Biological Maxwell's Demons (BMD) Framework
+**Semantic Information Catalysis Theory**
+- [Semantic BMDs](semantic-bmds.md) - Core theoretical framework for information catalysis in semantic processing
+- [Turbulance Syntax Analysis](turbulance-syntax-analysis.md) - Implementation analysis of BMD constructs in Turbulance
+
+### 🏛️ Historical Intelligence Frameworks
+**Ancient Wisdom Applied to Modern Computing**
+
+#### Egyptian Computational Architecture
+- [Imhotep Masterclass](scientific-research/imhotep.md) - Ancient Egyptian computational wisdom for modern systems
+- [Imhotep Implementation](scientific-research/imhotep-implementation.md) - Practical implementation of Imhotep principles
+
+#### Mesopotamian Systems Biology
+- [Nebuchadnezzar Masterclass](scientific-research/nebuchadnezzar.md) - Babylonian approach to complex systems analysis
+- [Space Computer Framework](scientific-research/space-computer.md) - Advanced biomechanical analysis architecture
+
+#### Renaissance Strategic Intelligence
+- [Borgia Masterclass](scientific-research/borgia.md) - Machiavellian strategic analysis and decision-making systems
+
+### 🧪 Advanced Scientific Computing
+
+#### Cheminformatics & Drug Discovery
+- [Turbulance Cheminformatics Masterclass](turbulance-cheminformatics-masterclass.md) - Comprehensive chemical analysis and drug discovery framework
+- [Polyglot Programming](polyglot-programming.md) - Multi-language integration for scientific computing
+
+#### Probabilistic Reasoning Engine
+- [Autobahn Engine](scientific-research/autobahn.md) - Advanced probabilistic reasoning and inference systems
+- [Autobahn Complete Implementation](autobahn-complete-implementation.md) - Full implementation guide and examples
+
+### 🏃‍♂️ Sports Science & Computer Vision
+
+#### Elite Athletic Performance Analysis
+- [Moriarty-Sese-Seko Masterclass](scientific-research/moriarty-sese-seko.md) - Advanced sports analysis and computer vision framework
+- [Sports Vision Syntax Analysis](scientific-research/sports-vision-syntax-analysis.md) - Complete implementation analysis of sports analysis constructs
+
+### 🔮 Mystical & Esoteric Computing
+
+#### Dune-Inspired Cognitive Architecture
+- [Bene Gesserit Masterclass](scientific-research/bene-gesserit.md) - Prescient analysis and future-state prediction systems
+- [Bene Gesserit Implementation](scientific-research/bene-gesserit-implementation.md) - Practical implementation of prescient computing
+
+#### Sacred Computational Frameworks
+- [Gospel Framework](scientific-research/gospel.md) - Spiritual and transcendent approaches to computational analysis
+
+### 🔬 Research Methodology & Validation
+**Scientific Rigor in Computational Frameworks**
+- Each masterclass includes comprehensive validation frameworks
+- Evidence-based analysis with uncertainty quantification
+- Cross-domain applicability and extensibility studies
+- Integration with existing scientific computing ecosystems
+
+### 🚀 Revolutionary Paradigms
+- [Revolutionary Paradigms Implementation](REVOLUTIONARY_PARADIGMS_IMPLEMENTATION.md) - Cutting-edge computational paradigms and their practical applications
 
 ### Complete Framework Demonstrations
 
