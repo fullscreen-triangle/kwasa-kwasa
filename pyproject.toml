@@ -1,0 +1,242 @@
+[build-system]
+requires = ["maturin>=1.0,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "kwasa-kwasa"
+description = "Metacognitive text processing framework with Turbulance DSL and Autobahn reasoning engine"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "Kundai", email = "kundai@example.com"},
+]
+maintainers = [
+    {name = "Kundai", email = "kundai@example.com"},
+]
+keywords = [
+    "nlp",
+    "text-processing",
+    "metacognition",
+    "scientific-computing",
+    "domain-specific-language",
+    "probabilistic-reasoning",
+    "turbulance",
+    "autobahn",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Rust",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Scientific/Engineering :: Chemistry",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Text Processing :: Linguistic",
+]
+dependencies = [
+    "numpy>=1.21.0",
+    "pandas>=1.3.0",
+    "scipy>=1.7.0",
+    "scikit-learn>=1.0.0",
+    "matplotlib>=3.4.0",
+    "seaborn>=0.11.0",
+    "plotly>=5.0.0",
+    "jupyter>=1.0.0",
+    "ipython>=7.0.0",
+    "requests>=2.25.0",
+    "pydantic>=1.8.0",
+    "typer>=0.4.0",
+    "rich>=10.0.0",
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+# Scientific computing dependencies
+scientific = [
+    "rdkit-pypi>=2022.3.0",
+    "biopython>=1.79",
+    "networkx>=2.6",
+    "graph-tool>=2.45",
+    "pymc>=4.0.0",
+    "arviz>=0.11.0",
+    "tensorflow>=2.8.0",
+    "torch>=1.11.0",
+    "transformers>=4.17.0",
+    "datasets>=2.0.0",
+    "huggingface-hub>=0.4.0",
+]
+
+# Cheminformatics dependencies
+cheminformatics = [
+    "rdkit-pypi>=2022.3.0",
+    "chembl-webresource-client>=0.10.0",
+    "pubchempy>=1.0.4",
+    "mordred>=1.2.0",
+    "deepchem>=2.6.0",
+    "openmm>=7.6.0",
+    "mdtraj>=1.9.0",
+    "pymol-open-source>=2.5.0",
+]
+
+# Systems biology dependencies
+systems-biology = [
+    "biopython>=1.79",
+    "cobra>=0.24.0",
+    "escher>=1.7.0",
+    "bioservices>=1.8.0",
+    "goatools>=1.2.0",
+    "gseapy>=0.10.0",
+    "scanpy>=1.8.0",
+    "anndata>=0.8.0",
+]
+
+# Mass spectrometry dependencies
+spectrometry = [
+    "pyopenms>=2.7.0",
+    "pymzml>=2.4.0",
+    "spectrum-utils>=0.3.0",
+    "matchms>=0.14.0",
+    "ms2deepscore>=1.0.0",
+    "spec2vec>=0.6.0",
+]
+
+# Multimedia analysis dependencies
+multimedia = [
+    "opencv-python>=4.5.0",
+    "pillow>=8.0.0",
+    "scikit-image>=0.18.0",
+    "librosa>=0.8.0",
+    "soundfile>=0.10.0",
+    "moviepy>=1.0.0",
+    "ffmpeg-python>=0.2.0",
+]
+
+# Development dependencies
+dev = [
+    "pytest>=6.0.0",
+    "pytest-cov>=2.12.0",
+    "pytest-benchmark>=3.4.0",
+    "black>=21.0.0",
+    "isort>=5.9.0",
+    "flake8>=3.9.0",
+    "mypy>=0.910",
+    "pre-commit>=2.13.0",
+    "sphinx>=4.0.0",
+    "sphinx-rtd-theme>=0.5.0",
+    "myst-parser>=0.15.0",
+    "jupyter-book>=0.11.0",
+]
+
+# Documentation dependencies
+docs = [
+    "sphinx>=4.0.0",
+    "sphinx-rtd-theme>=0.5.0",
+    "myst-parser>=0.15.0",
+    "jupyter-book>=0.11.0",
+    "nbsphinx>=0.8.0",
+    "pandoc>=1.0.0",
+]
+
+# All optional dependencies
+all = [
+    "kwasa-kwasa[scientific,cheminformatics,systems-biology,spectrometry,multimedia,dev,docs]"
+]
+
+[project.urls]
+Homepage = "https://github.com/fullscreen-triangle/kwasa-kwasa"
+Documentation = "https://fullscreen-triangle.github.io/kwasa-kwasa/"
+Repository = "https://github.com/fullscreen-triangle/kwasa-kwasa.git"
+"Bug Tracker" = "https://github.com/fullscreen-triangle/kwasa-kwasa/issues"
+Changelog = "https://github.com/fullscreen-triangle/kwasa-kwasa/blob/main/CHANGELOG.md"
+
+[project.scripts]
+kwasa-kwasa = "kwasa_kwasa:main"
+turbulance = "kwasa_kwasa.turbulance:main"
+autobahn = "kwasa_kwasa.autobahn:main"
+
+[tool.maturin]
+features = ["pyo3/extension-module"]
+python-source = "python"
+module-name = "kwasa_kwasa._core"
+
+[tool.black]
+line-length = 88
+target-version = ['py38', 'py39', 'py310', 'py311']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # Directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_first_party = ["kwasa_kwasa"]
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q --strict-markers --strict-config"
+testpaths = [
+    "tests",
+    "python/tests",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+    "scientific: marks tests requiring scientific computing libraries",
+    "cheminformatics: marks tests requiring cheminformatics libraries",
+    "systems_biology: marks tests requiring systems biology libraries",
+    "spectrometry: marks tests requiring mass spectrometry libraries",
+    "multimedia: marks tests requiring multimedia libraries",
+]
+
+[tool.coverage.run]
+source = ["kwasa_kwasa"]
+omit = [
+    "*/tests/*",
+    "*/test_*",
+    "setup.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+] 

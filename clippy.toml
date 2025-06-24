@@ -1,0 +1,27 @@
+# Clippy configuration for Kwasa-Kwasa project
+# Cognitive complexity threshold
+cognitive-complexity-threshold = 30
+
+# Documentation requirements
+missing-docs-in-crate-items = true
+
+# Type complexity limits
+type-complexity-threshold = 250
+
+# Avoid false positives for scientific computing
+avoid-breaking-exported-api = true
+
+# Allow certain patterns common in DSL implementation
+allowed-scripts = ["Latin", "Cyrillic"]
+
+# Thresholds for various lints
+single-char-binding-names-threshold = 4
+trivial-copy-size-limit = 128
+too-many-arguments-threshold = 8
+too-many-lines-threshold = 150
+large-type-threshold = 200
+vec-box-size-threshold = 4096
+max-suggested-slice-pattern-length = 3
+
+# Enforce certain practices
+enforce-iter-loop-reborrow = true 
