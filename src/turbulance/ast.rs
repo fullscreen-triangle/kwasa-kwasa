@@ -329,6 +329,24 @@ pub enum Node {
     Interface(InterfaceDeclaration),
     OrchestratorSystem(OrchestratorSystemDeclaration),
     BiomechanicalAnalysis(BiomechanicalAnalysisBlock),
+
+    // Sports Analysis Computer Vision Framework
+    BayesianNetwork(BayesianNetworkDeclaration),
+    SensorFusion(SensorFusionDeclaration),
+    TemporalAnalysis(TemporalAnalysisDeclaration),
+    BiomechanicalEvidence(BiomechanicalEvidenceDeclaration),
+    PatternRegistry(PatternRegistryDeclaration),
+    RealTimeStreaming(RealTimeStreamingDeclaration),
+    FuzzySystem(FuzzySystemDeclaration),
+    BayesianUpdate(BayesianUpdateDeclaration),
+    AdaptiveQuality(AdaptiveQualityDeclaration),
+    OptimizationFramework(OptimizationFrameworkDeclaration),
+    GeneticOptimization(GeneticOptimizationDeclaration),
+    AnalysisWorkflow(AnalysisWorkflowDeclaration),
+    ValidationFramework(ValidationFrameworkDeclaration),
+    FuzzyEvaluate(FuzzyEvaluateStatement),
+    CausalInference(CausalInferenceStatement),
+    MetacognitiveAnalysis(MetacognitiveAnalysisStatement),
 }
 
 /// Represents a function definition
@@ -1727,6 +1745,650 @@ pub enum StatisticalMethodType {
     GeometricMean,
     WeightedAverage,
     HarmonicMean,
+}
+
+// Sports Analysis Computer Vision Framework AST Structures
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct BayesianNetworkDeclaration {
+    pub name: String,
+    pub nodes: Vec<NetworkNode>,
+    pub edges: Vec<NetworkEdge>,
+    pub optimization_targets: Vec<OptimizationTarget>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct NetworkNode {
+    pub name: String,
+    pub node_type: String,
+    pub parameters: Vec<(String, Box<Node>)>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct NetworkEdge {
+    pub from: String,
+    pub to: String,
+    pub relationship_type: String,
+    pub strength: Box<Node>,
+    pub fuzziness: Option<Box<Node>>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct OptimizationTarget {
+    pub target_type: OptimizationTargetType,
+    pub target: String,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum OptimizationTargetType {
+    Maximize,
+    Minimize,
+    Balance,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct SensorFusionDeclaration {
+    pub name: String,
+    pub primary_sensors: Vec<SensorConfig>,
+    pub secondary_sensors: Vec<SensorConfig>,
+    pub fusion_strategy: FusionStrategy,
+    pub calibration: CalibrationConfig,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct SensorConfig {
+    pub sensor_type: String,
+    pub name: String,
+    pub parameters: Vec<(String, Box<Node>)>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct FusionStrategy {
+    pub temporal_alignment: String,
+    pub uncertainty_propagation: String,
+    pub missing_data_handling: String,
+    pub outlier_detection: String,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct CalibrationConfig {
+    pub cross_sensor_validation: bool,
+    pub drift_correction: String,
+    pub synchronization_error: Box<Node>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct TemporalAnalysisDeclaration {
+    pub name: String,
+    pub input_validation: InputValidationConfig,
+    pub preprocessing_stages: Vec<PreprocessingStage>,
+    pub quality_monitoring: QualityMonitoringConfig,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct InputValidationConfig {
+    pub format_check: bool,
+    pub quality_assessment: String,
+    pub frame_continuity: String,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct PreprocessingStage {
+    pub name: String,
+    pub method: String,
+    pub parameters: Vec<(String, Box<Node>)>,
+    pub fallback: Option<String>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct QualityMonitoringConfig {
+    pub real_time_assessment: bool,
+    pub adaptive_parameters: bool,
+    pub fallback_strategies: String,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct BiomechanicalEvidenceDeclaration {
+    pub name: String,
+    pub detection_models: DetectionModelsConfig,
+    pub uncertainty_quantification: UncertaintyQuantificationConfig,
+    pub keypoint_processing: KeypointProcessingConfig,
+    pub output_format: OutputFormatConfig,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct DetectionModelsConfig {
+    pub primary: String,
+    pub secondary: String,
+    pub validation: String,
+    pub parameters: Vec<(String, Box<Node>)>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct UncertaintyQuantificationConfig {
+    pub confidence_propagation: String,
+    pub temporal_consistency: String,
+    pub anatomical_constraints: bool,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct KeypointProcessingConfig {
+    pub coordinate_smoothing: String,
+    pub missing_data_interpolation: String,
+    pub outlier_rejection: String,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct OutputFormatConfig {
+    pub coordinates: String,
+    pub confidence_bounds: String,
+    pub temporal_derivatives: String,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct PatternRegistryDeclaration {
+    pub name: String,
+    pub categories: Vec<PatternCategory>,
+    pub pattern_matching: PatternMatchingConfig,
+    pub adaptation_learning: AdaptationLearningConfig,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct PatternCategory {
+    pub name: String,
+    pub patterns: Vec<PatternDefinition>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct PatternDefinition {
+    pub name: String,
+    pub pattern_type: String,
+    pub parameters: Vec<(String, Box<Node>)>,
+    pub indicators: Option<Vec<String>>,
+    pub severity_levels: Option<Vec<(String, Box<Node>)>>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct PatternMatchingConfig {
+    pub fuzzy_matching: bool,
+    pub temporal_tolerance: Box<Node>,
+    pub spatial_tolerance: Box<Node>,
+    pub confidence_threshold: Box<Node>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct AdaptationLearningConfig {
+    pub athlete_specific_patterns: String,
+    pub environmental_adaptations: String,
+    pub performance_evolution: String,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct RealTimeStreamingDeclaration {
+    pub name: String,
+    pub input_stream: String,
+    pub analysis_latency: Box<Node>,
+    pub buffer_management: BufferManagementConfig,
+    pub streaming_algorithms: StreamingAlgorithmsConfig,
+    pub performance_optimization: PerformanceOptimizationConfig,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct BufferManagementConfig {
+    pub buffer_type: String,
+    pub size: Box<Node>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct StreamingAlgorithmsConfig {
+    pub online_pose_estimation: OnlinePoseEstimationConfig,
+    pub incremental_pattern_matching: IncrementalPatternMatchingConfig,
+    pub real_time_feedback: RealTimeFeedbackConfig,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct OnlinePoseEstimationConfig {
+    pub model: String,
+    pub batch_processing: String,
+    pub gpu_acceleration: String,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct IncrementalPatternMatchingConfig {
+    pub sliding_window_analysis: String,
+    pub pattern_updates: String,
+    pub anomaly_detection: String,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct RealTimeFeedbackConfig {
+    pub technique_alerts: String,
+    pub performance_metrics: String,
+    pub coaching_cues: String,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct PerformanceOptimizationConfig {
+    pub memory_management: String,
+    pub computational_efficiency: String,
+    pub parallel_processing: String,
+    pub adaptive_quality: String,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct FuzzySystemDeclaration {
+    pub name: String,
+    pub membership_functions: Vec<MembershipFunction>,
+    pub fuzzy_rules: Vec<FuzzyRule>,
+    pub defuzzification: DefuzzificationConfig,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct MembershipFunction {
+    pub name: String,
+    pub function_type: String,
+    pub parameters: Vec<(String, Box<Node>)>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct FuzzyRule {
+    pub name: String,
+    pub condition: Box<Node>,
+    pub consequence: Box<Node>,
+    pub weight: Option<Box<Node>>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct DefuzzificationConfig {
+    pub method: String,
+    pub output_scaling: String,
+    pub uncertainty_bounds: String,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct BayesianUpdateDeclaration {
+    pub name: String,
+    pub update_strategy: String,
+    pub convergence_criteria: ConvergenceCriteria,
+    pub evidence_integration: EvidenceIntegrationConfig,
+    pub network_structure_adaptation: NetworkStructureAdaptationConfig,
+    pub uncertainty_quantification: UncertaintyQuantConfig,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ConvergenceCriteria {
+    pub method: String,
+    pub threshold: Box<Node>,
+    pub max_iterations: Box<Node>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct EvidenceIntegrationConfig {
+    pub fuzzy_evidence_integration: String,
+    pub temporal_evidence_weighting: TemporalEvidenceWeightingConfig,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct TemporalEvidenceWeightingConfig {
+    pub recency_bias: String,
+    pub consistency_bonus: String,
+    pub novelty_detection: String,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct NetworkStructureAdaptationConfig {
+    pub edge_weight_learning: String,
+    pub structure_discovery: String,
+    pub causal_inference: String,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct UncertaintyQuantConfig {
+    pub parameter_uncertainty: String,
+    pub prediction_uncertainty: String,
+    pub model_uncertainty: String,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct AdaptiveQualityDeclaration {
+    pub name: String,
+    pub quality_metrics: Vec<QualityMetric>,
+    pub adaptation_strategies: Vec<AdaptationStrategy>,
+    pub feedback_loops: Vec<FeedbackLoop>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct QualityMetric {
+    pub name: String,
+    pub metric_type: String,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct AdaptationStrategy {
+    pub name: String,
+    pub strategy_type: String,
+    pub actions: Vec<String>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct FeedbackLoop {
+    pub name: String,
+    pub monitoring: String,
+    pub adaptation: String,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct OptimizationFrameworkDeclaration {
+    pub name: String,
+    pub objective_functions: Vec<ObjectiveFunction>,
+    pub optimization_variables: Vec<OptimizationVariable>,
+    pub optimization_methods: OptimizationMethodsConfig,
+    pub personalization: PersonalizationConfig,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ObjectiveFunction {
+    pub function_type: String,
+    pub target: String,
+    pub constraints: Vec<Box<Node>>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct OptimizationVariable {
+    pub name: String,
+    pub variable_type: String,
+    pub parameter_type: String,
+    pub range: Option<(Box<Node>, Box<Node>)>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct OptimizationMethodsConfig {
+    pub multi_objective: String,
+    pub constraint_handling: String,
+    pub uncertainty_handling: String,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct PersonalizationConfig {
+    pub athlete_modeling: String,
+    pub training_history: String,
+    pub injury_history: String,
+    pub anthropometric_scaling: String,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct GeneticOptimizationDeclaration {
+    pub name: String,
+    pub population_size: Box<Node>,
+    pub generations: Box<Node>,
+    pub selection_method: String,
+    pub crossover_method: String,
+    pub mutation_method: String,
+    pub genotype_representation: GenotypeRepresentationConfig,
+    pub fitness_evaluation: FitnessEvaluationConfig,
+    pub evolution_strategies: EvolutionStrategiesConfig,
+    pub convergence_acceleration: ConvergenceAccelerationConfig,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct GenotypeRepresentationConfig {
+    pub technique_parameters: String,
+    pub constraint_satisfaction: String,
+    pub phenotype_mapping: String,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct FitnessEvaluationConfig {
+    pub simulation_based: String,
+    pub performance_metrics: String,
+    pub multi_objective_ranking: String,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct EvolutionStrategiesConfig {
+    pub adaptive_parameters: String,
+    pub niching: String,
+    pub elitism: String,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ConvergenceAccelerationConfig {
+    pub surrogate_modeling: String,
+    pub active_learning: String,
+    pub parallel_evaluation: String,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct AnalysisWorkflowDeclaration {
+    pub name: String,
+    pub athlete_profile: Box<Node>,
+    pub video_data: Box<Node>,
+    pub reference_data: Box<Node>,
+    pub preprocessing_stage: PreprocessingStageConfig,
+    pub biomechanical_analysis: BiomechanicalAnalysisConfig,
+    pub pattern_analysis: PatternAnalysisConfig,
+    pub bayesian_integration: BayesianIntegrationConfig,
+    pub results_synthesis: ResultsSynthesisConfig,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct PreprocessingStageConfig {
+    pub video_analysis: VideoAnalysisProcessing,
+    pub temporal_segmentation: TemporalSegmentationConfig,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct VideoAnalysisProcessing {
+    pub stabilization: String,
+    pub enhancement: String,
+    pub athlete_tracking: String,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct TemporalSegmentationConfig {
+    pub race_phases: Vec<String>,
+    pub automatic_detection: String,
+    pub manual_validation: String,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct BiomechanicalAnalysisConfig {
+    pub race_conditions: Box<Node>,
+    pub athlete_state: Box<Node>,
+    pub evidence_requirements: Vec<EvidenceRequirement>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct EvidenceRequirement {
+    pub name: String,
+    pub requirement_type: String,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct PatternAnalysisConfig {
+    pub technique_fingerprinting: Box<Node>,
+    pub comparison_database: Box<Node>,
+    pub performance_insights: Box<Node>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct BayesianIntegrationConfig {
+    pub evidence_network: Box<Node>,
+    pub posterior_inference: Box<Node>,
+    pub performance_predictions: Box<Node>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ResultsSynthesisConfig {
+    pub performance_report: Box<Node>,
+    pub actionable_insights: Box<Node>,
+    pub visualization_suite: Box<Node>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ValidationFrameworkDeclaration {
+    pub name: String,
+    pub ground_truth_comparison: GroundTruthComparisonConfig,
+    pub cross_validation_strategy: CrossValidationStrategyConfig,
+    pub uncertainty_validation: UncertaintyValidationConfig,
+    pub performance_metrics: PerformanceMetricsConfig,
+    pub automated_validation_pipeline: AutomatedValidationPipelineConfig,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct GroundTruthComparisonConfig {
+    pub reference_measurements: String,
+    pub gold_standard_metrics: String,
+    pub expert_annotations: String,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct CrossValidationStrategyConfig {
+    pub temporal_splits: String,
+    pub athlete_generalization: String,
+    pub condition_robustness: String,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct UncertaintyValidationConfig {
+    pub prediction_intervals: String,
+    pub calibration_curves: String,
+    pub uncertainty_decomposition: String,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct PerformanceMetricsConfig {
+    pub accuracy_measures: String,
+    pub precision_measures: String,
+    pub reliability_measures: String,
+    pub clinical_significance: String,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct AutomatedValidationPipelineConfig {
+    pub continuous_validation: String,
+    pub alert_system: String,
+    pub adaptive_thresholds: String,
+    pub quality_assurance: String,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct FuzzyEvaluateStatement {
+    pub variable: String,
+    pub expression: Box<Node>,
+    pub fuzzy_conditions: Vec<FuzzyCondition>,
+    pub actions: Vec<Box<Node>>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct FuzzyCondition {
+    pub variable: String,
+    pub fuzzy_function: String,
+    pub parameters: Vec<Box<Node>>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct CausalInferenceStatement {
+    pub name: String,
+    pub analysis_type: String,
+    pub variables: Vec<String>,
+    pub causal_chain: Option<CausalChainDefinition>,
+    pub evidence_evaluation: Box<Node>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct CausalChainDefinition {
+    pub chain: Vec<String>,
+    pub temporal_offset: Option<(Box<Node>, Box<Node>)>,
+    pub efficiency_metrics: Vec<String>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct MetacognitiveAnalysisStatement {
+    pub name: String,
+    pub track_items: Vec<String>,
+    pub evaluate_items: Vec<String>,
+    pub adapt_conditions: Vec<AdaptCondition>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct AdaptCondition {
+    pub condition: Box<Node>,
+    pub actions: Vec<String>,
+    pub span: Span,
 }
 
 #[cfg(test)]

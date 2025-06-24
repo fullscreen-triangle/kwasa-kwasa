@@ -2016,6 +2016,1661 @@ pub enum TokenKind {
 
     #[token("°")]
     DegreeSymbol,
+
+    // Sports Analysis and Computer Vision Keywords
+    // Bayesian Networks
+    #[token("bayesian_network")]
+    BayesianNetwork,
+
+    #[token("nodes")]
+    Nodes,
+
+    #[token("edges")]
+    Edges,
+
+    #[token("optimization_targets")]
+    OptimizationTargets,
+
+    #[token("causal_strength")]
+    CausalStrength,
+
+    #[token("influence_strength")]
+    InfluenceStrength,
+
+    #[token("outcome_strength")]
+    OutcomeStrength,
+
+    #[token("direct_correlation")]
+    DirectCorrelation,
+
+    #[token("fuzziness")]
+    Fuzziness,
+
+    #[token("maximize")]
+    Maximize,
+
+    #[token("minimize")]
+    Minimize,
+
+    #[token("balance")]
+    Balance,
+
+    #[token("vs")]
+    Vs,
+
+    // Sensor Fusion
+    #[token("sensor_fusion")]
+    SensorFusion,
+
+    #[token("primary_sensors")]
+    PrimarySensors,
+
+    #[token("secondary_sensors")]
+    SecondarySensors,
+
+    #[token("fusion_strategy")]
+    FusionStrategy,
+
+    #[token("VideoSensor")]
+    VideoSensor,
+
+    #[token("ForceSensor")]
+    ForceSensor,
+
+    #[token("IMUSensor")]
+    IMUSensor,
+
+    #[token("WeatherSensor")]
+    WeatherSensor,
+
+    #[token("HeartRateSensor")]
+    HeartRateSensor,
+
+    #[token("stabilization")]
+    Stabilization,
+
+    #[token("calibration")]
+    Calibration,
+
+    #[token("placement")]
+    Placement,
+
+    #[token("rate")]
+    Rate,
+
+    #[token("wind_speed")]
+    WindSpeed,
+
+    #[token("humidity")]
+    Humidity,
+
+    #[token("real_time")]
+    RealTime,
+
+    #[token("cross_correlation_sync")]
+    CrossCorrelationSync,
+
+    #[token("monte_carlo_sampling")]
+    MonteCarloSampling,
+
+    #[token("iterations")]
+    Iterations,
+
+    #[token("gaussian_process_interpolation")]
+    GaussianProcessInterpolation,
+
+    #[token("mahalanobis_distance")]
+    MahalanobisDistance,
+
+    #[token("cross_sensor_validation")]
+    CrossSensorValidation,
+
+    #[token("mandatory")]
+    Mandatory,
+
+    #[token("drift_correction")]
+    DriftCorrection,
+
+    #[token("adaptive_kalman_filter")]
+    AdaptiveKalmanFilter,
+
+    #[token("synchronization_error")]
+    SynchronizationError,
+
+    #[token("max_tolerance")]
+    MaxTolerance,
+
+    // Temporal Analysis
+    #[token("temporal_analysis")]
+    TemporalAnalysis,
+
+    #[token("input_validation")]
+    InputValidation,
+
+    #[token("format_check")]
+    FormatCheck,
+
+    #[token("quality_assessment")]
+    QualityAssessment,
+
+    #[token("automated")]
+    Automated,
+
+    #[token("frame_continuity")]
+    FrameContinuity,
+
+    #[token("strict")]
+    Strict,
+
+    #[token("preprocessing_stages")]
+    PreprocessingStages,
+
+    #[token("optical_flow_stabilization")]
+    OpticalFlowStabilization,
+
+    #[token("reference_points")]
+    ReferencePoints,
+
+    #[token("automatic_feature_detection")]
+    AutomaticFeatureDetection,
+
+    #[token("quality_threshold")]
+    QualityThreshold,
+
+    #[token("fallback")]
+    Fallback,
+
+    #[token("gyroscopic_stabilization")]
+    GyroscopicStabilization,
+
+    #[token("contrast_optimization")]
+    ContrastOptimization,
+
+    #[token("histogram_equalization_adaptive")]
+    HistogramEqualizationAdaptive,
+
+    #[token("noise_reduction")]
+    NoiseReduction,
+
+    #[token("bilateral_filter")]
+    BilateralFilter,
+
+    #[token("sigma_space")]
+    SigmaSpace,
+
+    #[token("sigma_color")]
+    SigmaColor,
+
+    #[token("sharpness_enhancement")]
+    SharpnessEnhancement,
+
+    #[token("unsharp_mask")]
+    UnsharpMask,
+
+    #[token("amount")]
+    Amount,
+
+    #[token("segmentation")]
+    Segmentation,
+
+    #[token("athlete_detection")]
+    AthleteDetection,
+
+    #[token("yolo_v8_custom_trained")]
+    YoloV8CustomTrained,
+
+    #[token("background_subtraction")]
+    BackgroundSubtraction,
+
+    #[token("mixture_of_gaussians")]
+    MixtureOfGaussians,
+
+    #[token("region_of_interest")]
+    RegionOfInterest,
+
+    #[token("dynamic_tracking_bounds")]
+    DynamicTrackingBounds,
+
+    #[token("quality_monitoring")]
+    QualityMonitoring,
+
+    #[token("real_time_assessment")]
+    RealTimeAssessment,
+
+    #[token("adaptive_parameters")]
+    AdaptiveParameters,
+
+    #[token("fallback_strategies")]
+    FallbackStrategies,
+
+    #[token("comprehensive")]
+    Comprehensive,
+
+    // Biomechanical Analysis
+    #[token("biomechanical")]
+    Biomechanical,
+
+    #[token("detection_models")]
+    DetectionModels,
+
+    #[token("primary")]
+    Primary,
+
+    #[token("secondary")]
+    Secondary,
+
+    #[token("validation")]
+    Validation,
+
+    #[token("MediaPipeBlazePose")]
+    MediaPipeBlazePose,
+
+    #[token("complexity")]
+    Complexity,
+
+    #[token("smooth_landmarks")]
+    SmoothLandmarks,
+
+    #[token("OpenPoseCustom")]
+    OpenPoseCustom,
+
+    #[token("model")]
+    Model,
+
+    #[token("sports_optimized")]
+    SportsOptimized,
+
+    #[token("CrossModelConsensus")]
+    CrossModelConsensus,
+
+    #[token("agreement_threshold")]
+    AgreementThreshold,
+
+    #[token("uncertainty_quantification")]
+    UncertaintyQuantification,
+
+    #[token("confidence_propagation")]
+    ConfidencePropagation,
+
+    #[token("bayesian_bootstrap")]
+    BayesianBootstrap,
+
+    #[token("samples")]
+    Samples,
+
+    #[token("one_euro_filter")]
+    OneEuroFilter,
+
+    #[token("min_cutoff")]
+    MinCutoff,
+
+    #[token("beta")]
+    Beta,
+
+    #[token("anatomical_constraints")]
+    AnatomicalConstraints,
+
+    #[token("human_kinematics_validator")]
+    HumanKinematicsValidator,
+
+    #[token("keypoint_processing")]
+    KeypointProcessing,
+
+    #[token("coordinate_smoothing")]
+    CoordinateSmoothing,
+
+    #[token("savitzky_golay_filter")]
+    SavitzkyGolayFilter,
+
+    #[token("window")]
+    Window,
+
+    #[token("order")]
+    Order,
+
+    #[token("missing_data_interpolation")]
+    MissingDataInterpolation,
+
+    #[token("cubic_spline_with_physics_constraints")]
+    CubicSplineWithPhysicsConstraints,
+
+    #[token("outlier_rejection")]
+    OutlierRejection,
+
+    #[token("z_score_temporal")]
+    ZScoreTemporal,
+
+    #[token("output_format")]
+    OutputFormat,
+
+    #[token("coordinates")]
+    Coordinates,
+
+    #[token("world_space_3d")]
+    WorldSpace3d,
+
+    #[token("confidence_bounds")]
+    ConfidenceBounds,
+
+    #[token("bayesian_credible_intervals")]
+    BayesianCredibleIntervals,
+
+    #[token("level")]
+    Level,
+
+    #[token("temporal_derivatives")]
+    TemporalDerivatives,
+
+    #[token("computed_with_uncertainty")]
+    ComputedWithUncertainty,
+
+    // Evidence Analysis
+    #[token("biomechanical_range")]
+    BiomechanicalRange,
+
+    #[token("adaptive_threshold")]
+    AdaptiveThreshold,
+
+    #[token("athlete_specific_optimization")]
+    AthleteSpecificOptimization,
+
+    #[token("confidence_weighting")]
+    ConfidenceWeighting,
+
+    #[token("stride_consistency_factor")]
+    StrideConsistencyFactor,
+
+    #[token("target_range")]
+    TargetRange,
+
+    #[token("phase_analysis")]
+    PhaseAnalysis,
+
+    #[token("stance_vs_swing_optimization")]
+    StanceVsSwingOptimization,
+
+    #[token("surface_adaptation")]
+    SurfaceAdaptation,
+
+    #[token("track_specific_adjustments")]
+    TrackSpecificAdjustments,
+
+    #[token("grf_analysis")]
+    GrfAnalysis,
+
+    #[token("vertical_horizontal_force_balance")]
+    VerticalHorizontalForceBalance,
+
+    #[token("joint_power_analysis")]
+    JointPowerAnalysis,
+
+    #[token("hip_knee_ankle_coordination")]
+    HipKneeAnkleCoordination,
+
+    #[token("efficiency_metric")]
+    EfficiencyMetric,
+
+    #[token("propulsive_impulse_maximization")]
+    PropulsiveImpulseMaximization,
+
+    #[token("trunk_angle_stability")]
+    TrunkAngleStability,
+
+    #[token("deviation_minimization")]
+    DeviationMinimization,
+
+    #[token("head_position")]
+    HeadPosition,
+
+    #[token("aerodynamic_optimization")]
+    AerodynamicOptimization,
+
+    #[token("arm_swing_coordination")]
+    ArmSwingCoordination,
+
+    #[token("counter_rotation_balance")]
+    CounterRotationBalance,
+
+    // Fuzzy Logic Analysis
+    #[token("fuzzy_evaluate")]
+    FuzzyEvaluate,
+
+    #[token("calculate_stride_frequency")]
+    CalculateStrideFrequency,
+
+    #[token("pose_sequence")]
+    PoseSequence,
+
+    #[token("get_optimal_stride_frequency")]
+    GetOptimalStrideFrequency,
+
+    #[token("fuzzy_match")]
+    FuzzyMatch,
+
+    #[token("tolerance")]
+    Tolerance,
+
+    #[token("with_confidence")]
+    WithConfidence,
+
+    #[token("base")]
+    Base,
+
+    #[token("consistency_score")]
+    ConsistencyScore,
+
+    #[token("modifier")]
+    Modifier,
+
+    #[token("wind_adjustment")]
+    WindAdjustment,
+
+    #[token("uncertainty")]
+    Uncertainty,
+
+    #[token("pose_detection")]
+    PoseDetection,
+
+    #[token("decompose_stance_phase")]
+    DecomposeStancePhase,
+
+    #[token("force_data")]
+    ForceData,
+
+    #[token("pose_data")]
+    PoseData,
+
+    #[token("stride_sequence")]
+    StrideSequence,
+
+    #[token("stance_duration")]
+    StanceDuration,
+
+    #[token("calculate_propulsive_impulse")]
+    CalculatePropulsiveImpulse,
+
+    #[token("baseline_impulse")]
+    BaselineImpulse,
+
+    #[token("normalized_score")]
+    NormalizedScore,
+
+    #[token("optimization_score")]
+    OptimizationScore,
+
+    // Causal Inference
+    #[token("causal_inference")]
+    CausalInference,
+
+    #[token("calculate_joint_powers")]
+    CalculateJointPowers,
+
+    #[token("pose_kinematics")]
+    PoseKinematics,
+
+    #[token("assess_kinetic_chain_efficiency")]
+    AssessKineticChainEfficiency,
+
+    #[token("causal_chain")]
+    CausalChain,
+
+    #[token("hip_drive")]
+    HipDrive,
+
+    #[token("knee_extension")]
+    KneeExtension,
+
+    #[token("ankle_plantar_flexion")]
+    AnklePlantarFlexion,
+
+    #[token("temporal_offset")]
+    TemporalOffset,
+
+    #[token("seconds")]
+    Seconds,
+
+    #[token("power_transfer_efficiency")]
+    PowerTransferEfficiency,
+
+    #[token("minimize_energy_loss")]
+    MinimizeEnergyLoss,
+
+    #[token("coordination_index")]
+    CoordinationIndex,
+
+    #[token("with_evidence")]
+    WithEvidence,
+
+    #[token("coordination_quality")]
+    CoordinationQuality,
+
+    #[token("power_magnitude")]
+    PowerMagnitude,
+
+    #[token("peak_combined")]
+    PeakCombined,
+
+    #[token("timing_precision")]
+    TimingPrecision,
+
+    #[token("synchronization_score")]
+    SynchronizationScore,
+
+    // Pattern Registry
+    #[token("pattern_registry")]
+    PatternRegistry,
+
+    #[token("category")]
+    Category,
+
+    #[token("EliteSprintPatterns")]
+    EliteSprintPatterns,
+
+    #[token("acceleration_pattern")]
+    AccelerationPattern,
+
+    #[token("ProgressiveVelocityIncrease")]
+    ProgressiveVelocityIncrease,
+
+    #[token("phases")]
+    Phases,
+
+    #[token("transition_smoothness")]
+    TransitionSmoothness,
+
+    #[token("peak_detection")]
+    PeakDetection,
+
+    #[token("stride_pattern")]
+    StridePattern,
+
+    #[token("OptimalStrideProgression")]
+    OptimalStrideProgression,
+
+    #[token("length_frequency_relationship")]
+    LengthFrequencyRelationship,
+
+    #[token("inverse_correlation")]
+    InverseCorrelation,
+
+    #[token("adaptation_rate")]
+    AdaptationRate,
+
+    #[token("gradual_increase")]
+    GradualIncrease,
+
+    #[token("consistency_measure")]
+    ConsistencyMeasure,
+
+    #[token("coefficient_of_variation")]
+    CoefficientOfVariation,
+
+    #[token("force_pattern")]
+    ForcePattern,
+
+    #[token("BiphasicGroundReaction")]
+    BiphasicGroundReaction,
+
+    #[token("braking_phase")]
+    BrakingPhase,
+
+    #[token("minimize_duration")]
+    MinimizeDuration,
+
+    #[token("propulsive_phase")]
+    PropulsivePhase,
+
+    #[token("maximize_impulse")]
+    MaximizeImpulse,
+
+    #[token("transition_timing")]
+    TransitionTiming,
+
+    #[token("optimal_center_of_mass_position")]
+    OptimalCenterOfMassPosition,
+
+    #[token("TechniqueFaults")]
+    TechniqueFaults,
+
+    #[token("overstriding")]
+    Overstriding,
+
+    #[token("ExcessiveStrideLengthPattern")]
+    ExcessiveStrideLengthPattern,
+
+    #[token("indicators")]
+    Indicators,
+
+    #[token("increased_ground_contact_time")]
+    IncreasedGroundContactTime,
+
+    #[token("reduced_stride_frequency")]
+    ReducedStrideFrequency,
+
+    #[token("heel_striking")]
+    HeelStriking,
+
+    #[token("severity_levels")]
+    SeverityLevels,
+
+    #[token("mild")]
+    Mild,
+
+    #[token("moderate")]
+    Moderate,
+
+    #[token("severe")]
+    Severe,
+
+    #[token("correction_suggestions")]
+    CorrectionSuggestions,
+
+    #[token("automated_feedback_generation")]
+    AutomatedFeedbackGeneration,
+
+    #[token("inefficient_arm_swing")]
+    InefficientArmSwing,
+
+    #[token("SuboptimalArmPattern")]
+    SuboptimalArmPattern,
+
+    #[token("excessive_lateral_movement")]
+    ExcessiveLateralMovement,
+
+    #[token("asymmetric_timing")]
+    AsymmetricTiming,
+
+    #[token("insufficient_range")]
+    InsufficientRange,
+
+    #[token("biomechanical_cost")]
+    BiomechanicalCost,
+
+    #[token("energy_waste_quantification")]
+    EnergyWasteQuantification,
+
+    #[token("performance_impact")]
+    PerformanceImpact,
+
+    #[token("velocity_reduction_estimation")]
+    VelocityReductionEstimation,
+
+    #[token("pattern_matching")]
+    PatternMatching,
+
+    #[token("fuzzy_matching")]
+    FuzzyMatching,
+
+    #[token("enabled")]
+    Enabled,
+
+    #[token("temporal_tolerance")]
+    TemporalTolerance,
+
+    #[token("spatial_tolerance")]
+    SpatialTolerance,
+
+    #[token("percent")]
+    Percent,
+
+    #[token("adaptation_learning")]
+    AdaptationLearning,
+
+    #[token("athlete_specific_patterns")]
+    AthleteSpecificPatterns,
+
+    #[token("machine_learning_personalization")]
+    MachineLearningPersonalization,
+
+    #[token("environmental_adaptations")]
+    EnvironmentalAdaptations,
+
+    #[token("surface_weather_adjustments")]
+    SurfaceWeatherAdjustments,
+
+    #[token("performance_evolution")]
+    PerformanceEvolution,
+
+    #[token("longitudinal_pattern_tracking")]
+    LongitudinalPatternTracking,
+
+    // Real-time Streaming
+    #[token("input_stream")]
+    InputStream,
+
+    #[token("synchronized_sensor_data")]
+    SynchronizedSensorData,
+
+    #[token("analysis_latency")]
+    AnalysisLatency,
+
+    #[token("max_100_milliseconds")]
+    Max100Milliseconds,
+
+    #[token("buffer_management")]
+    BufferManagement,
+
+    #[token("circular_buffer")]
+    CircularBuffer,
+
+    #[token("size")]
+    Size,
+
+    #[token("frames")]
+    Frames,
+
+    #[token("streaming_algorithms")]
+    StreamingAlgorithms,
+
+    #[token("online_pose_estimation")]
+    OnlinePoseEstimation,
+
+    #[token("lightweight_mobilenet_optimized")]
+    LightweightMobilenetOptimized,
+
+    #[token("batch_processing")]
+    BatchProcessing,
+
+    #[token("mini_batch_size")]
+    MiniBatchSize,
+
+    #[token("gpu_acceleration")]
+    GpuAcceleration,
+
+    #[token("tensorrt_optimization")]
+    TensorrtOptimization,
+
+    #[token("incremental_pattern_matching")]
+    IncrementalPatternMatching,
+
+    #[token("sliding_window_analysis")]
+    SlidingWindowAnalysis,
+
+    #[token("overlapping_windows")]
+    OverlappingWindows,
+
+    #[token("step")]
+    Step,
+
+    #[token("pattern_updates")]
+    PatternUpdates,
+
+    #[token("exponential_forgetting_factor")]
+    ExponentialForgettingFactor,
+
+    #[token("anomaly_detection")]
+    AnomalyDetection,
+
+    #[token("one_class_svm_online")]
+    OneClassSvmOnline,
+
+    #[token("real_time_feedback")]
+    RealTimeFeedback,
+
+    #[token("technique_alerts")]
+    TechniqueAlerts,
+
+    #[token("immediate_notification")]
+    ImmediateNotification,
+
+    #[token("performance_metrics")]
+    PerformanceMetrics,
+
+    #[token("live_dashboard_updates")]
+    LiveDashboardUpdates,
+
+    #[token("coaching_cues")]
+    CoachingCues,
+
+    #[token("automated_voice_feedback")]
+    AutomatedVoiceFeedback,
+
+    #[token("performance_optimization")]
+    PerformanceOptimization,
+
+    #[token("memory_management")]
+    MemoryManagement,
+
+    #[token("preallocated_buffers")]
+    PreallocatedBuffers,
+
+    #[token("computational_efficiency")]
+    ComputationalEfficiency,
+
+    #[token("vectorized_operations")]
+    VectorizedOperations,
+
+    #[token("parallel_processing")]
+    ParallelProcessing,
+
+    #[token("multi_threaded_execution")]
+    MultiThreadedExecution,
+
+    #[token("adaptive_quality")]
+    AdaptiveQuality,
+
+    #[token("dynamic_resolution_adjustment")]
+    DynamicResolutionAdjustment,
+
+    // Fuzzy Systems
+    #[token("fuzzy_system")]
+    FuzzySystem,
+
+    #[token("membership_functions")]
+    MembershipFunctions,
+
+    #[token("triangular")]
+    Triangular,
+
+    #[token("low")]
+    Low,
+
+    #[token("medium")]
+    Medium,
+
+    #[token("high")]
+    High,
+
+    #[token("trapezoidal")]
+    Trapezoidal,
+
+    #[token("poor")]
+    Poor,
+
+    #[token("good")]
+    Good,
+
+    #[token("excellent")]
+    Excellent,
+
+    #[token("environmental_difficulty")]
+    EnvironmentalDifficulty,
+
+    #[token("gaussian")]
+    Gaussian,
+
+    #[token("center")]
+    Center,
+
+    #[token("sigma")]
+    Sigma,
+
+    #[token("athlete_fatigue")]
+    AthleteFatigue,
+
+    #[token("sigmoid")]
+    Sigmoid,
+
+    #[token("inflection")]
+    Inflection,
+
+    #[token("steepness")]
+    Steepness,
+
+    #[token("fuzzy_rules")]
+    FuzzyRules,
+
+    #[token("rule")]
+    Rule,
+
+    #[token("then")]
+    Then,
+
+    #[token("evidence_reliability")]
+    EvidenceReliability,
+
+    #[token("reduced_by")]
+    ReducedBy,
+
+    #[token("increase_by")]
+    IncreaseBy,
+
+    #[token("pattern_matching_tolerance")]
+    PatternMatchingTolerance,
+
+    #[token("increased_by")]
+    IncreasedBy,
+
+    #[token("temporal_consistency_requirements")]
+    TemporalConsistencyRequirements,
+
+    #[token("relaxed_by")]
+    RelaxedBy,
+
+    #[token("defuzzification")]
+    Defuzzification,
+
+    #[token("method")]
+    Method,
+
+    #[token("centroid_weighted_average")]
+    CentroidWeightedAverage,
+
+    #[token("output_scaling")]
+    OutputScaling,
+
+    #[token("normalized_to_probability_range")]
+    NormalizedToProbabilityRange,
+
+    #[token("maintain_throughout_pipeline")]
+    MaintainThroughoutPipeline,
+
+    // Bayesian Updates
+    #[token("bayesian_update")]
+    BayesianUpdate,
+
+    #[token("update_strategy")]
+    UpdateStrategy,
+
+    #[token("variational_bayes_with_fuzzy_evidence")]
+    VariationalBayesWithFuzzyEvidence,
+
+    #[token("convergence_criteria")]
+    ConvergenceCriteria,
+
+    #[token("evidence_lower_bound_improvement")]
+    EvidenceLowerBoundImprovement,
+
+    #[token("max_iterations")]
+    MaxIterations,
+
+    #[token("evidence_integration")]
+    EvidenceIntegration,
+
+    #[token("fuzzy_evidence_to_probability")]
+    FuzzyEvidenceToProbabiity,
+
+    #[token("fuzzy_measure_to_belief_function")]
+    FuzzyMeasureToBelievFunction,
+
+    #[token("uncertainty_representation")]
+    UncertaintyRepresentation,
+
+    #[token("dempster_shafer_theory")]
+    DempsterShaferTheory,
+
+    #[token("conflict_resolution")]
+    ConflictResolution,
+
+    #[token("dempster_combination_rule")]
+    DempsterCombinationRule,
+
+    #[token("temporal_evidence_weighting")]
+    TemporalEvidenceWeighting,
+
+    #[token("recency_bias")]
+    RecencyBias,
+
+    #[token("exponential_decay")]
+    ExponentialDecay,
+
+    #[token("lambda")]
+    Lambda,
+
+    #[token("consistency_bonus")]
+    ConsistencyBonus,
+
+    #[token("reward_stable_measurements")]
+    RewardStableMeasurements,
+
+    #[token("novelty_detection")]
+    NoveltyDetection,
+
+    #[token("bayesian_surprise_measure")]
+    BayesianSurpriseMeasure,
+
+    #[token("network_structure_adaptation")]
+    NetworkStructureAdaptation,
+
+    #[token("edge_weight_learning")]
+    EdgeWeightLearning,
+
+    #[token("online_gradient_descent")]
+    OnlineGradientDescent,
+
+    #[token("structure_discovery")]
+    StructureDiscovery,
+
+    #[token("bayesian_information_criterion")]
+    BayesianInformationCriterion,
+
+    #[token("causal_inference")]
+    CausalInference,
+
+    #[token("granger_causality_testing")]
+    GrangerCausalityTesting,
+
+    #[token("parameter_uncertainty")]
+    ParameterUncertainty,
+
+    #[token("posterior_sampling")]
+    PosteriorSampling,
+
+    #[token("mcmc_chains")]
+    McmcChains,
+
+    #[token("prediction_uncertainty")]
+    PredictionUncertainty,
+
+    #[token("predictive_posterior_sampling")]
+    PredictivePosteriorSampling,
+
+    #[token("model_uncertainty")]
+    ModelUncertainty,
+
+    #[token("bayesian_model_averaging")]
+    BayesianModelAveraging,
+
+    // Analysis Workflow
+    #[token("analysis_workflow")]
+    AnalysisWorkflow,
+
+    #[token("athlete_profile")]
+    AthleteProfile,
+
+    #[token("load_profile")]
+    LoadProfile,
+
+    #[token("video_data")]
+    VideoData,
+
+    #[token("load_video")]
+    LoadVideo,
+
+    #[token("reference_data")]
+    ReferenceData,
+
+    #[token("load_biomechanical_norms")]
+    LoadBiomechanicalNorms,
+
+    #[token("preprocessing_stage")]
+    PreprocessingStage,
+
+    #[token("optical_flow_with_feature_tracking")]
+    OpticalFlowWithFeatureTracking,
+
+    #[token("enhancement")]
+    Enhancement,
+
+    #[token("adaptive_histogram_equalization")]
+    AdaptiveHistogramEqualization,
+
+    #[token("athlete_tracking")]
+    AthleteTracking,
+
+    #[token("multi_object_tracking_with_reid")]
+    MultiObjectTrackingWithReid,
+
+    #[token("temporal_segmentation")]
+    TemporalSegmentation,
+
+    #[token("race_phases")]
+    RacePhases,
+
+    #[token("blocks")]
+    Blocks,
+
+    #[token("acceleration")]
+    Acceleration,
+
+    #[token("transition")]
+    Transition,
+
+    #[token("max_velocity")]
+    MaxVelocity,
+
+    #[token("maintenance")]
+    Maintenance,
+
+    #[token("automatic_detection")]
+    AutomaticDetection,
+
+    #[token("velocity_profile_analysis")]
+    VelocityProfileAnalysis,
+
+    #[token("manual_validation")]
+    ManualValidation,
+
+    #[token("expert_annotation_interface")]
+    ExpertAnnotationInterface,
+
+    #[token("biomechanical_analysis")]
+    BiomechanicalAnalysis,
+
+    #[token("race_conditions")]
+    RaceConditions,
+
+    #[token("get_environmental_data")]
+    GetEnvironmentalData,
+
+    #[token("athlete_state")]
+    AthleteState,
+
+    #[token("estimate_physiological_state")]
+    EstimatePhysiologicalState,
+
+    #[token("race_date")]
+    RaceDate,
+
+    #[token("evidence_requirements")]
+    EvidenceRequirements,
+
+    #[token("step_length_progression")]
+    StepLengthProgression,
+
+    #[token("gradual_increase_with_plateau")]
+    GradualIncreaseWithPlateau,
+
+    #[token("step_frequency_evolution")]
+    StepFrequencyEvolution,
+
+    #[token("rapid_initial_increase")]
+    RapidInitialIncrease,
+
+    #[token("ground_contact_optimization")]
+    GroundContactOptimization,
+
+    #[token("decreasing_contact_time")]
+    DecreasingContactTime,
+
+    #[token("postural_adjustments")]
+    PosturalAdjustments,
+
+    #[token("progressive_trunk_elevation")]
+    ProgressiveTrunkElevation,
+
+    #[token("acceleration_phase_data")]
+    AccelerationPhaseData,
+
+    #[token("acceleration_kinematics")]
+    AccelerationKinematics,
+
+    #[token("analyze_step_progression")]
+    AnalyzeStepProgression,
+
+    #[token("step")]
+    Step,
+
+    #[token("step_analysis")]
+    StepAnalysis,
+
+    #[token("calculate_length")]
+    CalculateLength,
+
+    #[token("calculate_frequency")]
+    CalculateFrequency,
+
+    #[token("ground_contact_duration")]
+    GroundContactDuration,
+
+    #[token("step_quality")]
+    StepQuality,
+
+    #[token("length_optimality")]
+    LengthOptimality,
+
+    #[token("compare_to_elite_norms")]
+    CompareToEliteNorms,
+
+    #[token("frequency_optimality")]
+    FrequencyOptimality,
+
+    #[token("assess_frequency_progression")]
+    AssessFrequencyProgression,
+
+    #[token("number")]
+    Number,
+
+    #[token("contact_efficiency")]
+    ContactEfficiency,
+
+    #[token("evaluate_contact_mechanics")]
+    EvaluateContactMechanics,
+
+    #[token("grf_profile")]
+    GrfProfile,
+
+    #[token("fuzzy_high")]
+    FuzzyHigh,
+
+    #[token("fuzzy_appropriate")]
+    FuzzyAppropriate,
+
+    #[token("fuzzy_optimal")]
+    FuzzyOptimal,
+
+    #[token("combined_score")]
+    CombinedScore,
+
+    // Metacognitive Analysis
+    #[token("track")]
+    Track,
+
+    #[token("evaluate")]
+    Evaluate,
+
+    #[token("adapt")]
+    Adapt,
+
+    #[token("evidence_completeness")]
+    EvidenceCompleteness,
+
+    #[token("assess_data_coverage_adequacy")]
+    AssessDataCoverageAdequacy,
+
+    #[token("inference_reliability")]
+    InferenceReliability,
+
+    #[token("evaluate_conclusion_certainty")]
+    EvaluateConclusionCertainty,
+
+    #[token("methodology_robustness")]
+    MethodologyRobustness,
+
+    #[token("assess_analytical_approach_validity")]
+    AssessAnalyticalApproachValidity,
+
+    #[token("result_consistency")]
+    ResultConsistency,
+
+    #[token("check_internal_consistency_of_findings")]
+    CheckInternalConsistencyOfFindings,
+
+    #[token("proper_handling_of_measurement_error")]
+    ProperHandlingOfMeasurementError,
+
+    #[token("bias_identification")]
+    BiasIdentification,
+
+    #[token("systematic_error_detection_and_correction")]
+    SystematicErrorDetectionAndCorrection,
+
+    #[token("validation_adequacy")]
+    ValidationAdequacy,
+
+    #[token("cross_validation_and_external_validation")]
+    CrossValidationAndExternalValidation,
+
+    #[token("reproducibility")]
+    Reproducibility,
+
+    #[token("analysis_repeatability_assessment")]
+    AnalysisRepeatabilityAssessment,
+
+    #[token("recommend_additional_data_collection")]
+    RecommendAdditionalDataCollection,
+
+    #[token("identify_critical_missing_measurements")]
+    IdentifyCriticalMissingMeasurements,
+
+    #[token("increase_uncertainty_bounds")]
+    IncreateUncertaintyBounds,
+
+    #[token("recommend_confirmatory_analysis")]
+    RecommendConfirmatoryAnalysis,
+
+    #[token("has_conflicts")]
+    HasConflicts,
+
+    #[token("trigger_detailed_investigation")]
+    TriggerDetailedInvestigation,
+
+    #[token("apply_conflict_resolution_protocols")]
+    ApplyConflictResolutionProtocols,
+
+    // Optimization Framework
+    #[token("optimization_framework")]
+    OptimizationFramework,
+
+    #[token("objective_functions")]
+    ObjectiveFunctions,
+
+    #[token("maximize_sprint_velocity")]
+    MaximizeSprintVelocity,
+
+    #[token("minimize_energy_expenditure")]
+    MinimizeEnergyExpenditure,
+
+    #[token("constraints")]
+    Constraints,
+
+    #[token("maintain_injury_risk_below")]
+    MaintainInjuryRiskBelow,
+
+    #[token("optimization_variables")]
+    OptimizationVariables,
+
+    #[token("stride_parameters")]
+    StrideParameters,
+
+    #[token("continuous")]
+    Continuous,
+
+    #[token("range")]
+    Range,
+
+    #[token("meters")]
+    Meters,
+
+    #[token("hz")]
+    Hz,
+
+    #[token("kinematic_parameters")]
+    KinematicParameters,
+
+    #[token("trunk_lean_angle")]
+    TrunkLeanAngle,
+
+    #[token("degrees")]
+    Degrees,
+
+    #[token("knee_lift_height")]
+    KneeLiftHeight,
+
+    #[token("arm_swing_amplitude")]
+    ArmSwingAmplitude,
+
+    #[token("kinetic_parameters")]
+    KineticParameters,
+
+    #[token("peak_ground_reaction_force")]
+    PeakGroundReactionForce,
+
+    #[token("body_weights")]
+    BodyWeights,
+
+    #[token("braking_impulse")]
+    BrakingImpulse,
+
+    #[token("body_weight_seconds")]
+    BodyWeightSeconds,
+
+    #[token("propulsive_impulse")]
+    PropulsiveImpulse,
+
+    #[token("optimization_methods")]
+    OptimizationMethods,
+
+    #[token("multi_objective")]
+    MultiObjective,
+
+    #[token("nsga_iii_with_reference_points")]
+    NsgaIiiWithReferencePoints,
+
+    #[token("constraint_handling")]
+    ConstraintHandling,
+
+    #[token("penalty_function_adaptive")]
+    PenaltyFunctionAdaptive,
+
+    #[token("uncertainty_handling")]
+    UncertaintyHandling,
+
+    #[token("robust_optimization_scenarios")]
+    RobustOptimizationScenarios,
+
+    #[token("personalization")]
+    Personalization,
+
+    #[token("athlete_modeling")]
+    AthleteModeling,
+
+    #[token("individual_biomechanical_constraints")]
+    IndividualBiomechanicalConstraints,
+
+    #[token("training_history")]
+    TrainingHistory,
+
+    #[token("incorporate_previous_optimizations")]
+    IncorporatePreviousOptimizations,
+
+    #[token("injury_history")]
+    InjuryHistory,
+
+    #[token("custom_constraint_modifications")]
+    CustomConstraintModifications,
+
+    #[token("anthropometric_scaling")]
+    AnthropometricScaling,
+
+    #[token("segment_length_mass_adjustments")]
+    SegmentLengthMassAdjustments,
+
+    // Genetic Optimization
+    #[token("genetic_optimization")]
+    GeneticOptimization,
+
+    #[token("population_size")]
+    PopulationSize,
+
+    #[token("generations")]
+    Generations,
+
+    #[token("selection_method")]
+    SelectionMethod,
+
+    #[token("tournament_selection")]
+    TournamentSelection,
+
+    #[token("tournament_size")]
+    TournamentSize,
+
+    #[token("crossover_method")]
+    CrossoverMethod,
+
+    #[token("simulated_binary_crossover")]
+    SimulatedBinaryCrossover,
+
+    #[token("eta")]
+    Eta,
+
+    #[token("mutation_method")]
+    MutationMethod,
+
+    #[token("polynomial_mutation")]
+    PolynomialMutation,
+
+    #[token("genotype_representation")]
+    GenotypeRepresentation,
+
+    #[token("technique_parameters")]
+    TechniqueParameters,
+
+    #[token("real_valued_vector")]
+    RealValuedVector,
+
+    #[token("dimension")]
+    Dimension,
+
+    #[token("constraint_satisfaction")]
+    ConstraintSatisfaction,
+
+    #[token("penalty_based_fitness_adjustment")]
+    PenaltyBasedFitnessAdjustment,
+
+    #[token("phenotype_mapping")]
+    PhenotypeMapping,
+
+    #[token("biomechanical_model_simulation")]
+    BiomechanicalModelSimulation,
+
+    #[token("fitness_evaluation")]
+    FitnessEvaluation,
+
+    #[token("simulation_based")]
+    SimulationBased,
+
+    #[token("forward_dynamics_integration")]
+    ForwardDynamicsIntegration,
+
+    #[token("velocity_efficiency_injury_risk_composite")]
+    VelocityEfficiencyInjuryRiskComposite,
+
+    #[token("multi_objective_ranking")]
+    MultiObjectiveRanking,
+
+    #[token("pareto_dominance_with_diversity")]
+    ParetuDominanceWithDiversity,
+
+    #[token("evolution_strategies")]
+    EvolutionStrategies,
+
+    #[token("self_adaptive_mutation_rates")]
+    SelfAdaptiveMutationRates,
+
+    #[token("niching")]
+    Niching,
+
+    #[token("fitness_sharing_for_diversity_maintenance")]
+    FitnessSharingForDivesityMaintenance,
+
+    #[token("elitism")]
+    Elitism,
+
+    #[token("preserve_best_solutions")]
+    PreserveBestSolutions,
+
+    #[token("percentage")]
+    Percentage,
+
+    #[token("convergence_acceleration")]
+    ConvergenceAcceleration,
+
+    #[token("surrogate_modeling")]
+    SurrogateModeling,
+
+    #[token("gaussian_process_regression")]
+    GaussianProcessRegression,
+
+    #[token("active_learning")]
+    ActiveLearning,
+
+    #[token("expected_improvement_acquisition")]
+    ExpectedImprovementAcquisition,
+
+    #[token("parallel_evaluation")]
+    ParallelEvaluation,
+
+    #[token("distributed_fitness_computation")]
+    DistributedFitnessComputation,
+
+    // Validation Framework
+    #[token("validation_framework")]
+    ValidationFramework,
+
+    #[token("ground_truth_comparison")]
+    GroundTruthComparison,
+
+    #[token("reference_measurements")]
+    ReferenceMeasurements,
+
+    #[token("synchronized_laboratory_data")]
+    SynchronizedLaboratoryData,
+
+    #[token("gold_standard_metrics")]
+    GoldStandardMetrics,
+
+    #[token("direct_force_plate_measurements")]
+    DirectForcePlateMeasurements,
+
+    #[token("expert_annotations")]
+    ExpertAnnotations,
+
+    #[token("biomechanist_technique_assessments")]
+    BiomechanistTechniqueAssessments,
+
+    #[token("cross_validation_strategy")]
+    CrossValidationStrategy,
+
+    #[token("temporal_splits")]
+    TemporalSplits,
+
+    #[token("leave_one_race_out_validation")]
+    LeaveOneRaceOutValidation,
+
+    #[token("athlete_generalization")]
+    AthleteGeneralization,
+
+    #[token("leave_one_athlete_out_validation")]
+    LeaveOneAthleteOutValidation,
+
+    #[token("condition_robustness")]
+    ConditionRobustness,
+
+    #[token("cross_environmental_condition_validation")]
+    CrossEnvironmentalConditionValidation,
+
+    #[token("uncertainty_validation")]
+    UncertaintyValidation,
+
+    #[token("prediction_intervals")]
+    PredictionIntervals,
+
+    #[token("empirical_coverage_assessment")]
+    EmpiricalCoverageAssessment,
+
+    #[token("calibration_curves")]
+    CalibrationCurves,
+
+    #[token("reliability_diagram_analysis")]
+    ReliabilityDiagramAnalysis,
+
+    #[token("uncertainty_decomposition")]
+    UncertaintyDecomposition,
+
+    #[token("aleatory_vs_epistemic_separation")]
+    AleatoryVsEpistemicSeparation,
+
+    #[token("accuracy_measures")]
+    AccuracyMeasures,
+
+    #[token("mean_absolute_error_percentage")]
+    MeanAbsoluteErrorPercentage,
+
+    #[token("precision_measures")]
+    PrecisionMeasures,
+
+    #[token("coefficient_of_determination")]
+    CoefficientOfDetermination,
+
+    #[token("reliability_measures")]
+    ReliabilityMeasures,
+
+    #[token("intraclass_correlation_coefficient")]
+    IntraclassCorrelationCoefficient,
+
+    #[token("clinical_significance")]
+    ClinicalSignificance,
+
+    #[token("meaningful_change_detection")]
+    MeaningfulChangeDetection,
+
+    #[token("automated_validation_pipeline")]
+    AutomatedValidationPipeline,
+
+    #[token("continuous_validation")]
+    ContinuousValidation,
+
+    #[token("real_time_performance_monitoring")]
+    RealTimePerformanceMonitoring,
+
+    #[token("alert_system")]
+    AlertSystem,
+
+    #[token("degradation_detection_and_notification")]
+    DegradationDetectionAndNotification,
+
+    #[token("adaptive_thresholds")]
+    AdaptiveThresholds,
+
+    #[token("context_sensitive_performance_bounds")]
+    ContextSensitivePerformanceBounds,
+
+    #[token("quality_assurance")]
+    QualityAssurance,
+
+    #[token("automated_quality_control_checks")]
+    AutomatedQualityControlChecks,
 }
 
 /// Token represents a token with its type and span (location in source)

@@ -113,6 +113,59 @@ impl Parser {
         if self.match_token(&[TokenKind::Orchestrator]) {
             return self.orchestrator_system_declaration();
         }
+
+        // Sports Analysis Computer Vision Framework constructs
+        if self.match_token(&[TokenKind::BayesianNetwork]) {
+            return self.bayesian_network_declaration();
+        }
+        
+        if self.match_token(&[TokenKind::SensorFusion]) {
+            return self.sensor_fusion_declaration();
+        }
+        
+        if self.match_token(&[TokenKind::TemporalAnalysis]) {
+            return self.temporal_analysis_declaration();
+        }
+        
+        if self.match_token(&[TokenKind::Biomechanical]) {
+            return self.biomechanical_evidence_declaration();
+        }
+        
+        if self.match_token(&[TokenKind::PatternRegistry]) {
+            return self.pattern_registry_declaration();
+        }
+        
+        if self.match_token(&[TokenKind::RealTime]) {
+            return self.real_time_streaming_declaration();
+        }
+        
+        if self.match_token(&[TokenKind::FuzzySystem]) {
+            return self.fuzzy_system_declaration();
+        }
+        
+        if self.match_token(&[TokenKind::BayesianUpdate]) {
+            return self.bayesian_update_declaration();
+        }
+        
+        if self.match_token(&[TokenKind::AdaptiveQuality]) {
+            return self.adaptive_quality_declaration();
+        }
+        
+        if self.match_token(&[TokenKind::OptimizationFramework]) {
+            return self.optimization_framework_declaration();
+        }
+        
+        if self.match_token(&[TokenKind::GeneticOptimization]) {
+            return self.genetic_optimization_declaration();
+        }
+        
+        if self.match_token(&[TokenKind::AnalysisWorkflow]) {
+            return self.analysis_workflow_declaration();
+        }
+        
+        if self.match_token(&[TokenKind::ValidationFramework]) {
+            return self.validation_framework_declaration();
+        }
         
         self.statement()
     }
@@ -353,6 +406,19 @@ impl Parser {
         
         if self.match_token(&[TokenKind::Point]) {
             return self.point_declaration();
+        }
+
+        // Sports Analysis Statement-level constructs
+        if self.match_token(&[TokenKind::FuzzyEvaluate]) {
+            return self.fuzzy_evaluate_statement();
+        }
+        
+        if self.match_token(&[TokenKind::CausalInference]) {
+            return self.causal_inference_statement();
+        }
+        
+        if self.match_token(&[TokenKind::Metacognitive]) {
+            return self.metacognitive_analysis_statement();
         }
         
         // Autobahn reference statements
@@ -4778,6 +4844,832 @@ impl Parser {
         Ok(Node::OrchestratorSystem(ast::OrchestratorSystemDeclaration {
             name,
             phases: Vec::new(),
+            span,
+        }))
+    }
+
+    // Sports Analysis Computer Vision Framework Parser Methods
+
+    fn bayesian_network_declaration(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        let name = if self.match_token(&[TokenKind::Identifier]) {
+            self.previous().lexeme.clone()
+        } else {
+            return Err(self.error("Expected Bayesian network name"));
+        };
+
+        self.consume(TokenKind::Colon, "Expected ':' after Bayesian network name")?;
+
+        let mut nodes = Vec::new();
+        let mut edges = Vec::new();
+        let mut optimization_targets = Vec::new();
+
+        // Parse the network body
+        while !self.is_at_end() && !self.check(&TokenKind::RightBrace) {
+            if self.match_token(&[TokenKind::Nodes]) {
+                self.consume(TokenKind::Colon, "Expected ':' after 'nodes'")?;
+                // Parse nodes list - simplified for now
+                self.expression()?; // Skip nodes for now
+            } else if self.match_token(&[TokenKind::Edges]) {
+                self.consume(TokenKind::Colon, "Expected ':' after 'edges'")?;
+                // Parse edges list - simplified for now
+                self.expression()?; // Skip edges for now
+            } else if self.match_token(&[TokenKind::OptimizationTargets]) {
+                self.consume(TokenKind::Colon, "Expected ':' after 'optimization_targets'")?;
+                // Parse optimization targets - simplified for now
+                self.expression()?; // Skip optimization targets for now
+            } else {
+                break;
+            }
+        }
+
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, self.previous().span.end),
+        );
+
+        Ok(Node::BayesianNetwork(ast::BayesianNetworkDeclaration {
+            name,
+            nodes,
+            edges,
+            optimization_targets,
+            span,
+        }))
+    }
+
+    fn sensor_fusion_declaration(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        let name = if self.match_token(&[TokenKind::Identifier]) {
+            self.previous().lexeme.clone()
+        } else {
+            return Err(self.error("Expected sensor fusion name"));
+        };
+
+        self.consume(TokenKind::Colon, "Expected ':' after sensor fusion name")?;
+
+        // Simplified parsing - just consume the body for now
+        while !self.is_at_end() && !self.check(&TokenKind::RightBrace) {
+            if self.match_token(&[TokenKind::PrimarySensors, TokenKind::SecondarySensors, 
+                                  TokenKind::FusionStrategy, TokenKind::Calibration]) {
+                self.consume(TokenKind::Colon, "Expected ':'")?;
+                self.expression()?;
+            } else {
+                break;
+            }
+        }
+
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, self.previous().span.end),
+        );
+
+        Ok(Node::SensorFusion(ast::SensorFusionDeclaration {
+            name,
+            primary_sensors: Vec::new(),
+            secondary_sensors: Vec::new(),
+            fusion_strategy: ast::FusionStrategy {
+                temporal_alignment: "default".to_string(),
+                uncertainty_propagation: "default".to_string(),
+                missing_data_handling: "default".to_string(),
+                outlier_detection: "default".to_string(),
+                span,
+            },
+            calibration: ast::CalibrationConfig {
+                cross_sensor_validation: true,
+                drift_correction: "default".to_string(),
+                synchronization_error: Box::new(Node::NumberLiteral(0.001, span)),
+                span,
+            },
+            span,
+        }))
+    }
+
+    fn temporal_analysis_declaration(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        let name = if self.match_token(&[TokenKind::Identifier]) {
+            self.previous().lexeme.clone()
+        } else {
+            return Err(self.error("Expected temporal analysis name"));
+        };
+
+        self.consume(TokenKind::Colon, "Expected ':' after temporal analysis name")?;
+
+        // Simplified parsing
+        while !self.is_at_end() && !self.check(&TokenKind::RightBrace) {
+            if self.match_token(&[TokenKind::InputValidation, TokenKind::PreprocessingStages, 
+                                  TokenKind::QualityMonitoring]) {
+                self.consume(TokenKind::Colon, "Expected ':'")?;
+                self.expression()?;
+            } else {
+                break;
+            }
+        }
+
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, self.previous().span.end),
+        );
+
+        Ok(Node::TemporalAnalysis(ast::TemporalAnalysisDeclaration {
+            name,
+            input_validation: ast::InputValidationConfig {
+                format_check: true,
+                quality_assessment: "default".to_string(),
+                frame_continuity: "default".to_string(),
+                span,
+            },
+            preprocessing_stages: Vec::new(),
+            quality_monitoring: ast::QualityMonitoringConfig {
+                real_time_assessment: true,
+                adaptive_parameters: true,
+                fallback_strategies: "default".to_string(),
+                span,
+            },
+            span,
+        }))
+    }
+
+    fn biomechanical_evidence_declaration(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        let name = if self.match_token(&[TokenKind::Identifier]) {
+            self.previous().lexeme.clone()
+        } else {
+            return Err(self.error("Expected biomechanical evidence name"));
+        };
+
+        self.consume(TokenKind::Colon, "Expected ':' after biomechanical evidence name")?;
+
+        // Simplified parsing
+        while !self.is_at_end() && !self.check(&TokenKind::RightBrace) {
+            if self.match_token(&[TokenKind::DetectionModels, TokenKind::UncertaintyQuantification, 
+                                  TokenKind::KeypointProcessing, TokenKind::OutputFormat]) {
+                self.consume(TokenKind::Colon, "Expected ':'")?;
+                self.expression()?;
+            } else {
+                break;
+            }
+        }
+
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, self.previous().span.end),
+        );
+
+        Ok(Node::BiomechanicalEvidence(ast::BiomechanicalEvidenceDeclaration {
+            name,
+            detection_models: ast::DetectionModelsConfig {
+                primary: "default".to_string(),
+                secondary: "default".to_string(),
+                validation: "default".to_string(),
+                parameters: Vec::new(),
+                span,
+            },
+            uncertainty_quantification: ast::UncertaintyQuantificationConfig {
+                confidence_propagation: "default".to_string(),
+                temporal_consistency: "default".to_string(),
+                anatomical_constraints: true,
+                span,
+            },
+            keypoint_processing: ast::KeypointProcessingConfig {
+                coordinate_smoothing: "default".to_string(),
+                missing_data_interpolation: "default".to_string(),
+                outlier_rejection: "default".to_string(),
+                span,
+            },
+            output_format: ast::OutputFormatConfig {
+                coordinates: "default".to_string(),
+                confidence_bounds: "default".to_string(),
+                temporal_derivatives: "default".to_string(),
+                span,
+            },
+            span,
+        }))
+    }
+
+    fn pattern_registry_declaration(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        let name = if self.match_token(&[TokenKind::Identifier]) {
+            self.previous().lexeme.clone()
+        } else {
+            return Err(self.error("Expected pattern registry name"));
+        };
+
+        self.consume(TokenKind::Colon, "Expected ':' after pattern registry name")?;
+
+        // Simplified parsing
+        while !self.is_at_end() && !self.check(&TokenKind::RightBrace) {
+            if self.match_token(&[TokenKind::Category, TokenKind::PatternMatching, 
+                                  TokenKind::AdaptationLearning]) {
+                self.consume(TokenKind::Colon, "Expected ':'")?;
+                self.expression()?;
+            } else {
+                break;
+            }
+        }
+
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, self.previous().span.end),
+        );
+
+        Ok(Node::PatternRegistry(ast::PatternRegistryDeclaration {
+            name,
+            categories: Vec::new(),
+            pattern_matching: ast::PatternMatchingConfig {
+                fuzzy_matching: true,
+                temporal_tolerance: Box::new(Node::NumberLiteral(0.1, span)),
+                spatial_tolerance: Box::new(Node::NumberLiteral(0.05, span)),
+                confidence_threshold: Box::new(Node::NumberLiteral(0.7, span)),
+                span,
+            },
+            adaptation_learning: ast::AdaptationLearningConfig {
+                athlete_specific_patterns: "default".to_string(),
+                environmental_adaptations: "default".to_string(),
+                performance_evolution: "default".to_string(),
+                span,
+            },
+            span,
+        }))
+    }
+
+    fn real_time_streaming_declaration(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        let name = if self.match_token(&[TokenKind::Identifier]) {
+            self.previous().lexeme.clone()
+        } else {
+            return Err(self.error("Expected real-time streaming name"));
+        };
+
+        self.consume(TokenKind::Colon, "Expected ':' after real-time streaming name")?;
+
+        // Simplified parsing
+        while !self.is_at_end() && !self.check(&TokenKind::RightBrace) {
+            if self.match_token(&[TokenKind::InputStream, TokenKind::AnalysisLatency, 
+                                  TokenKind::BufferManagement, TokenKind::StreamingAlgorithms,
+                                  TokenKind::PerformanceOptimization]) {
+                self.consume(TokenKind::Colon, "Expected ':'")?;
+                self.expression()?;
+            } else {
+                break;
+            }
+        }
+
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, self.previous().span.end),
+        );
+
+        Ok(Node::RealTimeStreaming(ast::RealTimeStreamingDeclaration {
+            name,
+            input_stream: "default".to_string(),
+            analysis_latency: Box::new(Node::NumberLiteral(50.0, span)),
+            buffer_management: ast::BufferManagementConfig {
+                buffer_type: "circular_buffer".to_string(),
+                size: Box::new(Node::NumberLiteral(1000.0, span)),
+                span,
+            },
+            streaming_algorithms: ast::StreamingAlgorithmsConfig {
+                online_pose_estimation: ast::OnlinePoseEstimationConfig {
+                    model: "default".to_string(),
+                    batch_processing: "default".to_string(),
+                    gpu_acceleration: "default".to_string(),
+                    span,
+                },
+                incremental_pattern_matching: ast::IncrementalPatternMatchingConfig {
+                    sliding_window_analysis: "default".to_string(),
+                    pattern_updates: "default".to_string(),
+                    anomaly_detection: "default".to_string(),
+                    span,
+                },
+                real_time_feedback: ast::RealTimeFeedbackConfig {
+                    technique_alerts: "default".to_string(),
+                    performance_metrics: "default".to_string(),
+                    coaching_cues: "default".to_string(),
+                    span,
+                },
+                span,
+            },
+            performance_optimization: ast::PerformanceOptimizationConfig {
+                memory_management: "default".to_string(),
+                computational_efficiency: "default".to_string(),
+                parallel_processing: "default".to_string(),
+                adaptive_quality: "default".to_string(),
+                span,
+            },
+            span,
+        }))
+    }
+
+    fn fuzzy_system_declaration(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        let name = if self.match_token(&[TokenKind::Identifier]) {
+            self.previous().lexeme.clone()
+        } else {
+            return Err(self.error("Expected fuzzy system name"));
+        };
+
+        self.consume(TokenKind::Colon, "Expected ':' after fuzzy system name")?;
+
+        // Simplified parsing
+        while !self.is_at_end() && !self.check(&TokenKind::RightBrace) {
+            if self.match_token(&[TokenKind::MembershipFunctions, TokenKind::FuzzyRules, 
+                                  TokenKind::Defuzzification]) {
+                self.consume(TokenKind::Colon, "Expected ':'")?;
+                self.expression()?;
+            } else {
+                break;
+            }
+        }
+
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, self.previous().span.end),
+        );
+
+        Ok(Node::FuzzySystem(ast::FuzzySystemDeclaration {
+            name,
+            membership_functions: Vec::new(),
+            fuzzy_rules: Vec::new(),
+            defuzzification: ast::DefuzzificationConfig {
+                method: "centroid".to_string(),
+                output_scaling: "normalized".to_string(),
+                uncertainty_bounds: "maintained".to_string(),
+                span,
+            },
+            span,
+        }))
+    }
+
+    fn bayesian_update_declaration(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        let name = if self.match_token(&[TokenKind::Identifier]) {
+            self.previous().lexeme.clone()
+        } else {
+            return Err(self.error("Expected Bayesian update name"));
+        };
+
+        self.consume(TokenKind::Colon, "Expected ':' after Bayesian update name")?;
+
+        // Simplified parsing
+        while !self.is_at_end() && !self.check(&TokenKind::RightBrace) {
+            if self.match_token(&[TokenKind::UpdateStrategy, TokenKind::ConvergenceCriteria, 
+                                  TokenKind::EvidenceIntegration, TokenKind::NetworkStructureAdaptation,
+                                  TokenKind::UncertaintyQuantification]) {
+                self.consume(TokenKind::Colon, "Expected ':'")?;
+                self.expression()?;
+            } else {
+                break;
+            }
+        }
+
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, self.previous().span.end),
+        );
+
+        Ok(Node::BayesianUpdate(ast::BayesianUpdateDeclaration {
+            name,
+            update_strategy: "variational_bayes".to_string(),
+            convergence_criteria: ast::ConvergenceCriteria {
+                method: "evidence_lower_bound".to_string(),
+                threshold: Box::new(Node::NumberLiteral(0.001, span)),
+                max_iterations: Box::new(Node::NumberLiteral(1000.0, span)),
+                span,
+            },
+            evidence_integration: ast::EvidenceIntegrationConfig {
+                fuzzy_evidence_integration: "default".to_string(),
+                temporal_evidence_weighting: ast::TemporalEvidenceWeightingConfig {
+                    recency_bias: "exponential_decay".to_string(),
+                    consistency_bonus: "reward_stable".to_string(),
+                    novelty_detection: "bayesian_surprise".to_string(),
+                    span,
+                },
+                span,
+            },
+            network_structure_adaptation: ast::NetworkStructureAdaptationConfig {
+                edge_weight_learning: "online_gradient_descent".to_string(),
+                structure_discovery: "bayesian_information_criterion".to_string(),
+                causal_inference: "granger_causality".to_string(),
+                span,
+            },
+            uncertainty_quantification: ast::UncertaintyQuantConfig {
+                parameter_uncertainty: "posterior_sampling".to_string(),
+                prediction_uncertainty: "predictive_posterior".to_string(),
+                model_uncertainty: "bayesian_model_averaging".to_string(),
+                span,
+            },
+            span,
+        }))
+    }
+
+    fn adaptive_quality_declaration(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        let name = if self.match_token(&[TokenKind::Identifier]) {
+            self.previous().lexeme.clone()
+        } else {
+            return Err(self.error("Expected adaptive quality name"));
+        };
+
+        self.consume(TokenKind::Colon, "Expected ':' after adaptive quality name")?;
+
+        // Simplified parsing
+        while !self.is_at_end() && !self.check(&TokenKind::RightBrace) {
+            if self.match_token(&[TokenKind::QualityMetrics, TokenKind::AdaptationStrategies, 
+                                  TokenKind::FeedbackLoops]) {
+                self.consume(TokenKind::Colon, "Expected ':'")?;
+                self.expression()?;
+            } else {
+                break;
+            }
+        }
+
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, self.previous().span.end),
+        );
+
+        Ok(Node::AdaptiveQuality(ast::AdaptiveQualityDeclaration {
+            name,
+            quality_metrics: Vec::new(),
+            adaptation_strategies: Vec::new(),
+            feedback_loops: Vec::new(),
+            span,
+        }))
+    }
+
+    fn optimization_framework_declaration(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        let name = if self.match_token(&[TokenKind::Identifier]) {
+            self.previous().lexeme.clone()
+        } else {
+            return Err(self.error("Expected optimization framework name"));
+        };
+
+        self.consume(TokenKind::Colon, "Expected ':' after optimization framework name")?;
+
+        // Simplified parsing
+        while !self.is_at_end() && !self.check(&TokenKind::RightBrace) {
+            if self.match_token(&[TokenKind::ObjectiveFunctions, TokenKind::OptimizationVariables, 
+                                  TokenKind::OptimizationMethods, TokenKind::Personalization]) {
+                self.consume(TokenKind::Colon, "Expected ':'")?;
+                self.expression()?;
+            } else {
+                break;
+            }
+        }
+
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, self.previous().span.end),
+        );
+
+        Ok(Node::OptimizationFramework(ast::OptimizationFrameworkDeclaration {
+            name,
+            objective_functions: Vec::new(),
+            optimization_variables: Vec::new(),
+            optimization_methods: ast::OptimizationMethodsConfig {
+                multi_objective: "nsga_iii".to_string(),
+                constraint_handling: "penalty_function".to_string(),
+                uncertainty_handling: "robust_optimization".to_string(),
+                span,
+            },
+            personalization: ast::PersonalizationConfig {
+                athlete_modeling: "individual_biomechanical".to_string(),
+                training_history: "incorporate_previous".to_string(),
+                injury_history: "custom_constraints".to_string(),
+                anthropometric_scaling: "segment_length_mass".to_string(),
+                span,
+            },
+            span,
+        }))
+    }
+
+    fn genetic_optimization_declaration(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        let name = if self.match_token(&[TokenKind::Identifier]) {
+            self.previous().lexeme.clone()
+        } else {
+            return Err(self.error("Expected genetic optimization name"));
+        };
+
+        self.consume(TokenKind::Colon, "Expected ':' after genetic optimization name")?;
+
+        // Simplified parsing
+        while !self.is_at_end() && !self.check(&TokenKind::RightBrace) {
+            if self.match_token(&[TokenKind::PopulationSize, TokenKind::Generations, 
+                                  TokenKind::SelectionMethod, TokenKind::CrossoverMethod,
+                                  TokenKind::MutationMethod, TokenKind::GenotypeRepresentation,
+                                  TokenKind::FitnessEvaluation, TokenKind::EvolutionStrategies,
+                                  TokenKind::ConvergenceAcceleration]) {
+                self.consume(TokenKind::Colon, "Expected ':'")?;
+                self.expression()?;
+            } else {
+                break;
+            }
+        }
+
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, self.previous().span.end),
+        );
+
+        Ok(Node::GeneticOptimization(ast::GeneticOptimizationDeclaration {
+            name,
+            population_size: Box::new(Node::NumberLiteral(100.0, span)),
+            generations: Box::new(Node::NumberLiteral(500.0, span)),
+            selection_method: "tournament_selection".to_string(),
+            crossover_method: "simulated_binary_crossover".to_string(),
+            mutation_method: "polynomial_mutation".to_string(),
+            genotype_representation: ast::GenotypeRepresentationConfig {
+                technique_parameters: "real_valued_vector".to_string(),
+                constraint_satisfaction: "penalty_based_fitness".to_string(),
+                phenotype_mapping: "biomechanical_model_simulation".to_string(),
+                span,
+            },
+            fitness_evaluation: ast::FitnessEvaluationConfig {
+                simulation_based: "forward_dynamics_integration".to_string(),
+                performance_metrics: "velocity_efficiency_injury_risk".to_string(),
+                multi_objective_ranking: "pareto_dominance_with_diversity".to_string(),
+                span,
+            },
+            evolution_strategies: ast::EvolutionStrategiesConfig {
+                adaptive_parameters: "self_adaptive_mutation_rates".to_string(),
+                niching: "fitness_sharing_for_diversity".to_string(),
+                elitism: "preserve_best_solutions".to_string(),
+                span,
+            },
+            convergence_acceleration: ast::ConvergenceAccelerationConfig {
+                surrogate_modeling: "gaussian_process_regression".to_string(),
+                active_learning: "expected_improvement_acquisition".to_string(),
+                parallel_evaluation: "distributed_fitness_computation".to_string(),
+                span,
+            },
+            span,
+        }))
+    }
+
+    fn analysis_workflow_declaration(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        let name = if self.match_token(&[TokenKind::Identifier]) {
+            self.previous().lexeme.clone()
+        } else {
+            return Err(self.error("Expected analysis workflow name"));
+        };
+
+        self.consume(TokenKind::Colon, "Expected ':' after analysis workflow name")?;
+
+        // Simplified parsing
+        while !self.is_at_end() && !self.check(&TokenKind::RightBrace) {
+            if self.match_token(&[TokenKind::AthleteProfile, TokenKind::VideoData, 
+                                  TokenKind::ReferenceData, TokenKind::PreprocessingStage,
+                                  TokenKind::BiomechanicalAnalysis, TokenKind::PatternAnalysis,
+                                  TokenKind::BayesianIntegration, TokenKind::ResultsSynthesis]) {
+                self.consume(TokenKind::Colon, "Expected ':'")?;
+                self.expression()?;
+            } else {
+                break;
+            }
+        }
+
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, self.previous().span.end),
+        );
+
+        Ok(Node::AnalysisWorkflow(ast::AnalysisWorkflowDeclaration {
+            name,
+            athlete_profile: Box::new(Node::StringLiteral("default".to_string(), span)),
+            video_data: Box::new(Node::StringLiteral("default".to_string(), span)),
+            reference_data: Box::new(Node::StringLiteral("default".to_string(), span)),
+            preprocessing_stage: ast::PreprocessingStageConfig {
+                video_analysis: ast::VideoAnalysisProcessing {
+                    stabilization: "optical_flow".to_string(),
+                    enhancement: "adaptive_histogram".to_string(),
+                    athlete_tracking: "multi_object_tracking".to_string(),
+                    span,
+                },
+                temporal_segmentation: ast::TemporalSegmentationConfig {
+                    race_phases: vec!["blocks".to_string(), "acceleration".to_string(), "max_velocity".to_string()],
+                    automatic_detection: "velocity_profile_analysis".to_string(),
+                    manual_validation: "expert_annotation_interface".to_string(),
+                    span,
+                },
+                span,
+            },
+            biomechanical_analysis: ast::BiomechanicalAnalysisConfig {
+                race_conditions: Box::new(Node::StringLiteral("default".to_string(), span)),
+                athlete_state: Box::new(Node::StringLiteral("default".to_string(), span)),
+                evidence_requirements: Vec::new(),
+                span,
+            },
+            pattern_analysis: ast::PatternAnalysisConfig {
+                technique_fingerprinting: Box::new(Node::StringLiteral("default".to_string(), span)),
+                comparison_database: Box::new(Node::StringLiteral("default".to_string(), span)),
+                performance_insights: Box::new(Node::StringLiteral("default".to_string(), span)),
+                span,
+            },
+            bayesian_integration: ast::BayesianIntegrationConfig {
+                evidence_network: Box::new(Node::StringLiteral("default".to_string(), span)),
+                posterior_inference: Box::new(Node::StringLiteral("default".to_string(), span)),
+                performance_predictions: Box::new(Node::StringLiteral("default".to_string(), span)),
+                span,
+            },
+            results_synthesis: ast::ResultsSynthesisConfig {
+                performance_report: Box::new(Node::StringLiteral("default".to_string(), span)),
+                actionable_insights: Box::new(Node::StringLiteral("default".to_string(), span)),
+                visualization_suite: Box::new(Node::StringLiteral("default".to_string(), span)),
+                span,
+            },
+            span,
+        }))
+    }
+
+    fn validation_framework_declaration(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        let name = if self.match_token(&[TokenKind::Identifier]) {
+            self.previous().lexeme.clone()
+        } else {
+            return Err(self.error("Expected validation framework name"));
+        };
+
+        self.consume(TokenKind::Colon, "Expected ':' after validation framework name")?;
+
+        // Simplified parsing
+        while !self.is_at_end() && !self.check(&TokenKind::RightBrace) {
+            if self.match_token(&[TokenKind::GroundTruthComparison, TokenKind::CrossValidationStrategy, 
+                                  TokenKind::UncertaintyValidation, TokenKind::PerformanceMetrics,
+                                  TokenKind::AutomatedValidationPipeline]) {
+                self.consume(TokenKind::Colon, "Expected ':'")?;
+                self.expression()?;
+            } else {
+                break;
+            }
+        }
+
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, self.previous().span.end),
+        );
+
+        Ok(Node::ValidationFramework(ast::ValidationFrameworkDeclaration {
+            name,
+            ground_truth_comparison: ast::GroundTruthComparisonConfig {
+                reference_measurements: "synchronized_laboratory_data".to_string(),
+                gold_standard_metrics: "direct_force_plate_measurements".to_string(),
+                expert_annotations: "biomechanist_technique_assessments".to_string(),
+                span,
+            },
+            cross_validation_strategy: ast::CrossValidationStrategyConfig {
+                temporal_splits: "leave_one_race_out".to_string(),
+                athlete_generalization: "leave_one_athlete_out".to_string(),
+                condition_robustness: "cross_environmental_condition".to_string(),
+                span,
+            },
+            uncertainty_validation: ast::UncertaintyValidationConfig {
+                prediction_intervals: "empirical_coverage_assessment".to_string(),
+                calibration_curves: "reliability_diagram_analysis".to_string(),
+                uncertainty_decomposition: "aleatory_vs_epistemic_separation".to_string(),
+                span,
+            },
+            performance_metrics: ast::PerformanceMetricsConfig {
+                accuracy_measures: "mean_absolute_error_percentage".to_string(),
+                precision_measures: "coefficient_of_determination".to_string(),
+                reliability_measures: "intraclass_correlation_coefficient".to_string(),
+                clinical_significance: "meaningful_change_detection".to_string(),
+                span,
+            },
+            automated_validation_pipeline: ast::AutomatedValidationPipelineConfig {
+                continuous_validation: "real_time_performance_monitoring".to_string(),
+                alert_system: "degradation_detection_and_notification".to_string(),
+                adaptive_thresholds: "context_sensitive_performance_bounds".to_string(),
+                quality_assurance: "automated_quality_control_checks".to_string(),
+                span,
+            },
+            span,
+        }))
+    }
+
+    fn fuzzy_evaluate_statement(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        let variable = if self.match_token(&[TokenKind::Identifier]) {
+            self.previous().lexeme.clone()
+        } else {
+            return Err(self.error("Expected variable name"));
+        };
+
+        self.consume(TokenKind::Colon, "Expected ':' after variable")?;
+        let expression = self.expression()?;
+
+        // Simplified parsing - just consume the fuzzy conditions and actions
+        let mut fuzzy_conditions = Vec::new();
+        let mut actions = Vec::new();
+
+        while self.match_token(&[TokenKind::Given, TokenKind::Support]) {
+            actions.push(Box::new(self.expression()?));
+        }
+
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, self.previous().span.end),
+        );
+
+        Ok(Node::FuzzyEvaluate(ast::FuzzyEvaluateStatement {
+            variable,
+            expression: Box::new(expression),
+            fuzzy_conditions,
+            actions,
+            span,
+        }))
+    }
+
+    fn causal_inference_statement(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        let name = if self.match_token(&[TokenKind::Identifier]) {
+            self.previous().lexeme.clone()
+        } else {
+            return Err(self.error("Expected causal inference name"));
+        };
+
+        self.consume(TokenKind::Colon, "Expected ':' after causal inference name")?;
+
+        // Simplified parsing
+        let variables = Vec::new();
+        let evidence_evaluation = self.expression()?;
+
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, self.previous().span.end),
+        );
+
+        Ok(Node::CausalInference(ast::CausalInferenceStatement {
+            name,
+            analysis_type: "default".to_string(),
+            variables,
+            causal_chain: None,
+            evidence_evaluation: Box::new(evidence_evaluation),
+            span,
+        }))
+    }
+
+    fn metacognitive_analysis_statement(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        let name = if self.match_token(&[TokenKind::Identifier]) {
+            self.previous().lexeme.clone()
+        } else {
+            return Err(self.error("Expected metacognitive analysis name"));
+        };
+
+        self.consume(TokenKind::Colon, "Expected ':' after metacognitive analysis name")?;
+
+        // Simplified parsing
+        let mut track_items = Vec::new();
+        let mut evaluate_items = Vec::new();
+        let mut adapt_conditions = Vec::new();
+
+        while !self.is_at_end() && !self.check(&TokenKind::RightBrace) {
+            if self.match_token(&[TokenKind::Track]) {
+                self.consume(TokenKind::Colon, "Expected ':'")?;
+                // Parse track items
+                self.expression()?;
+            } else if self.match_token(&[TokenKind::Evaluate]) {
+                self.consume(TokenKind::Colon, "Expected ':'")?;
+                // Parse evaluate items
+                self.expression()?;
+            } else if self.match_token(&[TokenKind::Adapt]) {
+                self.consume(TokenKind::Colon, "Expected ':'")?;
+                // Parse adapt conditions
+                self.expression()?;
+            } else {
+                break;
+            }
+        }
+
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, self.previous().span.end),
+        );
+
+        Ok(Node::MetacognitiveAnalysis(ast::MetacognitiveAnalysisStatement {
+            name,
+            track_items,
+            evaluate_items,
+            adapt_conditions,
             span,
         }))
     }
