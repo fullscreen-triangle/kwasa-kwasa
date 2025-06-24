@@ -81,6 +81,39 @@ impl Parser {
             return self.meta_analysis_declaration();
         }
         
+        // Space Computer Biomechanical Analysis Framework constructs
+        if self.match_token(&[TokenKind::Config]) {
+            return self.config_declaration();
+        }
+        
+        if self.match_token(&[TokenKind::Datasources]) {
+            return self.datasources_declaration();
+        }
+        
+        if self.match_token(&[TokenKind::Segment]) {
+            return self.segment_declaration();
+        }
+        
+        if self.match_token(&[TokenKind::EvidenceIntegrator]) {
+            return self.evidence_integrator_declaration();
+        }
+        
+        if self.match_token(&[TokenKind::RealTimeOrchestrator]) {
+            return self.real_time_orchestrator_declaration();
+        }
+        
+        if self.match_token(&[TokenKind::VerificationSystem]) {
+            return self.verification_system_declaration();
+        }
+        
+        if self.match_token(&[TokenKind::Interface]) {
+            return self.interface_declaration();
+        }
+        
+        if self.match_token(&[TokenKind::Orchestrator]) {
+            return self.orchestrator_system_declaration();
+        }
+        
         self.statement()
     }
     
@@ -4245,6 +4278,508 @@ impl Parser {
         
         self.consume(TokenKind::RightBracket, "Expected ']' after constraints")?;
         Ok(constraints)
+    }
+
+    // Space Computer Biomechanical Analysis Framework parsing methods
+
+    fn config_declaration(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        self.consume(TokenKind::Colon, "Expected ':' after 'config'")?;
+        self.consume(TokenKind::LeftBrace, "Expected '{' after ':'")?;
+        
+        let mut platform_version = None;
+        let mut uncertainty_model = None;
+        let mut confidence_threshold = None;
+        let mut verification_required = false;
+        let mut real_time_analysis = false;
+        
+        while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+            if self.match_token(&[TokenKind::PlatformVersion]) {
+                self.consume(TokenKind::Colon, "Expected ':' after 'platform_version'")?;
+                platform_version = Some(self.string_literal()?);
+            } else if self.match_token(&[TokenKind::UncertaintyModel]) {
+                self.consume(TokenKind::Colon, "Expected ':' after 'uncertainty_model'")?;
+                uncertainty_model = Some(self.string_literal()?);
+            } else if self.match_token(&[TokenKind::ConfidenceThreshold]) {
+                self.consume(TokenKind::Colon, "Expected ':' after 'confidence_threshold'")?;
+                confidence_threshold = Some(Box::new(self.expression()?));
+            } else if self.match_token(&[TokenKind::VerificationRequired]) {
+                self.consume(TokenKind::Colon, "Expected ':' after 'verification_required'")?;
+                verification_required = self.parse_boolean().unwrap_or(false);
+            } else if self.match_token(&[TokenKind::RealTimeAnalysis]) {
+                self.consume(TokenKind::Colon, "Expected ':' after 'real_time_analysis'")?;
+                real_time_analysis = self.parse_boolean().unwrap_or(false);
+            } else {
+                self.advance(); // Skip unknown tokens
+            }
+            
+            // Optional comma
+            self.match_token(&[TokenKind::Comma]);
+        }
+        
+        self.consume(TokenKind::RightBrace, "Expected '}' after config body")?;
+        
+        let end_span = self.previous().span.clone();
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, end_span.end),
+        );
+        
+        Ok(Node::Config(ast::ConfigDeclaration {
+            platform_version,
+            uncertainty_model,
+            confidence_threshold,
+            verification_required,
+            real_time_analysis,
+            span,
+        }))
+    }
+
+    fn datasources_declaration(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        self.consume(TokenKind::Colon, "Expected ':' after 'datasources'")?;
+        self.consume(TokenKind::LeftBrace, "Expected '{' after ':'")?;
+        
+        let mut video_analysis = None;
+        let mut ground_reaction_forces = None;
+        let mut expert_annotations = None;
+        
+        while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+            if self.match_token(&[TokenKind::VideoAnalysis]) {
+                video_analysis = Some(self.parse_video_analysis_config()?);
+            } else if self.match_token(&[TokenKind::GroundReactionForces]) {
+                ground_reaction_forces = Some(self.parse_force_analysis_config()?);
+            } else if self.match_token(&[TokenKind::ExpertAnnotations]) {
+                expert_annotations = Some(self.parse_expert_annotations_config()?);
+            } else {
+                self.advance(); // Skip unknown tokens
+            }
+            
+            // Optional comma
+            self.match_token(&[TokenKind::Comma]);
+        }
+        
+        self.consume(TokenKind::RightBrace, "Expected '}' after datasources body")?;
+        
+        let end_span = self.previous().span.clone();
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, end_span.end),
+        );
+        
+        Ok(Node::Datasources(ast::DatasourcesDeclaration {
+            video_analysis,
+            ground_reaction_forces,
+            expert_annotations,
+            span,
+        }))
+    }
+
+    fn parse_video_analysis_config(&mut self) -> Result<ast::VideoAnalysisConfig, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        self.consume(TokenKind::Colon, "Expected ':' after 'video_analysis'")?;
+        self.consume(TokenKind::LeftBrace, "Expected '{' after ':'")?;
+        
+        let mut pose_models = Vec::new();
+        let mut fps = None;
+        let mut resolution = None;
+        let mut pose_confidence = None;
+        let mut occlusion_handling = false;
+        let mut multi_camera_fusion = false;
+        let mut landmarks = Vec::new();
+        let mut coordinate_accuracy = None;
+        let mut temporal_consistency = false;
+        let mut missing_data_interpolation = false;
+        
+        while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+            if self.match_token(&[TokenKind::PoseModels]) {
+                self.consume(TokenKind::Colon, "Expected ':' after 'pose_models'")?;
+                pose_models = self.string_array()?;
+            } else if self.match_token(&[TokenKind::Fps]) {
+                self.consume(TokenKind::Colon, "Expected ':' after 'fps'")?;
+                fps = Some(Box::new(self.expression()?));
+            } else if self.match_token(&[TokenKind::Resolution]) {
+                self.consume(TokenKind::Colon, "Expected ':' after 'resolution'")?;
+                resolution = Some(self.string_literal()?);
+            } else if self.match_token(&[TokenKind::PoseConfidence]) {
+                self.consume(TokenKind::Colon, "Expected ':' after 'pose_confidence'")?;
+                pose_confidence = Some(Box::new(self.expression()?));
+            } else if self.match_token(&[TokenKind::OcclusionHandling]) {
+                self.consume(TokenKind::Colon, "Expected ':' after 'occlusion_handling'")?;
+                occlusion_handling = self.parse_boolean().unwrap_or(false);
+            } else if self.match_token(&[TokenKind::MultiCameraFusion]) {
+                self.consume(TokenKind::Colon, "Expected ':' after 'multi_camera_fusion'")?;
+                multi_camera_fusion = self.parse_boolean().unwrap_or(false);
+            } else if self.match_token(&[TokenKind::Landmarks]) {
+                self.consume(TokenKind::Colon, "Expected ':' after 'landmarks'")?;
+                landmarks = self.string_array()?;
+            } else if self.match_token(&[TokenKind::CoordinateAccuracy]) {
+                self.consume(TokenKind::Colon, "Expected ':' after 'coordinate_accuracy'")?;
+                coordinate_accuracy = Some(Box::new(self.expression()?));
+            } else if self.match_token(&[TokenKind::TemporalConsistency]) {
+                self.consume(TokenKind::Colon, "Expected ':' after 'temporal_consistency'")?;
+                temporal_consistency = self.parse_boolean().unwrap_or(false);
+            } else if self.match_token(&[TokenKind::MissingDataInterpolation]) {
+                self.consume(TokenKind::Colon, "Expected ':' after 'missing_data_interpolation'")?;
+                missing_data_interpolation = self.parse_boolean().unwrap_or(false);
+            } else {
+                self.advance(); // Skip unknown tokens
+            }
+            
+            // Optional comma
+            self.match_token(&[TokenKind::Comma]);
+        }
+        
+        self.consume(TokenKind::RightBrace, "Expected '}' after video_analysis body")?;
+        
+        let end_span = self.previous().span.clone();
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, end_span.end),
+        );
+        
+        Ok(ast::VideoAnalysisConfig {
+            pose_models,
+            fps,
+            resolution,
+            pose_confidence,
+            occlusion_handling,
+            multi_camera_fusion,
+            landmarks,
+            coordinate_accuracy,
+            temporal_consistency,
+            missing_data_interpolation,
+            span,
+        })
+    }
+
+    fn parse_force_analysis_config(&mut self) -> Result<ast::ForceAnalysisConfig, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        self.consume(TokenKind::Colon, "Expected ':' after 'ground_reaction_forces'")?;
+        self.consume(TokenKind::LeftBrace, "Expected '{' after ':'")?;
+        
+        let mut sampling_rate = None;
+        let mut force_accuracy = None;
+        let mut moment_accuracy = None;
+        
+        while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+            if self.match_token(&[TokenKind::SamplingRate]) {
+                self.consume(TokenKind::Colon, "Expected ':' after 'sampling_rate'")?;
+                sampling_rate = Some(Box::new(self.expression()?));
+            } else if self.match_token(&[TokenKind::ForceAccuracy]) {
+                self.consume(TokenKind::Colon, "Expected ':' after 'force_accuracy'")?;
+                force_accuracy = Some(Box::new(self.expression()?));
+            } else if self.match_token(&[TokenKind::MomentAccuracy]) {
+                self.consume(TokenKind::Colon, "Expected ':' after 'moment_accuracy'")?;
+                moment_accuracy = Some(Box::new(self.expression()?));
+            } else {
+                self.advance(); // Skip unknown tokens
+            }
+            
+            // Optional comma
+            self.match_token(&[TokenKind::Comma]);
+        }
+        
+        self.consume(TokenKind::RightBrace, "Expected '}' after ground_reaction_forces body")?;
+        
+        let end_span = self.previous().span.clone();
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, end_span.end),
+        );
+        
+        Ok(ast::ForceAnalysisConfig {
+            sampling_rate,
+            force_accuracy,
+            moment_accuracy,
+            span,
+        })
+    }
+
+    fn parse_expert_annotations_config(&mut self) -> Result<ast::ExpertAnnotationsConfig, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        self.consume(TokenKind::Colon, "Expected ':' after 'expert_annotations'")?;
+        self.consume(TokenKind::LeftBrace, "Expected '{' after ':'")?;
+        
+        let mut inter_rater_reliability = None;
+        let mut expert_confidence = None;
+        let mut bias_correction = false;
+        
+        while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+            if self.match_token(&[TokenKind::InterRaterReliability]) {
+                self.consume(TokenKind::Colon, "Expected ':' after 'inter_rater_reliability'")?;
+                inter_rater_reliability = Some(Box::new(self.expression()?));
+            } else if self.match_token(&[TokenKind::ExpertConfidence]) {
+                self.consume(TokenKind::Colon, "Expected ':' after 'expert_confidence'")?;
+                expert_confidence = Some(Box::new(self.expression()?));
+            } else if self.match_token(&[TokenKind::BiasCorrection]) {
+                self.consume(TokenKind::Colon, "Expected ':' after 'bias_correction'")?;
+                bias_correction = self.parse_boolean().unwrap_or(false);
+            } else {
+                self.advance(); // Skip unknown tokens
+            }
+            
+            // Optional comma
+            self.match_token(&[TokenKind::Comma]);
+        }
+        
+        self.consume(TokenKind::RightBrace, "Expected '}' after expert_annotations body")?;
+        
+        let end_span = self.previous().span.clone();
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, end_span.end),
+        );
+        
+        Ok(ast::ExpertAnnotationsConfig {
+            inter_rater_reliability,
+            expert_confidence,
+            bias_correction,
+            span,
+        })
+    }
+
+    fn segment_declaration(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        let name = if self.match_token(&[TokenKind::Identifier]) {
+            self.previous().lexeme.clone()
+        } else {
+            return Err(self.error("Expected segment name"));
+        };
+        
+        self.consume(TokenKind::Colon, "Expected ':' after segment name")?;
+        self.consume(TokenKind::LeftBrace, "Expected '{' after ':'")?;
+        
+        let mut phases = Vec::new();
+        let mut metrics = Vec::new();
+        let mut analysis_functions = Vec::new();
+        
+        while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+            if self.match_token(&[TokenKind::ExtractPhase, TokenKind::StartPhase, TokenKind::DrivePhase, 
+                                   TokenKind::MaxVelocityPhase, TokenKind::ImpactPhase, TokenKind::PunchInitiation,
+                                   TokenKind::WindUp, TokenKind::Contact]) {
+                let phase_token = self.previous().clone();
+                let phase_type = match phase_token.kind {
+                    TokenKind::ExtractPhase => ast::PhaseType::ExtractPhase,
+                    TokenKind::StartPhase => ast::PhaseType::StartPhase,
+                    TokenKind::DrivePhase => ast::PhaseType::DrivePhase,
+                    TokenKind::MaxVelocityPhase => ast::PhaseType::MaxVelocityPhase,
+                    TokenKind::ImpactPhase => ast::PhaseType::ImpactPhase,
+                    TokenKind::PunchInitiation => ast::PhaseType::PunchInitiation,
+                    TokenKind::WindUp => ast::PhaseType::WindUp,
+                    TokenKind::Contact => ast::PhaseType::Contact,
+                    _ => return Err(self.error("Invalid phase type")),
+                };
+                
+                phases.push(ast::PhaseDeclaration {
+                    name: phase_token.lexeme.clone(),
+                    phase_type,
+                    span: Span::new(
+                        Position::new(0, 0, phase_token.span.start),
+                        Position::new(0, 0, phase_token.span.end),
+                    ),
+                });
+            } else {
+                self.advance(); // Skip unknown tokens
+            }
+            
+            // Optional comma
+            self.match_token(&[TokenKind::Comma]);
+        }
+        
+        self.consume(TokenKind::RightBrace, "Expected '}' after segment body")?;
+        
+        let end_span = self.previous().span.clone();
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, end_span.end),
+        );
+        
+        Ok(Node::Segment(ast::SegmentDeclaration {
+            name,
+            phases,
+            metrics,
+            analysis_functions,
+            span,
+        }))
+    }
+
+    fn evidence_integrator_declaration(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        self.consume(TokenKind::Colon, "Expected ':' after 'evidence_integrator'")?;
+        self.consume(TokenKind::LeftBrace, "Expected '{' after ':'")?;
+        
+        let mut fusion_methods = Vec::new();
+        let mut validation_pipeline = ast::ValidationPipeline {
+            cross_validation: false,
+            bootstrap_validation: false,
+            external_validation: false,
+            prior_construction: None,
+            likelihood_modeling: None,
+            posterior_sampling: None,
+            markov_chain_monte_carlo: false,
+            convergence_diagnostics: false,
+            gelman_rubin_statistic: false,
+            span: Span::new(Position::new(0, 0, 0), Position::new(0, 0, 0)),
+        };
+        
+        while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+            if self.match_token(&[TokenKind::FusionMethods]) {
+                // Parse fusion methods
+                self.consume(TokenKind::Colon, "Expected ':' after 'fusion_methods'")?;
+                // Skip for now - would need detailed parsing
+            } else if self.match_token(&[TokenKind::ValidationPipeline]) {
+                // Parse validation pipeline
+                self.consume(TokenKind::Colon, "Expected ':' after 'validation_pipeline'")?;
+                // Skip for now - would need detailed parsing
+            } else {
+                self.advance(); // Skip unknown tokens
+            }
+            
+            // Optional comma
+            self.match_token(&[TokenKind::Comma]);
+        }
+        
+        self.consume(TokenKind::RightBrace, "Expected '}' after evidence_integrator body")?;
+        
+        let end_span = self.previous().span.clone();
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, end_span.end),
+        );
+        
+        Ok(Node::EvidenceIntegratorDecl(ast::EvidenceIntegratorDeclaration {
+            fusion_methods,
+            validation_pipeline,
+            span,
+        }))
+    }
+
+    fn real_time_orchestrator_declaration(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        self.consume(TokenKind::Colon, "Expected ':' after 'real_time_orchestrator'")?;
+        self.consume(TokenKind::LeftBrace, "Expected '{' after ':'")?;
+        
+        let stream_processing = ast::StreamProcessingConfig {
+            video_feed: None,
+            sensor_data: None,
+            environmental: None,
+            span: Span::new(Position::new(0, 0, 0), Position::new(0, 0, 0)),
+        };
+        
+        // Skip detailed parsing for now
+        while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+            self.advance();
+        }
+        
+        self.consume(TokenKind::RightBrace, "Expected '}' after real_time_orchestrator body")?;
+        
+        let end_span = self.previous().span.clone();
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, end_span.end),
+        );
+        
+        Ok(Node::RealTimeOrchestrator(ast::RealTimeOrchestratorDeclaration {
+            stream_processing,
+            continuous_evaluation: false,
+            temporal_weighting: false,
+            recency_bias_correction: false,
+            predictive_modeling: None,
+            span,
+        }))
+    }
+
+    fn verification_system_declaration(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        self.consume(TokenKind::Colon, "Expected ':' after 'verification_system'")?;
+        self.consume(TokenKind::LeftBrace, "Expected '{' after ':'")?;
+        
+        // Skip detailed parsing for now
+        while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+            self.advance();
+        }
+        
+        self.consume(TokenKind::RightBrace, "Expected '}' after verification_system body")?;
+        
+        let end_span = self.previous().span.clone();
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, end_span.end),
+        );
+        
+        Ok(Node::VerificationSystem(ast::VerificationSystemDeclaration {
+            verification_methods: Vec::new(),
+            verification_levels: Vec::new(),
+            span,
+        }))
+    }
+
+    fn interface_declaration(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        self.consume(TokenKind::Colon, "Expected ':' after 'interface'")?;
+        self.consume(TokenKind::LeftBrace, "Expected '{' after ':'")?;
+        
+        // Skip detailed parsing for now
+        while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+            self.advance();
+        }
+        
+        self.consume(TokenKind::RightBrace, "Expected '}' after interface body")?;
+        
+        let end_span = self.previous().span.clone();
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, end_span.end),
+        );
+        
+        Ok(Node::Interface(ast::InterfaceDeclaration {
+            components: Vec::new(),
+            interactions: Vec::new(),
+            span,
+        }))
+    }
+
+    fn orchestrator_system_declaration(&mut self) -> Result<Node, TurbulanceError> {
+        let start_span = self.previous().span.clone();
+        
+        let name = if self.match_token(&[TokenKind::Identifier]) {
+            self.previous().lexeme.clone()
+        } else {
+            return Err(self.error("Expected orchestrator name"));
+        };
+        
+        self.consume(TokenKind::Colon, "Expected ':' after orchestrator name")?;
+        self.consume(TokenKind::LeftBrace, "Expected '{' after ':'")?;
+        
+        // Skip detailed parsing for now
+        while !self.check(&TokenKind::RightBrace) && !self.is_at_end() {
+            self.advance();
+        }
+        
+        self.consume(TokenKind::RightBrace, "Expected '}' after orchestrator body")?;
+        
+        let end_span = self.previous().span.clone();
+        let span = Span::new(
+            Position::new(0, 0, start_span.start),
+            Position::new(0, 0, end_span.end),
+        );
+        
+        Ok(Node::OrchestratorSystem(ast::OrchestratorSystemDeclaration {
+            name,
+            phases: Vec::new(),
+            span,
+        }))
     }
 }
 

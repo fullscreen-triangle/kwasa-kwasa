@@ -265,4 +265,202 @@ impl Default for ErrorReporter {
     fn default() -> Self {
         Self::new()
     }
+}
+
+#[derive(Debug, Clone)]
+pub enum KwasaError {
+    /// Configuration and setup errors
+    ConfigError(String),
+    
+    /// Environment management errors
+    EnvironmentError(String),
+    
+    /// File system and I/O errors
+    IoError(String),
+    
+    /// Parsing and syntax errors
+    ParseError(String),
+    
+    /// Runtime execution errors
+    RuntimeError(String),
+    
+    /// Scientific validation errors
+    ValidationError(String),
+    
+    /// Network and external API errors
+    NetworkError(String),
+    
+    /// Database and storage errors
+    DatabaseError(String),
+    
+    /// Authentication and authorization errors
+    AuthError(String),
+    
+    /// Resource exhaustion errors
+    ResourceError(String),
+}
+
+impl fmt::Display for KwasaError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            KwasaError::ConfigError(msg) => write!(f, "Configuration error: {}", msg),
+            KwasaError::EnvironmentError(msg) => write!(f, "Environment error: {}", msg),
+            KwasaError::IoError(msg) => write!(f, "I/O error: {}", msg),
+            KwasaError::ParseError(msg) => write!(f, "Parse error: {}", msg),
+            KwasaError::RuntimeError(msg) => write!(f, "Runtime error: {}", msg),
+            KwasaError::ValidationError(msg) => write!(f, "Validation error: {}", msg),
+            KwasaError::NetworkError(msg) => write!(f, "Network error: {}", msg),
+            KwasaError::DatabaseError(msg) => write!(f, "Database error: {}", msg),
+            KwasaError::AuthError(msg) => write!(f, "Authentication error: {}", msg),
+            KwasaError::ResourceError(msg) => write!(f, "Resource error: {}", msg),
+        }
+    }
+}
+
+impl std::error::Error for KwasaError {}
+
+// Convenience conversion functions
+impl From<std::io::Error> for KwasaError {
+    fn from(error: std::io::Error) -> Self {
+        KwasaError::IoError(error.to_string())
+    }
+}
+
+impl From<serde_json::Error> for KwasaError {
+    fn from(error: serde_json::Error) -> Self {
+        KwasaError::ConfigError(format!("JSON error: {}", error))
+    }
+}
+
+impl From<toml::de::Error> for KwasaError {
+    fn from(error: toml::de::Error) -> Self {
+        KwasaError::ConfigError(format!("TOML parse error: {}", error))
+    }
+}
+
+impl From<toml::ser::Error> for KwasaError {
+    fn from(error: toml::ser::Error) -> Self {
+        KwasaError::ConfigError(format!("TOML serialize error: {}", error))
+    }
+}
+
+/// Turbulance-specific error types for the DSL
+#[derive(Debug, Clone)]
+pub enum TurbulanceError {
+    /// Lexical analysis errors
+    LexError { message: String, line: usize, column: usize },
+    
+    /// Parsing errors
+    ParseError { message: String, line: usize, column: usize },
+    
+    /// Type checking errors
+    TypeError { message: String, expected: String, found: String },
+    
+    /// Runtime execution errors
+    RuntimeError { message: String, context: String },
+    
+    /// Scientific validation errors
+    ValidationError { message: String, validation_type: String },
+    
+    /// Undefined variable or function errors
+    UndefinedError { name: String, context: String },
+    
+    /// Import and module errors
+    ImportError { module: String, message: String },
+    
+    /// Memory and resource errors
+    ResourceError { resource: String, message: String },
+}
+
+impl fmt::Display for TurbulanceError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            TurbulanceError::LexError { message, line, column } => {
+                write!(f, "Lexical error at line {}, column {}: {}", line, column, message)
+            },
+            TurbulanceError::ParseError { message, line, column } => {
+                write!(f, "Parse error at line {}, column {}: {}", line, column, message)
+            },
+            TurbulanceError::TypeError { message, expected, found } => {
+                write!(f, "Type error: {}. Expected {}, found {}", message, expected, found)
+            },
+            TurbulanceError::RuntimeError { message, context } => {
+                write!(f, "Runtime error in {}: {}", context, message)
+            },
+            TurbulanceError::ValidationError { message, validation_type } => {
+                write!(f, "Validation error ({}): {}", validation_type, message)
+            },
+            TurbulanceError::UndefinedError { name, context } => {
+                write!(f, "Undefined {} in {}", name, context)
+            },
+            TurbulanceError::ImportError { module, message } => {
+                write!(f, "Import error in module '{}': {}", module, message)
+            },
+            TurbulanceError::ResourceError { resource, message } => {
+                write!(f, "Resource error ({}): {}", resource, message)
+            },
+        }
+    }
+}
+
+impl std::error::Error for TurbulanceError {}
+
+/// Result type for Kwasa operations
+pub type KwasaResult<T> = Result<T, KwasaError>;
+
+/// Result type for Turbulance operations
+pub type TurbulanceResult<T> = Result<T, TurbulanceError>;
+
+/// Error context for better error reporting
+#[derive(Debug, Clone)]
+pub struct ErrorContext {
+    pub file: Option<String>,
+    pub line: usize,
+    pub column: usize,
+    pub source_line: Option<String>,
+}
+
+impl ErrorContext {
+    pub fn new(file: Option<String>, line: usize, column: usize, source_line: Option<String>) -> Self {
+        Self { file, line, column, source_line }
+    }
+    
+    pub fn format_error(&self, error: &TurbulanceError) -> String {
+        let mut output = String::new();
+        
+        if let Some(file) = &self.file {
+            output.push_str(&format!("File: {}\n", file));
+        }
+        
+        output.push_str(&format!("Error: {}\n", error));
+        
+        if let Some(source) = &self.source_line {
+            output.push_str(&format!("  {}\n", source));
+            output.push_str(&format!("  {}^\n", " ".repeat(self.column.saturating_sub(1))));
+        }
+        
+        output
+    }
+}
+
+/// Macro for creating validation errors
+#[macro_export]
+macro_rules! validation_error {
+    ($validation_type:expr, $message:expr) => {
+        TurbulanceError::ValidationError {
+            message: $message.to_string(),
+            validation_type: $validation_type.to_string(),
+        }
+    };
+}
+
+/// Macro for creating runtime errors with context
+#[macro_export]
+macro_rules! runtime_error {
+    ($context:expr, $message:expr) => {
+        TurbulanceError::RuntimeError {
+            message: $message.to_string(),
+            context: $context.to_string(),
+        }
+    };
 } 

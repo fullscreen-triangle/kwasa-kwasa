@@ -1,12 +1,14 @@
 use std::fs;
 use std::path::PathBuf;
 use std::process;
+use std::env;
 
 use clap::{Parser, Subcommand};
 use colored::Colorize;
 use anyhow::{Result, Context};
 
 mod cli;
+mod error;
 mod turbulance;
 mod text_unit;
 mod orchestrator;
@@ -18,7 +20,10 @@ mod spectrometry;
 mod chemistry;
 mod pattern;
 
-use cli::{CliConfig, CliCommands};
+use cli::{CliConfig, CliCommands, Cli, Commands, EnvCommands, ProjectCommands};
+use cli::run::EnvironmentManager;
+use turbulance::{ScientificArgumentValidator, ArgumentValidationReport};
+use error::KwasaError;
 
 #[derive(Parser)]
 #[command(name = "kwasa-kwasa")]
@@ -151,6 +156,12 @@ enum Commands {
         #[arg(short, long)]
         filter: Option<String>,
     },
+    
+    /// Initialize kwasa-kwasa environment
+    Env(EnvCommands),
+    
+    /// Manage projects
+    Project(ProjectCommands),
 }
 
 #[derive(Subcommand)]
@@ -176,260 +187,519 @@ enum ConfigAction {
     Reset,
 }
 
-fn main() -> Result<()> {
-    // Initialize environment
-    dotenv::dotenv().ok();
-    env_logger::init();
+fn main() {
+    let cli = Cli::parse_args();
     
-    let cli = Cli::parse();
-    
-    // Load configuration
-    let config = CliConfig::load().unwrap_or_else(|_| {
-        eprintln!("{}", "Warning: Could not load config, using defaults".yellow());
-        CliConfig::default()
-    });
-    
-    let commands = CliCommands::new(config.clone());
-    
+    if let Err(e) = run_command(cli) {
+        eprintln!("❌ Error: {}", e);
+        process::exit(1);
+    }
+}
+
+fn run_command(cli: Cli) -> Result<(), KwasaError> {
     match cli.command {
-        Commands::Run { script, debug, verbose } => {
-            run_script(&script, debug, verbose)?;
-        },
-        Commands::Validate { script } => {
-            validate_script(&script)?;
-        },
-        Commands::Process { document, interactive, format } => {
-            process_document(&document, interactive, &format)?;
-        },
-        Commands::Repl { load, debug } => {
-            start_repl(load, debug)?;
-        },
-        Commands::Init { name, template } => {
-            let template_opt = if template == "default" { None } else { Some(template.as_str()) };
-            commands.init_project(&name, template_opt)?;
-        },
-        Commands::Info { path } => {
-            commands.project_info(path.as_deref())?;
-        },
-        Commands::Analyze { path } => {
-            commands.analyze_project(path.as_deref())?;
-        },
-        Commands::Format { path, check } => {
-            commands.format_code(&path, check)?;
-        },
-        Commands::Docs { format, path } => {
-            commands.generate_docs(path.as_deref(), &format)?;
-        },
-        Commands::Test { filter, path } => {
-            commands.run_tests(path.as_deref(), filter.as_deref())?;
-        },
-        Commands::Config { action } => {
-            handle_config_command(action, config)?;
-        },
-        Commands::Bench { filter } => {
-            run_benchmarks(filter.as_deref())?;
-        },
-    }
-    
-    Ok(())
-}
-
-fn run_script(script_path: &PathBuf, debug: bool, verbose: u8) -> Result<()> {
-    if verbose > 0 {
-        println!("{} {}", "Running script:".green().bold(), script_path.display());
-    }
-    
-    let source = fs::read_to_string(script_path)
-        .with_context(|| format!("Failed to read script file: {}", script_path.display()))?;
-    
-    if debug {
-        println!("{}", "Debug mode enabled".blue());
-        println!("{}", "Script content:".blue());
-        println!("{}", source.dimmed());
-        println!();
-    }
-    
-    match turbulance::run(&source) {
-        Ok(_) => {
-            if verbose > 0 {
-                println!("{}", "Script executed successfully".green());
+        Commands::Init(args) => {
+            println!("🚀 Initializing kwasa-kwasa environment...");
+            
+            let env_manager = EnvironmentManager::initialize(&args.path)?;
+            
+            if !args.yes {
+                println!("📋 Environment initialized at: {}", args.path.display());
+                println!("💡 Run 'kwasa env setup' to install dependencies");
             }
-            Ok(())
-        },
-        Err(err) => {
-            eprintln!("{} {}", "Error:".red().bold(), err);
-            process::exit(1);
-        }
-    }
-}
-
-fn validate_script(script_path: &PathBuf) -> Result<()> {
-    println!("{} {}", "Validating script:".green().bold(), script_path.display());
-    
-    let source = fs::read_to_string(script_path)
-        .with_context(|| format!("Failed to read script file: {}", script_path.display()))?;
-    
-    match turbulance::validate(&source) {
-        Ok(valid) => {
-            if valid {
-                println!("{}", "Script is valid".green());
-            } else {
-                println!("{}", "Script contains errors".red());
-                process::exit(1);
+            
+            if !args.minimal {
+                println!("🔧 Setting up complete environment...");
+                env_manager.setup_environment()?;
             }
-            Ok(())
+            
+            println!("✅ Kwasa-kwasa environment ready!");
+            println!("📖 Run 'kwasa project new <name>' to create your first project");
         },
-        Err(err) => {
-            eprintln!("{} {}", "Error:".red().bold(), err);
-            process::exit(1);
-        }
-    }
-}
-
-fn process_document(document_path: &PathBuf, interactive: bool, format: &str) -> Result<()> {
-    println!("{} {}", "Processing document:".green().bold(), document_path.display());
-    
-    if interactive {
-        println!("{}", "Interactive mode enabled".blue());
-    }
-    
-    println!("{} {}", "Output format:".blue(), format);
-    
-    // Load document content
-    let content = fs::read_to_string(document_path)
-        .with_context(|| format!("Failed to read document: {}", document_path.display()))?;
-    
-    // Process with text_unit operations
-    println!("{}", "Analyzing document structure...".blue());
-    
-    // Basic text analysis
-    let word_count = content.split_whitespace().count();
-    let sentence_count = content.matches('.').count() + content.matches('!').count() + content.matches('?').count();
-    let paragraph_count = content.split("\n\n").count();
-    
-    let analysis = serde_json::json!({
-        "file": document_path.display().to_string(),
-        "stats": {
-            "words": word_count,
-            "sentences": sentence_count,
-            "paragraphs": paragraph_count,
-            "characters": content.len()
+        
+        Commands::Env(env_cmd) => {
+            handle_env_command(env_cmd)?;
         },
-        "readability": {
-            "avg_words_per_sentence": if sentence_count > 0 { word_count as f64 / sentence_count as f64 } else { 0.0 },
-            "avg_sentences_per_paragraph": if paragraph_count > 0 { sentence_count as f64 / paragraph_count as f64 } else { 0.0 }
-        }
-    });
-    
-    match format {
-        "json" => println!("{}", serde_json::to_string_pretty(&analysis)?),
-        "yaml" => println!("{}", serde_yaml::to_string(&analysis)?),
-        "text" => {
-            println!("Document Analysis Results:");
-            println!("  Words: {}", word_count);
-            println!("  Sentences: {}", sentence_count);
-            println!("  Paragraphs: {}", paragraph_count);
-            println!("  Characters: {}", content.len());
-            println!("  Avg words per sentence: {:.1}", analysis["readability"]["avg_words_per_sentence"]);
+        
+        Commands::Project(proj_cmd) => {
+            handle_project_command(proj_cmd)?;
         },
-        _ => return Err(anyhow::anyhow!("Unsupported output format: {}", format)),
-    }
-    
-    Ok(())
-}
-
-fn start_repl(load_script: Option<PathBuf>, debug: bool) -> Result<()> {
-    let mut repl = cli::Repl::new().with_context(|| "Failed to initialize REPL")?;
-    
-    if let Some(script_path) = load_script {
-        println!("{} {}", "Loading script:".blue(), script_path.display());
-        // Load script content into REPL
-        let content = fs::read_to_string(&script_path)?;
-        // Execute the loaded script
-        if let Err(e) = turbulance::run(&content) {
-            eprintln!("{} {}", "Error loading script:".red(), e);
-        }
-    }
-    
-    if debug {
-        println!("{}", "Debug mode enabled for REPL".blue());
-    }
-    
-    repl.start().with_context(|| "Error during REPL execution")?;
-    Ok(())
-}
-
-fn handle_config_command(action: ConfigAction, mut config: CliConfig) -> Result<()> {
-    match action {
-        ConfigAction::Show => {
-            let commands = CliCommands::new(config);
-            commands.show_config()?;
-        },
-        ConfigAction::Set { key, value } => {
-            // Parse key to update the appropriate config section
-            let parts: Vec<&str> = key.split('.').collect();
-            match parts.as_slice() {
-                ["repl", "prompt"] => config.repl.prompt = value,
-                ["repl", "syntax_highlighting"] => config.repl.syntax_highlighting = value.parse()?,
-                ["repl", "auto_completion"] => config.repl.auto_completion = value.parse()?,
-                ["repl", "history_size"] => config.repl.history_size = value.parse()?,
-                ["output", "colored"] => config.output.colored = value.parse()?,
-                ["output", "verbosity"] => config.output.verbosity = value.parse()?,
-                ["editor", "command"] => config.editor.editor_command = value,
-                ["editor", "tab_width"] => config.editor.tab_width = value.parse()?,
-                ["performance", "parallel_processing"] => config.performance.parallel_processing = value.parse()?,
-                ["performance", "thread_count"] => config.performance.thread_count = value.parse()?,
-                ["performance", "timeout"] => config.performance.timeout = value.parse()?,
-                _ => {
-                    // Store as custom setting
-                    config.set_custom(key, value);
+        
+        Commands::Run(args) => {
+            // Load and parse the Turbulance script
+            let source = std::fs::read_to_string(&args.file)
+                .map_err(|e| KwasaError::IoError(format!("Failed to read file {}: {}", args.file.display(), e)))?;
+            
+            let mut lexer = turbulance::lexer::Lexer::new(&source);
+            let tokens = lexer.tokenize()
+                .map_err(|e| KwasaError::ParseError(format!("Lexer error: {:?}", e)))?;
+            
+            let mut parser = turbulance::parser::Parser::new(tokens);
+            let ast = parser.parse()
+                .map_err(|e| KwasaError::ParseError(format!("Parser error: {:?}", e)))?;
+            
+            // Perform scientific validation if requested
+            if args.validate {
+                println!("🔬 Performing scientific argument validation...");
+                let mut validator = ScientificArgumentValidator::new();
+                let report = validator.validate_argument(&ast)?;
+                
+                // Print validation report
+                report.print_report();
+                
+                // Save report if requested
+                if let Some(report_file) = &args.report_file {
+                    save_validation_report(&report, report_file, &args.output)?;
+                }
+                
+                // Check if we should continue based on strictness
+                let strictness = cli::commands::ValidationStrictness::from_str(&args.strictness)
+                    .map_err(|e| KwasaError::ConfigError(e))?;
+                
+                if should_stop_execution(&report, &strictness) {
+                    println!("🚫 Execution stopped due to validation issues");
+                    return Ok(());
                 }
             }
-            config.save()?;
-            println!("{} Configuration updated", "✓".green());
+            
+            // Execute the script
+            println!("🚀 Executing Turbulance script...");
+            let mut interpreter = turbulance::interpreter::Interpreter::new();
+            interpreter.execute(&ast)
+                .map_err(|e| KwasaError::RuntimeError(format!("Execution error: {:?}", e)))?;
+            
+            println!("✅ Script execution completed");
         },
-        ConfigAction::Get { key } => {
-            let parts: Vec<&str> = key.split('.').collect();
-            let value = match parts.as_slice() {
-                ["repl", "prompt"] => config.repl.prompt.clone(),
-                ["repl", "syntax_highlighting"] => config.repl.syntax_highlighting.to_string(),
-                ["repl", "auto_completion"] => config.repl.auto_completion.to_string(),
-                ["repl", "history_size"] => config.repl.history_size.to_string(),
-                ["output", "colored"] => config.output.colored.to_string(),
-                ["output", "verbosity"] => config.output.verbosity.to_string(),
-                ["editor", "command"] => config.editor.editor_command.clone(),
-                ["editor", "tab_width"] => config.editor.tab_width.to_string(),
-                ["performance", "parallel_processing"] => config.performance.parallel_processing.to_string(),
-                ["performance", "thread_count"] => config.performance.thread_count.to_string(),
-                ["performance", "timeout"] => config.performance.timeout.to_string(),
-                _ => config.get_custom(&key).cloned().unwrap_or_else(|| "Not found".to_string()),
-            };
-            println!("{}: {}", key, value);
+        
+        Commands::Validate(args) => {
+            // Load and parse the Turbulance script
+            let source = std::fs::read_to_string(&args.file)
+                .map_err(|e| KwasaError::IoError(format!("Failed to read file {}: {}", args.file.display(), e)))?;
+            
+            let mut lexer = turbulance::lexer::Lexer::new(&source);
+            let tokens = lexer.tokenize()
+                .map_err(|e| KwasaError::ParseError(format!("Lexer error: {:?}", e)))?;
+            
+            let mut parser = turbulance::parser::Parser::new(tokens);
+            let ast = parser.parse()
+                .map_err(|e| KwasaError::ParseError(format!("Parser error: {:?}", e)))?;
+            
+            // Perform scientific validation
+            println!("🔬 Validating scientific arguments...");
+            let mut validator = ScientificArgumentValidator::new();
+            let report = validator.validate_argument(&ast)?;
+            
+            // Print validation report
+            report.print_report();
+            
+            // Save report if requested
+            if let Some(report_file) = &args.report_file {
+                save_validation_report(&report, report_file, &args.output)?;
+            }
+            
+            // Generate recommendations if requested
+            if args.recommend {
+                println!("\n🎯 Specific Recommendations:");
+                for (i, rec) in report.recommendations.iter().enumerate() {
+                    println!("  {}. {}", i + 1, rec);
+                }
+            }
         },
-        ConfigAction::Reset => {
-            let default_config = CliConfig::default();
-            default_config.save()?;
-            println!("{} Configuration reset to defaults", "✓".green());
+        
+        Commands::Repl(args) => {
+            println!("🎮 Starting Turbulance REPL...");
+            let mut repl = cli::repl::TurbulanceRepl::new(args.validate);
+            
+            if let Some(load_file) = &args.load {
+                repl.load_file(load_file)?;
+            }
+            
+            repl.run()?;
         },
     }
+    
     Ok(())
 }
 
-fn run_benchmarks(filter: Option<&str>) -> Result<()> {
-    println!("{}", "Running benchmarks...".blue());
-    
-    let mut cmd = std::process::Command::new("cargo");
-    cmd.arg("bench");
-    
-    if let Some(filter) = filter {
-        cmd.arg("--").arg(filter);
+fn handle_env_command(cmd: EnvCommands) -> Result<(), KwasaError> {
+    match cmd {
+        EnvCommands::Init { path, yes } => {
+            println!("🔧 Initializing environment at: {}", path.display());
+            let env_manager = EnvironmentManager::initialize(&path)?;
+            
+            if !yes {
+                println!("✅ Environment initialized");
+                println!("💡 Run 'kwasa env setup' to install dependencies");
+            }
+        },
+        
+        EnvCommands::Status => {
+            // Find the nearest kwasa environment
+            let current_dir = env::current_dir()
+                .map_err(|e| KwasaError::IoError(format!("Failed to get current directory: {}", e)))?;
+            
+            let env_manager = find_environment(&current_dir)?;
+            let status = env_manager.status();
+            status.print_status();
+        },
+        
+        EnvCommands::Setup { force } => {
+            let current_dir = env::current_dir()
+                .map_err(|e| KwasaError::IoError(format!("Failed to get current directory: {}", e)))?;
+            
+            let env_manager = find_environment(&current_dir)?;
+            
+            if force {
+                println!("🔄 Force reinstalling environment...");
+            }
+            
+            env_manager.setup_environment()?;
+        },
+        
+        EnvCommands::Update { component } => {
+            println!("🔄 Updating environment...");
+            if let Some(comp) = component {
+                println!("  Updating component: {}", comp);
+            } else {
+                println!("  Updating all components");
+            }
+            // Implementation would go here
+        },
+        
+        EnvCommands::Install { tool, version } => {
+            println!("📦 Installing tool: {}", tool);
+            if let Some(ver) = version {
+                println!("  Version: {}", ver);
+            }
+            // Implementation would go here
+        },
+        
+        EnvCommands::List => {
+            println!("📋 Available scientific tools:");
+            println!("  • jupyter - Jupyter notebooks");
+            println!("  • rstudio - R development environment");
+            println!("  • pymol - Molecular visualization");
+            println!("  • vmd - Visual molecular dynamics");
+            println!("  • chimera - Molecular modeling");
+            // More tools would be listed here
+        },
+        
+        EnvCommands::Clean { deep } => {
+            println!("🧹 Cleaning environment...");
+            if deep {
+                println!("  Deep cleaning (including dependencies)");
+            }
+            // Implementation would go here
+        },
     }
     
-    let status = cmd.status()?;
-    
-    if !status.success() {
-        return Err(anyhow::anyhow!("Benchmark execution failed"));
+    Ok(())
+}
+
+fn handle_project_command(cmd: ProjectCommands) -> Result<(), KwasaError> {
+    match cmd {
+        ProjectCommands::New { name, template, git } => {
+            println!("📂 Creating new project: {}", name);
+            
+            let template_type = cli::commands::ProjectTemplate::from_str(&template)
+                .map_err(|e| KwasaError::ConfigError(e))?;
+            
+            println!("  Template: {} - {}", template, template_type.description());
+            
+            // Create project directory and files
+            create_project(&name, &template_type, git)?;
+            
+            println!("✅ Project '{}' created successfully!", name);
+            println!("📖 Navigate to projects/{} to get started", name);
+        },
+        
+        ProjectCommands::List => {
+            println!("📋 Available projects:");
+            list_projects()?;
+        },
+        
+        ProjectCommands::Info { name } => {
+            println!("📊 Project information: {}", name);
+            show_project_info(&name)?;
+        },
+        
+        ProjectCommands::Delete { name, yes } => {
+            if !yes {
+                print!("⚠️  Are you sure you want to delete project '{}'? [y/N]: ", name);
+                use std::io::{self, Write};
+                io::stdout().flush().unwrap();
+                
+                let mut input = String::new();
+                io::stdin().read_line(&mut input).unwrap();
+                
+                if !input.trim().to_lowercase().starts_with('y') {
+                    println!("❌ Deletion cancelled");
+                    return Ok(());
+                }
+            }
+            
+            delete_project(&name)?;
+            println!("✅ Project '{}' deleted", name);
+        },
     }
+    
+    Ok(())
+}
+
+fn find_environment(start_path: &PathBuf) -> Result<EnvironmentManager, KwasaError> {
+    let mut current_path = start_path.clone();
+    
+    loop {
+        let manifest_path = current_path.join("kwasa-environment.toml");
+        if manifest_path.exists() {
+            return EnvironmentManager::initialize(&current_path);
+        }
+        
+        if let Some(parent) = current_path.parent() {
+            current_path = parent.to_path_buf();
+        } else {
+            break;
+        }
+    }
+    
+    Err(KwasaError::EnvironmentError(
+        "No kwasa-kwasa environment found. Run 'kwasa init' to create one.".to_string()
+    ))
+}
+
+fn save_validation_report(report: &ArgumentValidationReport, file_path: &PathBuf, format: &str) -> Result<(), KwasaError> {
+    let output_format = cli::commands::OutputFormat::from_str(format)
+        .map_err(|e| KwasaError::ConfigError(e))?;
+    
+    let content = match output_format {
+        cli::commands::OutputFormat::Text => format_report_text(report),
+        cli::commands::OutputFormat::Json => format_report_json(report)?,
+        cli::commands::OutputFormat::Html => format_report_html(report),
+    };
+    
+    std::fs::write(file_path, content)
+        .map_err(|e| KwasaError::IoError(format!("Failed to write report: {}", e)))?;
+    
+    println!("📄 Validation report saved to: {}", file_path.display());
+    Ok(())
+}
+
+fn should_stop_execution(report: &ArgumentValidationReport, strictness: &cli::commands::ValidationStrictness) -> bool {
+    use turbulance::{OverallValidity, FallacySeverity};
+    
+    match strictness {
+        cli::commands::ValidationStrictness::Critical => {
+            matches!(report.overall_validity, OverallValidity::Invalid)
+        },
+        cli::commands::ValidationStrictness::Error => {
+            matches!(report.overall_validity, OverallValidity::Invalid | OverallValidity::RequiresRevision)
+        },
+        cli::commands::ValidationStrictness::Warning => {
+            !matches!(report.overall_validity, OverallValidity::Valid)
+        },
+    }
+}
+
+fn format_report_text(report: &ArgumentValidationReport) -> String {
+    let mut output = String::new();
+    output.push_str("Scientific Argument Validation Report\n");
+    output.push_str("=====================================\n\n");
+    
+    output.push_str(&format!("Overall Validity: {:?}\n\n", report.overall_validity));
+    
+    if !report.logical_fallacies.is_empty() {
+        output.push_str("Logical Issues:\n");
+        for fallacy in &report.logical_fallacies {
+            output.push_str(&format!("  - {:?}: {} ({})\n", fallacy.severity, fallacy.description, fallacy.location));
+        }
+        output.push('\n');
+    }
+    
+    if !report.recommendations.is_empty() {
+        output.push_str("Recommendations:\n");
+        for rec in &report.recommendations {
+            output.push_str(&format!("  • {}\n", rec));
+        }
+    }
+    
+    output
+}
+
+fn format_report_json(report: &ArgumentValidationReport) -> Result<String, KwasaError> {
+    serde_json::to_string_pretty(report)
+        .map_err(|e| KwasaError::ConfigError(format!("Failed to serialize report: {}", e)))
+}
+
+fn format_report_html(report: &ArgumentValidationReport) -> String {
+    format!(r#"
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scientific Argument Validation Report</title>
+    <style>
+        body {{ font-family: Arial, sans-serif; margin: 40px; }}
+        .valid {{ color: green; }}
+        .warning {{ color: orange; }}
+        .error {{ color: red; }}
+        .critical {{ color: darkred; font-weight: bold; }}
+    </style>
+</head>
+<body>
+    <h1>🔬 Scientific Argument Validation Report</h1>
+    <h2>Overall Validity: {:?}</h2>
+    
+    <h3>Logical Issues</h3>
+    <ul>
+    {}
+    </ul>
+    
+    <h3>Recommendations</h3>
+    <ul>
+    {}
+    </ul>
+</body>
+</html>
+"#,
+        report.overall_validity,
+        report.logical_fallacies.iter()
+            .map(|f| format!("<li class=\"{:?}\">{}: {} ({})</li>", 
+                f.severity, f.severity, f.description, f.location))
+            .collect::<Vec<_>>()
+            .join("\n"),
+        report.recommendations.iter()
+            .map(|r| format!("<li>{}</li>", r))
+            .collect::<Vec<_>>()
+            .join("\n")
+    )
+}
+
+fn create_project(name: &str, template: &cli::commands::ProjectTemplate, with_git: bool) -> Result<(), KwasaError> {
+    let projects_dir = PathBuf::from("projects");
+    let project_dir = projects_dir.join(name);
+    
+    std::fs::create_dir_all(&project_dir)
+        .map_err(|e| KwasaError::IoError(format!("Failed to create project directory: {}", e)))?;
+    
+    // Create basic project structure
+    std::fs::create_dir_all(project_dir.join("src"))?;
+    std::fs::create_dir_all(project_dir.join("data"))?;
+    std::fs::create_dir_all(project_dir.join("results"))?;
+    std::fs::create_dir_all(project_dir.join("docs"))?;
+    
+    // Create main.turb based on template
+    let main_content = match template {
+        cli::commands::ProjectTemplate::Basic => include_str!("../templates/default_main.turb"),
+        cli::commands::ProjectTemplate::Chemistry => include_str!("../templates/analysis_main.turb"),
+        cli::commands::ProjectTemplate::Research => include_str!("../templates/research_main.turb"),
+        _ => include_str!("../templates/default_main.turb"),
+    };
+    
+    std::fs::write(project_dir.join("src").join("main.turb"), main_content)
+        .map_err(|e| KwasaError::IoError(format!("Failed to create main.turb: {}", e)))?;
+    
+    // Create README
+    let readme_content = format!(r#"# {}
+
+{} project created with kwasa-kwasa.
+
+## Getting Started
+
+1. Navigate to the `src/` directory
+2. Edit `main.turb` with your analysis
+3. Run: `kwasa run src/main.turb --validate`
+
+## Project Structure
+
+- `src/` - Turbulance source files
+- `data/` - Input data files
+- `results/` - Analysis outputs
+- `docs/` - Documentation
+
+## Validation
+
+This project includes scientific argument validation. Run:
+
+```bash
+kwasa validate src/main.turb --recommend
+```
+"#, name, template.description());
+    
+    std::fs::write(project_dir.join("README.md"), readme_content)
+        .map_err(|e| KwasaError::IoError(format!("Failed to create README: {}", e)))?;
+    
+    // Initialize git if requested
+    if with_git {
+        use std::process::Command;
+        Command::new("git")
+            .args(&["init"])
+            .current_dir(&project_dir)
+            .output()
+            .map_err(|e| KwasaError::EnvironmentError(format!("Failed to initialize git: {}", e)))?;
+    }
+    
+    Ok(())
+}
+
+fn list_projects() -> Result<(), KwasaError> {
+    let projects_dir = PathBuf::from("projects");
+    
+    if !projects_dir.exists() {
+        println!("  No projects found. Create one with 'kwasa project new <name>'");
+        return Ok(());
+    }
+    
+    let entries = std::fs::read_dir(&projects_dir)
+        .map_err(|e| KwasaError::IoError(format!("Failed to read projects directory: {}", e)))?;
+    
+    for entry in entries {
+        let entry = entry.map_err(|e| KwasaError::IoError(format!("Failed to read directory entry: {}", e)))?;
+        if entry.file_type().map(|ft| ft.is_dir()).unwrap_or(false) {
+            println!("  📂 {}", entry.file_name().to_string_lossy());
+        }
+    }
+    
+    Ok(())
+}
+
+fn show_project_info(name: &str) -> Result<(), KwasaError> {
+    let project_dir = PathBuf::from("projects").join(name);
+    
+    if !project_dir.exists() {
+        return Err(KwasaError::ConfigError(format!("Project '{}' not found", name)));
+    }
+    
+    println!("  📍 Location: {}", project_dir.display());
+    
+    // Check for main.turb
+    let main_file = project_dir.join("src").join("main.turb");
+    if main_file.exists() {
+        println!("  📄 Main file: src/main.turb");
+    }
+    
+    // Check for README
+    let readme_file = project_dir.join("README.md");
+    if readme_file.exists() {
+        println!("  📖 Documentation: README.md");
+    }
+    
+    // Check for git
+    let git_dir = project_dir.join(".git");
+    if git_dir.exists() {
+        println!("  🔄 Version control: Git");
+    }
+    
+    Ok(())
+}
+
+fn delete_project(name: &str) -> Result<(), KwasaError> {
+    let project_dir = PathBuf::from("projects").join(name);
+    
+    if !project_dir.exists() {
+        return Err(KwasaError::ConfigError(format!("Project '{}' not found", name)));
+    }
+    
+    std::fs::remove_dir_all(&project_dir)
+        .map_err(|e| KwasaError::IoError(format!("Failed to delete project: {}", e)))?;
     
     Ok(())
 }

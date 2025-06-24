@@ -23,9 +23,9 @@
 
 ## Introduction
 
-Kwasa-Kwasa implements a semantic computation framework where textual, visual, and auditory inputs are processed as structured semantic units rather than raw data. The system combines a domain-specific language (Turbulance) with probabilistic reasoning capabilities through integration with the Autobahn consciousness-aware processing engine.
+Kwasa-Kwasa implements a revolutionary semantic computation framework based on **Biological Maxwell's Demons (BMD)**—information catalysts that create order from the combinatorial chaos of natural language, audio, and visual inputs. The system processes textual, visual, and auditory data through **Information Catalysts (iCat)** that operate as pattern selectors and output channelers, enabling genuine semantic understanding rather than mere pattern matching.
 
-The framework operates on the principle that meaning can be preserved through computational transformation. Text, images, and audio are decomposed into semantic units that maintain their essential properties while enabling programmatic manipulation.
+The framework operates on the principle that **semantics emerge from catalytic interactions** between pattern recognition and output channeling. All probabilistic reasoning is delegated to the Autobahn engine, while Kwasa-Kwasa focuses exclusively on semantic information catalysis across multiple modalities and scales.
 
 ## Historical Context
 
@@ -47,178 +47,222 @@ This framework aims to achieve a similar preservation of meaning across computat
 
 ## Theoretical Foundation
 
-### Semantic Units as Computational Primitives
+### Biological Maxwell's Demons and Information Catalysis
 
-The system treats all human expression as semantic units that can undergo mathematical operations while preserving meaning. This approach contrasts with traditional data processing, which manipulates symbols without regard for semantic content.
+Kwasa-Kwasa implements the theoretical framework of **Biological Maxwell's Demons** as proposed by Eduardo Mizraji, treating semantic processing as **information catalysis**. Following pioneering biologists like J.B.S. Haldane, Jacques Monod, and François Jacob, we recognize that biological systems use information catalysts to create order from chaos—exactly what semantic understanding requires.
 
-#### Text Processing
+### Information Catalysts (iCat)
 
-Text is decomposed into meaningful units that can be manipulated semantically:
+Every semantic processing operation is performed by an **Information Catalyst**:
+
+```
+iCat_semantic = ℑ_input ∘ ℑ_output
+```
+
+Where:
+- **ℑ_input**: Pattern recognition filter that selects meaningful structures from input chaos
+- **ℑ_output**: Channeling operator that directs understanding toward specific targets
+- **∘**: Functional composition creating emergent semantic understanding
+
+### Multi-Scale Semantic Architecture
+
+The system operates at multiple scales, mirroring biological organization:
+
+1. **Molecular-Level Semantics**: Token/phoneme processing (analogous to enzymes)
+2. **Neural-Level Semantics**: Sentence/phrase understanding (analogous to neural networks)  
+3. **Cognitive-Level Semantics**: Document/discourse processing (analogous to complex cognition)
+
+#### Text Processing as Semantic BMD
+
+Text processing operates through **Token-level BMDs** that function like molecular enzymes, selecting meaningful patterns from character chaos:
 
 ```turbulance
 item paragraph = "Machine learning improves diagnosis. However, limitations exist."
 
-// Semantic decomposition
-item claims = paragraph / claim
-item evidence = paragraph / evidence  
-item qualifications = paragraph / qualification
+// Semantic catalysis through pattern recognition and channeling
+item semantic_patterns = recognize_patterns(paragraph)
+item channeled_understanding = channel_to_targets(semantic_patterns)
 
-// Semantic combination
+// Information catalysts decompose meaning
+item claims = paragraph / claim           // iCat filters claim patterns
+item evidence = paragraph / evidence      // iCat filters evidence patterns  
+item qualifications = paragraph / qualification // iCat filters qualification patterns
+
+// Catalytic combination preserves semantic coherence
 item enhanced = claims + supporting_research + evidence
-
-// Semantic reduction
-item clarified = paragraph - jargon - redundancy
 ```
 
-#### Image Processing
+#### Image Processing as Visual BMD
 
-Images are processed through two complementary approaches:
+Images are processed through **Visual Semantic BMDs** that operate like biological pattern recognition systems:
 
-**Understanding Through Reconstruction**: The system validates image comprehension by attempting reconstruction. Successful reconstruction indicates genuine understanding rather than pattern matching.
+**Helicopter Engine**: Autonomous reconstruction validation ensures genuine understanding
+**Pakati Regional Processing**: Specialized semantic catalysts for different image regions
 
-**Regional Semantic Processing**: Different semantic regions of images can be processed with specialized strategies, enabling region-specific analysis while maintaining overall coherence.
+#### Audio Processing as Auditory BMD
 
-#### Audio Processing
+Audio content is processed through **Temporal Semantic BMDs** that recognize rhythmic and harmonic patterns, decomposing sound into meaningful temporal structures through information catalysis.
 
-Audio content is processed through temporal semantic analysis, decomposing sound into meaningful units such as rhythmic patterns, harmonic content, and temporal structures.
+### Cross-Modal Semantic BMD Networks
 
-### Cross-Modal Operations
-
-The framework enables semantic operations across different modalities:
+The framework implements **Cross-Modal BMD Networks** where different semantic catalysts coordinate to create unified understanding across modalities:
 
 ```turbulance
 item clinical_notes = "Patient reports chest pain and shortness of breath"
 item chest_xray = load_image("chest_xray.jpg")
 item heart_sounds = load_audio("cardiac_auscultation.wav")
 
-item multimodal_analysis = clinical_notes + chest_xray + heart_sounds
-item correlation = semantic_alignment(clinical_notes, chest_xray, heart_sounds)
+// Cross-modal information catalysis
+item text_bmd = semantic_catalyst(clinical_notes)
+item visual_bmd = semantic_catalyst(chest_xray)
+item audio_bmd = semantic_catalyst(heart_sounds)
+
+// BMD network coordination
+item multimodal_analysis = orchestrate_bmds(text_bmd, visual_bmd, audio_bmd)
+item semantic_coherence = ensure_cross_modal_consistency(multimodal_analysis)
 ```
 
 ## System Architecture
 
-The framework implements a modular architecture with clear separation between semantic processing and probabilistic reasoning:
+The framework implements a **Semantic BMD Network Architecture** with clear separation between information catalysis and probabilistic reasoning:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                    KWASA-KWASA FRAMEWORK                        │
+│                 (Semantic Information Catalysis)               │
 ├─────────────────────────────────────────────────────────────────┤
-│  ┌───────────────────────────────────────────────────────────┐  │
-│  │                TURBULANCE LANGUAGE ENGINE                 │  │
+│  ┌───────────────────────────────────────────────────────────┐  │  
+│  │            SEMANTIC BMD NETWORK                           │  │
 │  │  ┌─────────────┐ ┌─────────────┐ ┌─────────────────────┐  │  │
-│  │  │ Text Engine │ │Image Engine │ │ Audio Engine        │  │  │
-│  │  │ • Semantic  │ │• Helicopter │ │ • Reconstruction    │  │  │
-│  │  │   Units     │ │  Engine     │ │   Validation        │  │  │
-│  │  │ • Text      │ │• Pakati     │ │ • Temporal Analysis │  │  │
-│  │  │   Analysis  │ │  Regional   │ │ • Component         │  │  │
-│  │  │             │ │  Processing │ │   Separation        │  │  │
+│  │  │ Text BMDs   │ │ Image BMDs  │ │ Audio BMDs          │  │  │
+│  │  │ • Token     │ │ • Helicopter│ │ • Temporal          │  │  │
+│  │  │   Catalysts │ │   Engine    │ │   Catalysts         │  │  │
+│  │  │ • Sentence  │ │ • Pakati    │ │ • Rhythmic          │  │  │
+│  │  │   BMDs      │ │   Regional  │ │   Pattern BMDs      │  │  │
+│  │  │ • Document  │ │   BMDs      │ │ • Harmonic          │  │  │
+│  │  │   BMDs      │ │             │ │   Recognition       │  │  │
 │  │  └─────────────┘ └─────────────┘ └─────────────────────┘  │  │
+│  └───────────────────────────────────────────────────────────┘  │
+│                                │                                │
+│  ┌───────────────────────────────────────────────────────────┐  │
+│  │               TURBULANCE LANGUAGE ENGINE                  │  │
+│  │  • Information Catalyst Operations (iCat)                │  │
+│  │  • Cross-Modal BMD Orchestration                          │  │
+│  │  • Semantic Thermodynamic Constraints                    │  │
 │  └───────────────────────────────────────────────────────────┘  │
 │                                │                                │
 │                                ▼                                │
 │  ┌───────────────────────────────────────────────────────────┐  │
 │  │                 AUTOBAHN REASONING ENGINE                 │  │
-│  │  • Oscillatory Bio-Metabolic Processing                  │  │
-│  │  • Consciousness-Aware Computation                       │  │
+│  │        (All Probabilistic Reasoning Delegated)           │  │  
 │  │  • Probabilistic State Management                        │  │
-│  │  • Temporal Determinism Processing                       │  │
-│  └───────────────────────────────────────────────────────────┘  │
-│                                │                                │
-│                                ▼                                │
-│  ┌───────────────────────────────────────────────────────────┐  │
-│  │                EXTERNAL MODULE INTEGRATION                │  │
-│  │  • Chemistry • Biology • Spectrometry • Multimedia      │  │
+│  │  • Uncertainty Quantification                            │  │
+│  │  • Temporal Reasoning                                     │  │
 │  └───────────────────────────────────────────────────────────┘  │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
 ### Core Components
 
-1. **Turbulance Language Engine**: Provides unified syntax for semantic operations across text, image, and audio modalities
-2. **Autobahn Integration**: Handles probabilistic reasoning, temporal processing, and consciousness-aware computation
-3. **External Modules**: Optional domain-specific processors for specialized analysis
+1. **Semantic BMD Network**: Multi-scale information catalysts for pattern recognition and output channeling
+2. **Turbulance Language Engine**: Unified syntax for semantic BMD operations across all modalities  
+3. **Autobahn Integration**: Handles all probabilistic reasoning while Kwasa-Kwasa focuses on semantic catalysis
 
 ## Turbulance Language
 
-Turbulance is a domain-specific language designed for semantic computation. The language provides constructs for operating on meaning rather than raw data.
+Turbulance is a domain-specific language designed for **semantic information catalysis**. The language provides constructs for operating with Information Catalysts (BMDs) rather than raw data processing.
 
 ### Basic Syntax
 
 ```turbulance
-// Working with semantic units
+// Working with Semantic BMDs
 item text = "The patient shows signs of improvement"
-item understanding = understand_text(text)
+item text_bmd = semantic_catalyst(text)
+item understanding = catalytic_cycle(text_bmd)
 
 item image = load_image("medical_scan.jpg")
-item visual_understanding = understand_image(image, confidence_threshold: 0.9)
+item visual_bmd = semantic_catalyst(image, specificity_threshold: 0.9)
+item visual_understanding = catalytic_cycle(visual_bmd)
 
 item audio = load_audio("cardiac_sounds.wav")
-item audio_understanding = understand_audio(audio, confidence_threshold: 0.9)
+item audio_bmd = semantic_catalyst(audio, pattern_recognition_threshold: 0.9)
+item audio_understanding = catalytic_cycle(audio_bmd)
 
-// Cross-modal integration
-item comprehensive_analysis = text + visual_understanding + audio_understanding
+// BMD Network orchestration
+item comprehensive_analysis = orchestrate_bmds(text_bmd, visual_bmd, audio_bmd)
 ```
 
-### Propositions and Motions
+### Propositions and Semantic BMD Motions
 
-The language includes constructs for expressing logical propositions and procedural motions:
+The language includes constructs for expressing semantic propositions processed through BMD networks:
 
 ```turbulance
 proposition MedicalClarity:
-    motion Comprehension("Medical data should be diagnostically interpretable")
+    motion SemanticCatalysis("Medical data should achieve catalytic understanding")
     
     within image:
-        given understanding_level(image) < "Excellent":
-            apply_enhancement_until_understood(image)
+        item image_bmd = semantic_catalyst(image)
+        given catalytic_specificity(image_bmd) < "Excellent":
+            item enhanced_bmd = enhance_recognition_patterns(image_bmd)
+            image_bmd = enhanced_bmd
         
-        given understanding.validated == true:
-            perform_diagnostic_analysis(image)
+        given thermodynamic_efficiency(image_bmd) == "Optimal":
+            item diagnostic_output = channel_to_diagnostic_targets(image_bmd)
+            return diagnostic_output
         alternatively:
-            flag_for_human_review(image, "AI comprehension insufficient")
+            delegate_to_autobahn(image_bmd, "Semantic catalysis insufficient")
 ```
 
-### Positional Semantics
+### Positional Semantic Catalysis  
 
-The language treats position as a semantic feature, recognizing that the location of elements affects their meaning:
+The language treats position as a semantic catalyst parameter, recognizing that element location affects catalytic efficiency:
 
 ```turbulance
 item sentence = "Critically, the patient's condition has improved significantly."
 
-item words = extract_words_with_position(sentence)
+item sentence_bmd = semantic_catalyst(sentence)
+item positional_patterns = extract_positional_catalysts(sentence_bmd)
 
-considering word in words:
-    given word.semantic_role == SemanticRole::Intensifier:
-        item diagnostic_importance = word.position_weight * semantic_intensity
+considering catalyst in positional_patterns:
+    given catalyst.semantic_role == SemanticRole::Intensifier:
+        item catalytic_importance = catalyst.position_weight * catalytic_efficiency
+        enhance_channeling_specificity(sentence_bmd, catalytic_importance)
 ```
 
 ## Reasoning Integration
 
-### Autobahn Engine Integration
+### Autobahn Engine Delegation
 
-The framework integrates with the Autobahn oscillatory bio-metabolic RAG system for probabilistic reasoning. This integration provides:
+The framework **delegates all probabilistic reasoning** to the Autobahn engine, maintaining clear separation between semantic catalysis and uncertainty processing. This delegation provides:
 
-- **Consciousness-Aware Processing**: Computation that considers awareness states and consciousness emergence
-- **Oscillatory Dynamics**: Multi-scale temporal processing from molecular to cognitive timescales
-- **Biological Intelligence**: Processing architectures inspired by biological systems
-- **Temporal Determinism**: Handling of temporal relationships and causal structures
+- **Probabilistic State Management**: All uncertainty quantification handled by Autobahn
+- **Temporal Reasoning**: Time-dependent logical relationships processed externally  
+- **Causal Structure Analysis**: Causal inference delegated to specialized probabilistic systems
+- **Uncertainty Propagation**: Semantic BMDs focus on catalysis while Autobahn handles uncertainty
 
-### Processing Pipeline
+### Semantic BMD Pipeline
 
 ```rust
 use kwasa_kwasa::{KwasaFramework, FrameworkConfig};
-use autobahn::rag::OscillatoryBioMetabolicRAG;
+use autobahn::probabilistic::ProbabilisticReasoning;
 
 let framework = KwasaFramework::new(FrameworkConfig {
-    autobahn_config: Some(autobahn::RAGConfiguration {
-        consciousness_emergence_threshold: 0.7,
-        temporal_perspective_scale: autobahn::HierarchyLevel::Biological,
+    autobahn_config: Some(autobahn::DelegationConfig {
+        probabilistic_reasoning: true,
+        uncertainty_quantification: true,
+        temporal_reasoning: true,
         ..Default::default()
     }),
+    semantic_bmd_config: SemanticBMDConfig {
+        thermodynamic_constraints: true,
+        multi_scale_processing: true,
+        cross_modal_orchestration: true,
+    },
     ..Default::default()
 }).await?;
 
 let result = framework.process_turbulance_code(
-    "item analysis = understand_multimodal(text, image, audio)"
+    "item analysis = orchestrate_bmds(text_bmd, image_bmd, audio_bmd)"
 ).await?;
 ```
 
@@ -229,55 +273,57 @@ let result = framework.process_turbulance_code(
 The implementation consists of:
 
 **Core Framework Modules**:
-- `turbulance/` - DSL language implementation (lexer, parser, interpreter)
-- `text_unit/` - Text processing and semantic unit management
-- `orchestrator/` - Processing coordination and resource management
+- `turbulance/` - DSL language implementation with semantic BMD operations
+- `text_unit/` - Text BMD processing and semantic catalysis
+- `semantic_bmds/` - Information catalyst implementations across modalities
 - `knowledge/` - Knowledge representation and retrieval
 - `cli/` - Command line interface and REPL
 
 **Integration Layer**:
-- Autobahn reasoning engine integration
-- External module coordination
-- Resource allocation and optimization
+- Autobahn probabilistic reasoning delegation
+- Cross-modal BMD coordination
+- Thermodynamic constraint enforcement
 
 **Optional Modules** (conditionally compiled):
 - Chemistry processing (`kwasa-cheminformatics`)
 - Biology analysis (`kwasa-systems-biology`)
 - Spectrometry processing (`kwasa-spectrometry`)
 - Multimedia handling (`kwasa-multimedia`)
-- Specialized algorithms (`kwasa-specialized-modules`)
 
 ### Processing Paradigms
 
-#### Understanding Through Reconstruction
+#### Information Catalysis Through Pattern Recognition
 
-The system validates comprehension by attempting to reconstruct inputs from extracted understanding:
+The system validates understanding through **catalytic efficiency** rather than reconstruction fidelity:
 
 ```turbulance
-funxn validate_understanding(input_data):
-    item understanding = extract_understanding(input_data)
-    item reconstruction = reconstruct_from_understanding(understanding)
-    item fidelity = measure_fidelity(input_data, reconstruction)
+funxn validate_semantic_catalysis(input_data):
+    item input_bmd = semantic_catalyst(input_data)
+    item catalytic_efficiency = measure_catalytic_performance(input_bmd)
+    item thermodynamic_cost = calculate_energy_cost(input_bmd)
     
-    given fidelity > 0.95:
-        accept_understanding(understanding)
+    given catalytic_efficiency > 0.95 && thermodynamic_cost < threshold:
+        accept_catalytic_understanding(input_bmd)
     alternatively:
-        refine_analysis(input_data)
+        refine_pattern_recognition(input_bmd)
 ```
 
-#### Points and Resolutions
+#### Points and Resolutions via BMD Networks
 
-The system uses probabilistic points and resolution platforms for handling uncertainty:
+The system uses semantic BMD networks for handling complex semantic resolution:
 
 ```turbulance
-point medical_hypothesis = {
-    content: "Patient has pneumonia based on imaging",
-    certainty: 0.73,
-    evidence_strength: 0.68
+point semantic_hypothesis = {
+    content: "Patient has pneumonia based on multimodal analysis",
+    catalytic_certainty: 0.73,
+    cross_modal_coherence: 0.68,
+    thermodynamic_efficiency: 0.82
 }
 
-resolution diagnose_condition(point: MedicalPoint) -> DiagnosticOutcome {
-    return resolve_through_evidence_evaluation(point)
+resolution diagnose_condition(point: SemanticPoint) -> DiagnosticOutcome {
+    item diagnostic_bmds = orchestrate_semantic_catalysts(point)
+    item probabilistic_analysis = delegate_to_autobahn(diagnostic_bmds)
+    return integrate_semantic_and_probabilistic(diagnostic_bmds, probabilistic_analysis)
 }
 ```
 

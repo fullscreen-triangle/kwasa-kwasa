@@ -318,6 +318,17 @@ pub enum Node {
     
     // Imhotep Framework: Revolutionary Self-Aware Neural Networks
     SelfAware(SelfAwareStatement),
+    
+    // Space Computer Biomechanical Analysis Framework
+    Config(ConfigDeclaration),
+    Datasources(DatasourcesDeclaration),
+    Segment(SegmentDeclaration),
+    EvidenceIntegratorDecl(EvidenceIntegratorDeclaration),
+    RealTimeOrchestrator(RealTimeOrchestratorDeclaration),
+    VerificationSystem(VerificationSystemDeclaration),
+    Interface(InterfaceDeclaration),
+    OrchestratorSystem(OrchestratorSystemDeclaration),
+    BiomechanicalAnalysis(BiomechanicalAnalysisBlock),
 }
 
 /// Represents a function definition
@@ -1384,6 +1395,338 @@ pub enum SelfAwareStatement {
         session: String,
         span: Span,
     },
+}
+
+// Space Computer Biomechanical Analysis Framework Structures
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ConfigDeclaration {
+    pub platform_version: Option<String>,
+    pub uncertainty_model: Option<String>,
+    pub confidence_threshold: Option<Box<Node>>,
+    pub verification_required: bool,
+    pub real_time_analysis: bool,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct DatasourcesDeclaration {
+    pub video_analysis: Option<VideoAnalysisConfig>,
+    pub ground_reaction_forces: Option<ForceAnalysisConfig>,
+    pub expert_annotations: Option<ExpertAnnotationsConfig>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct VideoAnalysisConfig {
+    pub pose_models: Vec<String>,
+    pub fps: Option<Box<Node>>,
+    pub resolution: Option<String>,
+    pub pose_confidence: Option<Box<Node>>,
+    pub occlusion_handling: bool,
+    pub multi_camera_fusion: bool,
+    pub landmarks: Vec<String>,
+    pub coordinate_accuracy: Option<Box<Node>>,
+    pub temporal_consistency: bool,
+    pub missing_data_interpolation: bool,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ForceAnalysisConfig {
+    pub sampling_rate: Option<Box<Node>>,
+    pub force_accuracy: Option<Box<Node>>,
+    pub moment_accuracy: Option<Box<Node>>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ExpertAnnotationsConfig {
+    pub inter_rater_reliability: Option<Box<Node>>,
+    pub expert_confidence: Option<Box<Node>>,
+    pub bias_correction: bool,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct SegmentDeclaration {
+    pub name: String,
+    pub phases: Vec<PhaseDeclaration>,
+    pub metrics: Vec<BiomechanicalMetric>,
+    pub analysis_functions: Vec<AnalysisFunction>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct PhaseDeclaration {
+    pub name: String,
+    pub phase_type: PhaseType,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum PhaseType {
+    ExtractPhase,
+    StartPhase,
+    DrivePhase,
+    MaxVelocityPhase,
+    ImpactPhase,
+    PunchInitiation,
+    WindUp,
+    Contact,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct BiomechanicalMetric {
+    pub name: String,
+    pub metric_type: BiomechanicalMetricType,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum BiomechanicalMetricType {
+    BlockAngle,
+    ShinAngle,
+    FirstStepLength,
+    LegLength,
+    GroundContactAngle,
+    StrideFrequency,
+    VerticalOscillation,
+    StrideLength,
+    GroundContactTime,
+    FlightTime,
+    HipRotation,
+    ShoulderSeparation,
+    WeightTransfer,
+    WristAlignment,
+    ElbowExtension,
+    FollowThrough,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct AnalysisFunction {
+    pub name: String,
+    pub function_type: AnalysisFunctionType,
+    pub parameters: Vec<Box<Node>>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum AnalysisFunctionType {
+    OptimalRange,
+    DecreasesLinearly,
+    IncreasesOptimally,
+    AtOptimalFrequencyRatio,
+    HipRotationLeadsSequence,
+    MaintainsStraight,
+    ExtensionComplete,
+    WithinOptimalRange,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct EvidenceIntegratorDeclaration {
+    pub fusion_methods: Vec<FusionMethod>,
+    pub validation_pipeline: ValidationPipeline,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct FusionMethod {
+    pub method_type: FusionMethodType,
+    pub parameters: Vec<Box<Node>>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum FusionMethodType {
+    BayesianInference,
+    UncertaintyPropagation,
+    MultiFidelityFusion,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ValidationPipeline {
+    pub cross_validation: bool,
+    pub bootstrap_validation: bool,
+    pub external_validation: bool,
+    pub prior_construction: Option<Box<Node>>,
+    pub likelihood_modeling: Option<Box<Node>>,
+    pub posterior_sampling: Option<Box<Node>>,
+    pub markov_chain_monte_carlo: bool,
+    pub convergence_diagnostics: bool,
+    pub gelman_rubin_statistic: bool,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct RealTimeOrchestratorDeclaration {
+    pub stream_processing: StreamProcessingConfig,
+    pub continuous_evaluation: bool,
+    pub temporal_weighting: bool,
+    pub recency_bias_correction: bool,
+    pub predictive_modeling: Option<PredictiveModelingConfig>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct StreamProcessingConfig {
+    pub video_feed: Option<StreamConfig>,
+    pub sensor_data: Option<StreamConfig>,
+    pub environmental: Option<StreamConfig>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct StreamConfig {
+    pub latency: Option<Box<Node>>,
+    pub frequency: Option<Box<Node>>,
+    pub update_rate: Option<Box<Node>>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct PredictiveModelingConfig {
+    pub prediction_horizon: Option<Box<Node>>,
+    pub intervention_window: Option<Box<Node>>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct VerificationSystemDeclaration {
+    pub verification_methods: Vec<VerificationMethod>,
+    pub verification_levels: Vec<VerificationLevel>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct VerificationMethod {
+    pub method_type: VerificationMethodType,
+    pub parameters: Vec<Box<Node>>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum VerificationMethodType {
+    VisualSimilarityVerification,
+    BiomechanicalConsistencyCheck,
+    CrossReferenceValidation,
+    UncertaintyQuantificationValidation,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct VerificationLevel {
+    pub level: VerificationLevelType,
+    pub validation_time: Option<Box<Node>>,
+    pub use_case: Option<String>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum VerificationLevelType {
+    Level1Basic,
+    Level2Standard,
+    Level3Comprehensive,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct InterfaceDeclaration {
+    pub components: Vec<InterfaceComponent>,
+    pub interactions: Vec<InterfaceInteraction>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct InterfaceComponent {
+    pub component_type: InterfaceComponentType,
+    pub properties: Vec<Box<Node>>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum InterfaceComponentType {
+    ProbabilisticVisualization,
+    GoalProgressDashboard,
+    EvidenceExplorer,
+    VerificationStatusPanel,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct InterfaceInteraction {
+    pub interaction_type: InterfaceInteractionType,
+    pub parameters: Vec<Box<Node>>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum InterfaceInteractionType {
+    HypothesisModification,
+    EvidenceExploration,
+    RecommendationCustomization,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct OrchestratorSystemDeclaration {
+    pub name: String,
+    pub phases: Vec<OrchestratorPhase>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct OrchestratorPhase {
+    pub phase_type: OrchestratorPhaseType,
+    pub operations: Vec<OrchestratorOperation>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum OrchestratorPhaseType {
+    Initialize,
+    Execute,
+    Monitor,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct OrchestratorOperation {
+    pub operation_type: OrchestratorOperationType,
+    pub parameters: Vec<Box<Node>>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum OrchestratorOperationType {
+    DataQualityAssessment,
+    PropositionEvaluation,
+    GoalOptimization,
+    QualityAssurance,
+    RecommendationSynthesis,
+    ParallelEvaluate,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct BiomechanicalAnalysisBlock {
+    pub name: String,
+    pub elite_athletes: Option<Box<Node>>,
+    pub sport_filtering: Option<Box<Node>>,
+    pub pattern_extraction: Option<Box<Node>>,
+    pub statistical_methods: Vec<StatisticalMethod>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct StatisticalMethod {
+    pub method_type: StatisticalMethodType,
+    pub parameters: Vec<Box<Node>>,
+    pub span: Span,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum StatisticalMethodType {
+    WeightedHarmonicMean,
+    BayesianUpdate,
+    MonteCarloSimulation,
+    GeometricMean,
+    WeightedAverage,
+    HarmonicMean,
 }
 
 #[cfg(test)]

@@ -1,94 +1,292 @@
-// Research Project Template
-// Designed for academic research and analysis workflows
+// Research Project Template - Kwasa-Kwasa Scientific Computing Environment
+// This template demonstrates scientific reasoning with built-in validation
 
-project "research-project":
-    // Research data sources
-    source research_data: "Machine learning has revolutionized artificial intelligence in recent years. Deep learning models, particularly neural networks, have shown remarkable performance improvements across various domains including natural language processing, computer vision, and speech recognition."
+// Import necessary modules for research
+import research_toolkit from kwasa.research
+import statistical_analysis from kwasa.statistics
+import visualization from kwasa.viz
+
+// Define research proposition with clear hypothesis
+proposition drug_efficacy_hypothesis {
+    description: "Novel compound X-127 demonstrates significant therapeutic efficacy 
+                 in treating chronic inflammatory condition Y when administered at 
+                 dosage Z over treatment period W, as measured by standardized 
+                 clinical outcome scales"
     
-    source citations: [
-        "Smith, J. (2023). Advances in Neural Networks. Journal of AI Research.",
-        "Johnson, A. & Brown, B. (2022). Deep Learning Applications. Tech Review."
+    requirements: {
+        evidence_types: [experimental, clinical_trial, meta_analysis]
+        sample_size: minimum 200 participants
+        statistical_power: 0.8
+        significance_level: 0.05
+        controls: placebo_controlled, double_blind
+        duration: minimum 12_weeks
+    }
+    
+    measurable_outcomes: [
+        "inflammation_markers",
+        "patient_reported_outcomes", 
+        "clinical_assessment_scores",
+        "adverse_events"
     ]
+}
+
+// Collect evidence with methodological rigor
+evidence clinical_trial_data {
+    collection_method: {
+        study_design: "randomized_controlled_trial"
+        participants: 250
+        randomization: "block_randomization"
+        blinding: "double_blind"
+        control_group: "placebo"
+        treatment_duration: 16_weeks
+        follow_up: 24_weeks
+    }
     
-    // Research analysis functions
-    funxn extract_key_concepts(text):
-        // Extract important concepts and terms
-        let concepts = extract_patterns(text, r"\b[A-Z][a-z]+ [a-z]+\b")
-        let technical_terms = extract_patterns(text, r"\b[a-z]+ learning\b|\b[a-z]+ networks?\b")
-        
-        return {
-            "concepts": concepts,
-            "technical_terms": technical_terms
-        }
-    
-    funxn analyze_research_quality(text):
-        // Analyze text for research quality indicators
-        let readability = readability_score(text)
-        let complexity = text.complexity()
-        let contains_citations = contains(text, r"\([0-9]{4}\)|et al\.")
-        
-        return {
-            "readability_score": readability,
-            "complexity_score": complexity,
-            "has_citations": contains_citations,
-            "academic_level": if readability < 0.3 then "graduate" else "undergraduate"
-        }
-    
-    funxn generate_research_summary(text):
-        // Generate research-focused summary
-        let summary = text.summarize()
-        let key_findings = extract_key_concepts(text)
-        
-        return {
-            "summary": summary,
-            "key_concepts": key_findings.concepts,
-            "technical_terms": key_findings.technical_terms,
-            "word_count": len(text / word)
-        }
-    
-    funxn validate_research_standards(text):
-        // Ensure research standards are met
-        within text considering all:
-            ensure contains(this, r"[A-Z][a-z]+ et al\.|[A-Z][a-z]+, [A-Z]\.")
-            ensure readability_score(this) < 0.5  // Academic level
-        
-        return "Research standards validated"
-    
-    // Research workflow
-    funxn conduct_research_analysis():
-        print("=== Research Analysis Workflow ===")
-        
-        // 1. Extract key concepts
-        let concepts = extract_key_concepts(research_data)
-        print("Key concepts identified:", concepts)
-        
-        // 2. Analyze research quality
-        let quality = analyze_research_quality(research_data)
-        print("Research quality analysis:", quality)
-        
-        // 3. Generate summary
-        let summary = generate_research_summary(research_data)
-        print("Research summary:", summary)
-        
-        // 4. Validate standards
-        given quality.has_citations:
-            let validation = validate_research_standards(research_data)
-            print("Validation:", validation)
-        
-        // 5. Generate research report
-        let report = {
-            "project": "research-project",
-            "analysis_date": "2024-01-01",
-            "concepts": concepts,
-            "quality_metrics": quality,
-            "summary": summary,
-            "citations": citations
+    data_structure: {
+        primary_endpoints: {
+            inflammation_score: continuous_scale(0, 100)
+            clinical_improvement: binary_outcome
         }
         
-        print("=== Final Research Report ===")
-        print(report)
+        secondary_endpoints: {
+            quality_of_life: likert_scale(1, 7)
+            biomarkers: [
+                "crp_levels", 
+                "esr_values", 
+                "cytokine_panel"
+            ]
+        }
         
-        return report
+        safety_measures: {
+            adverse_events: categorical
+            laboratory_values: continuous
+            vital_signs: continuous
+        }
+    }
     
-    // Execute research analysis
-    conduct_research_analysis() 
+    quality_controls: {
+        data_monitoring: independent_committee
+        statistical_analysis_plan: pre_registered
+        missing_data_handling: multiple_imputation
+        interim_analyses: planned_at_weeks([8, 12])
+    }
+}
+
+// Additional supporting evidence
+evidence systematic_review_data {
+    collection_method: {
+        search_strategy: comprehensive_database_search
+        databases: ["pubmed", "embase", "cochrane", "clinical_trials_gov"]
+        inclusion_criteria: well_defined
+        quality_assessment: cochrane_rob_tool
+        data_extraction: dual_independent
+    }
+    
+    data_structure: {
+        studies_included: 15
+        total_participants: 3247
+        effect_sizes: forest_plot_data
+        heterogeneity_measures: [i_squared, tau_squared]
+        publication_bias_tests: [funnel_plot, eggers_test]
+    }
+}
+
+// Establish evidence relationships
+support drug_efficacy_hypothesis with clinical_trial_data {
+    strength: strong
+    confidence: 0.85
+    statistical_significance: p_value < 0.001
+    effect_size: cohens_d = 0.72
+    clinical_significance: meaningful_improvement
+}
+
+support drug_efficacy_hypothesis with systematic_review_data {
+    strength: moderate
+    confidence: 0.78
+    consistency: moderate_heterogeneity(i_squared = 45%)
+    overall_effect: statistically_significant
+    quality_of_evidence: moderate_grade
+}
+
+// Acknowledge potential contradictory evidence
+evidence observational_study_concerns {
+    collection_method: {
+        study_type: "retrospective_cohort"
+        data_source: "electronic_health_records"
+        sample_size: 1200
+        follow_up: 2_years
+    }
+    
+    findings: {
+        long_term_safety_signals: potential_concern
+        rare_adverse_events: detected
+        effectiveness_in_real_world: reduced_compared_to_trial
+    }
+}
+
+// Handle contradictory evidence appropriately
+contradict drug_efficacy_hypothesis with observational_study_concerns {
+    aspect: "long_term_safety_profile"
+    strength: moderate
+    explanation: "Real-world evidence suggests potential safety concerns 
+                 not detected in shorter-term controlled trials"
+    resolution_needed: true
+}
+
+// Perform meta-analysis to synthesize evidence
+meta_analysis comprehensive_efficacy_review {
+    included_studies: [clinical_trial_data, systematic_review_data]
+    
+    statistical_methods: {
+        model: random_effects
+        heterogeneity_assessment: comprehensive
+        sensitivity_analyses: [
+            "exclude_high_risk_bias",
+            "subgroup_by_severity",
+            "dose_response_analysis"
+        ]
+    }
+    
+    results: {
+        pooled_effect_size: calculate_pooled_estimate()
+        confidence_intervals: 95_percent
+        prediction_intervals: included
+        certainty_of_evidence: grade_assessment
+    }
+}
+
+// Pattern analysis for deeper insights
+pattern treatment_response_pattern {
+    type: temporal
+    
+    match clinical_trial_data.primary_endpoints.inflammation_score {
+        week_0 to week_4: gradual_improvement(rate: 0.15_per_week)
+        week_4 to week_8: accelerated_improvement(rate: 0.25_per_week)  
+        week_8 to week_16: plateau_phase(maintenance_level: 70_percent_improvement)
+        week_16_onwards: sustained_response(durability: confirmed)
+    }
+    
+    clinical_interpretation: {
+        onset_of_action: "within_4_weeks"
+        maximal_effect: "achieved_by_week_8"
+        sustainability: "confirmed_through_week_24"
+        dose_optimization: "current_dose_appears_optimal"
+    }
+}
+
+// Bias analysis and quality assessment
+bias_analysis study_quality_assessment {
+    selection_bias: {
+        risk_level: low
+        justification: "Appropriate randomization and allocation concealment"
+        mitigation_strategies: ["block_randomization", "central_allocation"]
+    }
+    
+    performance_bias: {
+        risk_level: low  
+        justification: "Adequate blinding of participants and personnel"
+        verification: "blinding_assessment_questionnaire"
+    }
+    
+    detection_bias: {
+        risk_level: low
+        justification: "Outcome assessors blinded to treatment allocation"
+        objective_measures: "standardized_assessment_tools"
+    }
+    
+    attrition_bias: {
+        risk_level: moderate
+        justification: "Some differential dropout between groups"
+        handling: "intention_to_treat_analysis_with_sensitivity"
+    }
+    
+    reporting_bias: {
+        risk_level: low
+        justification: "Protocol pre-registered, all outcomes reported"
+        verification: "clinical_trials_registry_comparison"
+    }
+}
+
+// Uncertainty quantification
+uncertainty_propagation analysis_uncertainty {
+    aleatory_uncertainty: {
+        source: "natural_variability_in_patient_response"
+        quantification: monte_carlo_simulation(iterations: 10000)
+        impact_on_conclusions: minimal
+    }
+    
+    epistemic_uncertainty: {
+        source: "limited_knowledge_of_mechanism"
+        quantification: bayesian_model_averaging
+        impact_on_conclusions: moderate
+    }
+    
+    model_uncertainty: {
+        source: "choice_of_statistical_model"
+        quantification: model_selection_uncertainty
+        sensitivity_analysis: multiple_modeling_approaches
+    }
+}
+
+// Generate comprehensive results with validation
+funxn generate_research_conclusions() -> research_report {
+    // Validate all propositions and evidence
+    validation_report = validate_scientific_argument()
+    
+    given validation_report.overall_validity == "valid" {
+        conclusions = {
+            primary_finding: "Compound X-127 demonstrates statistically and 
+                           clinically significant efficacy for treating condition Y",
+            
+            strength_of_evidence: "Strong based on well-designed RCT supported 
+                                 by systematic review evidence",
+            
+            clinical_implications: "Results support regulatory approval consideration 
+                                  with continued post-market surveillance",
+            
+            limitations: [
+                "Limited long-term safety data beyond 24 weeks",
+                "Generalizability to broader patient populations needs confirmation",
+                "Cost-effectiveness analysis required for implementation decisions"
+            ],
+            
+            recommendations: [
+                "Conduct longer-term safety studies",
+                "Investigate optimal patient selection criteria", 
+                "Develop real-world evidence generation plan"
+            ]
+        }
+    } otherwise {
+        conclusions = {
+            status: "requires_additional_evidence",
+            issues_identified: validation_report.logical_fallacies,
+            next_steps: validation_report.recommendations
+        }
+    }
+    
+    return research_report {
+        hypothesis: drug_efficacy_hypothesis,
+        evidence_summary: synthesize_evidence(),
+        statistical_analysis: comprehensive_efficacy_review,
+        bias_assessment: study_quality_assessment,
+        uncertainty_analysis: analysis_uncertainty,
+        conclusions: conclusions,
+        validation_status: validation_report
+    }
+}
+
+// Execute the research analysis
+main_analysis = generate_research_conclusions()
+
+// Generate publication-ready outputs
+generate_manuscript(main_analysis)
+generate_regulatory_submission(main_analysis)
+generate_clinical_practice_guidelines(main_analysis)
+
+// Demonstrate scientific rigor through validation
+print("🔬 Research Analysis Complete")
+print("📊 Validation Status: " + main_analysis.validation_status.overall_validity)
+print("📈 Evidence Quality: " + assess_evidence_quality())
+print("🎯 Clinical Significance: " + determine_clinical_significance())
+
+// End of research project template 

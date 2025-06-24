@@ -1429,6 +1429,593 @@ pub enum TokenKind {
 
     #[token("self_reflection_on_reasoning_quality")]
     SelfReflectionOnReasoningQuality,
+
+    // Polyglot Programming Keywords
+    #[token("generate")]
+    Generate,
+
+    #[token("execute")]
+    Execute,
+
+    #[token("install")]
+    Install,
+
+    #[token("auto_install")]
+    AutoInstall,
+
+    #[token("packages")]
+    Packages,
+
+    #[token("monitoring")]
+    Monitoring,
+
+    #[token("resources")]
+    Resources,
+
+    #[token("timeout")]
+    Timeout,
+
+    #[token("connect")]
+    Connect,
+
+    #[token("query")]
+    Query,
+
+    #[token("ai_generate")]
+    AiGenerate,
+
+    #[token("ai_optimize")]
+    AiOptimize,
+
+    #[token("ai_debug")]
+    AiDebug,
+
+    #[token("ai_explain")]
+    AiExplain,
+
+    #[token("ai_translate")]
+    AiTranslate,
+
+    #[token("ai_review")]
+    AiReview,
+
+    #[token("workflow")]
+    Workflow,
+
+    #[token("stage")]
+    Stage,
+
+    #[token("depends_on")]
+    DependsOn,
+
+    #[token("container")]
+    Container,
+
+    #[token("base_image")]
+    BaseImage,
+
+    #[token("volumes")]
+    Volumes,
+
+    #[token("environment_vars")]
+    EnvironmentVars,
+
+    #[token("working_directory")]
+    WorkingDirectory,
+
+    #[token("share")]
+    Share,
+
+    #[token("sync")]
+    Sync,
+
+    #[token("permissions")]
+    Permissions,
+
+    #[token("encryption")]
+    Encryption,
+
+    // Language Names
+    #[token("python")]
+    Python,
+
+    #[token("r")]
+    R,
+
+    #[token("rust")]
+    Rust,
+
+    #[token("julia")]
+    Julia,
+
+    #[token("matlab")]
+    Matlab,
+
+    #[token("shell")]
+    Shell,
+
+    #[token("javascript")]
+    JavaScript,
+
+    #[token("sql")]
+    SQL,
+
+    #[token("docker")]
+    Docker,
+
+    #[token("kubernetes")]
+    Kubernetes,
+
+    #[token("nextflow")]
+    Nextflow,
+
+    #[token("snakemake")]
+    Snakemake,
+
+    #[token("cwl")]
+    CWL,
+
+    // External Services
+    #[token("huggingface")]
+    HuggingFace,
+
+    #[token("openai")]
+    OpenAI,
+
+    #[token("github")]
+    GitHub,
+
+    #[token("docker_hub")]
+    DockerHub,
+
+    #[token("conda_forge")]
+    CondaForge,
+
+    #[token("pypi")]
+    PyPI,
+
+    #[token("cran")]
+    CRAN,
+
+    #[token("bioconductor")]
+    BioConductor,
+
+    #[token("chembl")]
+    ChemBL,
+
+    #[token("pubchem")]
+    PubChem,
+
+    #[token("uniprot")]
+    UniProt,
+
+    #[token("ncbi")]
+    NCBI,
+
+    // Space Computer Biomechanical Analysis Framework Keywords
+    // Configuration and Setup
+    #[token("config")]
+    Config,
+
+    #[token("datasources")]
+    Datasources,
+
+    #[token("platform_version")]
+    PlatformVersion,
+
+    #[token("uncertainty_model")]
+    UncertaintyModel,
+
+    #[token("confidence_threshold")]
+    ConfidenceThreshold,
+
+    #[token("verification_required")]
+    VerificationRequired,
+
+    #[token("real_time_analysis")]
+    RealTimeAnalysis,
+
+    // Data Source Configuration
+    #[token("video_analysis")]
+    VideoAnalysis,
+
+    #[token("pose_models")]
+    PoseModels,
+
+    #[token("ground_reaction_forces")]
+    GroundReactionForces,
+
+    #[token("expert_annotations")]
+    ExpertAnnotations,
+
+    #[token("fps")]
+    Fps,
+
+    #[token("resolution")]
+    Resolution,
+
+    #[token("pose_confidence")]
+    PoseConfidence,
+
+    #[token("occlusion_handling")]
+    OcclusionHandling,
+
+    #[token("multi_camera_fusion")]
+    MultiCameraFusion,
+
+    #[token("landmarks")]
+    Landmarks,
+
+    #[token("coordinate_accuracy")]
+    CoordinateAccuracy,
+
+    #[token("temporal_consistency")]
+    TemporalConsistency,
+
+    #[token("missing_data_interpolation")]
+    MissingDataInterpolation,
+
+    #[token("sampling_rate")]
+    SamplingRate,
+
+    #[token("force_accuracy")]
+    ForceAccuracy,
+
+    #[token("moment_accuracy")]
+    MomentAccuracy,
+
+    #[token("inter_rater_reliability")]
+    InterRaterReliability,
+
+    #[token("expert_confidence")]
+    ExpertConfidence,
+
+    #[token("bias_correction")]
+    BiasCorrection,
+
+    // Motion Analysis
+    #[token("segment")]
+    Segment,
+
+    #[token("extract_phase")]
+    ExtractPhase,
+
+    #[token("start_phase")]
+    StartPhase,
+
+    #[token("drive_phase")]
+    DrivePhase,
+
+    #[token("max_velocity_phase")]
+    MaxVelocityPhase,
+
+    #[token("impact_phase")]
+    ImpactPhase,
+
+    #[token("punch_initiation")]
+    PunchInitiation,
+
+    #[token("wind_up")]
+    WindUp,
+
+    #[token("contact")]
+    Contact,
+
+    // Biomechanical Metrics
+    #[token("block_angle")]
+    BlockAngle,
+
+    #[token("shin_angle")]
+    ShinAngle,
+
+    #[token("first_step_length")]
+    FirstStepLength,
+
+    #[token("leg_length")]
+    LegLength,
+
+    #[token("ground_contact_angle")]
+    GroundContactAngle,
+
+    #[token("stride_frequency")]
+    StrideFrequency,
+
+    #[token("vertical_oscillation")]
+    VerticalOscillation,
+
+    #[token("stride_length")]
+    StrideLength,
+
+    #[token("ground_contact_time")]
+    GroundContactTime,
+
+    #[token("flight_time")]
+    FlightTime,
+
+    #[token("hip_rotation")]
+    HipRotation,
+
+    #[token("shoulder_separation")]
+    ShoulderSeparation,
+
+    #[token("weight_transfer")]
+    WeightTransfer,
+
+    #[token("wrist_alignment")]
+    WristAlignment,
+
+    #[token("elbow_extension")]
+    ElbowExtension,
+
+    #[token("follow_through")]
+    FollowThrough,
+
+    // Analysis Functions
+    #[token("optimal_range")]
+    OptimalRange,
+
+    #[token("decreases_linearly")]
+    DecreasesLinearly,
+
+    #[token("increases_optimally")]
+    IncreasesOptimally,
+
+    #[token("at_optimal_frequency_ratio")]
+    AtOptimalFrequencyRatio,
+
+    #[token("hip_rotation_leads_sequence")]
+    HipRotationLeadsSequence,
+
+    #[token("maintains_straight")]
+    MaintainsStraight,
+
+    #[token("extension_complete")]
+    ExtensionComplete,
+
+    #[token("within_optimal_range")]
+    WithinOptimalRange,
+
+    // Evidence Integration
+    #[token("evidence_integrator")]
+    EvidenceIntegrator,
+
+    #[token("fusion_methods")]
+    FusionMethods,
+
+    #[token("bayesian_inference")]
+    BayesianInference,
+
+    #[token("uncertainty_propagation")]
+    UncertaintyPropagation,
+
+    #[token("multi_fidelity_fusion")]
+    MultiFidelityFusion,
+
+    #[token("validation_pipeline")]
+    ValidationPipeline,
+
+    #[token("cross_validation")]
+    CrossValidation,
+
+    #[token("bootstrap_validation")]
+    BootstrapValidation,
+
+    #[token("external_validation")]
+    ExternalValidation,
+
+    #[token("prior_construction")]
+    PriorConstruction,
+
+    #[token("likelihood_modeling")]
+    LikelihoodModeling,
+
+    #[token("posterior_sampling")]
+    PosteriorSampling,
+
+    #[token("markov_chain_monte_carlo")]
+    MarkovChainMonteCarlo,
+
+    #[token("convergence_diagnostics")]
+    ConvergenceDiagnostics,
+
+    #[token("gelman_rubin_statistic")]
+    GelmanRubinStatistic,
+
+    // Goal System
+    #[token("success_thresholds")]
+    SuccessThresholds,
+
+    #[token("performance_improvement")]
+    PerformanceImprovement,
+
+    #[token("injury_risk_reduction")]
+    InjuryRiskReduction,
+
+    #[token("consistency_improvement")]
+    ConsistencyImprovement,
+
+    #[token("overall_confidence")]
+    OverallConfidence,
+
+    #[token("optimization_algorithm")]
+    OptimizationAlgorithm,
+
+    #[token("acquisition_function")]
+    AcquisitionFunction,
+
+    #[token("surrogate_model")]
+    SurrogateModel,
+
+    #[token("constraint_handling")]
+    ConstraintHandling,
+
+    #[token("personalization_factors")]
+    PersonalizationFactors,
+
+    #[token("anthropometric_scaling")]
+    AnthropometricScaling,
+
+    #[token("injury_history_weighting")]
+    InjuryHistoryWeighting,
+
+    #[token("sport_specific_requirements")]
+    SportSpecificRequirements,
+
+    #[token("adaptation_strategy")]
+    AdaptationStrategy,
+
+    #[token("progress_monitoring")]
+    ProgressMonitoring,
+
+    #[token("threshold_adjustment")]
+    ThresholdAdjustment,
+
+    #[token("goal_refinement")]
+    GoalRefinement,
+
+    #[token("intervention_triggers")]
+    InterventionTriggers,
+
+    // Real-Time Processing
+    #[token("real_time_orchestrator")]
+    RealTimeOrchestrator,
+
+    #[token("stream_processing")]
+    StreamProcessing,
+
+    #[token("video_feed")]
+    VideoFeed,
+
+    #[token("sensor_data")]
+    SensorData,
+
+    #[token("environmental")]
+    Environmental,
+
+    #[token("with_latency")]
+    WithLatency,
+
+    #[token("with_frequency")]
+    WithFrequency,
+
+    #[token("with_update_rate")]
+    WithUpdateRate,
+
+    #[token("continuous_evaluation")]
+    ContinuousEvaluation,
+
+    #[token("extract_current_pose")]
+    ExtractCurrentPose,
+
+    #[token("calculate_instantaneous_metrics")]
+    CalculateInstantaneousMetrics,
+
+    #[token("update_proposition_evidence")]
+    UpdatePropositionEvidence,
+
+    #[token("temporal_weighting")]
+    TemporalWeighting,
+
+    #[token("recency_bias_correction")]
+    RecencyBiasCorrection,
+
+    #[token("significant_deviation_detected")]
+    SignificantDeviationDetected,
+
+    #[token("generate_immediate_feedback")]
+    GenerateImmediateFeedback,
+
+    #[token("deviation_type")]
+    DeviationType,
+
+    #[token("correction_strategy")]
+    CorrectionStrategy,
+
+    #[token("display_real_time_guidance")]
+    DisplayRealTimeGuidance,
+
+    // Verification System
+    #[token("verification_system")]
+    VerificationSystem,
+
+    #[token("verification_methods")]
+    VerificationMethods,
+
+    #[token("visual_similarity_verification")]
+    VisualSimilarityVerification,
+
+    #[token("biomechanical_consistency_check")]
+    BiomechanicalConsistencyCheck,
+
+    #[token("cross_reference_validation")]
+    CrossReferenceValidation,
+
+    #[token("uncertainty_quantification_validation")]
+    UncertaintyQuantificationValidation,
+
+    // User Interface
+    #[token("interface")]
+    Interface,
+
+    #[token("components")]
+    Components,
+
+    // Orchestrator System
+    #[token("orchestrator")]
+    Orchestrator,
+
+    #[token("initialize")]
+    Initialize,
+
+    #[token("execute")]
+    Execute,
+
+    #[token("monitor")]
+    Monitor,
+
+    #[token("phase")]
+    Phase,
+
+    #[token("parallel_evaluate")]
+    ParallelEvaluate,
+
+    // Advanced Analysis Functions
+    #[token("load_elite_athletes")]
+    LoadEliteAthletes,
+
+    #[token("filter_by_sport")]
+    FilterBySport,
+
+    #[token("extract_common_patterns")]
+    ExtractCommonPatterns,
+
+    #[token("weighted_harmonic_mean")]
+    WeightedHarmonicMean,
+
+    #[token("bayesian_update")]
+    BayesianUpdate,
+
+    #[token("monte_carlo_simulation")]
+    MonteCarloSimulation,
+
+    #[token("geometric_mean")]
+    GeometricMean,
+
+    #[token("weighted_average")]
+    WeightedAverage,
+
+    #[token("harmonic_mean")]
+    HarmonicMean,
+
+    // Time and Measurement Units
+    #[token("ms")]
+    Milliseconds,
+
+    #[token("Hz")]
+    Hertz,
+
+    #[token("°")]
+    DegreeSymbol,
 }
 
 /// Token represents a token with its type and span (location in source)
@@ -1901,8 +2488,206 @@ impl fmt::Display for TokenKind {
             TokenKind::UncertaintyAcknowledgmentAndQuantification => write!(f, "uncertainty_acknowledgment_and_quantification"),
             TokenKind::KnowledgeGapIdentification => write!(f, "knowledge_gap_identification"),
             TokenKind::MetacognitiveDecisionLogging => write!(f, "metacognitive_decision_logging"),
-            TokenKind::SelfReflectionOnReasoningQuality => write!(f, "self_reflection_on_reasoning_quality"),
-            _ => write!(f, "{:?}", self),
+                         TokenKind::SelfReflectionOnReasoningQuality => write!(f, "self_reflection_on_reasoning_quality"),
+             
+             // Polyglot programming display names
+             TokenKind::Generate => write!(f, "generate"),
+             TokenKind::Execute => write!(f, "execute"),
+             TokenKind::Install => write!(f, "install"),
+             TokenKind::AutoInstall => write!(f, "auto_install"),
+             TokenKind::Packages => write!(f, "packages"),
+             TokenKind::Monitoring => write!(f, "monitoring"),
+             TokenKind::Resources => write!(f, "resources"),
+             TokenKind::Timeout => write!(f, "timeout"),
+             TokenKind::Connect => write!(f, "connect"),
+             TokenKind::Query => write!(f, "query"),
+             TokenKind::AiGenerate => write!(f, "ai_generate"),
+             TokenKind::AiOptimize => write!(f, "ai_optimize"),
+             TokenKind::AiDebug => write!(f, "ai_debug"),
+             TokenKind::AiExplain => write!(f, "ai_explain"),
+             TokenKind::AiTranslate => write!(f, "ai_translate"),
+             TokenKind::AiReview => write!(f, "ai_review"),
+             TokenKind::Workflow => write!(f, "workflow"),
+             TokenKind::Stage => write!(f, "stage"),
+             TokenKind::DependsOn => write!(f, "depends_on"),
+             TokenKind::Container => write!(f, "container"),
+             TokenKind::BaseImage => write!(f, "base_image"),
+             TokenKind::Volumes => write!(f, "volumes"),
+             TokenKind::EnvironmentVars => write!(f, "environment_vars"),
+             TokenKind::WorkingDirectory => write!(f, "working_directory"),
+             TokenKind::Share => write!(f, "share"),
+             TokenKind::Sync => write!(f, "sync"),
+             TokenKind::Permissions => write!(f, "permissions"),
+             TokenKind::Encryption => write!(f, "encryption"),
+             
+             // Language names
+             TokenKind::Python => write!(f, "python"),
+             TokenKind::R => write!(f, "r"),
+             TokenKind::Rust => write!(f, "rust"),
+             TokenKind::Julia => write!(f, "julia"),
+             TokenKind::Matlab => write!(f, "matlab"),
+             TokenKind::Shell => write!(f, "shell"),
+             TokenKind::JavaScript => write!(f, "javascript"),
+             TokenKind::SQL => write!(f, "sql"),
+             TokenKind::Docker => write!(f, "docker"),
+             TokenKind::Kubernetes => write!(f, "kubernetes"),
+             TokenKind::Nextflow => write!(f, "nextflow"),
+             TokenKind::Snakemake => write!(f, "snakemake"),
+             TokenKind::CWL => write!(f, "cwl"),
+             
+             // External services
+             TokenKind::HuggingFace => write!(f, "huggingface"),
+             TokenKind::OpenAI => write!(f, "openai"),
+             TokenKind::GitHub => write!(f, "github"),
+             TokenKind::DockerHub => write!(f, "docker_hub"),
+             TokenKind::CondaForge => write!(f, "conda_forge"),
+             TokenKind::PyPI => write!(f, "pypi"),
+             TokenKind::CRAN => write!(f, "cran"),
+             TokenKind::BioConductor => write!(f, "bioconductor"),
+             TokenKind::ChemBL => write!(f, "chembl"),
+             TokenKind::PubChem => write!(f, "pubchem"),
+             TokenKind::UniProt => write!(f, "uniprot"),
+             TokenKind::NCBI => write!(f, "ncbi"),
+             
+             // Space Computer Biomechanical Analysis Framework
+             TokenKind::Config => write!(f, "config"),
+             TokenKind::Datasources => write!(f, "datasources"),
+             TokenKind::PlatformVersion => write!(f, "platform_version"),
+             TokenKind::UncertaintyModel => write!(f, "uncertainty_model"),
+             TokenKind::ConfidenceThreshold => write!(f, "confidence_threshold"),
+             TokenKind::VerificationRequired => write!(f, "verification_required"),
+             TokenKind::RealTimeAnalysis => write!(f, "real_time_analysis"),
+             TokenKind::VideoAnalysis => write!(f, "video_analysis"),
+             TokenKind::PoseModels => write!(f, "pose_models"),
+             TokenKind::GroundReactionForces => write!(f, "ground_reaction_forces"),
+             TokenKind::ExpertAnnotations => write!(f, "expert_annotations"),
+             TokenKind::Fps => write!(f, "fps"),
+             TokenKind::Resolution => write!(f, "resolution"),
+             TokenKind::PoseConfidence => write!(f, "pose_confidence"),
+             TokenKind::OcclusionHandling => write!(f, "occlusion_handling"),
+             TokenKind::MultiCameraFusion => write!(f, "multi_camera_fusion"),
+             TokenKind::Landmarks => write!(f, "landmarks"),
+             TokenKind::CoordinateAccuracy => write!(f, "coordinate_accuracy"),
+             TokenKind::TemporalConsistency => write!(f, "temporal_consistency"),
+             TokenKind::MissingDataInterpolation => write!(f, "missing_data_interpolation"),
+             TokenKind::SamplingRate => write!(f, "sampling_rate"),
+             TokenKind::ForceAccuracy => write!(f, "force_accuracy"),
+             TokenKind::MomentAccuracy => write!(f, "moment_accuracy"),
+             TokenKind::InterRaterReliability => write!(f, "inter_rater_reliability"),
+             TokenKind::ExpertConfidence => write!(f, "expert_confidence"),
+             TokenKind::BiasCorrection => write!(f, "bias_correction"),
+             TokenKind::Segment => write!(f, "segment"),
+             TokenKind::ExtractPhase => write!(f, "extract_phase"),
+             TokenKind::StartPhase => write!(f, "start_phase"),
+             TokenKind::DrivePhase => write!(f, "drive_phase"),
+             TokenKind::MaxVelocityPhase => write!(f, "max_velocity_phase"),
+             TokenKind::ImpactPhase => write!(f, "impact_phase"),
+             TokenKind::PunchInitiation => write!(f, "punch_initiation"),
+             TokenKind::WindUp => write!(f, "wind_up"),
+             TokenKind::Contact => write!(f, "contact"),
+             TokenKind::BlockAngle => write!(f, "block_angle"),
+             TokenKind::ShinAngle => write!(f, "shin_angle"),
+             TokenKind::FirstStepLength => write!(f, "first_step_length"),
+             TokenKind::LegLength => write!(f, "leg_length"),
+             TokenKind::GroundContactAngle => write!(f, "ground_contact_angle"),
+             TokenKind::StrideFrequency => write!(f, "stride_frequency"),
+             TokenKind::VerticalOscillation => write!(f, "vertical_oscillation"),
+             TokenKind::StrideLength => write!(f, "stride_length"),
+             TokenKind::GroundContactTime => write!(f, "ground_contact_time"),
+             TokenKind::FlightTime => write!(f, "flight_time"),
+             TokenKind::HipRotation => write!(f, "hip_rotation"),
+             TokenKind::ShoulderSeparation => write!(f, "shoulder_separation"),
+             TokenKind::WeightTransfer => write!(f, "weight_transfer"),
+             TokenKind::WristAlignment => write!(f, "wrist_alignment"),
+             TokenKind::ElbowExtension => write!(f, "elbow_extension"),
+             TokenKind::FollowThrough => write!(f, "follow_through"),
+             TokenKind::OptimalRange => write!(f, "optimal_range"),
+             TokenKind::DecreasesLinearly => write!(f, "decreases_linearly"),
+             TokenKind::IncreasesOptimally => write!(f, "increases_optimally"),
+             TokenKind::AtOptimalFrequencyRatio => write!(f, "at_optimal_frequency_ratio"),
+             TokenKind::HipRotationLeadsSequence => write!(f, "hip_rotation_leads_sequence"),
+             TokenKind::MaintainsStraight => write!(f, "maintains_straight"),
+             TokenKind::ExtensionComplete => write!(f, "extension_complete"),
+             TokenKind::WithinOptimalRange => write!(f, "within_optimal_range"),
+             TokenKind::EvidenceIntegrator => write!(f, "evidence_integrator"),
+             TokenKind::FusionMethods => write!(f, "fusion_methods"),
+             TokenKind::BayesianInference => write!(f, "bayesian_inference"),
+             TokenKind::UncertaintyPropagation => write!(f, "uncertainty_propagation"),
+             TokenKind::MultiFidelityFusion => write!(f, "multi_fidelity_fusion"),
+             TokenKind::ValidationPipeline => write!(f, "validation_pipeline"),
+             TokenKind::CrossValidation => write!(f, "cross_validation"),
+             TokenKind::BootstrapValidation => write!(f, "bootstrap_validation"),
+             TokenKind::ExternalValidation => write!(f, "external_validation"),
+             TokenKind::PriorConstruction => write!(f, "prior_construction"),
+             TokenKind::LikelihoodModeling => write!(f, "likelihood_modeling"),
+             TokenKind::PosteriorSampling => write!(f, "posterior_sampling"),
+             TokenKind::MarkovChainMonteCarlo => write!(f, "markov_chain_monte_carlo"),
+             TokenKind::ConvergenceDiagnostics => write!(f, "convergence_diagnostics"),
+             TokenKind::GelmanRubinStatistic => write!(f, "gelman_rubin_statistic"),
+             TokenKind::SuccessThresholds => write!(f, "success_thresholds"),
+             TokenKind::PerformanceImprovement => write!(f, "performance_improvement"),
+             TokenKind::InjuryRiskReduction => write!(f, "injury_risk_reduction"),
+             TokenKind::ConsistencyImprovement => write!(f, "consistency_improvement"),
+             TokenKind::OverallConfidence => write!(f, "overall_confidence"),
+             TokenKind::OptimizationAlgorithm => write!(f, "optimization_algorithm"),
+             TokenKind::AcquisitionFunction => write!(f, "acquisition_function"),
+             TokenKind::SurrogateModel => write!(f, "surrogate_model"),
+             TokenKind::ConstraintHandling => write!(f, "constraint_handling"),
+             TokenKind::PersonalizationFactors => write!(f, "personalization_factors"),
+             TokenKind::AnthropometricScaling => write!(f, "anthropometric_scaling"),
+             TokenKind::InjuryHistoryWeighting => write!(f, "injury_history_weighting"),
+             TokenKind::SportSpecificRequirements => write!(f, "sport_specific_requirements"),
+             TokenKind::AdaptationStrategy => write!(f, "adaptation_strategy"),
+             TokenKind::ProgressMonitoring => write!(f, "progress_monitoring"),
+             TokenKind::ThresholdAdjustment => write!(f, "threshold_adjustment"),
+             TokenKind::GoalRefinement => write!(f, "goal_refinement"),
+             TokenKind::InterventionTriggers => write!(f, "intervention_triggers"),
+             TokenKind::RealTimeOrchestrator => write!(f, "real_time_orchestrator"),
+             TokenKind::StreamProcessing => write!(f, "stream_processing"),
+             TokenKind::VideoFeed => write!(f, "video_feed"),
+             TokenKind::SensorData => write!(f, "sensor_data"),
+             TokenKind::Environmental => write!(f, "environmental"),
+             TokenKind::WithLatency => write!(f, "with_latency"),
+             TokenKind::WithFrequency => write!(f, "with_frequency"),
+             TokenKind::WithUpdateRate => write!(f, "with_update_rate"),
+             TokenKind::ContinuousEvaluation => write!(f, "continuous_evaluation"),
+             TokenKind::ExtractCurrentPose => write!(f, "extract_current_pose"),
+             TokenKind::CalculateInstantaneousMetrics => write!(f, "calculate_instantaneous_metrics"),
+             TokenKind::UpdatePropositionEvidence => write!(f, "update_proposition_evidence"),
+             TokenKind::TemporalWeighting => write!(f, "temporal_weighting"),
+             TokenKind::RecencyBiasCorrection => write!(f, "recency_bias_correction"),
+             TokenKind::SignificantDeviationDetected => write!(f, "significant_deviation_detected"),
+             TokenKind::GenerateImmediateFeedback => write!(f, "generate_immediate_feedback"),
+             TokenKind::DeviationType => write!(f, "deviation_type"),
+             TokenKind::CorrectionStrategy => write!(f, "correction_strategy"),
+             TokenKind::DisplayRealTimeGuidance => write!(f, "display_real_time_guidance"),
+             TokenKind::VerificationSystem => write!(f, "verification_system"),
+             TokenKind::VerificationMethods => write!(f, "verification_methods"),
+             TokenKind::VisualSimilarityVerification => write!(f, "visual_similarity_verification"),
+             TokenKind::BiomechanicalConsistencyCheck => write!(f, "biomechanical_consistency_check"),
+             TokenKind::CrossReferenceValidation => write!(f, "cross_reference_validation"),
+             TokenKind::UncertaintyQuantificationValidation => write!(f, "uncertainty_quantification_validation"),
+             TokenKind::Interface => write!(f, "interface"),
+             TokenKind::Components => write!(f, "components"),
+             TokenKind::Orchestrator => write!(f, "orchestrator"),
+             TokenKind::Initialize => write!(f, "initialize"),
+             TokenKind::Execute => write!(f, "execute"),
+             TokenKind::Monitor => write!(f, "monitor"),
+             TokenKind::Phase => write!(f, "phase"),
+             TokenKind::ParallelEvaluate => write!(f, "parallel_evaluate"),
+             TokenKind::LoadEliteAthletes => write!(f, "load_elite_athletes"),
+             TokenKind::FilterBySport => write!(f, "filter_by_sport"),
+             TokenKind::ExtractCommonPatterns => write!(f, "extract_common_patterns"),
+             TokenKind::WeightedHarmonicMean => write!(f, "weighted_harmonic_mean"),
+             TokenKind::BayesianUpdate => write!(f, "bayesian_update"),
+             TokenKind::MonteCarloSimulation => write!(f, "monte_carlo_simulation"),
+             TokenKind::GeometricMean => write!(f, "geometric_mean"),
+             TokenKind::WeightedAverage => write!(f, "weighted_average"),
+             TokenKind::HarmonicMean => write!(f, "harmonic_mean"),
+             TokenKind::Milliseconds => write!(f, "ms"),
+             TokenKind::Hertz => write!(f, "Hz"),
+             TokenKind::DegreeSymbol => write!(f, "°"),
+             _ => write!(f, "{:?}", self),
         }
     }
 }
