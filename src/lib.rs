@@ -461,11 +461,8 @@ impl KwasaFramework {
 
         // Initialize knowledge database
         let knowledge_db = Arc::new(Mutex::new(
-            knowledge::database::KnowledgeDatabase::new(
-                &config.workspace_path.join("knowledge.db"),
-            )
-            .await
-            .map_err(|e| anyhow::anyhow!("Failed to initialize knowledge database: {}", e)),
+            knowledge::database::KnowledgeDatabase::new(config.workspace_path.join("knowledge.db"))
+                .map_err(|e| anyhow::anyhow!("Failed to initialize knowledge database: {}", e)),
         ));
 
         // Create default goal
@@ -816,7 +813,7 @@ impl KwasaFramework {
 
         if quality.readability < 0.7 {
             suggestions.push(InterventionSuggestion {
-                intervention_type: InterventionType::StyleImprovement,
+                intervention_type: InterventionType::QualityDegradation,
                 priority: 0.8,
                 description: "Improve readability by simplifying sentences".to_string(),
                 actions: vec![
@@ -828,7 +825,7 @@ impl KwasaFramework {
 
         if quality.coherence < 0.7 {
             suggestions.push(InterventionSuggestion {
-                intervention_type: InterventionType::StructureImprovement,
+                intervention_type: InterventionType::Custom("StructureImprovement".to_string()),
                 priority: 0.7,
                 description: "Improve text coherence and flow".to_string(),
                 actions: vec![
