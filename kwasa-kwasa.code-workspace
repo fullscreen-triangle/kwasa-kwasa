@@ -1,0 +1,102 @@
+{
+    "folders": [
+        {
+            "name": "Kwasa-Kwasa Main",
+            "path": "."
+        },
+        {
+            "name": "Turbulance DSL",
+            "path": "./turbulance"
+        }
+    ],
+    "settings": {
+        // Rust-analyzer workspace settings
+        "rust-analyzer.linkedProjects": [
+            "./Cargo.toml",
+            "./turbulance/Cargo.toml"
+        ],
+        "rust-analyzer.cargo.features": [
+            "framework-core"
+        ],
+        "rust-analyzer.server.path": "rust-analyzer",
+        "rust-analyzer.updates.channel": "stable",
+        "rust-analyzer.checkOnSave.command": "check",
+        "rust-analyzer.checkOnSave.allTargets": false,
+        "rust-analyzer.cargo.loadOutDirsFromCheck": true,
+        "rust-analyzer.procMacro.enable": true,
+        "rust-analyzer.cargo.buildScripts.enable": true,
+        // Performance optimizations
+        "rust-analyzer.files.excludeDirs": [
+            "target",
+            "node_modules",
+            ".git",
+            "pkg",
+            ".idea"
+        ],
+        // Editor settings
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.fixAll": true,
+            "source.organizeImports": true
+        },
+        // File associations
+        "files.associations": {
+            "*.turb": "rust",
+            "*.trb": "rust",
+            "*.ghd": "rust",
+            "*.hre": "rust",
+            "*.fs": "rust"
+        },
+        // Search exclusions
+        "search.exclude": {
+            "**/target": true,
+            "**/node_modules": true,
+            "**/.git": true,
+            "**/pkg": true,
+            "**/.idea": true
+        },
+        // File watcher exclusions
+        "files.watcherExclude": {
+            "**/target/**": true,
+            "**/pkg/**": true,
+            "**/.git/**": true,
+            "**/node_modules/**": true
+        }
+    },
+    "extensions": {
+        "recommendations": [
+            "rust-lang.rust-analyzer",
+            "vadimcn.vscode-lldb",
+            "serayuzgur.crates",
+            "tamasfe.even-better-toml"
+        ]
+    },
+    "launch": {
+        "version": "0.2.0",
+        "configurations": [
+            {
+                "name": "Debug Kwasa-Kwasa (Workspace)",
+                "type": "lldb",
+                "request": "launch",
+                "program": "${workspaceFolder}/target/debug/kwasa-kwasa",
+                "args": [],
+                "cwd": "${workspaceFolder}",
+                "environment": [
+                    {
+                        "name": "RUST_LOG",
+                        "value": "debug"
+                    },
+                    {
+                        "name": "RUST_BACKTRACE",
+                        "value": "1"
+                    }
+                ],
+                "preLaunchTask": "cargo build",
+                "console": "integratedTerminal",
+                "sourceLanguages": [
+                    "rust"
+                ]
+            }
+        ]
+    }
+}

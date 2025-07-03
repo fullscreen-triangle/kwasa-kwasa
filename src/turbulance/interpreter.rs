@@ -374,7 +374,7 @@ impl Interpreter {
     }
     
     /// Evaluate a node and return its value
-    fn evaluate(&mut self, node: &Node) -> Result<Value> {
+    pub(crate) fn evaluate(&mut self, node: &Node) -> Result<Value> {
         match node {
             // Literals
             Node::StringLiteral(value, _) => Ok(Value::String(value.clone())),

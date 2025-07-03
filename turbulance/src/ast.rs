@@ -18,7 +18,11 @@ pub struct Position {
 impl Position {
     /// Create a new position
     pub fn new(line: usize, column: usize, offset: usize) -> Self {
-        Self { line, column, offset }
+        Self {
+            line,
+            column,
+            offset,
+        }
     }
 }
 
@@ -281,7 +285,7 @@ pub enum TextOp {
 }
 
 /// Function parameter
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Parameter {
     /// Parameter name
     pub name: String,
@@ -387,7 +391,7 @@ impl Source {
 }
 
 /// Text unit for semantic operations
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct TextUnit {
     /// The text content
     pub content: String,
@@ -473,9 +477,9 @@ impl Node {
             Node::FunctionDecl { body, .. } => body.is_valid(),
             Node::BinaryOp { left, right, .. } => left.is_valid() && right.is_valid(),
             Node::UnaryOp { operand, .. } => operand.is_valid(),
-            Node::Call { callee, arguments, .. } => {
-                callee.is_valid() && arguments.iter().all(|arg| arg.is_valid())
-            }
+            Node::Call {
+                callee, arguments, ..
+            } => callee.is_valid() && arguments.iter().all(|arg| arg.is_valid()),
             _ => true, // Most nodes are valid by construction
         }
     }
@@ -598,8 +602,7 @@ mod tests {
 
     #[test]
     fn test_text_unit_creation() {
-        let unit = TextUnit::new("test content".to_string())
-            .with_confidence(0.85);
+        let unit = TextUnit::new("test content".to_string()).with_confidence(0.85);
         assert_eq!(unit.content, "test content");
         assert_eq!(unit.confidence, 0.85);
     }
@@ -609,8 +612,8 @@ mod tests {
         let param = Parameter::new("x".to_string());
         assert_eq!(param.name, "x");
         assert!(param.type_annotation.is_none());
-        
+
         let typed_param = Parameter::with_type("y".to_string(), "Number".to_string());
         assert_eq!(typed_param.type_annotation, Some("Number".to_string()));
     }
-} 
+}

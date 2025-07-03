@@ -85,19 +85,19 @@ Kwasa-Kwasa is a text processing framework that treats text as a computational m
 - [Semantic BMDs](semantic-bmds.md) - Core theoretical framework for information catalysis in semantic processing
 - [Turbulance Syntax Analysis](turbulance-syntax-analysis.md) - Implementation analysis of BMD constructs in Turbulance
 
-### 🏛️ Historical Intelligence Frameworks
-**Ancient Wisdom Applied to Modern Computing**
+### 🧠 Advanced Computational Intelligence
+**Revolutionary Approaches to Scientific Computing**
 
-#### Egyptian Computational Architecture
-- [Imhotep Masterclass](scientific-research/imhotep.md) - Ancient Egyptian computational wisdom for modern systems
-- [Imhotep Implementation](scientific-research/imhotep-implementation.md) - Practical implementation of Imhotep principles
+#### Self-Aware Neural Networks
+- [Imhotep: Revolutionary Self-Aware Neural Networks](scientific-research/imhotep.md) - Neural systems that monitor their own thinking processes using the four-file system (.hre, .fs, .ghd, .trb)
+- [Imhotep Implementation](scientific-research/imhotep-implementation.md) - Practical implementation of self-aware neural architectures
 
-#### Mesopotamian Systems Biology
-- [Nebuchadnezzar Masterclass](scientific-research/nebuchadnezzar.md) - Babylonian approach to complex systems analysis
+#### Turbulance Programming Language
+- [Nebuchadnezzar: Turbulance Programming Language](scientific-research/nebuchadnezzar.md) - Domain-specific language for scientific reasoning that makes biological hypotheses executable code
 - [Space Computer Framework](scientific-research/space-computer.md) - Advanced biomechanical analysis architecture
 
-#### Renaissance Strategic Intelligence
-- [Borgia Masterclass](scientific-research/borgia.md) - Machiavellian strategic analysis and decision-making systems
+#### Scientific Orchestration Masterclass
+- [Borgia: Turbulance Masterclass](scientific-research/borgia.md) - Orchestrating complex scientific breakthroughs through coordinated multi-scale analysis
 
 ### 🧪 Advanced Scientific Computing
 
@@ -147,7 +147,7 @@ This comprehensive example demonstrates how Kwasa-Kwasa works as a **cognitive o
 
 **Key Files:**
 - `experiment.trb` - Turbulance orchestration script coordinating all tools toward scientific hypothesis
-- `experiment.fs` - Fullscreen network graph showing complete system architecture  
+- `experiment.fs` - Fullscreen network graph showing complete system architecture
 - `experiment.ghd` - Gerhard dependencies managing external APIs and databases
 - `experiment.hre` - Harare decision log tracking orchestrator decisions and learning
 - `supporting_scripts/` - Existing Python, R, and JavaScript tools that do actual computation
@@ -243,7 +243,7 @@ funxn analyze_text(content):
 proposition TextQuality:
     motion Clarity("Text should be clear and unambiguous")
     motion Conciseness("Text should be concise without losing meaning")
-    
+
     within document:
         given readability_score() > 70:
             support Clarity
@@ -284,7 +284,7 @@ proposition TextQuality:
 
 ### Data Structures
 - **TextGraph**: Network relationships between concepts
-- **ConceptChain**: Cause-and-effect relationships  
+- **ConceptChain**: Cause-and-effect relationships
 - **ArgMap**: Argument mapping with claims, evidence, objections
 - **EvidenceNetwork**: Bayesian networks for scientific evidence
 - **IdeaHierarchy**: Hierarchical organization of ideas

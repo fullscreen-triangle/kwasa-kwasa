@@ -83,6 +83,12 @@ pub enum Error {
 }
 
 impl Error {
+    pub(crate) fn RuntimeError(p0: String) -> E {
+        todo!()
+    }
+}
+
+impl Error {
     /// Create a parsing error
     pub fn parse(message: &str, line: usize, column: usize) -> Self {
         Self::Parse {
@@ -406,10 +412,10 @@ impl fmt::Display for TurbulanceError {
 impl std::error::Error for TurbulanceError {}
 
 /// Result type for Kwasa operations
-pub type KwasaResult<T> = Result<T, KwasaError>;
+pub type KwasaResult<T> = Result<T>;
 
 /// Result type for Turbulance operations
-pub type TurbulanceResult<T> = Result<T, TurbulanceError>;
+pub type TurbulanceResult<T> = Result<T>;
 
 /// Error context for better error reporting
 #[derive(Debug, Clone)]

@@ -69,6 +69,12 @@ pub struct KnowledgeDatabase {
 }
 
 impl KnowledgeDatabase {
+    pub(crate) fn new_in_memory() -> _ {
+        todo!()
+    }
+}
+
+impl KnowledgeDatabase {
     /// Create a new knowledge database
     pub fn new(db_path: &Path) -> Result<Self> {
         // Ensure the directory exists
