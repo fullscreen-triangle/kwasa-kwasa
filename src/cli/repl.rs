@@ -467,10 +467,11 @@ impl Repl {
             prompt.push_str(&format!("[{}] ", dir_name.blue()));
         }
 
-        // Add execution context indicator if in recovery mode
-        if self.context.is_in_recovery_mode() {
-            prompt.push_str("[recovery] ");
-        }
+        // TODO: Re-implement when context module is available
+        // // Add execution context indicator if in recovery mode
+        // if self.context.is_in_recovery_mode() {
+        //     prompt.push_str("[recovery] ");
+        // }
 
         // Add the standard prompt
         prompt.push_str("turbulance> ");
@@ -565,7 +566,8 @@ impl Repl {
         // self.context.end_execution();
 
         // Placeholder implementation
-        let result: Result<String, Error> = Ok("Turbulance execution not available".to_string());
+        let result: std::result::Result<String, Error> =
+            Ok("Turbulance execution not available".to_string());
 
         match result {
             Ok(output) => {
@@ -573,14 +575,15 @@ impl Repl {
                     println!("{}", output);
                 }
 
-                // Check if there were non-fatal errors
-                if self.context.error_reporter().has_errors() {
-                    println!(
-                        "{} {} errors found (non-fatal)",
-                        "Warning:".yellow().bold(),
-                        self.context.error_reporter().errors().len()
-                    );
-                }
+                // TODO: Re-implement when context module is available
+                // // Check if there were non-fatal errors
+                // if self.context.error_reporter().has_errors() {
+                //     println!(
+                //         "{} {} errors found (non-fatal)",
+                //         "Warning:".yellow().bold(),
+                //         self.context.error_reporter().errors().len()
+                //     );
+                // }
             }
             Err(err) => {
                 // TODO: Re-implement when context module is available
@@ -891,7 +894,8 @@ impl Repl {
         let start_time = Instant::now();
 
         // Placeholder execution
-        let result: Result<String, Error> = Ok("Turbulance execution not available".to_string());
+        let result: std::result::Result<String, Error> =
+            Ok("Turbulance execution not available".to_string());
 
         // TODO: Re-implement when context module is available
         // // End execution tracking
@@ -955,7 +959,8 @@ impl Repl {
         let start_time = Instant::now();
 
         // Placeholder execution
-        let result: Result<String, Error> = Ok("Turbulance execution not available".to_string());
+        let result: std::result::Result<String, Error> =
+            Ok("Turbulance execution not available".to_string());
 
         // Calculate elapsed time
         let duration = start_time.elapsed();

@@ -8,7 +8,6 @@ use std::process::Command;
 use crate::cli::config::CliConfig;
 use crate::knowledge;
 use crate::text_unit;
-use crate::text_unit;
 
 /// Available CLI commands beyond the basic subcommands
 pub struct CliCommands {

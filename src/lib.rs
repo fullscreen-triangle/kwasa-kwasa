@@ -462,7 +462,12 @@ impl KwasaFramework {
         // Initialize knowledge database
         let knowledge_db = Arc::new(Mutex::new(
             knowledge::database::KnowledgeDatabase::new(config.workspace_path.join("knowledge.db"))
-                .map_err(|e| anyhow::anyhow!("Failed to initialize knowledge database: {}", e)),
+                .map_err(|e| {
+                    crate::error::Error::Custom(format!(
+                        "Failed to initialize knowledge database: {}",
+                        e
+                    ))
+                }),
         ));
 
         // Create default goal
