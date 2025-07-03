@@ -1,8 +1,6 @@
 use anyhow::{Context, Result};
 use serde::{Deserialize, Serialize};
 use std::fs;
-use std::fs;
-use std::path::Path;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
@@ -96,9 +94,8 @@ impl EnvironmentManager {
 
         for dir in &directories {
             let dir_path = workspace_root.join(dir);
-            fs::create_dir_all(&dir_path).map_err(|e| {
-                KwasaError::IoError(format!("Failed to create directory {}: {}", dir, e))
-            })?;
+            fs::create_dir_all(&dir_path)
+                .map_err(|e| Error::io(format!("Failed to create directory {}: {}", dir, e)))?;
         }
 
         // Create initial configuration files
@@ -140,7 +137,7 @@ Thumbs.db
 "#;
 
         fs::write(workspace_root.join(".gitignore"), gitignore_content)
-            .map_err(|e| KwasaError::IoError(format!("Failed to create .gitignore: {}", e)))?;
+            .map_err(|e| Error::io(format!("Failed to create .gitignore: {}", e)))?;
 
         // Create README for the environment
         let readme_content = r#"
@@ -172,7 +169,7 @@ This directory contains an isolated scientific computing environment managed by 
 "#;
 
         fs::write(workspace_root.join("README.md"), readme_content)
-            .map_err(|e| KwasaError::IoError(format!("Failed to create README: {}", e)))?;
+            .map_err(|e| Error::io(format!("Failed to create README: {}", e)))?;
 
         Ok(())
     }
@@ -246,7 +243,7 @@ This directory contains an isolated scientific computing environment managed by 
     }
 
     /// Setup the complete environment
-    pub fn setup_environment(&self) -> Result<(), KwasaError> {
+    pub fn setup_environment(&self) -> Result<(), Error> {
         println!("🔧 Setting up kwasa-kwasa scientific computing environment...");
 
         // Check system requirements
@@ -273,12 +270,12 @@ This directory contains an isolated scientific computing environment managed by 
     }
 
     /// Check system requirements
-    fn check_system_requirements(&self) -> Result<(), KwasaError> {
+    fn check_system_requirements(&self) -> Result<(), Error> {
         println!("📋 Checking system requirements...");
 
         // Check if Rust is installed
         if Command::new("rustc").arg("--version").output().is_err() {
-            return Err(KwasaError::EnvironmentError(
+            return Err(Error::environment(
                 "Rust is not installed. Please install Rust from https://rustup.rs/".to_string(),
             ));
         }
@@ -291,7 +288,7 @@ This directory contains an isolated scientific computing environment managed by 
     }
 
     /// Setup Rust environment with scientific computing crates
-    fn setup_rust_environment(&self) -> Result<(), KwasaError> {
+    fn setup_rust_environment(&self) -> Result<(), Error> {
         println!("🦀 Setting up Rust scientific computing environment...");
 
         let cargo_toml_content = format!(
@@ -314,12 +311,11 @@ edition = "2021"
         );
 
         let rust_env_path = self.workspace_root.join("environments").join("rust");
-        fs::create_dir_all(&rust_env_path).map_err(|e| {
-            KwasaError::IoError(format!("Failed to create Rust environment: {}", e))
-        })?;
+        fs::create_dir_all(&rust_env_path)
+            .map_err(|e| Error::io(format!("Failed to create Rust environment: {}", e)))?;
 
         fs::write(rust_env_path.join("Cargo.toml"), cargo_toml_content)
-            .map_err(|e| KwasaError::IoError(format!("Failed to write Cargo.toml: {}", e)))?;
+            .map_err(|e| Error::io(format!("Failed to write Cargo.toml: {}", e)))?;
 
         // Create a basic lib.rs that re-exports scientific computing functionality
         let lib_rs_content = r#"
@@ -353,14 +349,14 @@ pub mod scientific {
 "#;
 
         fs::write(rust_env_path.join("src").join("lib.rs"), lib_rs_content)
-            .map_err(|e| KwasaError::IoError(format!("Failed to write lib.rs: {}", e)))?;
+            .map_err(|e| Error::io(format!("Failed to write lib.rs: {}", e)))?;
 
         println!("✅ Rust environment configured");
         Ok(())
     }
 
     /// Setup Python virtual environment
-    fn setup_python_environment(&self) -> Result<(), KwasaError> {
+    fn setup_python_environment(&self) -> Result<(), Error> {
         println!("🐍 Setting up Python scientific computing environment...");
 
         let python_env_path = self.workspace_root.join("environments").join("python");
@@ -369,12 +365,10 @@ pub mod scientific {
         let output = Command::new("python3")
             .args(&["-m", "venv", python_env_path.to_str().unwrap()])
             .output()
-            .map_err(|e| {
-                KwasaError::EnvironmentError(format!("Failed to create Python venv: {}", e))
-            })?;
+            .map_err(|e| Error::environment(format!("Failed to create Python venv: {}", e)))?;
 
         if !output.status.success() {
-            return Err(KwasaError::EnvironmentError(format!(
+            return Err(Error::environment(format!(
                 "Python venv creation failed: {}",
                 String::from_utf8_lossy(&output.stderr)
             )));
@@ -390,19 +384,19 @@ pub mod scientific {
             python_env_path.join("requirements.txt"),
             requirements_content,
         )
-        .map_err(|e| KwasaError::IoError(format!("Failed to write requirements.txt: {}", e)))?;
+        .map_err(|e| Error::io(format!("Failed to write requirements.txt: {}", e)))?;
 
         println!("✅ Python environment configured");
         Ok(())
     }
 
     /// Setup R environment
-    fn setup_r_environment(&self) -> Result<(), KwasaError> {
+    fn setup_r_environment(&self) -> Result<(), Error> {
         println!("📊 Setting up R scientific computing environment...");
 
         let r_env_path = self.workspace_root.join("environments").join("r");
         fs::create_dir_all(&r_env_path)
-            .map_err(|e| KwasaError::IoError(format!("Failed to create R environment: {}", e)))?;
+            .map_err(|e| Error::io(format!("Failed to create R environment: {}", e)))?;
 
         // Create R package installation script
         let r_install_script = format!(
@@ -428,14 +422,14 @@ cat("R environment setup complete!\n")
         );
 
         fs::write(r_env_path.join("setup.R"), r_install_script)
-            .map_err(|e| KwasaError::IoError(format!("Failed to write R setup script: {}", e)))?;
+            .map_err(|e| Error::io(format!("Failed to write R setup script: {}", e)))?;
 
         println!("✅ R environment configured");
         Ok(())
     }
 
     /// Install scientific computing tools
-    fn install_scientific_tools(&self) -> Result<(), KwasaError> {
+    fn install_scientific_tools(&self) -> Result<(), Error> {
         println!("🔬 Installing scientific computing tools...");
 
         for tool in &self.environment_manifest.tools {
@@ -457,13 +451,12 @@ cat("R environment setup complete!\n")
     }
 
     /// Setup scientific databases
-    fn setup_scientific_databases(&self) -> Result<(), KwasaError> {
+    fn setup_scientific_databases(&self) -> Result<(), Error> {
         println!("🗄️  Setting up scientific databases...");
 
         let db_path = self.workspace_root.join("databases");
-        fs::create_dir_all(&db_path).map_err(|e| {
-            KwasaError::IoError(format!("Failed to create database directory: {}", e))
-        })?;
+        fs::create_dir_all(&db_path)
+            .map_err(|e| Error::io(format!("Failed to create database directory: {}", e)))?;
 
         // Create database configuration
         let db_config = format!(
@@ -485,7 +478,7 @@ databases:
         );
 
         fs::write(db_path.join("config.yaml"), db_config)
-            .map_err(|e| KwasaError::IoError(format!("Failed to write database config: {}", e)))?;
+            .map_err(|e| Error::io(format!("Failed to write database config: {}", e)))?;
 
         println!("✅ Database configuration created");
         Ok(())
