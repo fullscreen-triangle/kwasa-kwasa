@@ -72,7 +72,7 @@ pub enum TokenKind {
     #[token("recommendations")]
     Recommendations,
 
-    // Advanced orchestration keywords  
+    // Advanced orchestration keywords
     #[token("flow")]
     Flow,
 
@@ -491,13 +491,13 @@ pub enum TokenKind {
 
     #[token("ensure")]
     Ensure,
-    
+
     #[token("research")]
     Research,
-    
+
     #[token("apply")]
     Apply,
-    
+
     #[token("to_all")]
     ToAll,
 
@@ -525,7 +525,7 @@ pub enum TokenKind {
 
     #[token("|")]
     Pipe,
-    
+
     #[token("|>")]
     PipeForward,
 
@@ -2923,7 +2923,7 @@ pub enum TokenKind {
     ReducedBy,
 
     #[token("increase_by")]
-    IncreaseBy,
+    IncreasedBy,
 
     #[token("pattern_matching_tolerance")]
     PatternMatchingTolerance,
@@ -3671,6 +3671,383 @@ pub enum TokenKind {
 
     #[token("automated_quality_control_checks")]
     AutomatedQualityControlChecks,
+
+    // Consciousness vs Self-Awareness Comparison
+    #[token("demonstrate_self_awareness_vs_consciousness")]
+    DemonstrateSelfAwarenessVsConsciousness,
+
+    // Quantum Computing Interface for VPOS
+    #[token("import")]
+    Import,
+
+    #[token("semantic")]
+    Semantic,
+
+    #[token("benguela_quantum_runtime")]
+    BenguelaQuantumRuntime,
+
+    #[token("v8_intelligence")]
+    V8Intelligence,
+
+    #[token("quantum_coherence_validation")]
+    QuantumCoherenceValidation,
+
+    #[token("hypothesis")]
+    Hypothesis,
+
+    #[token("claim")]
+    Claim,
+
+    #[token("semantic_validation")]
+    SemanticValidation,
+
+    #[token("membrane_understanding")]
+    MembraneUnderstanding,
+
+    #[token("atp_understanding")]
+    AtpUnderstanding,
+
+    #[token("coherence_understanding")]
+    CoherenceUnderstanding,
+
+    #[token("requires")]
+    Requires,
+
+    #[token("authentic_quantum_semantic_comprehension")]
+    AuthenticQuantumSemanticComprehension,
+
+    #[token("funxn")]
+    Funxn,
+
+    #[token("semantic_quantum_calibration")]
+    SemanticQuantumCalibration,
+
+    #[token("print")]
+    Print,
+
+    #[token("initialize_semantic_quantum_processing")]
+    InitializeSemanticQuantumProcessing,
+
+    #[token("mzekezeke")]
+    Mzekezeke,
+
+    #[token("quantum_evidence_integration")]
+    QuantumEvidenceIntegration,
+
+    #[token("zengeza")]
+    Zengeza,
+
+    #[token("quantum_signal_enhancement")]
+    QuantumSignalEnhancement,
+
+    #[token("diggiden")]
+    Diggiden,
+
+    #[token("quantum_coherence_robustness_testing")]
+    QuantumCoherenceRobustnessTest,
+
+    #[token("champagne")]
+    Champagne,
+
+    #[token("quantum_dream_state_processing")]
+    QuantumDreamStateProcessing,
+
+    #[token("load_quantum_hardware")]
+    LoadQuantumHardware,
+
+    #[token("understand_quantum_hardware_semantics")]
+    UnderstandQuantumHardwareSemantics,
+
+    #[token("semantic_context")]
+    SemanticContext,
+
+    #[token("biological_quantum_processing")]
+    BiologicalQuantumProcessing,
+
+    #[token("coherence_meaning")]
+    CoherenceMeaning,
+
+    #[token("superposition_preservation_semantics")]
+    SuperpositionPreservationSemantics,
+
+    #[token("semantic_catalyst")]
+    SemanticCatalyst,
+
+    #[token("coherence_threshold")]
+    CoherenceThreshold,
+
+    #[token("catalytic_cycle")]
+    CatalyticCycle,
+
+    #[token("semantic_fidelity")]
+    SemanticFidelity,
+
+    #[token("support")]
+    Support,
+
+    #[token("with_confidence")]
+    WithConfidence,
+
+    #[token("confidence")]
+    Confidence,
+
+    #[token("coherence_time_ms")]
+    CoherenceTimeMs,
+
+    // Memory contamination and BMD processing
+    #[token("memory_contamination")]
+    MemoryContamination,
+
+    #[token("cognitive_frame_selection")]
+    CognitiveFrameSelection,
+
+    #[token("contaminate_memory_network")]
+    ContaminateMemoryNetwork,
+
+    #[token("target_concept")]
+    TargetConcept,
+
+    #[token("themes")]
+    Themes,
+
+    #[token("identify_associative_routes")]
+    IdentifyAssociativeRoutes,
+
+    #[token("optimize_delivery_protocol")]
+    OptimizeDeliveryProtocol,
+
+    #[token("user_profile")]
+    UserProfile,
+
+    #[token("execute_contamination_sequence")]
+    ExecuteContaminationSequence,
+
+    #[token("monitor_integration_success")]
+    MonitorIntegrationSuccess,
+
+    #[token("delay_injection")]
+    DelayInjection,
+
+    #[token("optimal_timing_window")]
+    OptimalTimingWindow,
+
+    #[token("contamination_effectiveness_metrics")]
+    ContaminationEffectivenessMetrics,
+
+    #[token("receptivity_score")]
+    ReceptivityScore,
+
+    #[token("attention_level")]
+    AttentionLevel,
+
+    #[token("emotional_valence")]
+    EmotionalValence,
+
+    #[token("confidence_threshold")]
+    ConfidenceThreshold,
+
+    // V8 Intelligence Network modules
+    #[token("mzekezeke_bayesian")]
+    MzekezekeBayesian,
+
+    #[token("zengeza_signal")]
+    ZengezaSignal,
+
+    #[token("diggiden_adversarial")]
+    DiggidenAdversarial,
+
+    #[token("spectacular_paradigm")]
+    SpectacularParadigm,
+
+    #[token("champagne_dream")]
+    ChampagneDream,
+
+    #[token("hatata_decision")]
+    HatataDecision,
+
+    #[token("nicotine_context")]
+    NicotineContext,
+
+    #[token("pungwe_authenticity")]
+    PungweAuthenticity,
+
+    // Four-file system extensions
+    #[token("trb")]
+    TrbFile,
+
+    #[token("fs")]
+    FsFile,
+
+    #[token("ghd")]
+    GhdFile,
+
+    #[token("hre")]
+    HreFile,
+
+    // Quantum hardware operations
+    #[token("ion_channel_quantum_tunneling")]
+    IonChannelQuantumTunneling,
+
+    #[token("atp_synthesis_coupling")]
+    AtpSynthesisCoupling,
+
+    #[token("coherence_preservation")]
+    CoherencePreservation,
+
+    #[token("biological_quantum_hardware")]
+    BiologicalQuantumHardware,
+
+    #[token("neural_pattern_extraction")]
+    NeuralPatternExtraction,
+
+    #[token("memory_injection")]
+    MemoryInjection,
+
+    #[token("consciousness_coupling")]
+    ConsciousnessCoupling,
+
+    #[token("protein_synthesis_systems")]
+    ProteinSynthesisSystems,
+
+    #[token("molecular_assembly_protocols")]
+    MolecularAssemblyProtocols,
+
+    #[token("fuzzy_processor_interfaces")]
+    FuzzyProcessorInterfaces,
+
+    #[token("continuous_memory_systems")]
+    ContinuousMemorySystems,
+
+    // System consciousness validation
+    #[token("system_consciousness")]
+    SystemConsciousness,
+
+    #[token("semantic_processing")]
+    SemanticProcessing,
+
+    #[token("consciousness_loop")]
+    ConsciousnessLoop,
+
+    #[token("understanding_valid")]
+    UnderstandingValid,
+
+    #[token("can_explain_quantum_coherence")]
+    CanExplainQuantumCoherence,
+
+    #[token("can_explain_neural_patterns")]
+    CanExplainNeuralPatterns,
+
+    #[token("can_explain_molecular_assembly")]
+    CanExplainMolecularAssembly,
+
+    #[token("can_explain_fuzzy_logic")]
+    CanExplainFuzzyLogic,
+
+    #[token("can_detect_self_deception")]
+    CanDetectSelfDeception,
+
+    #[token("can_generate_novel_insights")]
+    CanGenerateNovelInsights,
+
+    // Semantic resource network tokens
+    #[token("quantum_semantic_resources")]
+    QuantumSemanticResources,
+
+    #[token("neural_semantic_resources")]
+    NeuralSemanticResources,
+
+    #[token("molecular_semantic_resources")]
+    MolecularSemanticResources,
+
+    #[token("fuzzy_semantic_resources")]
+    FuzzySemanticResources,
+
+    #[token("cross_modal_semantic_integration")]
+    CrossModalSemanticIntegration,
+
+    #[token("semantic_fusion_apis")]
+    SemanticFusionApis,
+
+    // Metacognitive decision logging
+    #[token("os_learning_session")]
+    OsLearningSession,
+
+    #[token("os_hypothesis")]
+    OsHypothesis,
+
+    #[token("metacognitive_decision_log")]
+    MetacognitiveDecisionLog,
+
+    #[token("decision")]
+    Decision,
+
+    #[token("reasoning")]
+    Reasoning,
+
+    #[token("semantic_understanding")]
+    SemanticUnderstanding,
+
+    #[token("confidence_evolution")]
+    ConfidenceEvolution,
+
+    #[token("learning")]
+    Learning,
+
+    #[token("semantic_insight")]
+    SemanticInsight,
+
+    #[token("semantic_breakthrough")]
+    SemanticBreakthrough,
+
+    // Advanced semantic operations
+    #[token("intelligent_catalyst")]
+    IntelligentCatalyst,
+
+    #[token("cross_modal_coherence")]
+    CrossModalCoherence,
+
+    #[token("authenticity_score")]
+    AuthenticityScore,
+
+    #[token("novel_insight_generation")]
+    NovelInsightGeneration,
+
+    #[token("contamination_success_rate")]
+    ContaminationSuccessRate,
+
+    #[token("information_retention")]
+    InformationRetention,
+
+    #[token("behavioral_influence")]
+    BehavioralInfluence,
+
+    #[token("cognitive_authenticity")]
+    CognitiveAuthenticity,
+
+    // VPOS operating system interface
+    #[token("vpos_semantic_architecture")]
+    VposSemanticArchitecture,
+
+    #[token("quantum_subsystem_consciousness")]
+    QuantumSubsystemConsciousness,
+
+    #[token("neural_subsystem_consciousness")]
+    NeuralSubsystemConsciousness,
+
+    #[token("molecular_subsystem_consciousness")]
+    MolecularSubsystemConsciousness,
+
+    #[token("fuzzy_subsystem_consciousness")]
+    FuzzySubsystemConsciousness,
+
+    #[token("v8_intelligence_network_status")]
+    V8IntelligenceNetworkStatus,
+
+    #[token("real_time_semantic_processing")]
+    RealTimeSemanticProcessing,
+
+    #[token("semantic_understanding_validation")]
+    SemanticUnderstandingValidation,
 }
 
 /// Token represents a token with its type and span (location in source)
@@ -3885,7 +4262,9 @@ impl fmt::Display for TokenKind {
             TokenKind::EvidenceQualityModulation => write!(f, "evidence_quality_modulation"),
             TokenKind::UncertaintyPenalty => write!(f, "uncertainty_penalty"),
             TokenKind::FdaGuidanceCompliance => write!(f, "fda_guidance_compliance"),
-            TokenKind::EmaScientificAdviceIntegration => write!(f, "ema_scientific_advice_integration"),
+            TokenKind::EmaScientificAdviceIntegration => {
+                write!(f, "ema_scientific_advice_integration")
+            }
             TokenKind::BiologicalComputer => write!(f, "biological_computer"),
             TokenKind::AtpBudget => write!(f, "atp_budget"),
             TokenKind::TimeHorizon => write!(f, "time_horizon"),
@@ -3907,7 +4286,9 @@ impl fmt::Display for TokenKind {
             TokenKind::OscillationEndpoints => write!(f, "oscillation_endpoints"),
             TokenKind::QuantumFidelity => write!(f, "quantum_fidelity"),
             TokenKind::Calculate => write!(f, "calculate"),
-            TokenKind::InformationCatalysisEfficiency => write!(f, "information_catalysis_efficiency"),
+            TokenKind::InformationCatalysisEfficiency => {
+                write!(f, "information_catalysis_efficiency")
+            }
             TokenKind::MolecularSources => write!(f, "molecular_sources"),
             TokenKind::ClinicalSources => write!(f, "clinical_sources"),
             TokenKind::RealWorldSources => write!(f, "real_world_sources"),
@@ -3938,7 +4319,9 @@ impl fmt::Display for TokenKind {
             TokenKind::Contamination => write!(f, "contamination"),
             TokenKind::BatchEffectCorrection => write!(f, "batch_effect_correction"),
             TokenKind::CombatSeq => write!(f, "combat_seq"),
-            TokenKind::TechnicalReplicateCorrelation => write!(f, "technical_replicate_correlation"),
+            TokenKind::TechnicalReplicateCorrelation => {
+                write!(f, "technical_replicate_correlation")
+            }
             TokenKind::Harmonization => write!(f, "harmonization"),
             TokenKind::UnitStandardization => write!(f, "unit_standardization"),
             TokenKind::SiUnitsConversion => write!(f, "si_units_conversion"),
@@ -3967,12 +4350,16 @@ impl fmt::Display for TokenKind {
             TokenKind::PharmacophoreIdentification => write!(f, "pharmacophore_identification"),
             TokenKind::ShapeBasedClustering => write!(f, "shape_based_clustering"),
             TokenKind::AdmetPatternDetection => write!(f, "admet_pattern_detection"),
-            TokenKind::RandomForestFeatureImportance => write!(f, "random_forest_feature_importance"),
+            TokenKind::RandomForestFeatureImportance => {
+                write!(f, "random_forest_feature_importance")
+            }
             TokenKind::ClinicalPatterns => write!(f, "clinical_patterns"),
             TokenKind::ResponderPhenotyping => write!(f, "responder_phenotyping"),
             TokenKind::GaussianMixtureModels => write!(f, "gaussian_mixture_models"),
             TokenKind::NComponents => write!(f, "n_components"),
-            TokenKind::DiseaseProgressionTrajectories => write!(f, "disease_progression_trajectories"),
+            TokenKind::DiseaseProgressionTrajectories => {
+                write!(f, "disease_progression_trajectories")
+            }
             TokenKind::LatentClassGrowthModeling => write!(f, "latent_class_growth_modeling"),
             TokenKind::AdverseEventClustering => write!(f, "adverse_event_clustering"),
             TokenKind::NetworkAnalysis => write!(f, "network_analysis"),
@@ -4086,14 +4473,22 @@ impl fmt::Display for TokenKind {
             TokenKind::GetMetacognitiveState => write!(f, "get_metacognitive_state"),
             TokenKind::CurrentThoughtFocus => write!(f, "current_thought_focus"),
             TokenKind::SelfAwarenessLevel => write!(f, "self_awareness_level"),
-            TokenKind::ProcessWithMetacognitiveMonitoring => write!(f, "process_with_metacognitive_monitoring"),
+            TokenKind::ProcessWithMetacognitiveMonitoring => {
+                write!(f, "process_with_metacognitive_monitoring")
+            }
             TokenKind::ProcessingSteps => write!(f, "processing_steps"),
             TokenKind::AssessReasoningQuality => write!(f, "assess_reasoning_quality"),
             TokenKind::OverallQuality => write!(f, "overall_quality"),
-            TokenKind::EnhanceMetacognitiveMonitoring => write!(f, "enhance_metacognitive_monitoring"),
-            TokenKind::ReprocessWithEnhancedAwareness => write!(f, "reprocess_with_enhanced_awareness"),
+            TokenKind::EnhanceMetacognitiveMonitoring => {
+                write!(f, "enhance_metacognitive_monitoring")
+            }
+            TokenKind::ReprocessWithEnhancedAwareness => {
+                write!(f, "reprocess_with_enhanced_awareness")
+            }
             TokenKind::BeginMetacognitiveReasoning => write!(f, "begin_metacognitive_reasoning"),
-            TokenKind::AnalyzeWithMetacognitiveOversight => write!(f, "analyze_with_metacognitive_oversight"),
+            TokenKind::AnalyzeWithMetacognitiveOversight => {
+                write!(f, "analyze_with_metacognitive_oversight")
+            }
             TokenKind::AnalysisType => write!(f, "analysis_type"),
             TokenKind::GetCurrentReasoningState => write!(f, "get_current_reasoning_state"),
             TokenKind::Focus => write!(f, "focus"),
@@ -4103,7 +4498,9 @@ impl fmt::Display for TokenKind {
             TokenKind::UncertaintyTracking => write!(f, "uncertainty_tracking"),
             TokenKind::AssessBiologicalReasoning => write!(f, "assess_biological_reasoning"),
             TokenKind::Uncertainties => write!(f, "uncertainties"),
-            TokenKind::AnalyzePathwaysWithMetacognition => write!(f, "analyze_pathways_with_metacognition"),
+            TokenKind::AnalyzePathwaysWithMetacognition => {
+                write!(f, "analyze_pathways_with_metacognition")
+            }
             TokenKind::Metabolites => write!(f, "metabolites"),
             TokenKind::SelfReflection => write!(f, "self_reflection"),
             TokenKind::KnowledgeGapDetection => write!(f, "knowledge_gap_detection"),
@@ -4112,7 +4509,9 @@ impl fmt::Display for TokenKind {
             TokenKind::ReasoningQuality => write!(f, "reasoning_quality"),
             TokenKind::KnowledgeGaps => write!(f, "knowledge_gaps"),
             TokenKind::MetacognitiveState => write!(f, "metacognitive_state"),
-            TokenKind::DemonstrateSelfAwarenessVsConsciousness => write!(f, "demonstrate_self_awareness_vs_consciousness"),
+            TokenKind::DemonstrateSelfAwarenessVsConsciousness => {
+                write!(f, "demonstrate_self_awareness_vs_consciousness")
+            }
             TokenKind::ActivateConsciousness => write!(f, "activate_consciousness"),
             TokenKind::AnalyzeMetabolomics => write!(f, "analyze_metabolomics"),
             TokenKind::Conclusion => write!(f, "conclusion"),
@@ -4127,9 +4526,15 @@ impl fmt::Display for TokenKind {
             TokenKind::Reasoning => write!(f, "reasoning"),
             TokenKind::ExternalKnowledgeUsed => write!(f, "external_knowledge_used"),
             TokenKind::MetacognitiveInsights => write!(f, "metacognitive_insights"),
-            TokenKind::NoiseReductionWithReasoningTracking => write!(f, "noise_reduction_with_reasoning_tracking"),
-            TokenKind::PeakDetectionWithUncertaintyAssessment => write!(f, "peak_detection_with_uncertainty_assessment"),
-            TokenKind::CompoundIdentificationWithConfidenceLogging => write!(f, "compound_identification_with_confidence_logging"),
+            TokenKind::NoiseReductionWithReasoningTracking => {
+                write!(f, "noise_reduction_with_reasoning_tracking")
+            }
+            TokenKind::PeakDetectionWithUncertaintyAssessment => {
+                write!(f, "peak_detection_with_uncertainty_assessment")
+            }
+            TokenKind::CompoundIdentificationWithConfidenceLogging => {
+                write!(f, "compound_identification_with_confidence_logging")
+            }
             TokenKind::DifferentialMetabolomics => write!(f, "differential_metabolomics"),
             TokenKind::MetabolicPathwaysDiabetes => write!(f, "metabolic_pathways_diabetes"),
             TokenKind::Domain => write!(f, "domain"),
@@ -4138,211 +4543,982 @@ impl fmt::Display for TokenKind {
             TokenKind::SelfAwareSystem => write!(f, "self_aware_system"),
             TokenKind::AnalysisResults => write!(f, "analysis_results"),
             TokenKind::ConsciousnessComparison => write!(f, "consciousness_comparison"),
-            TokenKind::ExplicitReasoningChainTracking => write!(f, "explicit_reasoning_chain_tracking"),
-            TokenKind::RealTimeThoughtQualityAssessment => write!(f, "real_time_thought_quality_assessment"),
-            TokenKind::UncertaintyAcknowledgmentAndQuantification => write!(f, "uncertainty_acknowledgment_and_quantification"),
+            TokenKind::ExplicitReasoningChainTracking => {
+                write!(f, "explicit_reasoning_chain_tracking")
+            }
+            TokenKind::RealTimeThoughtQualityAssessment => {
+                write!(f, "real_time_thought_quality_assessment")
+            }
+            TokenKind::UncertaintyAcknowledgmentAndQuantification => {
+                write!(f, "uncertainty_acknowledgment_and_quantification")
+            }
             TokenKind::KnowledgeGapIdentification => write!(f, "knowledge_gap_identification"),
             TokenKind::MetacognitiveDecisionLogging => write!(f, "metacognitive_decision_logging"),
-                         TokenKind::SelfReflectionOnReasoningQuality => write!(f, "self_reflection_on_reasoning_quality"),
-             
-             // Polyglot programming display names
-             TokenKind::Generate => write!(f, "generate"),
-             TokenKind::Execute => write!(f, "execute"),
-             TokenKind::Install => write!(f, "install"),
-             TokenKind::AutoInstall => write!(f, "auto_install"),
-             TokenKind::Packages => write!(f, "packages"),
-             TokenKind::Monitoring => write!(f, "monitoring"),
-             TokenKind::Resources => write!(f, "resources"),
-             TokenKind::Timeout => write!(f, "timeout"),
-             TokenKind::Connect => write!(f, "connect"),
-             TokenKind::Query => write!(f, "query"),
-             TokenKind::AiGenerate => write!(f, "ai_generate"),
-             TokenKind::AiOptimize => write!(f, "ai_optimize"),
-             TokenKind::AiDebug => write!(f, "ai_debug"),
-             TokenKind::AiExplain => write!(f, "ai_explain"),
-             TokenKind::AiTranslate => write!(f, "ai_translate"),
-             TokenKind::AiReview => write!(f, "ai_review"),
-             TokenKind::Workflow => write!(f, "workflow"),
-             TokenKind::Stage => write!(f, "stage"),
-             TokenKind::DependsOn => write!(f, "depends_on"),
-             TokenKind::Container => write!(f, "container"),
-             TokenKind::BaseImage => write!(f, "base_image"),
-             TokenKind::Volumes => write!(f, "volumes"),
-             TokenKind::EnvironmentVars => write!(f, "environment_vars"),
-             TokenKind::WorkingDirectory => write!(f, "working_directory"),
-             TokenKind::Share => write!(f, "share"),
-             TokenKind::Sync => write!(f, "sync"),
-             TokenKind::Permissions => write!(f, "permissions"),
-             TokenKind::Encryption => write!(f, "encryption"),
-             
-             // Language names
-             TokenKind::Python => write!(f, "python"),
-             TokenKind::R => write!(f, "r"),
-             TokenKind::Rust => write!(f, "rust"),
-             TokenKind::Julia => write!(f, "julia"),
-             TokenKind::Matlab => write!(f, "matlab"),
-             TokenKind::Shell => write!(f, "shell"),
-             TokenKind::JavaScript => write!(f, "javascript"),
-             TokenKind::SQL => write!(f, "sql"),
-             TokenKind::Docker => write!(f, "docker"),
-             TokenKind::Kubernetes => write!(f, "kubernetes"),
-             TokenKind::Nextflow => write!(f, "nextflow"),
-             TokenKind::Snakemake => write!(f, "snakemake"),
-             TokenKind::CWL => write!(f, "cwl"),
-             
-             // External services
-             TokenKind::HuggingFace => write!(f, "huggingface"),
-             TokenKind::OpenAI => write!(f, "openai"),
-             TokenKind::GitHub => write!(f, "github"),
-             TokenKind::DockerHub => write!(f, "docker_hub"),
-             TokenKind::CondaForge => write!(f, "conda_forge"),
-             TokenKind::PyPI => write!(f, "pypi"),
-             TokenKind::CRAN => write!(f, "cran"),
-             TokenKind::BioConductor => write!(f, "bioconductor"),
-             TokenKind::ChemBL => write!(f, "chembl"),
-             TokenKind::PubChem => write!(f, "pubchem"),
-             TokenKind::UniProt => write!(f, "uniprot"),
-             TokenKind::NCBI => write!(f, "ncbi"),
-             
-             // Space Computer Biomechanical Analysis Framework
-             TokenKind::Config => write!(f, "config"),
-             TokenKind::Datasources => write!(f, "datasources"),
-             TokenKind::PlatformVersion => write!(f, "platform_version"),
-             TokenKind::UncertaintyModel => write!(f, "uncertainty_model"),
-             TokenKind::ConfidenceThreshold => write!(f, "confidence_threshold"),
-             TokenKind::VerificationRequired => write!(f, "verification_required"),
-             TokenKind::RealTimeAnalysis => write!(f, "real_time_analysis"),
-             TokenKind::VideoAnalysis => write!(f, "video_analysis"),
-             TokenKind::PoseModels => write!(f, "pose_models"),
-             TokenKind::GroundReactionForces => write!(f, "ground_reaction_forces"),
-             TokenKind::ExpertAnnotations => write!(f, "expert_annotations"),
-             TokenKind::Fps => write!(f, "fps"),
-             TokenKind::Resolution => write!(f, "resolution"),
-             TokenKind::PoseConfidence => write!(f, "pose_confidence"),
-             TokenKind::OcclusionHandling => write!(f, "occlusion_handling"),
-             TokenKind::MultiCameraFusion => write!(f, "multi_camera_fusion"),
-             TokenKind::Landmarks => write!(f, "landmarks"),
-             TokenKind::CoordinateAccuracy => write!(f, "coordinate_accuracy"),
-             TokenKind::TemporalConsistency => write!(f, "temporal_consistency"),
-             TokenKind::MissingDataInterpolation => write!(f, "missing_data_interpolation"),
-             TokenKind::SamplingRate => write!(f, "sampling_rate"),
-             TokenKind::ForceAccuracy => write!(f, "force_accuracy"),
-             TokenKind::MomentAccuracy => write!(f, "moment_accuracy"),
-             TokenKind::InterRaterReliability => write!(f, "inter_rater_reliability"),
-             TokenKind::ExpertConfidence => write!(f, "expert_confidence"),
-             TokenKind::BiasCorrection => write!(f, "bias_correction"),
-             TokenKind::Segment => write!(f, "segment"),
-             TokenKind::ExtractPhase => write!(f, "extract_phase"),
-             TokenKind::StartPhase => write!(f, "start_phase"),
-             TokenKind::DrivePhase => write!(f, "drive_phase"),
-             TokenKind::MaxVelocityPhase => write!(f, "max_velocity_phase"),
-             TokenKind::ImpactPhase => write!(f, "impact_phase"),
-             TokenKind::PunchInitiation => write!(f, "punch_initiation"),
-             TokenKind::WindUp => write!(f, "wind_up"),
-             TokenKind::Contact => write!(f, "contact"),
-             TokenKind::BlockAngle => write!(f, "block_angle"),
-             TokenKind::ShinAngle => write!(f, "shin_angle"),
-             TokenKind::FirstStepLength => write!(f, "first_step_length"),
-             TokenKind::LegLength => write!(f, "leg_length"),
-             TokenKind::GroundContactAngle => write!(f, "ground_contact_angle"),
-             TokenKind::StrideFrequency => write!(f, "stride_frequency"),
-             TokenKind::VerticalOscillation => write!(f, "vertical_oscillation"),
-             TokenKind::StrideLength => write!(f, "stride_length"),
-             TokenKind::GroundContactTime => write!(f, "ground_contact_time"),
-             TokenKind::FlightTime => write!(f, "flight_time"),
-             TokenKind::HipRotation => write!(f, "hip_rotation"),
-             TokenKind::ShoulderSeparation => write!(f, "shoulder_separation"),
-             TokenKind::WeightTransfer => write!(f, "weight_transfer"),
-             TokenKind::WristAlignment => write!(f, "wrist_alignment"),
-             TokenKind::ElbowExtension => write!(f, "elbow_extension"),
-             TokenKind::FollowThrough => write!(f, "follow_through"),
-             TokenKind::OptimalRange => write!(f, "optimal_range"),
-             TokenKind::DecreasesLinearly => write!(f, "decreases_linearly"),
-             TokenKind::IncreasesOptimally => write!(f, "increases_optimally"),
-             TokenKind::AtOptimalFrequencyRatio => write!(f, "at_optimal_frequency_ratio"),
-             TokenKind::HipRotationLeadsSequence => write!(f, "hip_rotation_leads_sequence"),
-             TokenKind::MaintainsStraight => write!(f, "maintains_straight"),
-             TokenKind::ExtensionComplete => write!(f, "extension_complete"),
-             TokenKind::WithinOptimalRange => write!(f, "within_optimal_range"),
-             TokenKind::EvidenceIntegrator => write!(f, "evidence_integrator"),
-             TokenKind::FusionMethods => write!(f, "fusion_methods"),
-             TokenKind::BayesianInference => write!(f, "bayesian_inference"),
-             TokenKind::UncertaintyPropagation => write!(f, "uncertainty_propagation"),
-             TokenKind::MultiFidelityFusion => write!(f, "multi_fidelity_fusion"),
-             TokenKind::ValidationPipeline => write!(f, "validation_pipeline"),
-             TokenKind::CrossValidation => write!(f, "cross_validation"),
-             TokenKind::BootstrapValidation => write!(f, "bootstrap_validation"),
-             TokenKind::ExternalValidation => write!(f, "external_validation"),
-             TokenKind::PriorConstruction => write!(f, "prior_construction"),
-             TokenKind::LikelihoodModeling => write!(f, "likelihood_modeling"),
-             TokenKind::PosteriorSampling => write!(f, "posterior_sampling"),
-             TokenKind::MarkovChainMonteCarlo => write!(f, "markov_chain_monte_carlo"),
-             TokenKind::ConvergenceDiagnostics => write!(f, "convergence_diagnostics"),
-             TokenKind::GelmanRubinStatistic => write!(f, "gelman_rubin_statistic"),
-             TokenKind::SuccessThresholds => write!(f, "success_thresholds"),
-             TokenKind::PerformanceImprovement => write!(f, "performance_improvement"),
-             TokenKind::InjuryRiskReduction => write!(f, "injury_risk_reduction"),
-             TokenKind::ConsistencyImprovement => write!(f, "consistency_improvement"),
-             TokenKind::OverallConfidence => write!(f, "overall_confidence"),
-             TokenKind::OptimizationAlgorithm => write!(f, "optimization_algorithm"),
-             TokenKind::AcquisitionFunction => write!(f, "acquisition_function"),
-             TokenKind::SurrogateModel => write!(f, "surrogate_model"),
-             TokenKind::ConstraintHandling => write!(f, "constraint_handling"),
-             TokenKind::PersonalizationFactors => write!(f, "personalization_factors"),
-             TokenKind::AnthropometricScaling => write!(f, "anthropometric_scaling"),
-             TokenKind::InjuryHistoryWeighting => write!(f, "injury_history_weighting"),
-             TokenKind::SportSpecificRequirements => write!(f, "sport_specific_requirements"),
-             TokenKind::AdaptationStrategy => write!(f, "adaptation_strategy"),
-             TokenKind::ProgressMonitoring => write!(f, "progress_monitoring"),
-             TokenKind::ThresholdAdjustment => write!(f, "threshold_adjustment"),
-             TokenKind::GoalRefinement => write!(f, "goal_refinement"),
-             TokenKind::InterventionTriggers => write!(f, "intervention_triggers"),
-             TokenKind::RealTimeOrchestrator => write!(f, "real_time_orchestrator"),
-             TokenKind::StreamProcessing => write!(f, "stream_processing"),
-             TokenKind::VideoFeed => write!(f, "video_feed"),
-             TokenKind::SensorData => write!(f, "sensor_data"),
-             TokenKind::Environmental => write!(f, "environmental"),
-             TokenKind::WithLatency => write!(f, "with_latency"),
-             TokenKind::WithFrequency => write!(f, "with_frequency"),
-             TokenKind::WithUpdateRate => write!(f, "with_update_rate"),
-             TokenKind::ContinuousEvaluation => write!(f, "continuous_evaluation"),
-             TokenKind::ExtractCurrentPose => write!(f, "extract_current_pose"),
-             TokenKind::CalculateInstantaneousMetrics => write!(f, "calculate_instantaneous_metrics"),
-             TokenKind::UpdatePropositionEvidence => write!(f, "update_proposition_evidence"),
-             TokenKind::TemporalWeighting => write!(f, "temporal_weighting"),
-             TokenKind::RecencyBiasCorrection => write!(f, "recency_bias_correction"),
-             TokenKind::SignificantDeviationDetected => write!(f, "significant_deviation_detected"),
-             TokenKind::GenerateImmediateFeedback => write!(f, "generate_immediate_feedback"),
-             TokenKind::DeviationType => write!(f, "deviation_type"),
-             TokenKind::CorrectionStrategy => write!(f, "correction_strategy"),
-             TokenKind::DisplayRealTimeGuidance => write!(f, "display_real_time_guidance"),
-             TokenKind::VerificationSystem => write!(f, "verification_system"),
-             TokenKind::VerificationMethods => write!(f, "verification_methods"),
-             TokenKind::VisualSimilarityVerification => write!(f, "visual_similarity_verification"),
-             TokenKind::BiomechanicalConsistencyCheck => write!(f, "biomechanical_consistency_check"),
-             TokenKind::CrossReferenceValidation => write!(f, "cross_reference_validation"),
-             TokenKind::UncertaintyQuantificationValidation => write!(f, "uncertainty_quantification_validation"),
-             TokenKind::Interface => write!(f, "interface"),
-             TokenKind::Components => write!(f, "components"),
-             TokenKind::Orchestrator => write!(f, "orchestrator"),
-             TokenKind::Initialize => write!(f, "initialize"),
-             TokenKind::Execute => write!(f, "execute"),
-             TokenKind::Monitor => write!(f, "monitor"),
-             TokenKind::Phase => write!(f, "phase"),
-             TokenKind::ParallelEvaluate => write!(f, "parallel_evaluate"),
-             TokenKind::LoadEliteAthletes => write!(f, "load_elite_athletes"),
-             TokenKind::FilterBySport => write!(f, "filter_by_sport"),
-             TokenKind::ExtractCommonPatterns => write!(f, "extract_common_patterns"),
-             TokenKind::WeightedHarmonicMean => write!(f, "weighted_harmonic_mean"),
-             TokenKind::BayesianUpdate => write!(f, "bayesian_update"),
-             TokenKind::MonteCarloSimulation => write!(f, "monte_carlo_simulation"),
-             TokenKind::GeometricMean => write!(f, "geometric_mean"),
-             TokenKind::WeightedAverage => write!(f, "weighted_average"),
-             TokenKind::HarmonicMean => write!(f, "harmonic_mean"),
-             TokenKind::Milliseconds => write!(f, "ms"),
-             TokenKind::Hertz => write!(f, "Hz"),
-             TokenKind::DegreeSymbol => write!(f, "°"),
-             _ => write!(f, "{:?}", self),
+            TokenKind::SelfReflectionOnReasoningQuality => {
+                write!(f, "self_reflection_on_reasoning_quality")
+            }
+            TokenKind::Generate => write!(f, "generate"),
+            TokenKind::Execute => write!(f, "execute"),
+            TokenKind::Install => write!(f, "install"),
+            TokenKind::AutoInstall => write!(f, "auto_install"),
+            TokenKind::Packages => write!(f, "packages"),
+            TokenKind::Monitoring => write!(f, "monitoring"),
+            TokenKind::Resources => write!(f, "resources"),
+            TokenKind::Timeout => write!(f, "timeout"),
+            TokenKind::Connect => write!(f, "connect"),
+            TokenKind::Query => write!(f, "query"),
+            TokenKind::AiGenerate => write!(f, "ai_generate"),
+            TokenKind::AiOptimize => write!(f, "ai_optimize"),
+            TokenKind::AiDebug => write!(f, "ai_debug"),
+            TokenKind::AiExplain => write!(f, "ai_explain"),
+            TokenKind::AiTranslate => write!(f, "ai_translate"),
+            TokenKind::AiReview => write!(f, "ai_review"),
+            TokenKind::Workflow => write!(f, "workflow"),
+            TokenKind::Stage => write!(f, "stage"),
+            TokenKind::DependsOn => write!(f, "depends_on"),
+            TokenKind::Container => write!(f, "container"),
+            TokenKind::BaseImage => write!(f, "base_image"),
+            TokenKind::Volumes => write!(f, "volumes"),
+            TokenKind::EnvironmentVars => write!(f, "environment_vars"),
+            TokenKind::WorkingDirectory => write!(f, "working_directory"),
+            TokenKind::Share => write!(f, "share"),
+            TokenKind::Sync => write!(f, "sync"),
+            TokenKind::Permissions => write!(f, "permissions"),
+            TokenKind::Encryption => write!(f, "encryption"),
+            TokenKind::Python => write!(f, "python"),
+            TokenKind::R => write!(f, "r"),
+            TokenKind::Rust => write!(f, "rust"),
+            TokenKind::Julia => write!(f, "julia"),
+            TokenKind::Matlab => write!(f, "matlab"),
+            TokenKind::Shell => write!(f, "shell"),
+            TokenKind::JavaScript => write!(f, "javascript"),
+            TokenKind::SQL => write!(f, "sql"),
+            TokenKind::Docker => write!(f, "docker"),
+            TokenKind::Kubernetes => write!(f, "kubernetes"),
+            TokenKind::Nextflow => write!(f, "nextflow"),
+            TokenKind::Snakemake => write!(f, "snakemake"),
+            TokenKind::CWL => write!(f, "cwl"),
+            TokenKind::HuggingFace => write!(f, "huggingface"),
+            TokenKind::OpenAI => write!(f, "openai"),
+            TokenKind::GitHub => write!(f, "github"),
+            TokenKind::DockerHub => write!(f, "docker_hub"),
+            TokenKind::CondaForge => write!(f, "conda_forge"),
+            TokenKind::PyPI => write!(f, "pypi"),
+            TokenKind::CRAN => write!(f, "cran"),
+            TokenKind::BioConductor => write!(f, "bioconductor"),
+            TokenKind::ChemBL => write!(f, "chembl"),
+            TokenKind::PubChem => write!(f, "pubchem"),
+            TokenKind::UniProt => write!(f, "uniprot"),
+            TokenKind::NCBI => write!(f, "ncbi"),
+            TokenKind::Config => write!(f, "config"),
+            TokenKind::Datasources => write!(f, "datasources"),
+            TokenKind::PlatformVersion => write!(f, "platform_version"),
+            TokenKind::UncertaintyModel => write!(f, "uncertainty_model"),
+            TokenKind::ConfidenceThreshold => write!(f, "confidence_threshold"),
+            TokenKind::VerificationRequired => write!(f, "verification_required"),
+            TokenKind::RealTimeAnalysis => write!(f, "real_time_analysis"),
+            TokenKind::VideoAnalysis => write!(f, "video_analysis"),
+            TokenKind::PoseModels => write!(f, "pose_models"),
+            TokenKind::GroundReactionForces => write!(f, "ground_reaction_forces"),
+            TokenKind::ExpertAnnotations => write!(f, "expert_annotations"),
+            TokenKind::Fps => write!(f, "fps"),
+            TokenKind::Resolution => write!(f, "resolution"),
+            TokenKind::PoseConfidence => write!(f, "pose_confidence"),
+            TokenKind::OcclusionHandling => write!(f, "occlusion_handling"),
+            TokenKind::MultiCameraFusion => write!(f, "multi_camera_fusion"),
+            TokenKind::Landmarks => write!(f, "landmarks"),
+            TokenKind::CoordinateAccuracy => write!(f, "coordinate_accuracy"),
+            TokenKind::TemporalConsistency => write!(f, "temporal_consistency"),
+            TokenKind::MissingDataInterpolation => write!(f, "missing_data_interpolation"),
+            TokenKind::SamplingRate => write!(f, "sampling_rate"),
+            TokenKind::ForceAccuracy => write!(f, "force_accuracy"),
+            TokenKind::MomentAccuracy => write!(f, "moment_accuracy"),
+            TokenKind::InterRaterReliability => write!(f, "inter_rater_reliability"),
+            TokenKind::ExpertConfidence => write!(f, "expert_confidence"),
+            TokenKind::BiasCorrection => write!(f, "bias_correction"),
+            TokenKind::Segment => write!(f, "segment"),
+            TokenKind::ExtractPhase => write!(f, "extract_phase"),
+            TokenKind::StartPhase => write!(f, "start_phase"),
+            TokenKind::DrivePhase => write!(f, "drive_phase"),
+            TokenKind::MaxVelocityPhase => write!(f, "max_velocity_phase"),
+            TokenKind::ImpactPhase => write!(f, "impact_phase"),
+            TokenKind::PunchInitiation => write!(f, "punch_initiation"),
+            TokenKind::WindUp => write!(f, "wind_up"),
+            TokenKind::Contact => write!(f, "contact"),
+            TokenKind::BlockAngle => write!(f, "block_angle"),
+            TokenKind::ShinAngle => write!(f, "shin_angle"),
+            TokenKind::FirstStepLength => write!(f, "first_step_length"),
+            TokenKind::LegLength => write!(f, "leg_length"),
+            TokenKind::GroundContactAngle => write!(f, "ground_contact_angle"),
+            TokenKind::StrideFrequency => write!(f, "stride_frequency"),
+            TokenKind::VerticalOscillation => write!(f, "vertical_oscillation"),
+            TokenKind::StrideLength => write!(f, "stride_length"),
+            TokenKind::GroundContactTime => write!(f, "ground_contact_time"),
+            TokenKind::FlightTime => write!(f, "flight_time"),
+            TokenKind::HipRotation => write!(f, "hip_rotation"),
+            TokenKind::ShoulderSeparation => write!(f, "shoulder_separation"),
+            TokenKind::WeightTransfer => write!(f, "weight_transfer"),
+            TokenKind::WristAlignment => write!(f, "wrist_alignment"),
+            TokenKind::ElbowExtension => write!(f, "elbow_extension"),
+            TokenKind::FollowThrough => write!(f, "follow_through"),
+            TokenKind::OptimalRange => write!(f, "optimal_range"),
+            TokenKind::DecreasesLinearly => write!(f, "decreases_linearly"),
+            TokenKind::IncreasesOptimally => write!(f, "increases_optimally"),
+            TokenKind::AtOptimalFrequencyRatio => write!(f, "at_optimal_frequency_ratio"),
+            TokenKind::HipRotationLeadsSequence => write!(f, "hip_rotation_leads_sequence"),
+            TokenKind::MaintainsStraight => write!(f, "maintains_straight"),
+            TokenKind::ExtensionComplete => write!(f, "extension_complete"),
+            TokenKind::WithinOptimalRange => write!(f, "within_optimal_range"),
+            TokenKind::EvidenceIntegrator => write!(f, "evidence_integrator"),
+            TokenKind::FusionMethods => write!(f, "fusion_methods"),
+            TokenKind::BayesianInference => write!(f, "bayesian_inference"),
+            TokenKind::UncertaintyPropagation => write!(f, "uncertainty_propagation"),
+            TokenKind::MultiFidelityFusion => write!(f, "multi_fidelity_fusion"),
+            TokenKind::ValidationPipeline => write!(f, "validation_pipeline"),
+            TokenKind::CrossValidation => write!(f, "cross_validation"),
+            TokenKind::BootstrapValidation => write!(f, "bootstrap_validation"),
+            TokenKind::ExternalValidation => write!(f, "external_validation"),
+            TokenKind::PriorConstruction => write!(f, "prior_construction"),
+            TokenKind::LikelihoodModeling => write!(f, "likelihood_modeling"),
+            TokenKind::PosteriorSampling => write!(f, "posterior_sampling"),
+            TokenKind::MarkovChainMonteCarlo => write!(f, "markov_chain_monte_carlo"),
+            TokenKind::ConvergenceDiagnostics => write!(f, "convergence_diagnostics"),
+            TokenKind::GelmanRubinStatistic => write!(f, "gelman_rubin_statistic"),
+            TokenKind::SuccessThresholds => write!(f, "success_thresholds"),
+            TokenKind::PerformanceImprovement => write!(f, "performance_improvement"),
+            TokenKind::InjuryRiskReduction => write!(f, "injury_risk_reduction"),
+            TokenKind::ConsistencyImprovement => write!(f, "consistency_improvement"),
+            TokenKind::OverallConfidence => write!(f, "overall_confidence"),
+            TokenKind::OptimizationAlgorithm => write!(f, "optimization_algorithm"),
+            TokenKind::AcquisitionFunction => write!(f, "acquisition_function"),
+            TokenKind::SurrogateModel => write!(f, "surrogate_model"),
+            TokenKind::ConstraintHandling => write!(f, "constraint_handling"),
+            TokenKind::PersonalizationFactors => write!(f, "personalization_factors"),
+            TokenKind::AnthropometricScaling => write!(f, "anthropometric_scaling"),
+            TokenKind::InjuryHistoryWeighting => write!(f, "injury_history_weighting"),
+            TokenKind::SportSpecificRequirements => write!(f, "sport_specific_requirements"),
+            TokenKind::AdaptationStrategy => write!(f, "adaptation_strategy"),
+            TokenKind::ProgressMonitoring => write!(f, "progress_monitoring"),
+            TokenKind::ThresholdAdjustment => write!(f, "threshold_adjustment"),
+            TokenKind::GoalRefinement => write!(f, "goal_refinement"),
+            TokenKind::InterventionTriggers => write!(f, "intervention_triggers"),
+            TokenKind::RealTimeOrchestrator => write!(f, "real_time_orchestrator"),
+            TokenKind::StreamProcessing => write!(f, "stream_processing"),
+            TokenKind::VideoFeed => write!(f, "video_feed"),
+            TokenKind::SensorData => write!(f, "sensor_data"),
+            TokenKind::Environmental => write!(f, "environmental"),
+            TokenKind::WithLatency => write!(f, "with_latency"),
+            TokenKind::WithFrequency => write!(f, "with_frequency"),
+            TokenKind::WithUpdateRate => write!(f, "with_update_rate"),
+            TokenKind::ContinuousEvaluation => write!(f, "continuous_evaluation"),
+            TokenKind::ExtractCurrentPose => write!(f, "extract_current_pose"),
+            TokenKind::CalculateInstantaneousMetrics => {
+                write!(f, "calculate_instantaneous_metrics")
+            }
+            TokenKind::UpdatePropositionEvidence => write!(f, "update_proposition_evidence"),
+            TokenKind::TemporalWeighting => write!(f, "temporal_weighting"),
+            TokenKind::RecencyBiasCorrection => write!(f, "recency_bias_correction"),
+            TokenKind::SignificantDeviationDetected => write!(f, "significant_deviation_detected"),
+            TokenKind::GenerateImmediateFeedback => write!(f, "generate_immediate_feedback"),
+            TokenKind::DeviationType => write!(f, "deviation_type"),
+            TokenKind::CorrectionStrategy => write!(f, "correction_strategy"),
+            TokenKind::DisplayRealTimeGuidance => write!(f, "display_real_time_guidance"),
+            TokenKind::VerificationSystem => write!(f, "verification_system"),
+            TokenKind::VerificationMethods => write!(f, "verification_methods"),
+            TokenKind::VisualSimilarityVerification => write!(f, "visual_similarity_verification"),
+            TokenKind::BiomechanicalConsistencyCheck => {
+                write!(f, "biomechanical_consistency_check")
+            }
+            TokenKind::CrossReferenceValidation => write!(f, "cross_reference_validation"),
+            TokenKind::UncertaintyQuantificationValidation => {
+                write!(f, "uncertainty_quantification_validation")
+            }
+            TokenKind::Interface => write!(f, "interface"),
+            TokenKind::Components => write!(f, "components"),
+            TokenKind::Orchestrator => write!(f, "orchestrator"),
+            TokenKind::Initialize => write!(f, "initialize"),
+            TokenKind::Execute => write!(f, "execute"),
+            TokenKind::Monitor => write!(f, "monitor"),
+            TokenKind::Phase => write!(f, "phase"),
+            TokenKind::ParallelEvaluate => write!(f, "parallel_evaluate"),
+            TokenKind::LoadEliteAthletes => write!(f, "load_elite_athletes"),
+            TokenKind::FilterBySport => write!(f, "filter_by_sport"),
+            TokenKind::ExtractCommonPatterns => write!(f, "extract_common_patterns"),
+            TokenKind::WeightedHarmonicMean => write!(f, "weighted_harmonic_mean"),
+            TokenKind::BayesianUpdate => write!(f, "bayesian_update"),
+            TokenKind::MonteCarloSimulation => write!(f, "monte_carlo_simulation"),
+            TokenKind::GeometricMean => write!(f, "geometric_mean"),
+            TokenKind::WeightedAverage => write!(f, "weighted_average"),
+            TokenKind::HarmonicMean => write!(f, "harmonic_mean"),
+            TokenKind::Milliseconds => write!(f, "ms"),
+            TokenKind::Hertz => write!(f, "Hz"),
+            TokenKind::DegreeSymbol => write!(f, "°"),
+            TokenKind::BayesianNetwork => write!(f, "bayesian_network"),
+            TokenKind::Nodes => write!(f, "nodes"),
+            TokenKind::Edges => write!(f, "edges"),
+            TokenKind::OptimizationTargets => write!(f, "optimization_targets"),
+            TokenKind::CausalStrength => write!(f, "causal_strength"),
+            TokenKind::InfluenceStrength => write!(f, "influence_strength"),
+            TokenKind::OutcomeStrength => write!(f, "outcome_strength"),
+            TokenKind::DirectCorrelation => write!(f, "direct_correlation"),
+            TokenKind::Fuzziness => write!(f, "fuzziness"),
+            TokenKind::Maximize => write!(f, "maximize"),
+            TokenKind::Minimize => write!(f, "minimize"),
+            TokenKind::Balance => write!(f, "balance"),
+            TokenKind::Vs => write!(f, "vs"),
+            TokenKind::SensorFusion => write!(f, "sensor_fusion"),
+            TokenKind::PrimarySensors => write!(f, "primary_sensors"),
+            TokenKind::SecondarySensors => write!(f, "secondary_sensors"),
+            TokenKind::FusionStrategy => write!(f, "fusion_strategy"),
+            TokenKind::VideoSensor => write!(f, "VideoSensor"),
+            TokenKind::ForceSensor => write!(f, "ForceSensor"),
+            TokenKind::IMUSensor => write!(f, "IMUSensor"),
+            TokenKind::WeatherSensor => write!(f, "WeatherSensor"),
+            TokenKind::HeartRateSensor => write!(f, "HeartRateSensor"),
+            TokenKind::Stabilization => write!(f, "stabilization"),
+            TokenKind::Calibration => write!(f, "calibration"),
+            TokenKind::Placement => write!(f, "placement"),
+            TokenKind::Rate => write!(f, "rate"),
+            TokenKind::WindSpeed => write!(f, "wind_speed"),
+            TokenKind::Humidity => write!(f, "humidity"),
+            TokenKind::RealTime => write!(f, "real_time"),
+            TokenKind::CrossCorrelationSync => write!(f, "cross_correlation_sync"),
+            TokenKind::MonteCarloSampling => write!(f, "monte_carlo_sampling"),
+            TokenKind::Iterations => write!(f, "iterations"),
+            TokenKind::GaussianProcessInterpolation => write!(f, "gaussian_process_interpolation"),
+            TokenKind::MahalanobisDistance => write!(f, "mahalanobis_distance"),
+            TokenKind::CrossSensorValidation => write!(f, "cross_sensor_validation"),
+            TokenKind::Mandatory => write!(f, "mandatory"),
+            TokenKind::DriftCorrection => write!(f, "drift_correction"),
+            TokenKind::AdaptiveKalmanFilter => write!(f, "adaptive_kalman_filter"),
+            TokenKind::SynchronizationError => write!(f, "synchronization_error"),
+            TokenKind::MaxTolerance => write!(f, "max_tolerance"),
+            TokenKind::TemporalAnalysis => write!(f, "temporal_analysis"),
+            TokenKind::InputValidation => write!(f, "input_validation"),
+            TokenKind::FormatCheck => write!(f, "format_check"),
+            TokenKind::QualityAssessment => write!(f, "quality_assessment"),
+            TokenKind::Automated => write!(f, "automated"),
+            TokenKind::FrameContinuity => write!(f, "frame_continuity"),
+            TokenKind::Strict => write!(f, "strict"),
+            TokenKind::PreprocessingStages => write!(f, "preprocessing_stages"),
+            TokenKind::OpticalFlowStabilization => write!(f, "optical_flow_stabilization"),
+            TokenKind::ReferencePoints => write!(f, "reference_points"),
+            TokenKind::AutomaticFeatureDetection => write!(f, "automatic_feature_detection"),
+            TokenKind::QualityThreshold => write!(f, "quality_threshold"),
+            TokenKind::Fallback => write!(f, "fallback"),
+            TokenKind::GyroscopicStabilization => write!(f, "gyroscopic_stabilization"),
+            TokenKind::ContrastOptimization => write!(f, "contrast_optimization"),
+            TokenKind::HistogramEqualizationAdaptive => {
+                write!(f, "histogram_equalization_adaptive")
+            }
+            TokenKind::NoiseReduction => write!(f, "noise_reduction"),
+            TokenKind::BilateralFilter => write!(f, "bilateral_filter"),
+            TokenKind::SigmaSpace => write!(f, "sigma_space"),
+            TokenKind::SigmaColor => write!(f, "sigma_color"),
+            TokenKind::SharpnessEnhancement => write!(f, "sharpness_enhancement"),
+            TokenKind::UnsharpMask => write!(f, "unsharp_mask"),
+            TokenKind::Amount => write!(f, "amount"),
+            TokenKind::Segmentation => write!(f, "segmentation"),
+            TokenKind::AthleteDetection => write!(f, "athlete_detection"),
+            TokenKind::YoloV8CustomTrained => write!(f, "yolo_v8_custom_trained"),
+            TokenKind::BackgroundSubtraction => write!(f, "background_subtraction"),
+            TokenKind::MixtureOfGaussians => write!(f, "mixture_of_gaussians"),
+            TokenKind::RegionOfInterest => write!(f, "region_of_interest"),
+            TokenKind::DynamicTrackingBounds => write!(f, "dynamic_tracking_bounds"),
+            TokenKind::QualityMonitoring => write!(f, "quality_monitoring"),
+            TokenKind::RealTimeAssessment => write!(f, "real_time_assessment"),
+            TokenKind::AdaptiveParameters => write!(f, "adaptive_parameters"),
+            TokenKind::FallbackStrategies => write!(f, "fallback_strategies"),
+            TokenKind::Comprehensive => write!(f, "comprehensive"),
+            TokenKind::Biomechanical => write!(f, "biomechanical"),
+            TokenKind::DetectionModels => write!(f, "detection_models"),
+            TokenKind::Primary => write!(f, "primary"),
+            TokenKind::Secondary => write!(f, "secondary"),
+            TokenKind::Validation => write!(f, "validation"),
+            TokenKind::MediaPipeBlazePose => write!(f, "MediaPipeBlazePose"),
+            TokenKind::Complexity => write!(f, "complexity"),
+            TokenKind::SmoothLandmarks => write!(f, "smooth_landmarks"),
+            TokenKind::OpenPoseCustom => write!(f, "OpenPoseCustom"),
+            TokenKind::Model => write!(f, "model"),
+            TokenKind::SportsOptimized => write!(f, "sports_optimized"),
+            TokenKind::CrossModelConsensus => write!(f, "CrossModelConsensus"),
+            TokenKind::AgreementThreshold => write!(f, "agreement_threshold"),
+            TokenKind::UncertaintyQuantification => write!(f, "uncertainty_quantification"),
+            TokenKind::ConfidencePropagation => write!(f, "confidence_propagation"),
+            TokenKind::BayesianBootstrap => write!(f, "bayesian_bootstrap"),
+            TokenKind::Samples => write!(f, "samples"),
+            TokenKind::OneEuroFilter => write!(f, "one_euro_filter"),
+            TokenKind::MinCutoff => write!(f, "min_cutoff"),
+            TokenKind::Beta => write!(f, "beta"),
+            TokenKind::AnatomicalConstraints => write!(f, "anatomical_constraints"),
+            TokenKind::HumanKinematicsValidator => write!(f, "human_kinematics_validator"),
+            TokenKind::KeypointProcessing => write!(f, "keypoint_processing"),
+            TokenKind::CoordinateSmoothing => write!(f, "coordinate_smoothing"),
+            TokenKind::SavitzkyGolayFilter => write!(f, "savitzky_golay_filter"),
+            TokenKind::Window => write!(f, "window"),
+            TokenKind::Order => write!(f, "order"),
+            TokenKind::MissingDataInterpolation => write!(f, "missing_data_interpolation"),
+            TokenKind::CubicSplineWithPhysicsConstraints => {
+                write!(f, "cubic_spline_with_physics_constraints")
+            }
+            TokenKind::OutlierRejection => write!(f, "outlier_rejection"),
+            TokenKind::ZScoreTemporal => write!(f, "z_score_temporal"),
+            TokenKind::OutputFormat => write!(f, "output_format"),
+            TokenKind::Coordinates => write!(f, "coordinates"),
+            TokenKind::WorldSpace3d => write!(f, "world_space_3d"),
+            TokenKind::ConfidenceBounds => write!(f, "confidence_bounds"),
+            TokenKind::BayesianCredibleIntervals => write!(f, "bayesian_credible_intervals"),
+            TokenKind::Level => write!(f, "level"),
+            TokenKind::TemporalDerivatives => write!(f, "temporal_derivatives"),
+            TokenKind::ComputedWithUncertainty => write!(f, "computed_with_uncertainty"),
+            TokenKind::BiomechanicalRange => write!(f, "biomechanical_range"),
+            TokenKind::AdaptiveThreshold => write!(f, "adaptive_threshold"),
+            TokenKind::AthleteSpecificOptimization => write!(f, "athlete_specific_optimization"),
+            TokenKind::ConfidenceWeighting => write!(f, "confidence_weighting"),
+            TokenKind::StrideConsistencyFactor => write!(f, "stride_consistency_factor"),
+            TokenKind::TargetRange => write!(f, "target_range"),
+            TokenKind::PhaseAnalysis => write!(f, "phase_analysis"),
+            TokenKind::StanceVsSwingOptimization => write!(f, "stance_vs_swing_optimization"),
+            TokenKind::SurfaceAdaptation => write!(f, "surface_adaptation"),
+            TokenKind::TrackSpecificAdjustments => write!(f, "track_specific_adjustments"),
+            TokenKind::GrfAnalysis => write!(f, "grf_analysis"),
+            TokenKind::VerticalHorizontalForceBalance => {
+                write!(f, "vertical_horizontal_force_balance")
+            }
+            TokenKind::JointPowerAnalysis => write!(f, "joint_power_analysis"),
+            TokenKind::HipKneeAnkleCoordination => write!(f, "hip_knee_ankle_coordination"),
+            TokenKind::EfficiencyMetric => write!(f, "efficiency_metric"),
+            TokenKind::PropulsiveImpulseMaximization => {
+                write!(f, "propulsive_impulse_maximization")
+            }
+            TokenKind::TrunkAngleStability => write!(f, "trunk_angle_stability"),
+            TokenKind::DeviationMinimization => write!(f, "deviation_minimization"),
+            TokenKind::HeadPosition => write!(f, "head_position"),
+            TokenKind::AerodynamicOptimization => write!(f, "aerodynamic_optimization"),
+            TokenKind::ArmSwingCoordination => write!(f, "arm_swing_coordination"),
+            TokenKind::CounterRotationBalance => write!(f, "counter_rotation_balance"),
+            TokenKind::FuzzyEvaluate => write!(f, "fuzzy_evaluate"),
+            TokenKind::CalculateStrideFrequency => write!(f, "calculate_stride_frequency"),
+            TokenKind::PoseSequence => write!(f, "pose_sequence"),
+            TokenKind::GetOptimalStrideFrequency => write!(f, "get_optimal_stride_frequency"),
+            TokenKind::FuzzyMatch => write!(f, "fuzzy_match"),
+            TokenKind::Tolerance => write!(f, "tolerance"),
+            TokenKind::WithConfidence => write!(f, "with_confidence"),
+            TokenKind::Base => write!(f, "base"),
+            TokenKind::ConsistencyScore => write!(f, "consistency_score"),
+            TokenKind::Modifier => write!(f, "modifier"),
+            TokenKind::WindAdjustment => write!(f, "wind_adjustment"),
+            TokenKind::Uncertainty => write!(f, "uncertainty"),
+            TokenKind::PoseDetection => write!(f, "pose_detection"),
+            TokenKind::DecomposeStancePhase => write!(f, "decompose_stance_phase"),
+            TokenKind::ForceData => write!(f, "force_data"),
+            TokenKind::PoseData => write!(f, "pose_data"),
+            TokenKind::StrideSequence => write!(f, "stride_sequence"),
+            TokenKind::StanceDuration => write!(f, "stance_duration"),
+            TokenKind::CalculatePropulsiveImpulse => write!(f, "calculate_propulsive_impulse"),
+            TokenKind::BaselineImpulse => write!(f, "baseline_impulse"),
+            TokenKind::NormalizedScore => write!(f, "normalized_score"),
+            TokenKind::OptimizationScore => write!(f, "optimization_score"),
+            TokenKind::CausalInference => write!(f, "causal_inference"),
+            TokenKind::CalculateJointPowers => write!(f, "calculate_joint_powers"),
+            TokenKind::PoseKinematics => write!(f, "pose_kinematics"),
+            TokenKind::AssessKineticChainEfficiency => write!(f, "assess_kinetic_chain_efficiency"),
+            TokenKind::CausalChain => write!(f, "causal_chain"),
+            TokenKind::HipDrive => write!(f, "hip_drive"),
+            TokenKind::KneeExtension => write!(f, "knee_extension"),
+            TokenKind::AnklePlantarFlexion => write!(f, "ankle_plantar_flexion"),
+            TokenKind::TemporalOffset => write!(f, "temporal_offset"),
+            TokenKind::Seconds => write!(f, "seconds"),
+            TokenKind::PowerTransferEfficiency => write!(f, "power_transfer_efficiency"),
+            TokenKind::MinimizeEnergyLoss => write!(f, "minimize_energy_loss"),
+            TokenKind::CoordinationIndex => write!(f, "coordination_index"),
+            TokenKind::WithEvidence => write!(f, "with_evidence"),
+            TokenKind::CoordinationQuality => write!(f, "coordination_quality"),
+            TokenKind::PowerMagnitude => write!(f, "power_magnitude"),
+            TokenKind::PeakCombined => write!(f, "peak_combined"),
+            TokenKind::TimingPrecision => write!(f, "timing_precision"),
+            TokenKind::SynchronizationScore => write!(f, "synchronization_score"),
+            TokenKind::PatternRegistry => write!(f, "pattern_registry"),
+            TokenKind::Category => write!(f, "category"),
+            TokenKind::EliteSprintPatterns => write!(f, "EliteSprintPatterns"),
+            TokenKind::AccelerationPattern => write!(f, "acceleration_pattern"),
+            TokenKind::ProgressiveVelocityIncrease => write!(f, "ProgressiveVelocityIncrease"),
+            TokenKind::Phases => write!(f, "phases"),
+            TokenKind::TransitionSmoothness => write!(f, "transition_smoothness"),
+            TokenKind::PeakDetection => write!(f, "peak_detection"),
+            TokenKind::StridePattern => write!(f, "stride_pattern"),
+            TokenKind::OptimalStrideProgression => write!(f, "OptimalStrideProgression"),
+            TokenKind::LengthFrequencyRelationship => write!(f, "length_frequency_relationship"),
+            TokenKind::InverseCorrelation => write!(f, "inverse_correlation"),
+            TokenKind::AdaptationRate => write!(f, "adaptation_rate"),
+            TokenKind::GradualIncrease => write!(f, "gradual_increase"),
+            TokenKind::ConsistencyMeasure => write!(f, "consistency_measure"),
+            TokenKind::CoefficientOfVariation => write!(f, "coefficient_of_variation"),
+            TokenKind::ForcePattern => write!(f, "force_pattern"),
+            TokenKind::BiphasicGroundReaction => write!(f, "BiphasicGroundReaction"),
+            TokenKind::BrakingPhase => write!(f, "braking_phase"),
+            TokenKind::MinimizeDuration => write!(f, "minimize_duration"),
+            TokenKind::PropulsivePhase => write!(f, "propulsive_phase"),
+            TokenKind::MaximizeImpulse => write!(f, "maximize_impulse"),
+            TokenKind::TransitionTiming => write!(f, "transition_timing"),
+            TokenKind::OptimalCenterOfMassPosition => write!(f, "optimal_center_of_mass_position"),
+            TokenKind::TechniqueFaults => write!(f, "TechniqueFaults"),
+            TokenKind::Overstriding => write!(f, "overstriding"),
+            TokenKind::ExcessiveStrideLengthPattern => write!(f, "ExcessiveStrideLengthPattern"),
+            TokenKind::Indicators => write!(f, "indicators"),
+            TokenKind::IncreasedGroundContactTime => write!(f, "increased_ground_contact_time"),
+            TokenKind::ReducedStrideFrequency => write!(f, "reduced_stride_frequency"),
+            TokenKind::HeelStriking => write!(f, "heel_striking"),
+            TokenKind::SeverityLevels => write!(f, "severity_levels"),
+            TokenKind::Mild => write!(f, "mild"),
+            TokenKind::Moderate => write!(f, "moderate"),
+            TokenKind::Severe => write!(f, "severe"),
+            TokenKind::CorrectionSuggestions => write!(f, "correction_suggestions"),
+            TokenKind::AutomatedFeedbackGeneration => write!(f, "automated_feedback_generation"),
+            TokenKind::InefficientArmSwing => write!(f, "inefficient_arm_swing"),
+            TokenKind::SuboptimalArmPattern => write!(f, "SuboptimalArmPattern"),
+            TokenKind::ExcessiveLateralMovement => write!(f, "excessive_lateral_movement"),
+            TokenKind::AsymmetricTiming => write!(f, "asymmetric_timing"),
+            TokenKind::InsufficientRange => write!(f, "insufficient_range"),
+            TokenKind::BiomechanicalCost => write!(f, "biomechanical_cost"),
+            TokenKind::EnergyWasteQuantification => write!(f, "energy_waste_quantification"),
+            TokenKind::PerformanceImpact => write!(f, "performance_impact"),
+            TokenKind::VelocityReductionEstimation => write!(f, "velocity_reduction_estimation"),
+            TokenKind::PatternMatching => write!(f, "pattern_matching"),
+            TokenKind::FuzzyMatching => write!(f, "fuzzy_matching"),
+            TokenKind::Enabled => write!(f, "enabled"),
+            TokenKind::TemporalTolerance => write!(f, "temporal_tolerance"),
+            TokenKind::SpatialTolerance => write!(f, "spatial_tolerance"),
+            TokenKind::Percent => write!(f, "percent"),
+            TokenKind::AdaptationLearning => write!(f, "adaptation_learning"),
+            TokenKind::AthleteSpecificPatterns => write!(f, "athlete_specific_patterns"),
+            TokenKind::MachineLearningPersonalization => {
+                write!(f, "machine_learning_personalization")
+            }
+            TokenKind::EnvironmentalAdaptations => write!(f, "environmental_adaptations"),
+            TokenKind::SurfaceWeatherAdjustments => write!(f, "surface_weather_adjustments"),
+            TokenKind::PerformanceEvolution => write!(f, "performance_evolution"),
+            TokenKind::LongitudinalPatternTracking => write!(f, "longitudinal_pattern_tracking"),
+            TokenKind::InputStream => write!(f, "input_stream"),
+            TokenKind::SynchronizedSensorData => write!(f, "synchronized_sensor_data"),
+            TokenKind::AnalysisLatency => write!(f, "analysis_latency"),
+            TokenKind::Max100Milliseconds => write!(f, "max_100_milliseconds"),
+            TokenKind::BufferManagement => write!(f, "buffer_management"),
+            TokenKind::CircularBuffer => write!(f, "circular_buffer"),
+            TokenKind::Size => write!(f, "size"),
+            TokenKind::Frames => write!(f, "frames"),
+            TokenKind::StreamingAlgorithms => write!(f, "streaming_algorithms"),
+            TokenKind::OnlinePoseEstimation => write!(f, "online_pose_estimation"),
+            TokenKind::LightweightMobilenetOptimized => {
+                write!(f, "lightweight_mobilenet_optimized")
+            }
+            TokenKind::BatchProcessing => write!(f, "batch_processing"),
+            TokenKind::MiniBatchSize => write!(f, "mini_batch_size"),
+            TokenKind::GpuAcceleration => write!(f, "gpu_acceleration"),
+            TokenKind::TensorrtOptimization => write!(f, "tensorrt_optimization"),
+            TokenKind::IncrementalPatternMatching => write!(f, "incremental_pattern_matching"),
+            TokenKind::SlidingWindowAnalysis => write!(f, "sliding_window_analysis"),
+            TokenKind::OverlappingWindows => write!(f, "overlapping_windows"),
+            TokenKind::Step => write!(f, "step"),
+            TokenKind::PatternUpdates => write!(f, "pattern_updates"),
+            TokenKind::ExponentialForgettingFactor => write!(f, "exponential_forgetting_factor"),
+            TokenKind::AnomalyDetection => write!(f, "anomaly_detection"),
+            TokenKind::OneClassSvmOnline => write!(f, "one_class_svm_online"),
+            TokenKind::RealTimeFeedback => write!(f, "real_time_feedback"),
+            TokenKind::TechniqueAlerts => write!(f, "technique_alerts"),
+            TokenKind::ImmediateNotification => write!(f, "immediate_notification"),
+            TokenKind::PerformanceMetrics => write!(f, "performance_metrics"),
+            TokenKind::LiveDashboardUpdates => write!(f, "live_dashboard_updates"),
+            TokenKind::CoachingCues => write!(f, "coaching_cues"),
+            TokenKind::AutomatedVoiceFeedback => write!(f, "automated_voice_feedback"),
+            TokenKind::PerformanceOptimization => write!(f, "performance_optimization"),
+            TokenKind::MemoryManagement => write!(f, "memory_management"),
+            TokenKind::PreallocatedBuffers => write!(f, "preallocated_buffers"),
+            TokenKind::ComputationalEfficiency => write!(f, "computational_efficiency"),
+            TokenKind::VectorizedOperations => write!(f, "vectorized_operations"),
+            TokenKind::ParallelProcessing => write!(f, "parallel_processing"),
+            TokenKind::MultiThreadedExecution => write!(f, "multi_threaded_execution"),
+            TokenKind::AdaptiveQuality => write!(f, "adaptive_quality"),
+            TokenKind::DynamicResolutionAdjustment => write!(f, "dynamic_resolution_adjustment"),
+            TokenKind::FuzzySystem => write!(f, "fuzzy_system"),
+            TokenKind::MembershipFunctions => write!(f, "membership_functions"),
+            TokenKind::Triangular => write!(f, "triangular"),
+            TokenKind::Low => write!(f, "low"),
+            TokenKind::Medium => write!(f, "medium"),
+            TokenKind::High => write!(f, "high"),
+            TokenKind::Trapezoidal => write!(f, "trapezoidal"),
+            TokenKind::Poor => write!(f, "poor"),
+            TokenKind::Good => write!(f, "good"),
+            TokenKind::Excellent => write!(f, "excellent"),
+            TokenKind::EnvironmentalDifficulty => write!(f, "environmental_difficulty"),
+            TokenKind::Gaussian => write!(f, "gaussian"),
+            TokenKind::Center => write!(f, "center"),
+            TokenKind::Sigma => write!(f, "sigma"),
+            TokenKind::AthleteFatigue => write!(f, "athlete_fatigue"),
+            TokenKind::Sigmoid => write!(f, "sigmoid"),
+            TokenKind::Inflection => write!(f, "inflection"),
+            TokenKind::Steepness => write!(f, "steepness"),
+            TokenKind::FuzzyRules => write!(f, "fuzzy_rules"),
+            TokenKind::Rule => write!(f, "rule"),
+            TokenKind::Then => write!(f, "then"),
+            TokenKind::EvidenceReliability => write!(f, "evidence_reliability"),
+            TokenKind::ReducedBy => write!(f, "reduced_by"),
+            TokenKind::IncreaseBy => write!(f, "increase_by"),
+            TokenKind::PatternMatchingTolerance => write!(f, "pattern_matching_tolerance"),
+            TokenKind::IncreasedBy => write!(f, "increased_by"),
+            TokenKind::TemporalConsistencyRequirements => {
+                write!(f, "temporal_consistency_requirements")
+            }
+            TokenKind::RelaxedBy => write!(f, "relaxed_by"),
+            TokenKind::Defuzzification => write!(f, "defuzzification"),
+            TokenKind::Method => write!(f, "method"),
+            TokenKind::CentroidWeightedAverage => write!(f, "centroid_weighted_average"),
+            TokenKind::OutputScaling => write!(f, "output_scaling"),
+            TokenKind::NormalizedToProbabilityRange => write!(f, "normalized_to_probability_range"),
+            TokenKind::MaintainThroughoutPipeline => write!(f, "maintain_throughout_pipeline"),
+            TokenKind::BayesianUpdate => write!(f, "bayesian_update"),
+            TokenKind::UpdateStrategy => write!(f, "update_strategy"),
+            TokenKind::VariationalBayesWithFuzzyEvidence => {
+                write!(f, "variational_bayes_with_fuzzy_evidence")
+            }
+            TokenKind::ConvergenceCriteria => write!(f, "convergence_criteria"),
+            TokenKind::EvidenceLowerBoundImprovement => {
+                write!(f, "evidence_lower_bound_improvement")
+            }
+            TokenKind::MaxIterations => write!(f, "max_iterations"),
+            TokenKind::EvidenceIntegration => write!(f, "evidence_integration"),
+            TokenKind::FuzzyEvidenceToProbabiity => write!(f, "fuzzy_evidence_to_probability"),
+            TokenKind::FuzzyMeasureToBelievFunction => {
+                write!(f, "fuzzy_measure_to_belief_function")
+            }
+            TokenKind::UncertaintyRepresentation => write!(f, "uncertainty_representation"),
+            TokenKind::DempsterShaferTheory => write!(f, "dempster_shafer_theory"),
+            TokenKind::ConflictResolution => write!(f, "conflict_resolution"),
+            TokenKind::DempsterCombinationRule => write!(f, "dempster_combination_rule"),
+            TokenKind::TemporalEvidenceWeighting => write!(f, "temporal_evidence_weighting"),
+            TokenKind::RecencyBias => write!(f, "recency_bias"),
+            TokenKind::ExponentialDecay => write!(f, "exponential_decay"),
+            TokenKind::Lambda => write!(f, "lambda"),
+            TokenKind::ConsistencyBonus => write!(f, "consistency_bonus"),
+            TokenKind::RewardStableMeasurements => write!(f, "reward_stable_measurements"),
+            TokenKind::NoveltyDetection => write!(f, "novelty_detection"),
+            TokenKind::BayesianSurpriseMeasure => write!(f, "bayesian_surprise_measure"),
+            TokenKind::NetworkStructureAdaptation => write!(f, "network_structure_adaptation"),
+            TokenKind::EdgeWeightLearning => write!(f, "edge_weight_learning"),
+            TokenKind::OnlineGradientDescent => write!(f, "online_gradient_descent"),
+            TokenKind::StructureDiscovery => write!(f, "structure_discovery"),
+            TokenKind::BayesianInformationCriterion => write!(f, "bayesian_information_criterion"),
+            TokenKind::CausalInference => write!(f, "causal_inference"),
+            TokenKind::GrangerCausalityTesting => write!(f, "granger_causality_testing"),
+            TokenKind::ParameterUncertainty => write!(f, "parameter_uncertainty"),
+            TokenKind::PosteriorSampling => write!(f, "posterior_sampling"),
+            TokenKind::McmcChains => write!(f, "mcmc_chains"),
+            TokenKind::PredictionUncertainty => write!(f, "prediction_uncertainty"),
+            TokenKind::PredictivePosteriorSampling => write!(f, "predictive_posterior_sampling"),
+            TokenKind::ModelUncertainty => write!(f, "model_uncertainty"),
+            TokenKind::BayesianModelAveraging => write!(f, "bayesian_model_averaging"),
+            TokenKind::AnalysisWorkflow => write!(f, "analysis_workflow"),
+            TokenKind::AthleteProfile => write!(f, "athlete_profile"),
+            TokenKind::LoadProfile => write!(f, "load_profile"),
+            TokenKind::VideoData => write!(f, "video_data"),
+            TokenKind::LoadVideo => write!(f, "load_video"),
+            TokenKind::ReferenceData => write!(f, "reference_data"),
+            TokenKind::LoadBiomechanicalNorms => write!(f, "load_biomechanical_norms"),
+            TokenKind::PreprocessingStage => write!(f, "preprocessing_stage"),
+            TokenKind::OpticalFlowWithFeatureTracking => {
+                write!(f, "optical_flow_with_feature_tracking")
+            }
+            TokenKind::Enhancement => write!(f, "enhancement"),
+            TokenKind::AdaptiveHistogramEqualization => {
+                write!(f, "adaptive_histogram_equalization")
+            }
+            TokenKind::AthleteTracking => write!(f, "athlete_tracking"),
+            TokenKind::MultiObjectTrackingWithReid => write!(f, "multi_object_tracking_with_reid"),
+            TokenKind::TemporalSegmentation => write!(f, "temporal_segmentation"),
+            TokenKind::RacePhases => write!(f, "race_phases"),
+            TokenKind::Blocks => write!(f, "blocks"),
+            TokenKind::Acceleration => write!(f, "acceleration"),
+            TokenKind::Transition => write!(f, "transition"),
+            TokenKind::MaxVelocity => write!(f, "max_velocity"),
+            TokenKind::Maintenance => write!(f, "maintenance"),
+            TokenKind::AutomaticDetection => write!(f, "automatic_detection"),
+            TokenKind::VelocityProfileAnalysis => write!(f, "velocity_profile_analysis"),
+            TokenKind::ManualValidation => write!(f, "manual_validation"),
+            TokenKind::ExpertAnnotationInterface => write!(f, "expert_annotation_interface"),
+            TokenKind::BiomechanicalAnalysis => write!(f, "biomechanical_analysis"),
+            TokenKind::RaceConditions => write!(f, "race_conditions"),
+            TokenKind::GetEnvironmentalData => write!(f, "get_environmental_data"),
+            TokenKind::AthleteState => write!(f, "athlete_state"),
+            TokenKind::EstimatePhysiologicalState => write!(f, "estimate_physiological_state"),
+            TokenKind::RaceDate => write!(f, "race_date"),
+            TokenKind::EvidenceRequirements => write!(f, "evidence_requirements"),
+            TokenKind::StepLengthProgression => write!(f, "step_length_progression"),
+            TokenKind::GradualIncreaseWithPlateau => write!(f, "gradual_increase_with_plateau"),
+            TokenKind::StepFrequencyEvolution => write!(f, "step_frequency_evolution"),
+            TokenKind::RapidInitialIncrease => write!(f, "rapid_initial_increase"),
+            TokenKind::GroundContactOptimization => write!(f, "ground_contact_optimization"),
+            TokenKind::DecreasingContactTime => write!(f, "decreasing_contact_time"),
+            TokenKind::PosturalAdjustments => write!(f, "postural_adjustments"),
+            TokenKind::ProgressiveTrunkElevation => write!(f, "progressive_trunk_elevation"),
+            TokenKind::AccelerationPhaseData => write!(f, "acceleration_phase_data"),
+            TokenKind::AccelerationKinematics => write!(f, "acceleration_kinematics"),
+            TokenKind::AnalyzeStepProgression => write!(f, "analyze_step_progression"),
+            TokenKind::Step => write!(f, "step"),
+            TokenKind::StepAnalysis => write!(f, "step_analysis"),
+            TokenKind::CalculateLength => write!(f, "calculate_length"),
+            TokenKind::CalculateFrequency => write!(f, "calculate_frequency"),
+            TokenKind::GroundContactDuration => write!(f, "ground_contact_duration"),
+            TokenKind::StepQuality => write!(f, "step_quality"),
+            TokenKind::LengthOptimality => write!(f, "length_optimality"),
+            TokenKind::CompareToEliteNorms => write!(f, "compare_to_elite_norms"),
+            TokenKind::FrequencyOptimality => write!(f, "frequency_optimality"),
+            TokenKind::AssessFrequencyProgression => write!(f, "assess_frequency_progression"),
+            TokenKind::Number => write!(f, "number"),
+            TokenKind::ContactEfficiency => write!(f, "contact_efficiency"),
+            TokenKind::EvaluateContactMechanics => write!(f, "evaluate_contact_mechanics"),
+            TokenKind::GrfProfile => write!(f, "grf_profile"),
+            TokenKind::FuzzyHigh => write!(f, "fuzzy_high"),
+            TokenKind::FuzzyAppropriate => write!(f, "fuzzy_appropriate"),
+            TokenKind::FuzzyOptimal => write!(f, "fuzzy_optimal"),
+            TokenKind::CombinedScore => write!(f, "combined_score"),
+            TokenKind::Track => write!(f, "track"),
+            TokenKind::Evaluate => write!(f, "evaluate"),
+            TokenKind::Adapt => write!(f, "adapt"),
+            TokenKind::EvidenceCompleteness => write!(f, "evidence_completeness"),
+            TokenKind::AssessDataCoverageAdequacy => write!(f, "assess_data_coverage_adequacy"),
+            TokenKind::InferenceReliability => write!(f, "inference_reliability"),
+            TokenKind::EvaluateConclusionCertainty => write!(f, "evaluate_conclusion_certainty"),
+            TokenKind::MethodologyRobustness => write!(f, "methodology_robustness"),
+            TokenKind::AssessAnalyticalApproachValidity => {
+                write!(f, "assess_analytical_approach_validity")
+            }
+            TokenKind::ResultConsistency => write!(f, "result_consistency"),
+            TokenKind::CheckInternalConsistencyOfFindings => {
+                write!(f, "check_internal_consistency_of_findings")
+            }
+            TokenKind::ProperHandlingOfMeasurementError => {
+                write!(f, "proper_handling_of_measurement_error")
+            }
+            TokenKind::BiasIdentification => write!(f, "bias_identification"),
+            TokenKind::SystematicErrorDetectionAndCorrection => {
+                write!(f, "systematic_error_detection_and_correction")
+            }
+            TokenKind::ValidationAdequacy => write!(f, "validation_adequacy"),
+            TokenKind::CrossValidationAndExternalValidation => {
+                write!(f, "cross_validation_and_external_validation")
+            }
+            TokenKind::Reproducibility => write!(f, "reproducibility"),
+            TokenKind::AnalysisRepeatabilityAssessment => {
+                write!(f, "analysis_repeatability_assessment")
+            }
+            TokenKind::RecommendAdditionalDataCollection => {
+                write!(f, "recommend_additional_data_collection")
+            }
+            TokenKind::IdentifyCriticalMissingMeasurements => {
+                write!(f, "identify_critical_missing_measurements")
+            }
+            TokenKind::IncreateUncertaintyBounds => write!(f, "increase_uncertainty_bounds"),
+            TokenKind::RecommendConfirmatoryAnalysis => {
+                write!(f, "recommend_confirmatory_analysis")
+            }
+            TokenKind::HasConflicts => write!(f, "has_conflicts"),
+            TokenKind::TriggerDetailedInvestigation => write!(f, "trigger_detailed_investigation"),
+            TokenKind::ApplyConflictResolutionProtocols => {
+                write!(f, "apply_conflict_resolution_protocols")
+            }
+            TokenKind::OptimizationFramework => write!(f, "optimization_framework"),
+            TokenKind::ObjectiveFunctions => write!(f, "objective_functions"),
+            TokenKind::MaximizeSprintVelocity => write!(f, "maximize_sprint_velocity"),
+            TokenKind::MinimizeEnergyExpenditure => write!(f, "minimize_energy_expenditure"),
+            TokenKind::Constraints => write!(f, "constraints"),
+            TokenKind::MaintainInjuryRiskBelow => write!(f, "maintain_injury_risk_below"),
+            TokenKind::OptimizationVariables => write!(f, "optimization_variables"),
+            TokenKind::StrideParameters => write!(f, "stride_parameters"),
+            TokenKind::Continuous => write!(f, "continuous"),
+            TokenKind::Range => write!(f, "range"),
+            TokenKind::Meters => write!(f, "meters"),
+            TokenKind::Hz => write!(f, "hz"),
+            TokenKind::KinematicParameters => write!(f, "kinematic_parameters"),
+            TokenKind::TrunkLeanAngle => write!(f, "trunk_lean_angle"),
+            TokenKind::Degrees => write!(f, "degrees"),
+            TokenKind::KneeLiftHeight => write!(f, "knee_lift_height"),
+            TokenKind::ArmSwingAmplitude => write!(f, "arm_swing_amplitude"),
+            TokenKind::KineticParameters => write!(f, "kinetic_parameters"),
+            TokenKind::PeakGroundReactionForce => write!(f, "peak_ground_reaction_force"),
+            TokenKind::BodyWeights => write!(f, "body_weights"),
+            TokenKind::BrakingImpulse => write!(f, "braking_impulse"),
+            TokenKind::BodyWeightSeconds => write!(f, "body_weight_seconds"),
+            TokenKind::PropulsiveImpulse => write!(f, "propulsive_impulse"),
+            TokenKind::OptimizationMethods => write!(f, "optimization_methods"),
+            TokenKind::MultiObjective => write!(f, "multi_objective"),
+            TokenKind::NsgaIiiWithReferencePoints => write!(f, "nsga_iii_with_reference_points"),
+            TokenKind::ConstraintHandling => write!(f, "constraint_handling"),
+            TokenKind::PenaltyFunctionAdaptive => write!(f, "penalty_function_adaptive"),
+            TokenKind::UncertaintyHandling => write!(f, "uncertainty_handling"),
+            TokenKind::RobustOptimizationScenarios => write!(f, "robust_optimization_scenarios"),
+            TokenKind::Personalization => write!(f, "personalization"),
+            TokenKind::AthleteModeling => write!(f, "athlete_modeling"),
+            TokenKind::IndividualBiomechanicalConstraints => {
+                write!(f, "individual_biomechanical_constraints")
+            }
+            TokenKind::TrainingHistory => write!(f, "training_history"),
+            TokenKind::IncorporatePreviousOptimizations => {
+                write!(f, "incorporate_previous_optimizations")
+            }
+            TokenKind::InjuryHistory => write!(f, "injury_history"),
+            TokenKind::CustomConstraintModifications => {
+                write!(f, "custom_constraint_modifications")
+            }
+            TokenKind::AnthropometricScaling => write!(f, "anthropometric_scaling"),
+            TokenKind::SegmentLengthMassAdjustments => write!(f, "segment_length_mass_adjustments"),
+            TokenKind::GeneticOptimization => write!(f, "genetic_optimization"),
+            TokenKind::PopulationSize => write!(f, "population_size"),
+            TokenKind::Generations => write!(f, "generations"),
+            TokenKind::SelectionMethod => write!(f, "selection_method"),
+            TokenKind::TournamentSelection => write!(f, "tournament_selection"),
+            TokenKind::TournamentSize => write!(f, "tournament_size"),
+            TokenKind::CrossoverMethod => write!(f, "crossover_method"),
+            TokenKind::SimulatedBinaryCrossover => write!(f, "simulated_binary_crossover"),
+            TokenKind::Eta => write!(f, "eta"),
+            TokenKind::MutationMethod => write!(f, "mutation_method"),
+            TokenKind::PolynomialMutation => write!(f, "polynomial_mutation"),
+            TokenKind::GenotypeRepresentation => write!(f, "genotype_representation"),
+            TokenKind::TechniqueParameters => write!(f, "technique_parameters"),
+            TokenKind::RealValuedVector => write!(f, "real_valued_vector"),
+            TokenKind::Dimension => write!(f, "dimension"),
+            TokenKind::ConstraintSatisfaction => write!(f, "constraint_satisfaction"),
+            TokenKind::PenaltyBasedFitnessAdjustment => {
+                write!(f, "penalty_based_fitness_adjustment")
+            }
+            TokenKind::PhenotypeMapping => write!(f, "phenotype_mapping"),
+            TokenKind::BiomechanicalModelSimulation => write!(f, "biomechanical_model_simulation"),
+            TokenKind::FitnessEvaluation => write!(f, "fitness_evaluation"),
+            TokenKind::SimulationBased => write!(f, "simulation_based"),
+            TokenKind::ForwardDynamicsIntegration => write!(f, "forward_dynamics_integration"),
+            TokenKind::VelocityEfficiencyInjuryRiskComposite => {
+                write!(f, "velocity_efficiency_injury_risk_composite")
+            }
+            TokenKind::MultiObjectiveRanking => write!(f, "multi_objective_ranking"),
+            TokenKind::ParetuDominanceWithDiversity => write!(f, "pareto_dominance_with_diversity"),
+            TokenKind::EvolutionStrategies => write!(f, "evolution_strategies"),
+            TokenKind::SelfAdaptiveMutationRates => write!(f, "self_adaptive_mutation_rates"),
+            TokenKind::Niching => write!(f, "niching"),
+            TokenKind::FitnessSharingForDivesityMaintenance => {
+                write!(f, "fitness_sharing_for_diversity_maintenance")
+            }
+            TokenKind::Elitism => write!(f, "elitism"),
+            TokenKind::PreserveBestSolutions => write!(f, "preserve_best_solutions"),
+            TokenKind::Percentage => write!(f, "percentage"),
+            TokenKind::ConvergenceAcceleration => write!(f, "convergence_acceleration"),
+            TokenKind::SurrogateModeling => write!(f, "surrogate_modeling"),
+            TokenKind::GaussianProcessRegression => write!(f, "gaussian_process_regression"),
+            TokenKind::ActiveLearning => write!(f, "active_learning"),
+            TokenKind::ExpectedImprovementAcquisition => {
+                write!(f, "expected_improvement_acquisition")
+            }
+            TokenKind::ParallelEvaluation => write!(f, "parallel_evaluation"),
+            TokenKind::DistributedFitnessComputation => {
+                write!(f, "distributed_fitness_computation")
+            }
+            TokenKind::ValidationFramework => write!(f, "validation_framework"),
+            TokenKind::GroundTruthComparison => write!(f, "ground_truth_comparison"),
+            TokenKind::ReferenceMeasurements => write!(f, "reference_measurements"),
+            TokenKind::SynchronizedLaboratoryData => write!(f, "synchronized_laboratory_data"),
+            TokenKind::GoldStandardMetrics => write!(f, "gold_standard_metrics"),
+            TokenKind::DirectForcePlateMeasurements => write!(f, "direct_force_plate_measurements"),
+            TokenKind::ExpertAnnotations => write!(f, "expert_annotations"),
+            TokenKind::BiomechanistTechniqueAssessments => {
+                write!(f, "biomechanist_technique_assessments")
+            }
+            TokenKind::CrossValidationStrategy => write!(f, "cross_validation_strategy"),
+            TokenKind::TemporalSplits => write!(f, "temporal_splits"),
+            TokenKind::LeaveOneRaceOutValidation => write!(f, "leave_one_race_out_validation"),
+            TokenKind::AthleteGeneralization => write!(f, "athlete_generalization"),
+            TokenKind::LeaveOneAthleteOutValidation => {
+                write!(f, "leave_one_athlete_out_validation")
+            }
+            TokenKind::ConditionRobustness => write!(f, "condition_robustness"),
+            TokenKind::CrossEnvironmentalConditionValidation => {
+                write!(f, "cross_environmental_condition_validation")
+            }
+            TokenKind::UncertaintyValidation => write!(f, "uncertainty_validation"),
+            TokenKind::PredictionIntervals => write!(f, "prediction_intervals"),
+            TokenKind::EmpiricalCoverageAssessment => write!(f, "empirical_coverage_assessment"),
+            TokenKind::CalibrationCurves => write!(f, "calibration_curves"),
+            TokenKind::ReliabilityDiagramAnalysis => write!(f, "reliability_diagram_analysis"),
+            TokenKind::UncertaintyDecomposition => write!(f, "uncertainty_decomposition"),
+            TokenKind::AleatoryVsEpistemicSeparation => {
+                write!(f, "aleatory_vs_epistemic_separation")
+            }
+            TokenKind::AccuracyMeasures => write!(f, "accuracy_measures"),
+            TokenKind::MeanAbsoluteErrorPercentage => write!(f, "mean_absolute_error_percentage"),
+            TokenKind::PrecisionMeasures => write!(f, "precision_measures"),
+            TokenKind::CoefficientOfDetermination => write!(f, "coefficient_of_determination"),
+            TokenKind::ReliabilityMeasures => write!(f, "reliability_measures"),
+            TokenKind::IntraclassCorrelationCoefficient => {
+                write!(f, "intraclass_correlation_coefficient")
+            }
+            TokenKind::ClinicalSignificance => write!(f, "clinical_significance"),
+            TokenKind::MeaningfulChangeDetection => write!(f, "meaningful_change_detection"),
+            TokenKind::AutomatedValidationPipeline => write!(f, "automated_validation_pipeline"),
+            TokenKind::ContinuousValidation => write!(f, "continuous_validation"),
+            TokenKind::RealTimePerformanceMonitoring => {
+                write!(f, "real_time_performance_monitoring")
+            }
+            TokenKind::AlertSystem => write!(f, "alert_system"),
+            TokenKind::DegradationDetectionAndNotification => {
+                write!(f, "degradation_detection_and_notification")
+            }
+            TokenKind::AdaptiveThresholds => write!(f, "adaptive_thresholds"),
+            TokenKind::ContextSensitivePerformanceBounds => {
+                write!(f, "context_sensitive_performance_bounds")
+            }
+            TokenKind::QualityAssurance => write!(f, "quality_assurance"),
+            TokenKind::AutomatedQualityControlChecks => {
+                write!(f, "automated_quality_control_checks")
+            }
+            TokenKind::Import => write!(f, "import"),
+            TokenKind::Semantic => write!(f, "semantic"),
+            TokenKind::BenguelaQuantumRuntime => write!(f, "benguela_quantum_runtime"),
+            TokenKind::V8Intelligence => write!(f, "v8_intelligence"),
+            TokenKind::QuantumCoherenceValidation => write!(f, "quantum_coherence_validation"),
+            TokenKind::Hypothesis => write!(f, "hypothesis"),
+            TokenKind::Claim => write!(f, "claim"),
+            TokenKind::SemanticValidation => write!(f, "semantic_validation"),
+            TokenKind::MembraneUnderstanding => write!(f, "membrane_understanding"),
+            TokenKind::AtpUnderstanding => write!(f, "atp_understanding"),
+            TokenKind::CoherenceUnderstanding => write!(f, "coherence_understanding"),
+            TokenKind::Requires => write!(f, "requires"),
+            TokenKind::AuthenticQuantumSemanticComprehension => {
+                write!(f, "authentic_quantum_semantic_comprehension")
+            }
+            TokenKind::Funxn => write!(f, "funxn"),
+            TokenKind::SemanticQuantumCalibration => write!(f, "semantic_quantum_calibration"),
+            TokenKind::Print => write!(f, "print"),
+            TokenKind::InitializeSemanticQuantumProcessing => {
+                write!(f, "initialize_semantic_quantum_processing")
+            }
+            TokenKind::Mzekezeke => write!(f, "mzekezeke"),
+            TokenKind::QuantumEvidenceIntegration => write!(f, "quantum_evidence_integration"),
+            TokenKind::Zengeza => write!(f, "zengeza"),
+            TokenKind::QuantumSignalEnhancement => write!(f, "quantum_signal_enhancement"),
+            TokenKind::Diggiden => write!(f, "diggiden"),
+            TokenKind::QuantumCoherenceRobustnessTest => {
+                write!(f, "quantum_coherence_robustness_testing")
+            }
+            TokenKind::Champagne => write!(f, "champagne"),
+            TokenKind::QuantumDreamStateProcessing => write!(f, "quantum_dream_state_processing"),
+            TokenKind::LoadQuantumHardware => write!(f, "load_quantum_hardware"),
+            TokenKind::UnderstandQuantumHardwareSemantics => {
+                write!(f, "understand_quantum_hardware_semantics")
+            }
+            TokenKind::SemanticContext => write!(f, "semantic_context"),
+            TokenKind::BiologicalQuantumProcessing => write!(f, "biological_quantum_processing"),
+            TokenKind::CoherenceMeaning => write!(f, "coherence_meaning"),
+            TokenKind::SuperpositionPreservationSemantics => {
+                write!(f, "superposition_preservation_semantics")
+            }
+            TokenKind::SemanticCatalyst => write!(f, "semantic_catalyst"),
+            TokenKind::CoherenceThreshold => write!(f, "coherence_threshold"),
+            TokenKind::CatalyticCycle => write!(f, "catalytic_cycle"),
+            TokenKind::SemanticFidelity => write!(f, "semantic_fidelity"),
+            TokenKind::Support => write!(f, "support"),
+            TokenKind::WithConfidence => write!(f, "with_confidence"),
+            TokenKind::Confidence => write!(f, "confidence"),
+            TokenKind::CoherenceTimeMs => write!(f, "coherence_time_ms"),
+            TokenKind::MemoryContamination => write!(f, "memory_contamination"),
+            TokenKind::CognitiveFrameSelection => write!(f, "cognitive_frame_selection"),
+            TokenKind::ContaminateMemoryNetwork => write!(f, "contaminate_memory_network"),
+            TokenKind::TargetConcept => write!(f, "target_concept"),
+            TokenKind::Themes => write!(f, "themes"),
+            TokenKind::IdentifyAssociativeRoutes => write!(f, "identify_associative_routes"),
+            TokenKind::OptimizeDeliveryProtocol => write!(f, "optimize_delivery_protocol"),
+            TokenKind::UserProfile => write!(f, "user_profile"),
+            TokenKind::ExecuteContaminationSequence => write!(f, "execute_contamination_sequence"),
+            TokenKind::MonitorIntegrationSuccess => write!(f, "monitor_integration_success"),
+            TokenKind::DelayInjection => write!(f, "delay_injection"),
+            TokenKind::OptimalTimingWindow => write!(f, "optimal_timing_window"),
+            TokenKind::ContaminationEffectivenessMetrics => {
+                write!(f, "contamination_effectiveness_metrics")
+            }
+            TokenKind::ReceptivityScore => write!(f, "receptivity_score"),
+            TokenKind::AttentionLevel => write!(f, "attention_level"),
+            TokenKind::EmotionalValence => write!(f, "emotional_valence"),
+            TokenKind::ConfidenceThreshold => write!(f, "confidence_threshold"),
+            TokenKind::MzekezekeBayesian => write!(f, "mzekezeke_bayesian"),
+            TokenKind::ZengezaSignal => write!(f, "zengeza_signal"),
+            TokenKind::DiggidenAdversarial => write!(f, "diggiden_adversarial"),
+            TokenKind::SpectacularParadigm => write!(f, "spectacular_paradigm"),
+            TokenKind::ChampagneDream => write!(f, "champagne_dream"),
+            TokenKind::HatataDecision => write!(f, "hatata_decision"),
+            TokenKind::NicotineContext => write!(f, "nicotine_context"),
+            TokenKind::PungweAuthenticity => write!(f, "pungwe_authenticity"),
+            TokenKind::TrbFile => write!(f, "trb"),
+            TokenKind::FsFile => write!(f, "fs"),
+            TokenKind::GhdFile => write!(f, "ghd"),
+            TokenKind::HreFile => write!(f, "hre"),
+            TokenKind::IonChannelQuantumTunneling => write!(f, "ion_channel_quantum_tunneling"),
+            TokenKind::AtpSynthesisCoupling => write!(f, "atp_synthesis_coupling"),
+            TokenKind::CoherencePreservation => write!(f, "coherence_preservation"),
+            TokenKind::BiologicalQuantumHardware => write!(f, "biological_quantum_hardware"),
+            TokenKind::NeuralPatternExtraction => write!(f, "neural_pattern_extraction"),
+            TokenKind::MemoryInjection => write!(f, "memory_injection"),
+            TokenKind::ConsciousnessCoupling => write!(f, "consciousness_coupling"),
+            TokenKind::ProteinSynthesisSystems => write!(f, "protein_synthesis_systems"),
+            TokenKind::MolecularAssemblyProtocols => write!(f, "molecular_assembly_protocols"),
+            TokenKind::FuzzyProcessorInterfaces => write!(f, "fuzzy_processor_interfaces"),
+            TokenKind::ContinuousMemorySystems => write!(f, "continuous_memory_systems"),
+            TokenKind::SystemConsciousness => write!(f, "system_consciousness"),
+            TokenKind::SemanticProcessing => write!(f, "semantic_processing"),
+            TokenKind::ConsciousnessLoop => write!(f, "consciousness_loop"),
+            TokenKind::UnderstandingValid => write!(f, "understanding_valid"),
+            TokenKind::CanExplainQuantumCoherence => write!(f, "can_explain_quantum_coherence"),
+            TokenKind::CanExplainNeuralPatterns => write!(f, "can_explain_neural_patterns"),
+            TokenKind::CanExplainMolecularAssembly => write!(f, "can_explain_molecular_assembly"),
+            TokenKind::CanExplainFuzzyLogic => write!(f, "can_explain_fuzzy_logic"),
+            TokenKind::CanDetectSelfDeception => write!(f, "can_detect_self_deception"),
+            TokenKind::CanGenerateNovelInsights => write!(f, "can_generate_novel_insights"),
+            TokenKind::QuantumSemanticResources => write!(f, "quantum_semantic_resources"),
+            TokenKind::NeuralSemanticResources => write!(f, "neural_semantic_resources"),
+            TokenKind::MolecularSemanticResources => write!(f, "molecular_semantic_resources"),
+            TokenKind::FuzzySemanticResources => write!(f, "fuzzy_semantic_resources"),
+            TokenKind::CrossModalSemanticIntegration => {
+                write!(f, "cross_modal_semantic_integration")
+            }
+            TokenKind::SemanticFusionApis => write!(f, "semantic_fusion_apis"),
+            TokenKind::OsLearningSession => write!(f, "os_learning_session"),
+            TokenKind::OsHypothesis => write!(f, "os_hypothesis"),
+            TokenKind::MetacognitiveDecisionLog => write!(f, "metacognitive_decision_log"),
+            TokenKind::Decision => write!(f, "decision"),
+            TokenKind::Reasoning => write!(f, "reasoning"),
+            TokenKind::SemanticUnderstanding => write!(f, "semantic_understanding"),
+            TokenKind::ConfidenceEvolution => write!(f, "confidence_evolution"),
+            TokenKind::Learning => write!(f, "learning"),
+            TokenKind::SemanticInsight => write!(f, "semantic_insight"),
+            TokenKind::SemanticBreakthrough => write!(f, "semantic_breakthrough"),
+            TokenKind::IntelligentCatalyst => write!(f, "intelligent_catalyst"),
+            TokenKind::CrossModalCoherence => write!(f, "cross_modal_coherence"),
+            TokenKind::AuthenticityScore => write!(f, "authenticity_score"),
+            TokenKind::NovelInsightGeneration => write!(f, "novel_insight_generation"),
+            TokenKind::ContaminationSuccessRate => write!(f, "contamination_success_rate"),
+            TokenKind::InformationRetention => write!(f, "information_retention"),
+            TokenKind::BehavioralInfluence => write!(f, "behavioral_influence"),
+            TokenKind::CognitiveAuthenticity => write!(f, "cognitive_authenticity"),
+            TokenKind::VposSemanticArchitecture => write!(f, "vpos_semantic_architecture"),
+            TokenKind::QuantumSubsystemConsciousness => {
+                write!(f, "quantum_subsystem_consciousness")
+            }
+            TokenKind::NeuralSubsystemConsciousness => write!(f, "neural_subsystem_consciousness"),
+            TokenKind::MolecularSubsystemConsciousness => {
+                write!(f, "molecular_subsystem_consciousness")
+            }
+            TokenKind::FuzzySubsystemConsciousness => write!(f, "fuzzy_subsystem_consciousness"),
+            TokenKind::V8IntelligenceNetworkStatus => write!(f, "v8_intelligence_network_status"),
+            TokenKind::RealTimeSemanticProcessing => write!(f, "real_time_semantic_processing"),
+            TokenKind::SemanticUnderstandingValidation => {
+                write!(f, "semantic_understanding_validation")
+            }
+            _ => write!(f, "{:?}", self),
         }
     }
 }
@@ -4370,23 +5546,23 @@ impl<'a> Lexer<'a> {
     /// Tokenize the entire source code into a vector of tokens
     pub fn tokenize(&mut self) -> Vec<Token> {
         let mut tokens = Vec::new();
-        
+
         while let Some(result) = self.lex.next() {
             let span = self.lex.span();
             let lexeme = self.get_lexeme(span.clone());
-            
+
             let token_kind = match result {
                 Ok(kind) => kind,
                 Err(_) => TokenKind::Error,
             };
-            
+
             tokens.push(Token {
                 kind: token_kind,
                 span,
                 lexeme,
             });
         }
-        
+
         tokens
     }
 }
@@ -4400,7 +5576,7 @@ mod tests {
         let source = "funxn project sources within given if else for each considering all these item in return ensure research apply to_all allow cause motion";
         let mut lexer = Lexer::new(source);
         let tokens = lexer.tokenize();
-        
+
         let expected_kinds = vec![
             TokenKind::FunctionDecl,
             TokenKind::ProjectDecl,
@@ -4425,9 +5601,9 @@ mod tests {
             TokenKind::Cause,
             TokenKind::Motion,
         ];
-        
+
         assert_eq!(tokens.len(), expected_kinds.len());
-        
+
         for (token, expected_kind) in tokens.iter().zip(expected_kinds.iter()) {
             assert_eq!(&token.kind, expected_kind);
         }
@@ -4438,7 +5614,7 @@ mod tests {
         let source = "+ - * / | |> => = == != < > <= >= && || !";
         let mut lexer = Lexer::new(source);
         let tokens = lexer.tokenize();
-        
+
         let expected_kinds = vec![
             TokenKind::Plus,
             TokenKind::Minus,
@@ -4458,9 +5634,9 @@ mod tests {
             TokenKind::Or,
             TokenKind::Not,
         ];
-        
+
         assert_eq!(tokens.len(), expected_kinds.len());
-        
+
         for (token, expected_kind) in tokens.iter().zip(expected_kinds.iter()) {
             assert_eq!(&token.kind, expected_kind);
         }
@@ -4471,17 +5647,17 @@ mod tests {
         let source = r#"identifier 123 123.456 "string literal" another_id"#;
         let mut lexer = Lexer::new(source);
         let tokens = lexer.tokenize();
-        
+
         let expected_kinds = vec![
-            TokenKind::Identifier,  // identifier
-            TokenKind::NumberLiteral,  // 123
-            TokenKind::NumberLiteral,  // 123.456
-            TokenKind::StringLiteral,  // "string literal"
-            TokenKind::Identifier,  // another_id
+            TokenKind::Identifier,    // identifier
+            TokenKind::NumberLiteral, // 123
+            TokenKind::NumberLiteral, // 123.456
+            TokenKind::StringLiteral, // "string literal"
+            TokenKind::Identifier,    // another_id
         ];
-        
+
         assert_eq!(tokens.len(), expected_kinds.len());
-        
+
         for (token, expected_kind) in tokens.iter().zip(expected_kinds.iter()) {
             assert_eq!(&token.kind, expected_kind);
         }
@@ -4500,19 +5676,19 @@ mod tests {
                         replace_jargon()
                     return processed
         "#;
-        
+
         let mut lexer = Lexer::new(source);
         let tokens = lexer.tokenize();
-        
+
         // This is just a basic smoke test to ensure we don't panic on valid code
-        assert!(tokens.len() > 20);  // Should have plenty of tokens
-        
+        assert!(tokens.len() > 20); // Should have plenty of tokens
+
         // Check if specific important tokens are present
         let has_function = tokens.iter().any(|t| t.kind == TokenKind::FunctionDecl);
         let has_within = tokens.iter().any(|t| t.kind == TokenKind::Within);
         let has_given = tokens.iter().any(|t| t.kind == TokenKind::Given);
         let has_return = tokens.iter().any(|t| t.kind == TokenKind::Return);
-        
+
         assert!(has_function && has_within && has_given && has_return);
     }
 }

@@ -20,6 +20,12 @@ pub mod audio_syntax;
 pub mod polyglot;
 pub mod polyglot_syntax;
 
+// Quantum Computing Interface Modules
+pub mod quantum_lexer;
+pub mod semantic_engine;
+pub mod v8_intelligence;
+pub mod four_file_system;
+
 pub use context::Context;
 pub use debate_platform::{Affirmation, Contention, DebatePlatform, DebatePlatformManager};
 pub use lexer::TokenKind;
@@ -59,13 +65,13 @@ pub enum TurbulanceError {
 
     #[error("Runtime error: {message}")]
     RuntimeError { message: String },
-    
+
     #[error("IO error: {message}")]
     IoError { message: String },
-    
+
     #[error("Invalid input: {0}")]
     InvalidInput(String),
-    
+
     #[error("Processing timeout exceeded")]
     ProcessingTimeout,
 }
@@ -79,25 +85,25 @@ pub fn run(source: &str) -> Result<()> {
     let keyword_table = keywords_table();
     let operator_precedence = operator_precedence();
     let stdlib = stdlib_functions();
-    
+
     // Tokenize the source code
     let mut lexer = lexer::Lexer::new(source);
     let tokens = lexer.tokenize();
-    
+
     // Parse tokens into AST
     let mut parser = parser::Parser::new(tokens);
     let ast = parser.parse()?;
-    
+
     // Execute program with standard library
     let mut interpreter = interpreter::Interpreter::new();
     interpreter.register_stdlib_functions(stdlib);
-    
+
     // Register domain extensions
     domain_extensions::register_domain_extensions(&mut interpreter)
         .map_err(|e| TurbulanceError::RuntimeError { message: e.to_string() })?;
-    
+
     let _ = interpreter.execute(&ast)?;
-    
+
     Ok(())
 }
 
@@ -108,7 +114,7 @@ pub const VERSION: &str = "0.1.0";
 pub fn validate(source: &str) -> Result<bool> {
     let mut lexer = lexer::Lexer::new(source);
     let tokens = lexer.tokenize();
-    
+
     let mut parser = parser::Parser::new(tokens);
     match parser.parse() {
         Ok(_) => Ok(true),
@@ -417,22 +423,22 @@ impl ScientificArgumentValidator {
     pub fn validate_argument(&mut self, ast: &ast::Node) -> Result<ArgumentValidationReport, TurbulanceError> {
         // Extract propositions, evidence, and reasoning from AST
         self.extract_scientific_elements(ast)?;
-        
+
         // Validate individual propositions
         self.validate_propositions()?;
-        
+
         // Validate evidence quality and relevance
         self.validate_evidence()?;
-        
+
         // Check reasoning coherence
         self.validate_reasoning_coherence()?;
-        
+
         // Check for logical fallacies
         self.detect_logical_fallacies()?;
-        
+
         // Validate methodology
         self.validate_methodology()?;
-        
+
         // Generate comprehensive report
         Ok(self.generate_validation_report())
     }
@@ -450,9 +456,9 @@ impl ScientificArgumentValidator {
                     evidence_requirements: self.extract_evidence_requirements(requirements),
                     validation_status: ValidationStatus::RequiresReview,
                 };
-                
+
                 self.propositions.insert(name.clone(), proposition);
-                
+
                 // Add to reasoning graph
                 self.reasoning_graph.nodes.insert(name.clone(), ReasoningNode {
                     id: name.clone(),
@@ -462,7 +468,7 @@ impl ScientificArgumentValidator {
                     dependencies: Vec::new(),
                 });
             },
-            
+
             ast::Node::EvidenceDecl { name, collection_method, data_structure, .. } => {
                 let evidence = EvidenceValidation {
                     name: name.clone(),
@@ -475,9 +481,9 @@ impl ScientificArgumentValidator {
                     supports_propositions: Vec::new(),
                     contradicts_propositions: Vec::new(),
                 };
-                
+
                 self.evidence_chains.insert(name.clone(), evidence);
-                
+
                 // Add to reasoning graph
                 self.reasoning_graph.nodes.insert(name.clone(), ReasoningNode {
                     id: name.clone(),
@@ -487,7 +493,7 @@ impl ScientificArgumentValidator {
                     dependencies: Vec::new(),
                 });
             },
-            
+
             ast::Node::SupportStmt { hypothesis, evidence, .. } => {
                 // Create reasoning edge
                 if let (ast::Node::Identifier(hyp_name, _), ast::Node::Identifier(ev_name, _)) = (hypothesis.as_ref(), evidence.as_ref()) {
@@ -497,14 +503,14 @@ impl ScientificArgumentValidator {
                         relationship: ReasoningRelationship::Supports,
                         strength: 0.8,
                     });
-                    
+
                     // Update evidence validation
                     if let Some(evidence_val) = self.evidence_chains.get_mut(ev_name) {
                         evidence_val.supports_propositions.push(hyp_name.clone());
                     }
                 }
             },
-            
+
             ast::Node::ContradictStmt { hypothesis, evidence, .. } => {
                 // Create reasoning edge
                 if let (ast::Node::Identifier(hyp_name, _), ast::Node::Identifier(ev_name, _)) = (hypothesis.as_ref(), evidence.as_ref()) {
@@ -514,25 +520,25 @@ impl ScientificArgumentValidator {
                         relationship: ReasoningRelationship::Contradicts,
                         strength: 0.8,
                     });
-                    
+
                     // Update evidence validation
                     if let Some(evidence_val) = self.evidence_chains.get_mut(ev_name) {
                         evidence_val.contradicts_propositions.push(hyp_name.clone());
                     }
                 }
             },
-            
+
             ast::Node::Block { statements, .. } => {
                 for statement in statements {
                     self.extract_scientific_elements(statement)?;
                 }
             },
-            
+
             _ => {
                 // Handle other node types as needed
             }
         }
-        
+
         Ok(())
     }
 
@@ -540,27 +546,27 @@ impl ScientificArgumentValidator {
         for (name, proposition) in &mut self.propositions {
             let mut warnings = Vec::new();
             let mut errors = Vec::new();
-            
+
             // Check if proposition is testable
             if !proposition.testable {
                 warnings.push("Proposition may not be testable with current methods".to_string());
             }
-            
+
             // Check if proposition is falsifiable
             if !proposition.falsifiable {
                 errors.push("Proposition is not falsifiable - violates scientific method".to_string());
             }
-            
+
             // Check if proposition is specific enough
             if !proposition.specific {
                 warnings.push("Proposition lacks specificity - consider narrowing scope".to_string());
             }
-            
+
             // Check if outcomes are measurable
             if !proposition.measurable {
                 errors.push("Proposition outcomes are not measurable".to_string());
             }
-            
+
             // Update validation status
             proposition.validation_status = if !errors.is_empty() {
                 ValidationStatus::Invalid(errors)
@@ -570,7 +576,7 @@ impl ScientificArgumentValidator {
                 ValidationStatus::Valid
             };
         }
-        
+
         Ok(())
     }
 
@@ -585,7 +591,7 @@ impl ScientificArgumentValidator {
                     severity: FallacySeverity::Warning,
                 });
             }
-            
+
             // Check for adequate sample size
             if let Some(sample_size) = evidence.sample_size {
                 if sample_size < 30 {
@@ -597,7 +603,7 @@ impl ScientificArgumentValidator {
                     });
                 }
             }
-            
+
             // Check bias risk
             if matches!(evidence.bias_assessment.overall_bias_risk, BiasLevel::High | BiasLevel::Critical) {
                 self.reasoning_graph.logical_fallacies.push(LogicalFallacy {
@@ -608,20 +614,20 @@ impl ScientificArgumentValidator {
                 });
             }
         }
-        
+
         Ok(())
     }
 
     fn validate_reasoning_coherence(&mut self) -> Result<(), TurbulanceError> {
         // Check for circular reasoning
         self.detect_circular_reasoning()?;
-        
+
         // Check for contradictory evidence
         self.detect_contradictory_evidence()?;
-        
+
         // Check for unsupported claims
         self.detect_unsupported_claims()?;
-        
+
         Ok(())
     }
 
@@ -629,7 +635,7 @@ impl ScientificArgumentValidator {
         // Implement cycle detection in reasoning graph
         let mut visited = std::collections::HashSet::new();
         let mut rec_stack = std::collections::HashSet::new();
-        
+
         for node_id in self.reasoning_graph.nodes.keys() {
             if !visited.contains(node_id) {
                 if self.has_cycle(node_id, &mut visited, &mut rec_stack) {
@@ -643,14 +649,14 @@ impl ScientificArgumentValidator {
                 }
             }
         }
-        
+
         Ok(())
     }
 
     fn has_cycle(&self, node_id: &str, visited: &mut std::collections::HashSet<String>, rec_stack: &mut std::collections::HashSet<String>) -> bool {
         visited.insert(node_id.to_string());
         rec_stack.insert(node_id.to_string());
-        
+
         // Check all adjacent nodes
         for edge in &self.reasoning_graph.edges {
             if edge.from == node_id {
@@ -662,7 +668,7 @@ impl ScientificArgumentValidator {
                 }
             }
         }
-        
+
         rec_stack.remove(node_id);
         false
     }
@@ -673,11 +679,11 @@ impl ScientificArgumentValidator {
             let supporting_evidence: Vec<_> = self.evidence_chains.iter()
                 .filter(|(_, ev)| ev.supports_propositions.contains(prop_name))
                 .collect();
-            
+
             let contradicting_evidence: Vec<_> = self.evidence_chains.iter()
                 .filter(|(_, ev)| ev.contradicts_propositions.contains(prop_name))
                 .collect();
-            
+
             if !supporting_evidence.is_empty() && !contradicting_evidence.is_empty() {
                 self.reasoning_graph.logical_fallacies.push(LogicalFallacy {
                     fallacy_type: FallacyType::FalseCorrelation,
@@ -687,7 +693,7 @@ impl ScientificArgumentValidator {
                 });
             }
         }
-        
+
         Ok(())
     }
 
@@ -696,7 +702,7 @@ impl ScientificArgumentValidator {
         for (prop_name, _) in &self.propositions {
             let has_support = self.evidence_chains.iter()
                 .any(|(_, ev)| ev.supports_propositions.contains(prop_name));
-            
+
             if !has_support {
                 self.reasoning_graph.logical_fallacies.push(LogicalFallacy {
                     fallacy_type: FallacyType::AppealToAuthority,
@@ -706,7 +712,7 @@ impl ScientificArgumentValidator {
                 });
             }
         }
-        
+
         Ok(())
     }
 
@@ -726,7 +732,7 @@ impl ScientificArgumentValidator {
                 severity: FallacySeverity::Warning,
             });
         }
-        
+
         // Check for multiple testing without correction
         if !self.methodological_checks.statistical_validity.multiple_testing_corrected {
             self.reasoning_graph.logical_fallacies.push(LogicalFallacy {
@@ -736,7 +742,7 @@ impl ScientificArgumentValidator {
                 severity: FallacySeverity::Error,
             });
         }
-        
+
         Ok(())
     }
 
@@ -755,15 +761,15 @@ impl ScientificArgumentValidator {
         let critical_errors = self.reasoning_graph.logical_fallacies.iter()
             .filter(|f| matches!(f.severity, FallacySeverity::Critical))
             .count();
-        
+
         let errors = self.reasoning_graph.logical_fallacies.iter()
             .filter(|f| matches!(f.severity, FallacySeverity::Error))
             .count();
-        
+
         let warnings = self.reasoning_graph.logical_fallacies.iter()
             .filter(|f| matches!(f.severity, FallacySeverity::Warning))
             .count();
-        
+
         if critical_errors > 0 {
             OverallValidity::Invalid
         } else if errors > 0 {
@@ -777,25 +783,25 @@ impl ScientificArgumentValidator {
 
     fn identify_methodological_issues(&self) -> Vec<String> {
         let mut issues = Vec::new();
-        
+
         if !self.methodological_checks.statistical_validity.power_analysis_present {
             issues.push("Power analysis not provided".to_string());
         }
-        
+
         if !self.methodological_checks.experimental_design.randomization_used {
             issues.push("Randomization not used in experimental design".to_string());
         }
-        
+
         if !self.methodological_checks.reproducibility.data_available {
             issues.push("Data not made available for reproducibility".to_string());
         }
-        
+
         issues
     }
 
     fn generate_recommendations(&self) -> Vec<String> {
         let mut recommendations = Vec::new();
-        
+
         // Generate specific recommendations based on detected issues
         for fallacy in &self.reasoning_graph.logical_fallacies {
             match fallacy.fallacy_type {
@@ -811,7 +817,7 @@ impl ScientificArgumentValidator {
                 _ => {}
             }
         }
-        
+
         recommendations
     }
 
@@ -846,7 +852,7 @@ impl ScientificArgumentValidator {
     fn assess_measurability(&self, description: &Option<String>) -> bool {
         if let Some(desc) = description {
             // Look for quantifiable outcomes
-            desc.contains("increase") || desc.contains("decrease") || desc.contains("rate") || 
+            desc.contains("increase") || desc.contains("decrease") || desc.contains("rate") ||
             desc.contains("level") || desc.contains("amount") || desc.contains("percentage")
         } else {
             false
@@ -927,38 +933,38 @@ impl ArgumentValidationReport {
     pub fn print_report(&self) {
         println!("🔬 Scientific Argument Validation Report");
         println!("==========================================");
-        
+
         match self.overall_validity {
             OverallValidity::Valid => println!("✅ Overall Validity: VALID"),
             OverallValidity::AcceptableWithConcerns => println!("⚠️  Overall Validity: ACCEPTABLE WITH CONCERNS"),
             OverallValidity::RequiresRevision => println!("❌ Overall Validity: REQUIRES REVISION"),
             OverallValidity::Invalid => println!("🚫 Overall Validity: INVALID"),
         }
-        
+
         println!("\n📋 Proposition Analysis:");
         for (name, prop) in &self.proposition_validations {
             println!("  {} - {:?}", name, prop.validation_status);
         }
-        
+
         println!("\n🔍 Evidence Analysis:");
         for (name, evidence) in &self.evidence_validations {
             println!("  {} - Quality: {:.2}", name, evidence.quality_score);
         }
-        
+
         if !self.logical_fallacies.is_empty() {
             println!("\n⚠️  Logical Issues Detected:");
             for fallacy in &self.logical_fallacies {
                 println!("  {:?}: {} ({})", fallacy.severity, fallacy.description, fallacy.location);
             }
         }
-        
+
         if !self.methodological_issues.is_empty() {
             println!("\n🔬 Methodological Issues:");
             for issue in &self.methodological_issues {
                 println!("  • {}", issue);
             }
         }
-        
+
         if !self.recommendations.is_empty() {
             println!("\n💡 Recommendations:");
             for rec in &self.recommendations {
@@ -967,3 +973,20 @@ impl ArgumentValidationReport {
         }
     }
 }
+
+// Re-export key quantum computing interface types
+pub use quantum_lexer::QuantumTokenKind;
+pub use semantic_engine::{
+    SemanticEngine, CognitiveFrame, UserProfile, ContaminationSequence,
+    ContaminationMetrics, SemanticCatalyst, CatalyticResult
+};
+pub use v8_intelligence::{
+    V8IntelligenceNetwork, IntelligenceModule, ProcessingInput, ProcessingOutput,
+    MzekezekeBayesian, ZengezaSignal, DiggidenAdversarial, SpectacularParadigm,
+    NetworkStatus
+};
+pub use four_file_system::{
+    FourFileSystem, ProcessedFile, FileType, ProcessedContent,
+    TrbScript, FsVisualization, GhdNetwork, HreLog,
+    SystemState, ExecutionResult
+};
