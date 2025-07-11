@@ -39,13 +39,15 @@
             "source.fixAll": true,
             "source.organizeImports": true
         },
-        // File associations
+        // File associations for custom DSLs
         "files.associations": {
-            "*.turb": "rust",
-            "*.trb": "rust",
-            "*.ghd": "rust",
-            "*.hre": "rust",
-            "*.fs": "rust"
+            "*.turb": "turbulance",
+            "*.trb": "turbulance-trb",
+            "*.ghd": "ghd-graph",
+            "*.hre": "harare",
+            "*.fs": "fullscreen",
+            "justfile": "makefile",
+            "Dockerfile.*": "dockerfile"
         },
         // Search exclusions
         "search.exclude": {
@@ -61,6 +63,58 @@
             "**/pkg/**": true,
             "**/.git/**": true,
             "**/node_modules/**": true
+        },
+        // Custom language support
+        "workbench.editorAssociations": {
+            "*.turb": "default",
+            "*.trb": "default",
+            "*.hre": "default",
+            "*.ghd": "default",
+            "*.fs": "default"
+        },
+        // Project-specific color theme
+        "workbench.colorTheme": "Default Dark+",
+        "workbench.iconTheme": "material-icon-theme",
+        // Masunda project identification
+        "todo-tree.general.tags": [
+            "TODO",
+            "FIXME",
+            "HACK",
+            "NOTE",
+            "BUG",
+            "XXX",
+            "MASUNDA",
+            "TEMPORAL",
+            "STELLA"
+        ],
+        "todo-tree.highlights.customHighlight": {
+            "MASUNDA": {
+                "icon": "star",
+                "iconColour": "#FFD700",
+                "foreground": "#FFD700"
+            },
+            "TEMPORAL": {
+                "icon": "clock",
+                "iconColour": "#FF6B6B",
+                "foreground": "#FF6B6B"
+            },
+            "STELLA": {
+                "icon": "heart",
+                "iconColour": "#FF69B4",
+                "foreground": "#FF69B4"
+            }
+        },
+        // Advanced file nesting for complex project
+        "explorer.fileNesting.enabled": true,
+        "explorer.fileNesting.expand": false,
+        "explorer.fileNesting.patterns": {
+            "*.turb": "${capture}.md,${capture}_analysis.md,${capture}_results.json",
+            "*.trb": "${capture}.md,${capture}_analysis.md",
+            "*.hre": "${capture}.md,${capture}_context.json",
+            "*.ghd": "${capture}.md,${capture}_graph.json",
+            "*.fs": "${capture}.md,${capture}_layout.json",
+            "Cargo.toml": "Cargo.lock,build.rs,rust-toolchain.toml,rustfmt.toml,clippy.toml",
+            "*.rs": "${capture}.md,${capture}_test.rs"
         }
     },
     "extensions": {

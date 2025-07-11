@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 pub mod ast;
 pub mod audio_syntax;
 pub mod context;
@@ -61,21 +63,21 @@ pub use probabilistic::{ResolutionResult, TextPoint};
 pub use streaming::{StreamConfig, StreamState, TextStream};
 
 // Include generated code
-mod generated {
-    pub(crate) mod prelude {
-        pub use super::super::interpreter::{NativeFunction, Value};
-        // Re-export common types
-        pub use super::super::{Result, TokenKind, TurbulanceError};
-    }
-    pub(crate) use prelude::*;
+// mod generated {
+//     pub(crate) mod prelude {
+//         pub use super::super::interpreter::{NativeFunction, Value};
+//         // Re-export common types
+//         pub use super::super::{Result, TokenKind, TurbulanceError};
+//     }
+//     pub(crate) use prelude::*;
 
-    include!(concat!(env!("OUT_DIR"), "/generated/parser_tables.rs"));
-    include!(concat!(env!("OUT_DIR"), "/generated/stdlib_bindings.rs"));
-    include!(concat!(env!("OUT_DIR"), "/generated/token_definitions.rs"));
-}
+//     include!(concat!(env!("OUT_DIR"), "/generated/parser_tables.rs"));
+//     include!(concat!(env!("OUT_DIR"), "/generated/stdlib_bindings.rs"));
+//     include!(concat!(env!("OUT_DIR"), "/generated/token_definitions.rs"));
+// }
 
 // Re-export generated types
-pub use generated::*;
+// pub use generated::*;
 
 /// Error types for the Turbulance language
 #[derive(Debug, Clone, thiserror::Error)]
