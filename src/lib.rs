@@ -43,7 +43,7 @@ pub mod orchestrator; // Core orchestration framework
 pub mod pattern; // Pattern processing
 pub mod templates; // Framework templates
 pub mod text_unit; // Text processing framework
-                   // pub mod turbulance; // DSL language implementation - commented out due to parsing issues
+pub mod turbulance; // DSL language implementation
 pub mod utils; // Framework utilities
 pub mod visualization; // Basic visualization
 pub mod wasm; // WebAssembly support
@@ -73,7 +73,7 @@ pub use orchestrator::Orchestrator;
 pub use text_unit::{
     BoundaryDetectionOptions, TextUnit, TextUnitId, TextUnitRegistry, TextUnitType,
 };
-// pub use turbulance::{run as run_turbulance, run_with_context, validate as validate_turbulance};
+pub use turbulance::{run as run_turbulance, run_with_context, validate as validate_turbulance};
 
 // Import orchestrator types
 pub use orchestrator::{
@@ -85,7 +85,7 @@ pub use orchestrator::{
 // Prelude for easy imports
 pub mod prelude {
     pub use crate::error::{Error, ErrorReporter, Result};
-    // pub use crate::turbulance::{run as run_turbulance, validate as validate_turbulance};
+    pub use crate::turbulance::{run as run_turbulance, validate as validate_turbulance};
     pub use crate::{Context, FrameworkConfig, Goal, InterventionSystem, KwasaFramework};
 }
 
@@ -120,6 +120,12 @@ pub struct KwasaFramework {
 
     /// Knowledge database
     knowledge_db: Arc<Mutex<Result<knowledge::database::KnowledgeDatabase>>>,
+
+    /// Turbulance interpreter
+    turbulance_interpreter: Arc<Mutex<turbulance::interpreter::Interpreter>>,
+
+    /// Turbulance context
+    turbulance_context: Arc<Mutex<turbulance::Context>>,
 
     /// Framework state
     state: FrameworkState,
@@ -479,6 +485,20 @@ impl KwasaFramework {
             knowledge_db.clone(),
         )));
 
+        // Initialize Turbulance interpreter and context
+        let mut turbulance_interpreter = turbulance::interpreter::Interpreter::new();
+        
+        // Register standard library functions
+        let stdlib = turbulance::stdlib_functions();
+        turbulance_interpreter.register_stdlib_functions(stdlib);
+
+        // Register domain extensions
+        turbulance::domain_extensions::register_domain_extensions(&mut turbulance_interpreter)
+            .map_err(|e| crate::error::Error::Custom(format!("Failed to register domain extensions: {}", e)))?;
+
+        let turbulance_interpreter = Arc::new(Mutex::new(turbulance_interpreter));
+        let turbulance_context = Arc::new(Mutex::new(turbulance::Context::new()));
+
         // Initialize other components
         let text_registry = Arc::new(Mutex::new(TextUnitRegistry::new()));
         let context = Arc::new(Mutex::new(Context::new()));
@@ -493,6 +513,8 @@ impl KwasaFramework {
             intervention_system,
             goals,
             knowledge_db,
+            turbulance_interpreter,
+            turbulance_context,
             state: FrameworkState::Initializing,
             session_id,
 
@@ -589,15 +611,19 @@ impl KwasaFramework {
 
         let start_time = std::time::Instant::now();
 
-        // Create a context for execution
-        // let mut context = turbulance::Context::new();
+        // Tokenize the source code
+        let mut lexer = turbulance::lexer::Lexer::new(code);
+        let tokens = lexer.tokenize();
 
-        // Run the Turbulance code
-        // let result = turbulance::run_with_context(code, &mut context)
-        //     .map_err(|e| anyhow::anyhow!("Turbulance execution error: {}", e))?;
+        // Parse tokens into AST
+        let mut parser = turbulance::parser::Parser::new(tokens);
+        let ast = parser.parse()
+            .map_err(|e| crate::error::Error::Custom(format!("Turbulance parse error: {}", e)))?;
 
-        // Placeholder implementation until turbulance is fixed
-        let result = format!("Turbulance execution (placeholder): {}", code);
+        // Execute with interpreter
+        let mut interpreter = self.turbulance_interpreter.lock().await;
+        let result = interpreter.execute(&ast)
+            .map_err(|e| crate::error::Error::Custom(format!("Turbulance execution error: {}", e)))?;
 
         let processing_time = start_time.elapsed().as_millis() as u64;
 
@@ -605,7 +631,23 @@ impl KwasaFramework {
 
         self.state = FrameworkState::Ready;
 
-        Ok(result)
+        // Convert result to string
+        let result_string = match result {
+            turbulance::interpreter::Value::String(s) => s,
+            turbulance::interpreter::Value::Number(n) => n.to_string(),
+            turbulance::interpreter::Value::Boolean(b) => b.to_string(),
+            turbulance::interpreter::Value::List(items) => {
+                format!("[{}]", items.iter().map(|v| format!("{:?}", v)).collect::<Vec<_>>().join(", "))
+            },
+            turbulance::interpreter::Value::Map(map) => {
+                format!("{{{}}}", map.iter().map(|(k, v)| format!("{}: {:?}", k, v)).collect::<Vec<_>>().join(", "))
+            },
+            turbulance::interpreter::Value::TextUnit(unit) => unit.content.clone(),
+            turbulance::interpreter::Value::Function { .. } => "<function>".to_string(),
+            turbulance::interpreter::Value::None => "None".to_string(),
+        };
+
+        Ok(result_string)
     }
 
     /// Process text with the framework

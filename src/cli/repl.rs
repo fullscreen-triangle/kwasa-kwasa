@@ -555,54 +555,35 @@ impl Repl {
 
     /// Execute Turbulance code
     fn execute_code(&mut self, code: &str) -> Result<()> {
-        // TODO: Re-implement when turbulance module is available
-        // // Begin execution tracking
-        // self.context.begin_execution();
-        //
-        // // Run the code
-        // let result = turbulance::run_with_context(code, &mut self.context);
-        //
-        // // End execution tracking
-        // self.context.end_execution();
-
-        // Placeholder implementation
-        let result: std::result::Result<String, Error> =
-            Ok("Turbulance execution not available".to_string());
-
-        match result {
-            Ok(output) => {
-                if !output.is_empty() {
-                    println!("{}", output);
+        // Create a framework instance for execution
+        let runtime = tokio::runtime::Runtime::new()
+            .map_err(|e| Error::cli(format!("Failed to create async runtime: {}", e)))?;
+        
+        runtime.block_on(async {
+            // Initialize framework with default config
+            let config = crate::FrameworkConfig::default();
+            let mut framework = match crate::KwasaFramework::new(config).await {
+                Ok(fw) => fw,
+                Err(e) => {
+                    self.print_error(&Error::cli(format!("Failed to initialize framework: {}", e)));
+                    return Ok(());
                 }
+            };
 
-                // TODO: Re-implement when context module is available
-                // // Check if there were non-fatal errors
-                // if self.context.error_reporter().has_errors() {
-                //     println!(
-                //         "{} {} errors found (non-fatal)",
-                //         "Warning:".yellow().bold(),
-                //         self.context.error_reporter().errors().len()
-                //     );
-                // }
+            // Execute the Turbulance code
+            match framework.process_turbulance_code(code).await {
+                Ok(output) => {
+                    if !output.is_empty() {
+                        println!("{}", output);
+                    }
+                }
+                Err(e) => {
+                    self.print_error(&Error::cli(format!("Execution error: {}", e)));
+                }
             }
-            Err(err) => {
-                // TODO: Re-implement when context module is available
-                // // Add the error to our context
-                // self.context.add_error(err.clone());
 
-                // Print error with fancy formatting
-                self.print_error(&err);
-
-                // TODO: Re-implement when context module is available
-                // // Check if we can recover
-                // if err.is_recoverable() {
-                //     println!("{} Entering recovery mode", "Recovery:".yellow());
-                //     self.context.enter_recovery_mode();
-                // }
-            }
-        }
-
-        Ok(())
+            Ok(())
+        })
     }
 
     /// Print an error with fancy formatting
@@ -883,52 +864,47 @@ impl Repl {
         }
         println!();
 
-        // Create error reporter with source
-        let _reporter = crate::error::ErrorReporter::new();
+        // Create a framework instance for execution
+        let runtime = tokio::runtime::Runtime::new()
+            .map_err(|e| Error::cli(format!("Failed to create async runtime: {}", e)))?;
+        
+        runtime.block_on(async {
+            // Initialize framework with default config
+            let config = crate::FrameworkConfig::default();
+            let mut framework = match crate::KwasaFramework::new(config).await {
+                Ok(fw) => fw,
+                Err(e) => {
+                    self.print_error(&Error::cli(format!("Failed to initialize framework: {}", e)));
+                    return Ok(false);
+                }
+            };
 
-        // TODO: Re-implement when turbulance module is available
-        // // Begin execution tracking
-        // self.context.begin_execution();
+            // Time the execution
+            let start_time = Instant::now();
 
-        // Time the execution
-        let start_time = Instant::now();
+            // Execute the Turbulance code
+            let result = framework.process_turbulance_code(&content).await;
 
-        // Placeholder execution
-        let result: std::result::Result<String, Error> =
-            Ok("Turbulance execution not available".to_string());
+            let duration = start_time.elapsed();
 
-        // TODO: Re-implement when context module is available
-        // // End execution tracking
-        // self.context.end_execution();
+            // Print execution metrics
+            println!("\n{}", "Execution metrics:".bright_black());
+            println!("Execution time: {:?}", duration);
 
-        let duration = start_time.elapsed();
-
-        // Print execution metrics
-        println!("\n{}", "Execution metrics:".bright_black());
-        println!("Execution time: {:?}", duration);
-
-        // TODO: Re-implement when context module is available
-        // println!("Call stack: {}", self.context.get_call_stack());
-        //
-        // // Print performance report
-        // println!("{}", self.context.get_performance_report());
-
-        match result {
-            Ok(output) => {
-                println!("\n{}", "Output:".green());
-                if !output.is_empty() {
-                    println!("{}", output);
-                } else {
-                    println!("(No output)");
+            // Print result
+            match result {
+                Ok(output) => {
+                    if !output.is_empty() {
+                        println!("Output: {}", output);
+                    }
+                    Ok(true)
+                }
+                Err(e) => {
+                    self.print_error(&Error::cli(format!("Execution error: {}", e)));
+                    Ok(false)
                 }
             }
-            Err(err) => {
-                println!("\n{}", "Error:".red().bold());
-                self.print_error(&err);
-            }
-        }
-
-        Ok(true)
+        })
     }
 
     /// Show all variables in the current context
@@ -947,44 +923,51 @@ impl Repl {
         Ok(true)
     }
 
-    /// Time the execution of a code snippet
+    /// Time the execution of Turbulance code
     fn time_execution(&mut self, code: &str) -> Result<bool> {
         println!("Timing execution of: {}", code);
 
-        // TODO: Re-implement when turbulance module is available
-        // // Begin execution tracking
-        // self.context.begin_execution();
+        // Create a framework instance for execution
+        let runtime = tokio::runtime::Runtime::new()
+            .map_err(|e| Error::cli(format!("Failed to create async runtime: {}", e)))?;
+        
+        runtime.block_on(async {
+            // Initialize framework with default config
+            let config = crate::FrameworkConfig::default();
+            let mut framework = match crate::KwasaFramework::new(config).await {
+                Ok(fw) => fw,
+                Err(e) => {
+                    self.print_error(&Error::cli(format!("Failed to initialize framework: {}", e)));
+                    return Ok(false);
+                }
+            };
 
-        // Time the execution
-        let start_time = Instant::now();
+            // Time the execution
+            let start_time = Instant::now();
 
-        // Placeholder execution
-        let result: std::result::Result<String, Error> =
-            Ok("Turbulance execution not available".to_string());
+            // Execute the Turbulance code
+            let result = framework.process_turbulance_code(code).await;
 
-        // Calculate elapsed time
-        let duration = start_time.elapsed();
+            // Calculate elapsed time
+            let duration = start_time.elapsed();
 
-        // TODO: Re-implement when context module is available
-        // // End execution tracking
-        // self.context.end_execution();
+            // Print timing information
+            println!("Execution time: {:?}", duration);
 
-        // Print timing information
-        println!("Execution time: {:?}", duration);
-
-        // Print result
-        match result {
-            Ok(output) => {
-                if !output.is_empty() {
-                    println!("Output: {}", output);
+            // Print result
+            match result {
+                Ok(output) => {
+                    if !output.is_empty() {
+                        println!("Output: {}", output);
+                    }
+                    Ok(true)
+                }
+                Err(e) => {
+                    self.print_error(&Error::cli(format!("Execution error: {}", e)));
+                    Ok(false)
                 }
             }
-            Err(err) => {
-                self.print_error(&err);
-            }
-        }
-
-        Ok(true)
+        })
     }
 
     /// Resolve a path relative to the working directory

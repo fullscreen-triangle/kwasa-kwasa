@@ -77,12 +77,11 @@ pub enum Error {
 }
 
 impl Error {
-    pub(crate) fn RuntimeError(p0: String) -> E {
-        todo!()
+    /// Create a runtime error
+    pub fn runtime(message: String) -> Self {
+        Self::Runtime(message)
     }
-}
 
-impl Error {
     /// Create a parsing error
     pub fn parse(message: &str, line: usize, column: usize) -> Self {
         Self::Parse {
@@ -111,11 +110,6 @@ impl Error {
     /// Create a semantic error
     pub fn semantic(message: &str) -> Self {
         Self::Semantic(message.to_string())
-    }
-
-    /// Create a runtime error
-    pub fn runtime(message: &str) -> Self {
-        Self::Runtime(message.to_string())
     }
 
     /// Create a pattern recognition error

@@ -544,55 +544,92 @@ pub fn run_script(path: &Path) -> Result<()> {
     let content = fs::read_to_string(path)
         .with_context(|| format!("Failed to read script file: {}", path.display()))?;
 
-    // TODO: Re-implement when turbulance modules are available
-    // let mut lexer = Lexer::new(&content);
-    // let tokens = lexer.tokenize();
-    //
-    // let mut parser = Parser::new(tokens);
-    // let ast = parser.parse().with_context(|| "Failed to parse script")?;
-    //
-    // // Execute the script
-    // let mut interpreter = Interpreter::new();
-    // interpreter
-    //     .execute(&ast)
-    //     .with_context(|| "Error during script execution")?;
+    // Create async runtime for framework execution
+    let runtime = tokio::runtime::Runtime::new()
+        .with_context(|| "Failed to create async runtime")?;
 
-    println!("Script content (execution not available):\n{}", content);
-    Ok(())
+    runtime.block_on(async {
+        // Initialize framework with default config
+        let config = crate::FrameworkConfig::default();
+        let mut framework = crate::KwasaFramework::new(config).await
+            .with_context(|| "Failed to initialize Kwasa framework")?;
+
+        // Execute the Turbulance script
+        let result = framework.process_turbulance_code(&content).await
+            .with_context(|| "Error during script execution")?;
+
+        // Print result if not empty
+        if !result.is_empty() {
+            println!("{}", result);
+        }
+
+        Ok(())
+    })
 }
 
 /// Executes a Turbulance script string directly
 pub fn run_script_string(script: &str) -> Result<()> {
-    // TODO: Re-implement when turbulance modules are available
-    // let mut lexer = Lexer::new(script);
-    // let tokens = lexer.tokenize();
-    //
-    // let mut parser = Parser::new(tokens);
-    // let ast = parser.parse().with_context(|| "Failed to parse script")?;
-    //
-    // // Execute the script
-    // let mut interpreter = Interpreter::new();
-    // interpreter
-    //     .execute(&ast)
-    //     .with_context(|| "Error during script execution")?;
+    // Create async runtime for framework execution
+    let runtime = tokio::runtime::Runtime::new()
+        .with_context(|| "Failed to create async runtime")?;
 
-    println!("Script content (execution not available):\n{}", script);
-    Ok(())
+    runtime.block_on(async {
+        // Initialize framework with default config
+        let config = crate::FrameworkConfig::default();
+        let mut framework = crate::KwasaFramework::new(config).await
+            .with_context(|| "Failed to initialize Kwasa framework")?;
+
+        // Execute the Turbulance script
+        let result = framework.process_turbulance_code(script).await
+            .with_context(|| "Error during script execution")?;
+
+        // Print result if not empty
+        if !result.is_empty() {
+            println!("{}", result);
+        }
+
+        Ok(())
+    })
 }
 
 /// Validates a Turbulance script file without executing it
-pub fn validate_script(path: &Path) -> Result<()> {
+pub fn validate_script(path: &Path) -> Result<bool> {
     // Read the file content
     let content = fs::read_to_string(path)
         .with_context(|| format!("Failed to read script file: {}", path.display()))?;
 
-    // TODO: Re-implement when turbulance modules are available
-    // let mut lexer = Lexer::new(&content);
-    // let tokens = lexer.tokenize();
-    //
-    // let mut parser = Parser::new(tokens);
-    // parser.parse().with_context(|| "Failed to parse script")?;
+    // Validate the Turbulance script
+    match crate::turbulance::validate(&content) {
+        Ok(is_valid) => {
+            if is_valid {
+                println!("✅ Script is valid: {}", path.display());
+            } else {
+                println!("❌ Script has syntax errors: {}", path.display());
+            }
+            Ok(is_valid)
+        }
+        Err(e) => {
+            println!("❌ Validation error in {}: {}", path.display(), e);
+            Ok(false)
+        }
+    }
+}
 
-    println!("Script validation successful: {}", path.display());
-    Ok(())
+/// Validates a Turbulance script string without executing it
+pub fn validate_script_string(script: &str) -> Result<bool> {
+    // Validate the Turbulance script
+    match crate::turbulance::validate(script) {
+        Ok(is_valid) => {
+            if is_valid {
+                println!("✅ Script is valid");
+            } else {
+                println!("❌ Script has syntax errors");
+            }
+            Ok(is_valid)
+        }
+        Err(e) => {
+            println!("❌ Validation error: {}", e);
+            Ok(false)
+        }
+    }
 }

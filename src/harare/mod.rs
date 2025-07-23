@@ -712,21 +712,92 @@ impl HarareOrchestrator {
     }
 
     /// Execute fullscreen module step
-    async fn execute_fullscreen_step(&self, _step: &execution_planner::ExecutionStep) -> Result<serde_json::Value> {
-        // TODO: Integrate with actual fullscreen module
-        Ok(serde_json::json!({"status": "completed", "module": "fullscreen"}))
+    async fn execute_fullscreen_step(&self, step: &execution_planner::ExecutionStep) -> Result<serde_json::Value> {
+        // Create fullscreen system with default configuration
+        let config = crate::fullscreen::FullscreenConfig::default();
+        let mut fullscreen_system = crate::fullscreen::FullscreenSystem::new(config).await?;
+        
+        // Process the step parameters
+        let project_path = step.parameters.get("project_path")
+            .and_then(|v| v.as_str())
+            .unwrap_or(".");
+        
+        // Analyze the project structure
+        let analysis_result = fullscreen_system.analyze_project_structure(
+            std::path::Path::new(project_path)
+        ).await?;
+        
+        Ok(serde_json::json!({
+            "status": "completed",
+            "module": "fullscreen",
+            "analysis_result": analysis_result,
+            "modules_found": analysis_result.modules.len(),
+            "dependencies_mapped": analysis_result.dependency_graph.edges.len()
+        }))
     }
 
     /// Execute spectacular module step
-    async fn execute_spectacular_step(&self, _step: &execution_planner::ExecutionStep) -> Result<serde_json::Value> {
-        // TODO: Integrate with actual spectacular module
-        Ok(serde_json::json!({"status": "completed", "module": "spectacular"}))
+    async fn execute_spectacular_step(&self, step: &execution_planner::ExecutionStep) -> Result<serde_json::Value> {
+        // Create spectacular system with default configuration
+        let config = crate::space_computer::SpectacularConfig::default();
+        let mut spectacular_system = crate::space_computer::SpectacularSystem::new(config).await?;
+        
+        // Extract video processing parameters
+        let input_path = step.parameters.get("input_path")
+            .and_then(|v| v.as_str())
+            .map(std::path::Path::new);
+        
+        if let Some(input_path) = input_path {
+            // Process video file
+            let processing_result = spectacular_system.process_video_file(input_path).await?;
+            
+            Ok(serde_json::json!({
+                "status": "completed",
+                "module": "spectacular",
+                "processing_result": processing_result,
+                "frames_processed": processing_result.frames_processed,
+                "analysis_metrics": processing_result.analysis_metrics
+            }))
+        } else {
+            Ok(serde_json::json!({
+                "status": "completed",
+                "module": "spectacular",
+                "message": "No input provided - performing system check",
+                "system_ready": true
+            }))
+        }
     }
 
     /// Execute nebuchadnezzar module step
-    async fn execute_nebuchadnezzar_step(&self, _step: &execution_planner::ExecutionStep) -> Result<serde_json::Value> {
-        // TODO: Integrate with actual nebuchadnezzar module
-        Ok(serde_json::json!({"status": "completed", "module": "nebuchadnezzar"}))
+    async fn execute_nebuchadnezzar_step(&self, step: &execution_planner::ExecutionStep) -> Result<serde_json::Value> {
+        // Create nebuchadnezzar assistant with default configuration
+        let config = crate::nebuchadnezzar::AssistantConfig::default();
+        let mut assistant = crate::nebuchadnezzar::NebuchadnezzarAssistant::new(config).await?;
+        
+        // Extract AI processing parameters
+        let query = step.parameters.get("query")
+            .and_then(|v| v.as_str())
+            .unwrap_or("Analyze the current context");
+        
+        let context_data = step.parameters.get("context")
+            .cloned()
+            .unwrap_or_else(|| serde_json::json!({}));
+        
+        // Process the AI request
+        let ai_response = assistant.process_request(&crate::nebuchadnezzar::AIRequest {
+            query: query.to_string(),
+            context: context_data,
+            session_id: self.id,
+            processing_options: crate::nebuchadnezzar::ProcessingOptions::default(),
+        }).await?;
+        
+        Ok(serde_json::json!({
+            "status": "completed",
+            "module": "nebuchadnezzar",
+            "ai_response": ai_response,
+            "confidence": ai_response.confidence,
+            "processing_time_ms": ai_response.processing_time_ms
+        }))
     }
 
     /// Execute trebuchet module step
