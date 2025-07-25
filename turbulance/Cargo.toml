@@ -2,19 +2,15 @@
   name = "turbulance"
   version = "0.1.0"
   edition = "2021"
-  authors = ["Kundai"]
-  description = "Universal Scientific Experiment DSL - A domain-specific language for formalizing scientific methods and experiments"
-  readme = "README.md"
+  authors = ["Kundai Farai Sachikonye <kundai.sachikonye@wits.ac.za>"]
   license = "MIT"
+  description = "Turbulance Domain-Specific Language for semantic information catalysis and multi-modal processing"
+  readme = "README.md"
   repository = "https://github.com/fullscreen-triangle/kwasa-kwasa"
-  keywords = [
-    "dsl",
-    "science",
-    "experiment",
-    "language",
-    "scientific-computing",
-  ]
-  categories = ["science", "parser-implementations", "development-tools"]
+  homepage = "https://fullscreen-triangle.github.io/kwasa-kwasa/"
+  documentation = "https://fullscreen-triangle.github.io/kwasa-kwasa/"
+  keywords = ["dsl", "semantics", "text-processing", "language"]
+  categories = ["text-processing", "development-tools", "parser-implementations"]
 
 [lib]
   name = "turbulance"

@@ -2,14 +2,18 @@
   name = "kwasa-kwasa"
   version = "0.1.0"
   edition = "2021"
-  authors = ["Kundai"]
-  description = "A metacognitive text processing framework with Turbulance DSL language and Autobahn reasoning engine"
-  readme = "README.md"
+  authors = ["Kundai Farai Sachikonye <kundai.sachikonye@wits.ac.za>"]
   license = "MIT"
+  description = "A revolutionary semantic computation framework based on Biological Maxwell's Demons for information catalysis across textual, visual, and auditory modalities"
+  readme = "README.md"
   repository = "https://github.com/fullscreen-triangle/kwasa-kwasa"
+  homepage = "https://fullscreen-triangle.github.io/kwasa-kwasa/"
+  documentation = "https://fullscreen-triangle.github.io/kwasa-kwasa/"
+  keywords = ["semantics", "text-processing", "nlp", "ai", "biology"]
+  categories = ["text-processing", "science", "development-tools"]
 
 [workspace]
-  members = ["."]
+  members = ["turbulance"]
   # Temporarily commented out due to parsing issues: "turbulance"
 
 [dependencies]
