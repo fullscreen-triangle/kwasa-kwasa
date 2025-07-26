@@ -58,6 +58,7 @@ pub mod templates;
 pub mod text_unit;
 pub mod trebuchet;
 pub mod turbulance;
+pub mod s_entropy;
 pub mod utils;
 pub mod visualization;
 pub mod wasm;
