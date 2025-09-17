@@ -1,9 +1,30 @@
 {
     "name": "turbulance-language-server",
     "displayName": "Turbulance Language Support",
-    "description": "Language server for the Turbulance semantic programming language",
+    "description": "Complete language support for Turbulance semantic programming with advanced validation and scientific argument checking",
     "version": "0.1.0",
-    "publisher": "kwasa-kwasa",
+    "publisher": "kwasa-kwasa-team",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/kwasa-kwasa/vscode-extensions"
+    },
+    "homepage": "https://github.com/kwasa-kwasa/vscode-extensions#readme",
+    "bugs": {
+        "url": "https://github.com/kwasa-kwasa/vscode-extensions/issues"
+    },
+    "keywords": [
+        "turbulance",
+        "semantic programming",
+        "language server",
+        "scientific computing",
+        "evidence-based reasoning",
+        "proposition testing",
+        "kwasa-kwasa"
+    ],
+    "galleryBanner": {
+        "color": "#1e1e1e",
+        "theme": "dark"
+    },
     "engines": {
         "vscode": "^1.80.0"
     },

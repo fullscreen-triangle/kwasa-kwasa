@@ -1,0 +1,120 @@
+// Basic Turbulance Example - Test the Extensions
+// Save this file and use the extensions to analyze it!
+
+import from text_analysis import sentiment_analysis, extract_keywords
+import from statistics import mean, correlation
+
+// Example Proposition - Try "Pattern Workbench: Analyze Evidence Network"
+proposition SentimentAccuracyHypothesis:
+    motion KeywordsSentimentCorrelation("Keywords correlate with sentiment scores")
+    motion ModelAccuracy("Sentiment analysis model achieves >85% accuracy")
+
+    within review_data as review:
+        item keywords = extract_keywords(review.text)
+        item sentiment = sentiment_analysis(review.text)
+
+        given sentiment.confidence > 0.8:
+            support ModelAccuracy
+
+        given len(keywords) > 5:
+            support KeywordsSentimentCorrelation
+
+// Example Evidence Block - Try "Knowledge Engine: Show Provenance"
+evidence ReviewDataset:
+    sources:
+        - amazon_reviews: APISource("Amazon Product Reviews")
+        - sentiment_labels: FileSource("./data/labeled_sentiment.csv")
+        - expert_annotations: HumanSource("Expert linguists")
+
+    collection:
+        frequency: weekly
+        validation: inter_annotator_agreement
+        quality_threshold: 0.9
+
+    processing:
+        - filter_language("english")
+        - remove_spam_reviews()
+        - normalize_text()
+        - validate_sentiment_labels()
+
+// Example Analysis Function - Try Language Server auto-completion
+funxn analyze_sentiment_patterns(reviews: List[Review]) -> SentimentReport:
+    /// Analyze sentiment patterns in review data
+    /// Try hovering over this function to see documentation
+
+    item sentiment_scores = []
+    item keyword_counts = []
+
+    within reviews as review:
+        // Try auto-completion after typing 'sentiment_'
+        item sentiment = sentiment_analysis(review.text)
+        item keywords = extract_keywords(review.text, max_keywords=10)
+
+        given sentiment.polarity != "neutral":
+            collect sentiment.score into sentiment_scores
+            collect len(keywords) into keyword_counts
+
+    // Calculate correlation - Knowledge Engine will validate this claim
+    item correlation_coef = correlation(sentiment_scores, keyword_counts)
+
+    return SentimentReport(
+        average_sentiment=mean(sentiment_scores),
+        average_keywords=mean(keyword_counts),
+        correlation=correlation_coef,
+        total_reviews=len(reviews)
+    )
+
+// Example Metacognitive Block - Try "Orchestration Debugger: Visualize Metacognition"
+metacognitive ValidityAssessment:
+    track:
+        - model_confidence_scores
+        - inter_annotator_agreement
+        - potential_bias_indicators
+        - sample_representativeness
+
+    evaluate:
+        - statistical_significance(correlation_coef, sample_size)
+        - effect_size_calculation()
+        - confounding_variable_analysis()
+
+    reflect:
+        given correlation_coef > 0.5 and sample_size > 1000:
+            confidence_boost(SentimentAccuracyHypothesis, +0.3)
+            log_decision("Strong evidence found for hypothesis")
+
+        given inter_annotator_agreement < 0.8:
+            flag_concern("Low inter-annotator agreement")
+            require_additional_validation()
+
+// Test different text boundary types
+// Try "Boundary Studio: Analyze Boundaries" on this section
+
+/*
+Multi-line comment block for boundary testing.
+This is a paragraph within a comment.
+
+This is another paragraph within the same comment block.
+It should be detected as separate semantic units.
+*/
+
+// Single line comments are different boundary types
+
+item test_string = "This is a sentence with multiple clauses, separated by commas, which should be detected as clause boundaries."
+
+// Try selecting the string above and use "Boundary Studio: Detect Semantic Boundaries"
+
+test "Example Test Case":
+    // Try "Pattern Workbench: Test Hypothesis"
+    item sample_reviews = load_test_data("sample_reviews.json")
+    item expected_sentiment = 0.75
+    item actual_result = analyze_sentiment_patterns(sample_reviews)
+
+    assert_greater_than(actual_result.average_sentiment, expected_sentiment)
+    assert_not_null(actual_result.correlation)
+
+// Knowledge validation test - select this proposition and use Knowledge Engine
+proposition WellKnownFact:
+    motion WaterBoilingPoint("Water boils at 100°C at sea level")
+    // The Knowledge Engine should validate this against external sources
+
+    support WaterBoilingPoint with "Basic chemistry knowledge"

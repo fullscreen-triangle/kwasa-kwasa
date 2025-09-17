@@ -1,9 +1,31 @@
 {
     "name": "knowledge-resolution-engine",
     "displayName": "Knowledge Resolution Engine",
-    "description": "Embedding differential analysis and epistemic validation for semantic frameworks",
+    "description": "Advanced knowledge validation through embedding analysis, provenance tracking, and epistemic confidence scoring",
     "version": "0.1.0",
-    "publisher": "kwasa-kwasa",
+    "publisher": "kwasa-kwasa-team",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/kwasa-kwasa/vscode-extensions"
+    },
+    "homepage": "https://github.com/kwasa-kwasa/vscode-extensions#readme",
+    "bugs": {
+        "url": "https://github.com/kwasa-kwasa/vscode-extensions/issues"
+    },
+    "keywords": [
+        "knowledge validation",
+        "embedding analysis",
+        "epistemic confidence",
+        "semantic processing",
+        "provenance tracking",
+        "knowledge graphs",
+        "research validation",
+        "kwasa-kwasa"
+    ],
+    "galleryBanner": {
+        "color": "#0066cc",
+        "theme": "dark"
+    },
     "engines": {
         "vscode": "^1.80.0"
     },

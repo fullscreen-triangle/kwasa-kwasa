@@ -1,0 +1,227 @@
+// Advanced Scientific Research Example
+// Demonstrates genomics analysis with evidence validation
+// Use this to test all 5 extensions together
+
+import from genomics import calculate_gc_content, align_sequences, call_variants
+import from spectrometry import analyze_spectrum, peak_detection
+import from statistics import t_test, correlation, regression_analysis
+
+// Complex Research Proposition - Test Knowledge Engine validation
+proposition DrugResistanceMutation:
+    motion MutationCausesResistance("SNP at position 1547 causes drug resistance")
+    motion PopulationFrequency("Mutation frequency varies by population")
+    motion ExpressionImpact("Mutation affects protein expression levels")
+
+    within clinical_samples as sample:
+        item genotype = call_variants(sample.dna_sequence)
+        item expression = analyze_expression(sample.rna_data)
+        item drug_response = sample.clinical_outcome
+
+        given genotype.position_1547 == "T" and drug_response == "resistant":
+            support MutationCausesResistance
+            track_supporting_evidence(sample.patient_id)
+
+        given population_ancestry(sample) in ["European", "African", "Asian"]:
+            item freq = population_frequency(genotype.position_1547, sample.population)
+            given freq > 0.05:
+                support PopulationFrequency
+
+        given genotype.position_1547 == "T":
+            given expression.protein_level < normal_range.lower:
+                support ExpressionImpact
+
+// Comprehensive Evidence Network - Test Pattern Workbench
+evidence ClinicalGenomicsData:
+    sources:
+        - patient_cohort: ClinicalDatabase("Multi-center drug trial NCT03847123")
+        - reference_genome: GenomeDatabase("GRCh38/hg38")
+        - population_data: PopulationDatabase("1000 Genomes Project")
+        - expression_data: RNASeqDatabase("GTEx v8")
+        - drug_trials: ClinicalTrials("FDA drug approval trials")
+
+    collection:
+        frequency: monthly
+        validation: double_blind_verification
+        quality_threshold: 0.95
+        sample_size_target: 5000
+
+    processing:
+        - quality_control_sequencing()
+        - variant_calling_pipeline()
+        - population_stratification()
+        - expression_quantification()
+        - clinical_outcome_standardization()
+
+    validation:
+        - cross_reference_patient_records()
+        - validate_genetic_ancestry()
+        - verify_drug_dosage_compliance()
+        - confirm_outcome_measurements()
+
+// Advanced Analysis Pipeline - Test Orchestration Debugger
+funxn comprehensive_genomic_analysis(cohort_data: CohortData) -> ResearchFindings:
+    /// Multi-stage genomic analysis for drug resistance research
+    /// This function demonstrates complex orchestration that can be debugged
+
+    // Stage 1: Quality Control and Preprocessing
+    item qc_passed_samples = []
+    within cohort_data.samples as sample:
+        item qc_metrics = quality_control_analysis(sample)
+        given qc_metrics.pass_rate > 0.95:
+            collect sample into qc_passed_samples
+
+    log_analysis_stage("Quality control completed", len(qc_passed_samples))
+
+    // Stage 2: Variant Calling and Annotation
+    item variant_calls = []
+    item population_groups = group_by_ancestry(qc_passed_samples)
+
+    within population_groups as group:
+        item group_variants = call_variants_cohort(group.samples)
+        item annotated_variants = annotate_variants(group_variants)
+        collect annotated_variants into variant_calls
+
+    // Stage 3: Statistical Association Analysis
+    item association_results = []
+    within variant_calls as variant_set:
+        item gwas_results = gwas_analysis(
+            genotypes=variant_set,
+            phenotypes=extract_drug_response(variant_set.samples),
+            covariates=["age", "sex", "ancestry"]
+        )
+
+        within gwas_results.significant_variants as variant:
+            given variant.p_value < 5e-8:  // Genome-wide significance
+                collect variant into association_results
+
+    // Stage 4: Functional Validation
+    item functional_evidence = []
+    within association_results as significant_variant:
+        item expression_qtl = analyze_expression_qtl(
+            variant=significant_variant,
+            expression_data=cohort_data.rna_seq
+        )
+
+        item protein_impact = predict_protein_impact(significant_variant)
+
+        given expression_qtl.effect_size > 0.5:
+            given protein_impact.deleterious_score > 0.8:
+                collect FunctionalEvidence(
+                    variant=significant_variant,
+                    expression_effect=expression_qtl,
+                    protein_effect=protein_impact
+                ) into functional_evidence
+
+    return ResearchFindings(
+        cohort_size=len(qc_passed_samples),
+        significant_associations=association_results,
+        functional_validation=functional_evidence,
+        population_specific_effects=analyze_population_differences(association_results)
+    )
+
+// Mass Spectrometry Analysis - Test Boundary Detection on technical text
+evidence ProteinExpressionData:
+    sources:
+        - mass_spec: InstrumentData("Orbitrap Fusion Lumos")
+        - protein_database: Reference("UniProt Human Proteome")
+
+    processing:
+        - spectral_preprocessing()
+        - database_search_algorithm()
+        - protein_quantification()
+
+funxn analyze_protein_expression_ms(spectra_data: SpectraCollection) -> ProteinQuantification:
+    /// Mass spectrometry-based protein quantification analysis
+    /// Try boundary detection on this technical description
+
+    // Spectral preprocessing involves baseline correction, noise reduction, and peak detection.
+    // Each spectrum contains multiple peaks representing different peptide fragments.
+    // The intensity values must be normalized across different acquisition runs.
+
+    item processed_spectra = []
+    within spectra_data.raw_spectra as spectrum:
+        // Baseline correction removes systematic noise from the mass spectrometer
+        item corrected = baseline_correction(spectrum, method="asymmetric_least_squares")
+
+        // Peak detection identifies significant mass-to-charge ratio peaks
+        item peaks = peak_detection(corrected, threshold=1000, min_snr=3.0)
+
+        given len(peaks) > 10:  // Minimum peaks for reliable identification
+            collect ProcessedSpectrum(
+                raw_data=spectrum,
+                corrected_spectrum=corrected,
+                detected_peaks=peaks
+            ) into processed_spectra
+
+    // Database search matches observed peaks to theoretical peptide masses
+    item peptide_matches = database_search(
+        spectra=processed_spectra,
+        database="human_proteome_canonical",
+        mass_tolerance=10,  // ppm
+        fragment_tolerance=0.02  // Da
+    )
+
+    return quantify_proteins(peptide_matches)
+
+// Metacognitive Research Oversight - Test all debugging features
+metacognitive ResearchIntegrity:
+    track:
+        - statistical_power_analysis
+        - multiple_testing_corrections
+        - population_stratification_effects
+        - batch_effect_corrections
+        - replication_consistency
+        - effect_size_magnitudes
+
+    evaluate:
+        - sample_size_adequacy(target_power=0.8, alpha=0.05)
+        - population_representation_bias()
+        - technical_replicate_correlation()
+        - biological_replicate_consistency()
+        - cross_platform_validation()
+
+    reflect:
+        // High-confidence findings
+        given association_p_value < 1e-10 and replication_p_value < 0.01:
+            confidence_boost(DrugResistanceMutation, +0.4)
+            recommend_clinical_validation()
+
+        // Moderate evidence requiring caution
+        given association_p_value < 5e-8 and effect_size < 1.2:
+            flag_concern("Significant but small effect size")
+            require_larger_replication_cohort()
+
+        // Population-specific effects
+        given population_heterogeneity_p_value < 0.01:
+            flag_insight("Population-specific drug response detected")
+            recommend_pharmacogenomic_stratification()
+
+        // Technical concerns
+        given batch_effect_variance > 0.1:
+            flag_concern("Significant batch effects detected")
+            require_additional_normalization()
+
+// Test case for hypothesis validation
+test "Drug Resistance Association":
+    item test_cohort = load_test_cohort("validation_set_1000_patients.json")
+    item analysis_results = comprehensive_genomic_analysis(test_cohort)
+
+    // Statistical significance test
+    assert_less_than(analysis_results.lead_variant.p_value, 5e-8)
+
+    // Effect size validation
+    assert_greater_than(analysis_results.lead_variant.odds_ratio, 1.5)
+
+    // Replication requirement
+    assert_true(analysis_results.replicated_in_independent_cohort)
+
+// Try Knowledge Engine validation on these established facts
+proposition EstablishedGenetics:
+    motion CentralDogma("DNA codes for RNA which codes for proteins")
+    motion MendelianInheritance("Traits follow Mendel's laws of inheritance")
+    motion DNAStructure("DNA has a double helix structure")
+
+    // These should validate strongly against external scientific sources
+    support CentralDogma with "Molecular biology textbooks"
+    support MendelianInheritance with "Classical genetics experiments"
+    support DNAStructure with "Watson and Crick 1953 Nature paper"

@@ -1,0 +1,81 @@
+{
+    "name": "kwasa-kwasa-vscode-extensions",
+    "version": "0.1.0",
+    "description": "Complete VSCode extension suite for the Kwasa-Kwasa semantic framework",
+    "private": true,
+    "scripts": {
+        "install:all": "npm run install:turbulance && npm run install:knowledge && npm run install:pattern && npm run install:orchestration && npm run install:boundary",
+        "install:turbulance": "cd turbulance-language-server && npm install",
+        "install:knowledge": "cd knowledge-resolution-engine && npm install",
+        "install:pattern": "cd pattern-evidence-workbench && npm install",
+        "install:orchestration": "cd metacognitive-orchestration-debugger && npm install",
+        "install:boundary": "cd boundary-detection-studio && npm install",
+
+        "compile:all": "npm run compile:turbulance && npm run compile:knowledge && npm run compile:pattern && npm run compile:orchestration && npm run compile:boundary",
+        "compile:turbulance": "cd turbulance-language-server && npm run compile",
+        "compile:knowledge": "cd knowledge-resolution-engine && npm run compile",
+        "compile:pattern": "cd pattern-evidence-workbench && npm run compile",
+        "compile:orchestration": "cd metacognitive-orchestration-debugger && npm run compile",
+        "compile:boundary": "cd boundary-detection-studio && npm run compile",
+
+        "watch:all": "concurrently \"npm run watch:turbulance\" \"npm run watch:knowledge\" \"npm run watch:pattern\" \"npm run watch:orchestration\" \"npm run watch:boundary\"",
+        "watch:turbulance": "cd turbulance-language-server && npm run watch",
+        "watch:knowledge": "cd knowledge-resolution-engine && npm run watch",
+        "watch:pattern": "cd pattern-evidence-workbench && npm run watch",
+        "watch:orchestration": "cd metacognitive-orchestration-debugger && npm run watch",
+        "watch:boundary": "cd boundary-detection-studio && npm run watch",
+
+        "package:all": "npm run package:turbulance && npm run package:knowledge && npm run package:pattern && npm run package:orchestration && npm run package:boundary",
+        "package:turbulance": "cd turbulance-language-server && vsce package --out ../turbulance-language-server.vsix",
+        "package:knowledge": "cd knowledge-resolution-engine && vsce package --out ../knowledge-resolution-engine.vsix",
+        "package:pattern": "cd pattern-evidence-workbench && vsce package --out ../pattern-evidence-workbench.vsix",
+        "package:orchestration": "cd metacognitive-orchestration-debugger && vsce package --out ../metacognitive-orchestration-debugger.vsix",
+        "package:boundary": "cd boundary-detection-studio && vsce package --out ../boundary-detection-studio.vsix",
+
+        "install-extensions:all": "npm run install-extensions:turbulance && npm run install-extensions:knowledge && npm run install-extensions:pattern && npm run install-extensions:orchestration && npm run install-extensions:boundary",
+        "install-extensions:turbulance": "code --install-extension turbulance-language-server.vsix",
+        "install-extensions:knowledge": "code --install-extension knowledge-resolution-engine.vsix",
+        "install-extensions:pattern": "code --install-extension pattern-evidence-workbench.vsix",
+        "install-extensions:orchestration": "code --install-extension metacognitive-orchestration-debugger.vsix",
+        "install-extensions:boundary": "code --install-extension boundary-detection-studio.vsix",
+
+        "build": "npm run install:all && npm run compile:all && npm run package:all",
+        "deploy": "npm run build && npm run install-extensions:all",
+
+        "test": "echo \"Use the TESTING_CHECKLIST.md to test all extensions\"",
+        "clean": "rm -f *.vsix && find . -name 'node_modules' -type d -prune -exec rm -rf {} + && find . -name 'out' -type d -prune -exec rm -rf {} +",
+        "clean:win": "del /Q *.vsix 2>nul & for /d /r . %%d in (node_modules) do @if exist \"%%d\" rd /s /q \"%%d\" & for /d /r . %%d in (out) do @if exist \"%%d\" rd /s /q \"%%d\""
+    },
+    "devDependencies": {
+        "concurrently": "^8.2.0",
+        "vsce": "^2.19.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/your-username/kwasa-kwasa-vscode-extensions.git"
+    },
+    "keywords": [
+        "vscode",
+        "extensions",
+        "semantic-processing",
+        "text-analysis",
+        "knowledge-validation",
+        "pattern-recognition",
+        "boundary-detection",
+        "turbulance",
+        "kwasa-kwasa"
+    ],
+    "author": "Kwasa-Kwasa Project",
+    "license": "MIT",
+    "engines": {
+        "node": ">=18.0.0",
+        "npm": ">=9.0.0"
+    },
+    "workspaces": [
+        "turbulance-language-server",
+        "knowledge-resolution-engine",
+        "pattern-evidence-workbench",
+        "metacognitive-orchestration-debugger",
+        "boundary-detection-studio"
+    ]
+}

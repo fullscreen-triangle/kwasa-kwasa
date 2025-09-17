@@ -1,9 +1,31 @@
 {
     "name": "pattern-evidence-workbench",
     "displayName": "Pattern Analysis & Evidence Workbench",
-    "description": "Visual tools for evidence-based reasoning and pattern analysis",
+    "description": "Advanced pattern detection and evidence network analysis for hypothesis testing and scientific reasoning",
     "version": "0.1.0",
-    "publisher": "kwasa-kwasa",
+    "publisher": "kwasa-kwasa-team",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/kwasa-kwasa/vscode-extensions"
+    },
+    "homepage": "https://github.com/kwasa-kwasa/vscode-extensions#readme",
+    "bugs": {
+        "url": "https://github.com/kwasa-kwasa/vscode-extensions/issues"
+    },
+    "keywords": [
+        "pattern analysis",
+        "evidence networks",
+        "hypothesis testing",
+        "scientific reasoning",
+        "proposition builder",
+        "data visualization",
+        "research tools",
+        "kwasa-kwasa"
+    ],
+    "galleryBanner": {
+        "color": "#6600cc",
+        "theme": "dark"
+    },
     "engines": {
         "vscode": "^1.80.0"
     },

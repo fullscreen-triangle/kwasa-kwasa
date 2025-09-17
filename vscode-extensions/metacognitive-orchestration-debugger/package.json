@@ -1,9 +1,31 @@
 {
     "name": "metacognitive-orchestration-debugger",
     "displayName": "Metacognitive Orchestration Debugger",
-    "description": "Debug and visualize self-aware text processing orchestration",
+    "description": "Advanced debugger for self-aware text processing with real-time orchestration visualization and goal tracking",
     "version": "0.1.0",
-    "publisher": "kwasa-kwasa",
+    "publisher": "kwasa-kwasa-team",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/kwasa-kwasa/vscode-extensions"
+    },
+    "homepage": "https://github.com/kwasa-kwasa/vscode-extensions#readme",
+    "bugs": {
+        "url": "https://github.com/kwasa-kwasa/vscode-extensions/issues"
+    },
+    "keywords": [
+        "debugging",
+        "metacognitive processing",
+        "orchestration visualization",
+        "goal tracking",
+        "semantic debugging",
+        "self-aware systems",
+        "process visualization",
+        "kwasa-kwasa"
+    ],
+    "galleryBanner": {
+        "color": "#cc3300",
+        "theme": "dark"
+    },
     "engines": {
         "vscode": "^1.80.0"
     },
