@@ -106,7 +106,7 @@
                     "group": "knowledge@2"
                 },
                 {
-                    "when": "editorLangId == turbulance", 
+                    "when": "editorLangId == turbulance",
                     "command": "knowledgeEngine.validateCoherence",
                     "group": "knowledge@3"
                 }
@@ -139,7 +139,7 @@
                     "when": "knowledgeEngine:hasProject"
                 },
                 {
-                    "id": "knowledgeEngine.coherenceView", 
+                    "id": "knowledgeEngine.coherenceView",
                     "name": "Coherence Analysis",
                     "when": "knowledgeEngine:hasProject"
                 },
@@ -178,7 +178,7 @@
                     "type": "array",
                     "default": [
                         "wikipedia",
-                        "pubmed", 
+                        "pubmed",
                         "arxiv",
                         "semantic-scholar"
                     ],
@@ -207,7 +207,7 @@
                     "description": "Maximum depth for provenance tracking"
                 },
                 "knowledgeEngine.noveltyThreshold": {
-                    "type": "number", 
+                    "type": "number",
                     "default": 0.3,
                     "minimum": 0.0,
                     "maximum": 1.0,
@@ -225,7 +225,7 @@
                 }
             },
             {
-                "id": "knowledgeEngine.mediumConfidence", 
+                "id": "knowledgeEngine.mediumConfidence",
                 "description": "Medium confidence knowledge",
                 "defaults": {
                     "dark": "#ffff00",

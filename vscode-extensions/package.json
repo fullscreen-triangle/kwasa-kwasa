@@ -42,6 +42,23 @@
         "build": "npm run install:all && npm run compile:all && npm run package:all",
         "deploy": "npm run build && npm run install-extensions:all",
 
+        "update-publisher": "node scripts/update-publisher.js",
+        "login": "vsce login kwasa-kwasa-team",
+
+        "publish:all": "npm run publish:turbulance && npm run publish:knowledge && npm run publish:pattern && npm run publish:orchestration && npm run publish:boundary",
+        "publish:turbulance": "cd turbulance-language-server && vsce publish",
+        "publish:knowledge": "cd knowledge-resolution-engine && vsce publish",
+        "publish:pattern": "cd pattern-evidence-workbench && vsce publish",
+        "publish:orchestration": "cd metacognitive-orchestration-debugger && vsce publish",
+        "publish:boundary": "cd boundary-detection-studio && vsce publish",
+
+        "version:patch": "npm run version:patch:all",
+        "version:minor": "npm run version:minor:all",
+        "version:major": "npm run version:major:all",
+        "version:patch:all": "cd turbulance-language-server && npm version patch && cd ../knowledge-resolution-engine && npm version patch && cd ../pattern-evidence-workbench && npm version patch && cd ../metacognitive-orchestration-debugger && npm version patch && cd ../boundary-detection-studio && npm version patch",
+        "version:minor:all": "cd turbulance-language-server && npm version minor && cd ../knowledge-resolution-engine && npm version minor && cd ../pattern-evidence-workbench && npm version minor && cd ../metacognitive-orchestration-debugger && npm version minor && cd ../boundary-detection-studio && npm version minor",
+        "version:major:all": "cd turbulance-language-server && npm version major && cd ../knowledge-resolution-engine && npm version major && cd ../pattern-evidence-workbench && npm version major && cd ../metacognitive-orchestration-debugger && npm version major && cd ../boundary-detection-studio && npm version major",
+
         "test": "echo \"Use the TESTING_CHECKLIST.md to test all extensions\"",
         "clean": "rm -f *.vsix && find . -name 'node_modules' -type d -prune -exec rm -rf {} + && find . -name 'out' -type d -prune -exec rm -rf {} +",
         "clean:win": "del /Q *.vsix 2>nul & for /d /r . %%d in (node_modules) do @if exist \"%%d\" rd /s /q \"%%d\" & for /d /r . %%d in (out) do @if exist \"%%d\" rd /s /q \"%%d\""

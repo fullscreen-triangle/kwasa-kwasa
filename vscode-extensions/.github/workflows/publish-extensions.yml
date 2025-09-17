@@ -1,0 +1,105 @@
+name: Publish VSCode Extensions
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      version_type:
+        description: "Version bump type"
+        required: true
+        default: "patch"
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+          cache-dependency-path: vscode-extensions/package-lock.json
+
+      - name: Install dependencies
+        working-directory: vscode-extensions
+        run: |
+          npm install
+          npm install -g vsce
+          npm run install:all
+
+      - name: Compile extensions
+        working-directory: vscode-extensions
+        run: npm run compile:all
+
+      - name: Bump version (if workflow_dispatch)
+        if: github.event_name == 'workflow_dispatch'
+        working-directory: vscode-extensions
+        run: npm run version:${{ inputs.version_type }}
+
+      - name: Package extensions
+        working-directory: vscode-extensions
+        run: npm run package:all
+
+      - name: Publish to VSCode Marketplace
+        working-directory: vscode-extensions
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+        run: |
+          # Login to marketplace
+          vsce login kwasa-kwasa-team -p $VSCE_PAT
+
+          # Publish all extensions
+          npm run publish:all
+
+      - name: Create GitHub Release
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
+          body: |
+            ## Kwasa-Kwasa VSCode Extensions ${{ github.ref_name }}
+
+            🎉 New release of the complete Kwasa-Kwasa VSCode extension suite!
+
+            ### Extensions Published:
+            - **Turbulance Language Support** - Complete language server for Turbulance DSL
+            - **Knowledge Resolution Engine** - Advanced knowledge validation and embedding analysis
+            - **Pattern Analysis & Evidence Workbench** - Pattern detection and evidence network analysis
+            - **Metacognitive Orchestration Debugger** - Self-aware text processing debugger
+            - **Advanced Boundary Detection Studio** - Multi-algorithm text boundary analysis
+
+            ### Installation:
+            1. Open VSCode Extensions tab (`Ctrl+Shift+X`)
+            2. Search for each extension name
+            3. Click Install
+
+            ### Search Keywords:
+            - "turbulance"
+            - "kwasa-kwasa"
+            - "semantic processing"
+            - "knowledge validation"
+            - "pattern analysis"
+
+            See the [Usage Guide](https://github.com/kwasa-kwasa/vscode-extensions/blob/main/USAGE_GUIDE.md) for complete instructions.
+          draft: false
+          prerelease: false
+
+      - name: Upload extension packages as artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: vscode-extensions-${{ github.run_number }}
+          path: vscode-extensions/*.vsix

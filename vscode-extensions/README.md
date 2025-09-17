@@ -137,14 +137,34 @@ These extensions work together as a cohesive system:
 
 ## Installation
 
-### Prerequisites
+### 🚀 Easy Install (Recommended)
+
+**Install directly from VSCode Extensions Marketplace:**
+
+1. **Open Extensions tab** (`Ctrl+Shift+X`)
+2. **Search "kwasa-kwasa"** → Install all 5 extensions
+3. **Reload VSCode** when prompted
+
+**Or search individually:**
+
+-   "Turbulance Language Support"
+-   "Knowledge Resolution Engine"
+-   "Pattern Analysis Evidence Workbench"
+-   "Metacognitive Orchestration Debugger"
+-   "Advanced Boundary Detection Studio"
+
+👉 **[Complete Marketplace Install Guide](MARKETPLACE_INSTALL.md)**
+
+### 🛠️ Developer Install (Local Development)
+
+**Prerequisites:**
 
 -   VSCode 1.80.0 or later
 -   Node.js 18+ for extension development
 -   Rust 1.70+ (for kwasa-kwasa framework integration)
 -   kwasa-kwasa framework installed (`cargo install kwasa-kwasa`)
 
-### Installation Steps
+**Installation Steps:**
 
 1. **Clone the extensions repository**:
 
