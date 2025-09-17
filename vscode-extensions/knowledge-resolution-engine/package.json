@@ -1,0 +1,250 @@
+{
+    "name": "knowledge-resolution-engine",
+    "displayName": "Knowledge Resolution Engine",
+    "description": "Embedding differential analysis and epistemic validation for semantic frameworks",
+    "version": "0.1.0",
+    "publisher": "kwasa-kwasa",
+    "engines": {
+        "vscode": "^1.80.0"
+    },
+    "categories": [
+        "Data Science",
+        "Machine Learning",
+        "Visualization",
+        "Other"
+    ],
+    "activationEvents": [
+        "onLanguage:turbulance",
+        "onCommand:knowledgeEngine.analyzeEmbeddings",
+        "onCommand:knowledgeEngine.showProvenance",
+        "onCommand:knowledgeEngine.validateCoherence"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "knowledgeEngine.analyzeEmbeddings",
+                "title": "Analyze Embedding Differentials",
+                "category": "Knowledge Engine",
+                "icon": "$(graph)"
+            },
+            {
+                "command": "knowledgeEngine.showProvenance",
+                "title": "Show Knowledge Provenance",
+                "category": "Knowledge Engine",
+                "icon": "$(git-branch)"
+            },
+            {
+                "command": "knowledgeEngine.validateCoherence",
+                "title": "Validate Knowledge Coherence",
+                "category": "Knowledge Engine",
+                "icon": "$(check-all)"
+            },
+            {
+                "command": "knowledgeEngine.strengthenPositions",
+                "title": "Strengthen Epistemic Positions",
+                "category": "Knowledge Engine",
+                "icon": "$(trending-up)"
+            },
+            {
+                "command": "knowledgeEngine.compareWithReality",
+                "title": "Compare with External Knowledge",
+                "category": "Knowledge Engine",
+                "icon": "$(compare-changes)"
+            },
+            {
+                "command": "knowledgeEngine.showConfidenceMap",
+                "title": "Show Knowledge Confidence Map",
+                "category": "Knowledge Engine",
+                "icon": "$(map)"
+            },
+            {
+                "command": "knowledgeEngine.detectNovelInsights",
+                "title": "Detect Novel Insights",
+                "category": "Knowledge Engine",
+                "icon": "$(lightbulb)"
+            },
+            {
+                "command": "knowledgeEngine.openDashboard",
+                "title": "Open Knowledge Dashboard",
+                "category": "Knowledge Engine",
+                "icon": "$(dashboard)"
+            }
+        ],
+        "menus": {
+            "editor/context": [
+                {
+                    "when": "editorLangId == turbulance",
+                    "command": "knowledgeEngine.analyzeEmbeddings",
+                    "group": "knowledge@1"
+                },
+                {
+                    "when": "editorLangId == turbulance",
+                    "command": "knowledgeEngine.showProvenance",
+                    "group": "knowledge@2"
+                },
+                {
+                    "when": "editorLangId == turbulance", 
+                    "command": "knowledgeEngine.validateCoherence",
+                    "group": "knowledge@3"
+                }
+            ],
+            "editor/title": [
+                {
+                    "when": "editorLangId == turbulance",
+                    "command": "knowledgeEngine.openDashboard",
+                    "group": "navigation"
+                }
+            ],
+            "view/title": [
+                {
+                    "command": "knowledgeEngine.compareWithReality",
+                    "when": "view == knowledgeEngine.embeddingView",
+                    "group": "navigation"
+                }
+            ]
+        },
+        "views": {
+            "knowledgeEngine": [
+                {
+                    "id": "knowledgeEngine.embeddingView",
+                    "name": "Embedding Differentials",
+                    "when": "knowledgeEngine:hasProject"
+                },
+                {
+                    "id": "knowledgeEngine.provenanceView",
+                    "name": "Knowledge Provenance",
+                    "when": "knowledgeEngine:hasProject"
+                },
+                {
+                    "id": "knowledgeEngine.coherenceView", 
+                    "name": "Coherence Analysis",
+                    "when": "knowledgeEngine:hasProject"
+                },
+                {
+                    "id": "knowledgeEngine.confidenceView",
+                    "name": "Confidence Metrics",
+                    "when": "knowledgeEngine:hasProject"
+                }
+            ]
+        },
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "knowledgeEngine",
+                    "title": "Knowledge Engine",
+                    "icon": "$(graph-scatter)"
+                }
+            ]
+        },
+        "configuration": {
+            "type": "object",
+            "title": "Knowledge Resolution Engine",
+            "properties": {
+                "knowledgeEngine.embeddingModel": {
+                    "type": "string",
+                    "default": "sentence-transformers/all-MiniLM-L6-v2",
+                    "description": "Embedding model for knowledge analysis",
+                    "enum": [
+                        "sentence-transformers/all-MiniLM-L6-v2",
+                        "sentence-transformers/all-mpnet-base-v2",
+                        "text-embedding-ada-002",
+                        "text-embedding-3-small"
+                    ]
+                },
+                "knowledgeEngine.externalSources": {
+                    "type": "array",
+                    "default": [
+                        "wikipedia",
+                        "pubmed", 
+                        "arxiv",
+                        "semantic-scholar"
+                    ],
+                    "description": "External knowledge sources for comparison",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "knowledgeEngine.confidenceThreshold": {
+                    "type": "number",
+                    "default": 0.8,
+                    "minimum": 0.0,
+                    "maximum": 1.0,
+                    "description": "Minimum confidence threshold for knowledge claims"
+                },
+                "knowledgeEngine.enableRealTimeAnalysis": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable real-time embedding analysis as you type"
+                },
+                "knowledgeEngine.provenanceDepth": {
+                    "type": "integer",
+                    "default": 5,
+                    "minimum": 1,
+                    "maximum": 10,
+                    "description": "Maximum depth for provenance tracking"
+                },
+                "knowledgeEngine.noveltyThreshold": {
+                    "type": "number", 
+                    "default": 0.3,
+                    "minimum": 0.0,
+                    "maximum": 1.0,
+                    "description": "Threshold for detecting novel insights (lower = more sensitive)"
+                }
+            }
+        },
+        "colors": [
+            {
+                "id": "knowledgeEngine.highConfidence",
+                "description": "High confidence knowledge",
+                "defaults": {
+                    "dark": "#00ff00",
+                    "light": "#008000"
+                }
+            },
+            {
+                "id": "knowledgeEngine.mediumConfidence", 
+                "description": "Medium confidence knowledge",
+                "defaults": {
+                    "dark": "#ffff00",
+                    "light": "#ff8000"
+                }
+            },
+            {
+                "id": "knowledgeEngine.lowConfidence",
+                "description": "Low confidence knowledge",
+                "defaults": {
+                    "dark": "#ff0000",
+                    "light": "#800000"
+                }
+            },
+            {
+                "id": "knowledgeEngine.novelInsight",
+                "description": "Novel insight detection",
+                "defaults": {
+                    "dark": "#ff00ff",
+                    "light": "#800080"
+                }
+            }
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./"
+    },
+    "devDependencies": {
+        "@types/vscode": "^1.80.0",
+        "@types/node": "^18.0.0",
+        "typescript": "^5.0.0"
+    },
+    "dependencies": {
+        "axios": "^1.5.0",
+        "@tensorflow/tfjs": "^4.10.0",
+        "@tensorflow/tfjs-node": "^4.10.0",
+        "sentence-transformers": "^1.0.0",
+        "d3": "^7.8.0",
+        "vis-network": "^9.1.0",
+        "plotly.js": "^2.26.0"
+    }
+}

@@ -1,0 +1,235 @@
+{
+    "name": "pattern-evidence-workbench",
+    "displayName": "Pattern Analysis & Evidence Workbench",
+    "description": "Visual tools for evidence-based reasoning and pattern analysis",
+    "version": "0.1.0",
+    "publisher": "kwasa-kwasa",
+    "engines": {
+        "vscode": "^1.80.0"
+    },
+    "categories": [
+        "Data Science",
+        "Visualization",
+        "Testing",
+        "Other"
+    ],
+    "activationEvents": [
+        "onLanguage:turbulance",
+        "onCommand:patternWorkbench.buildProposition",
+        "onCommand:patternWorkbench.analyzeEvidence"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "patternWorkbench.buildProposition",
+                "title": "Build Proposition",
+                "category": "Pattern Workbench",
+                "icon": "$(symbol-structure)"
+            },
+            {
+                "command": "patternWorkbench.analyzeEvidence",
+                "title": "Analyze Evidence Network",
+                "category": "Pattern Workbench", 
+                "icon": "$(graph-line)"
+            },
+            {
+                "command": "patternWorkbench.detectPatterns",
+                "title": "Detect Patterns",
+                "category": "Pattern Workbench",
+                "icon": "$(search)"
+            },
+            {
+                "command": "patternWorkbench.testHypothesis",
+                "title": "Test Hypothesis",
+                "category": "Pattern Workbench",
+                "icon": "$(beaker)"
+            },
+            {
+                "command": "patternWorkbench.validateEvidence",
+                "title": "Validate Evidence Quality",
+                "category": "Pattern Workbench",
+                "icon": "$(verified)"
+            },
+            {
+                "command": "patternWorkbench.showEvidenceGraph",
+                "title": "Show Evidence Network Graph",
+                "category": "Pattern Workbench",
+                "icon": "$(type-hierarchy)"
+            },
+            {
+                "command": "patternWorkbench.analyzeMetacognitive",
+                "title": "Analyze Metacognitive Patterns",
+                "category": "Pattern Workbench",
+                "icon": "$(mind-map)"
+            },
+            {
+                "command": "patternWorkbench.generateReport",
+                "title": "Generate Analysis Report",
+                "category": "Pattern Workbench",
+                "icon": "$(file-text)"
+            },
+            {
+                "command": "patternWorkbench.openWorkbench",
+                "title": "Open Pattern Workbench",
+                "category": "Pattern Workbench",
+                "icon": "$(tools)"
+            }
+        ],
+        "menus": {
+            "editor/context": [
+                {
+                    "when": "editorLangId == turbulance && editorHasSelection",
+                    "command": "patternWorkbench.detectPatterns",
+                    "group": "pattern@1"
+                },
+                {
+                    "when": "editorLangId == turbulance",
+                    "command": "patternWorkbench.buildProposition",
+                    "group": "pattern@2"
+                },
+                {
+                    "when": "editorLangId == turbulance",
+                    "command": "patternWorkbench.analyzeEvidence",
+                    "group": "pattern@3"
+                }
+            ],
+            "editor/title": [
+                {
+                    "when": "editorLangId == turbulance",
+                    "command": "patternWorkbench.openWorkbench",
+                    "group": "navigation"
+                }
+            ]
+        },
+        "views": {
+            "patternWorkbench": [
+                {
+                    "id": "patternWorkbench.patternsView",
+                    "name": "Detected Patterns",
+                    "when": "patternWorkbench:hasProject"
+                },
+                {
+                    "id": "patternWorkbench.propositionsView",
+                    "name": "Propositions",
+                    "when": "patternWorkbench:hasProject"
+                },
+                {
+                    "id": "patternWorkbench.evidenceView",
+                    "name": "Evidence Network",
+                    "when": "patternWorkbench:hasProject"
+                },
+                {
+                    "id": "patternWorkbench.hypothesesView",
+                    "name": "Hypothesis Testing",
+                    "when": "patternWorkbench:hasProject"
+                }
+            ]
+        },
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "patternWorkbench",
+                    "title": "Pattern Workbench",
+                    "icon": "$(graph-scatter)"
+                }
+            ]
+        },
+        "configuration": {
+            "type": "object",
+            "title": "Pattern Analysis & Evidence Workbench",
+            "properties": {
+                "patternWorkbench.patternDetectionSensitivity": {
+                    "type": "number",
+                    "default": 0.7,
+                    "minimum": 0.1,
+                    "maximum": 1.0,
+                    "description": "Sensitivity threshold for pattern detection"
+                },
+                "patternWorkbench.evidenceValidationStrict": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable strict evidence validation"
+                },
+                "patternWorkbench.enableRealTimeAnalysis": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Enable real-time pattern analysis (may impact performance)"
+                },
+                "patternWorkbench.metacognitiveAnalysisDepth": {
+                    "type": "integer",
+                    "default": 3,
+                    "minimum": 1,
+                    "maximum": 10,
+                    "description": "Depth of metacognitive pattern analysis"
+                },
+                "patternWorkbench.confidenceThreshold": {
+                    "type": "number",
+                    "default": 0.8,
+                    "minimum": 0.0,
+                    "maximum": 1.0,
+                    "description": "Minimum confidence threshold for pattern validation"
+                },
+                "patternWorkbench.statisticalSignificance": {
+                    "type": "number",
+                    "default": 0.05,
+                    "minimum": 0.001,
+                    "maximum": 0.1,
+                    "description": "Statistical significance level for hypothesis testing"
+                }
+            }
+        },
+        "colors": [
+            {
+                "id": "patternWorkbench.strongEvidence",
+                "description": "Strong evidence",
+                "defaults": {
+                    "dark": "#00ff00",
+                    "light": "#008000"
+                }
+            },
+            {
+                "id": "patternWorkbench.weakEvidence",
+                "description": "Weak evidence",
+                "defaults": {
+                    "dark": "#ffff00",
+                    "light": "#ff8000"
+                }
+            },
+            {
+                "id": "patternWorkbench.contradictoryEvidence",
+                "description": "Contradictory evidence",
+                "defaults": {
+                    "dark": "#ff0000",
+                    "light": "#800000"
+                }
+            },
+            {
+                "id": "patternWorkbench.detectedPattern",
+                "description": "Detected pattern",
+                "defaults": {
+                    "dark": "#00ffff",
+                    "light": "#008080"
+                }
+            }
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./"
+    },
+    "devDependencies": {
+        "@types/vscode": "^1.80.0",
+        "@types/node": "^18.0.0",
+        "typescript": "^5.0.0"
+    },
+    "dependencies": {
+        "d3": "^7.8.0",
+        "vis-network": "^9.1.0",
+        "plotly.js": "^2.26.0",
+        "ml-matrix": "^6.10.4",
+        "simple-statistics": "^7.8.0",
+        "jstat": "^1.9.6"
+    }
+}

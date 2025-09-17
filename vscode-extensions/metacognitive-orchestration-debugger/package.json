@@ -1,0 +1,268 @@
+{
+    "name": "metacognitive-orchestration-debugger",
+    "displayName": "Metacognitive Orchestration Debugger",
+    "description": "Debug and visualize self-aware text processing orchestration",
+    "version": "0.1.0",
+    "publisher": "kwasa-kwasa",
+    "engines": {
+        "vscode": "^1.80.0"
+    },
+    "categories": [
+        "Debuggers",
+        "Visualization",
+        "Other"
+    ],
+    "activationEvents": [
+        "onLanguage:turbulance",
+        "onDebugResolve:turbulance",
+        "onCommand:orchestrationDebugger.startDebugging"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "orchestrationDebugger.startDebugging",
+                "title": "Start Orchestration Debugging",
+                "category": "Orchestration Debugger",
+                "icon": "$(debug-start)"
+            },
+            {
+                "command": "orchestrationDebugger.showOrchestrationFlow",
+                "title": "Show Orchestration Flow",
+                "category": "Orchestration Debugger",
+                "icon": "$(type-hierarchy-sub)"
+            },
+            {
+                "command": "orchestrationDebugger.trackGoals",
+                "title": "Track Goal Processing",
+                "category": "Orchestration Debugger",
+                "icon": "$(target)"
+            },
+            {
+                "command": "orchestrationDebugger.monitorInterventions",
+                "title": "Monitor Interventions",
+                "category": "Orchestration Debugger",
+                "icon": "$(warning)"
+            },
+            {
+                "command": "orchestrationDebugger.analyzeContext",
+                "title": "Analyze Context Awareness",
+                "category": "Orchestration Debugger",
+                "icon": "$(context)"
+            },
+            {
+                "command": "orchestrationDebugger.visualizeMetacognition",
+                "title": "Visualize Metacognitive Trace",
+                "category": "Orchestration Debugger",
+                "icon": "$(mind-map)"
+            },
+            {
+                "command": "orchestrationDebugger.showStreamPipeline",
+                "title": "Show Stream Processing Pipeline",
+                "category": "Orchestration Debugger",
+                "icon": "$(stream)"
+            },
+            {
+                "command": "orchestrationDebugger.inspectBiomimeticPatterns",
+                "title": "Inspect Biomimetic Patterns",
+                "category": "Orchestration Debugger",
+                "icon": "$(dna)"
+            },
+            {
+                "command": "orchestrationDebugger.openDebugConsole",
+                "title": "Open Debug Console",
+                "category": "Orchestration Debugger",
+                "icon": "$(terminal)"
+            }
+        ],
+        "menus": {
+            "editor/context": [
+                {
+                    "when": "editorLangId == turbulance",
+                    "command": "orchestrationDebugger.startDebugging",
+                    "group": "debug@1"
+                },
+                {
+                    "when": "editorLangId == turbulance",
+                    "command": "orchestrationDebugger.showOrchestrationFlow",
+                    "group": "debug@2"
+                }
+            ],
+            "editor/title/run": [
+                {
+                    "when": "editorLangId == turbulance",
+                    "command": "orchestrationDebugger.startDebugging"
+                }
+            ]
+        },
+        "views": {
+            "orchestrationDebugger": [
+                {
+                    "id": "orchestrationDebugger.flowView",
+                    "name": "Orchestration Flow",
+                    "when": "orchestrationDebugger:debugging"
+                },
+                {
+                    "id": "orchestrationDebugger.goalsView",
+                    "name": "Goal Tracking",
+                    "when": "orchestrationDebugger:debugging"
+                },
+                {
+                    "id": "orchestrationDebugger.interventionsView",
+                    "name": "Intervention Monitor",
+                    "when": "orchestrationDebugger:debugging"
+                },
+                {
+                    "id": "orchestrationDebugger.contextView",
+                    "name": "Context Analysis",
+                    "when": "orchestrationDebugger:debugging"
+                },
+                {
+                    "id": "orchestrationDebugger.metacognitionView",
+                    "name": "Metacognitive State",
+                    "when": "orchestrationDebugger:debugging"
+                }
+            ]
+        },
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "orchestrationDebugger",
+                    "title": "Orchestration Debugger",
+                    "icon": "$(debug-alt)"
+                }
+            ]
+        },
+        "debuggers": [
+            {
+                "type": "turbulance",
+                "label": "Turbulance Orchestration",
+                "program": "./out/debug-adapter.js",
+                "runtime": "node",
+                "configurationAttributes": {
+                    "launch": {
+                        "required": ["program"],
+                        "properties": {
+                            "program": {
+                                "type": "string",
+                                "description": "Absolute path to the Turbulance program.",
+                                "default": "${workspaceFolder}/${command:AskForProgramName}"
+                            },
+                            "enableMetacognitiveTracing": {
+                                "type": "boolean",
+                                "description": "Enable metacognitive trace debugging",
+                                "default": true
+                            },
+                            "enableOrchestrationFlow": {
+                                "type": "boolean",
+                                "description": "Enable orchestration flow visualization",
+                                "default": true
+                            },
+                            "enableGoalTracking": {
+                                "type": "boolean",
+                                "description": "Enable goal-oriented processing tracking",
+                                "default": true
+                            },
+                            "enableInterventionMonitoring": {
+                                "type": "boolean",
+                                "description": "Enable intervention system monitoring",
+                                "default": true
+                            },
+                            "enableContextAnalysis": {
+                                "type": "boolean",
+                                "description": "Enable context awareness analysis",
+                                "default": true
+                            },
+                            "enableBiomimeticInspection": {
+                                "type": "boolean",
+                                "description": "Enable biomimetic pattern inspection",
+                                "default": false
+                            }
+                        }
+                    }
+                },
+                "initialConfigurations": [
+                    {
+                        "type": "turbulance",
+                        "request": "launch",
+                        "name": "Debug Turbulance Orchestration",
+                        "program": "${workspaceFolder}/main.turb",
+                        "enableMetacognitiveTracing": true,
+                        "enableOrchestrationFlow": true,
+                        "enableGoalTracking": true,
+                        "enableInterventionMonitoring": true,
+                        "enableContextAnalysis": true
+                    }
+                ],
+                "configurationSnippets": [
+                    {
+                        "label": "Turbulance: Launch Orchestration Debug",
+                        "description": "A new configuration for debugging Turbulance orchestration",
+                        "body": {
+                            "type": "turbulance",
+                            "request": "launch",
+                            "name": "Debug Turbulance Orchestration",
+                            "program": "^\"\\${workspaceFolder}/main.turb\"",
+                            "enableMetacognitiveTracing": true,
+                            "enableOrchestrationFlow": true
+                        }
+                    }
+                ]
+            }
+        ],
+        "configuration": {
+            "type": "object",
+            "title": "Metacognitive Orchestration Debugger",
+            "properties": {
+                "orchestrationDebugger.traceDepth": {
+                    "type": "integer",
+                    "default": 5,
+                    "minimum": 1,
+                    "maximum": 20,
+                    "description": "Maximum depth for metacognitive tracing"
+                },
+                "orchestrationDebugger.updateFrequency": {
+                    "type": "integer",
+                    "default": 500,
+                    "minimum": 100,
+                    "maximum": 5000,
+                    "description": "Update frequency for debug visualizations (milliseconds)"
+                },
+                "orchestrationDebugger.enableRealtimeVisualization": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable real-time visualization updates"
+                },
+                "orchestrationDebugger.showDetailedMetrics": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Show detailed performance metrics during debugging"
+                },
+                "orchestrationDebugger.logLevel": {
+                    "type": "string",
+                    "enum": ["error", "warn", "info", "debug", "trace"],
+                    "default": "info",
+                    "description": "Debug logging level"
+                }
+            }
+        }
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./"
+    },
+    "devDependencies": {
+        "@types/vscode": "^1.80.0",
+        "@types/node": "^18.0.0",
+        "typescript": "^5.0.0"
+    },
+    "dependencies": {
+        "vscode-debugadapter": "^1.51.0",
+        "vscode-debugprotocol": "^1.51.0",
+        "d3": "^7.8.0",
+        "cytoscape": "^3.26.0",
+        "vis-timeline": "^7.7.0",
+        "ws": "^8.13.0"
+    }
+}

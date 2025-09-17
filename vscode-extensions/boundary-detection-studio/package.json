@@ -1,0 +1,279 @@
+{
+    "name": "boundary-detection-studio",
+    "displayName": "Advanced Boundary Detection Studio",
+    "description": "Sophisticated text boundary analysis and visualization for semantic text processing",
+    "version": "0.1.0",
+    "publisher": "kwasa-kwasa",
+    "engines": {
+        "vscode": "^1.80.0"
+    },
+    "categories": [
+        "Data Science",
+        "Visualization",
+        "Language Packs",
+        "Other"
+    ],
+    "activationEvents": [
+        "onLanguage:turbulance",
+        "onLanguage:markdown",
+        "onLanguage:plaintext",
+        "onCommand:boundaryStudio.analyzeBoundaries"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "boundaryStudio.analyzeBoundaries",
+                "title": "Analyze Text Boundaries",
+                "category": "Boundary Studio",
+                "icon": "$(split-horizontal)"
+            },
+            {
+                "command": "boundaryStudio.detectSemanticBoundaries",
+                "title": "Detect Semantic Boundaries",
+                "category": "Boundary Studio",
+                "icon": "$(symbol-structure)"
+            },
+            {
+                "command": "boundaryStudio.showBoundaryHierarchy",
+                "title": "Show Boundary Hierarchy",
+                "category": "Boundary Studio",
+                "icon": "$(type-hierarchy)"
+            },
+            {
+                "command": "boundaryStudio.compareBoundaryAlgorithms",
+                "title": "Compare Boundary Algorithms",
+                "category": "Boundary Studio",
+                "icon": "$(compare-changes)"
+            },
+            {
+                "command": "boundaryStudio.validateBoundaries",
+                "title": "Validate Boundary Detection",
+                "category": "Boundary Studio",
+                "icon": "$(verified)"
+            },
+            {
+                "command": "boundaryStudio.createCustomBoundaryRules",
+                "title": "Create Custom Boundary Rules",
+                "category": "Boundary Studio",
+                "icon": "$(settings-gear)"
+            },
+            {
+                "command": "boundaryStudio.exportBoundaryData",
+                "title": "Export Boundary Analysis Data",
+                "category": "Boundary Studio",
+                "icon": "$(export)"
+            },
+            {
+                "command": "boundaryStudio.openStudio",
+                "title": "Open Boundary Detection Studio",
+                "category": "Boundary Studio",
+                "icon": "$(tools)"
+            },
+            {
+                "command": "boundaryStudio.trainBoundaryModel",
+                "title": "Train Boundary Detection Model",
+                "category": "Boundary Studio",
+                "icon": "$(robot)"
+            }
+        ],
+        "menus": {
+            "editor/context": [
+                {
+                    "when": "editorTextFocus",
+                    "command": "boundaryStudio.analyzeBoundaries",
+                    "group": "boundary@1"
+                },
+                {
+                    "when": "editorTextFocus && editorHasSelection",
+                    "command": "boundaryStudio.detectSemanticBoundaries",
+                    "group": "boundary@2"
+                },
+                {
+                    "when": "editorTextFocus",
+                    "command": "boundaryStudio.showBoundaryHierarchy",
+                    "group": "boundary@3"
+                }
+            ],
+            "editor/title": [
+                {
+                    "command": "boundaryStudio.openStudio",
+                    "group": "navigation",
+                    "when": "resourceExtname =~ /\\.(turb|trb|md|txt)$/"
+                }
+            ]
+        },
+        "views": {
+            "boundaryStudio": [
+                {
+                    "id": "boundaryStudio.hierarchyView",
+                    "name": "Boundary Hierarchy",
+                    "when": "boundaryStudio:hasAnalysis"
+                },
+                {
+                    "id": "boundaryStudio.algorithmView",
+                    "name": "Detection Algorithms",
+                    "when": "boundaryStudio:hasAnalysis"
+                },
+                {
+                    "id": "boundaryStudio.metricsView",
+                    "name": "Detection Metrics",
+                    "when": "boundaryStudio:hasAnalysis"
+                },
+                {
+                    "id": "boundaryStudio.rulesView",
+                    "name": "Custom Rules",
+                    "when": "boundaryStudio:hasAnalysis"
+                }
+            ]
+        },
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "boundaryStudio",
+                    "title": "Boundary Studio",
+                    "icon": "$(split-horizontal)"
+                }
+            ]
+        },
+        "configuration": {
+            "type": "object",
+            "title": "Advanced Boundary Detection Studio",
+            "properties": {
+                "boundaryStudio.defaultAlgorithm": {
+                    "type": "string",
+                    "enum": [
+                        "semantic",
+                        "syntactic",
+                        "statistical",
+                        "neural",
+                        "hybrid"
+                    ],
+                    "default": "hybrid",
+                    "description": "Default boundary detection algorithm"
+                },
+                "boundaryStudio.confidenceThreshold": {
+                    "type": "number",
+                    "default": 0.7,
+                    "minimum": 0.0,
+                    "maximum": 1.0,
+                    "description": "Minimum confidence threshold for boundary detection"
+                },
+                "boundaryStudio.enableRealTimeDetection": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Enable real-time boundary detection as you type"
+                },
+                "boundaryStudio.visualizationMode": {
+                    "type": "string",
+                    "enum": [
+                        "highlight",
+                        "underline",
+                        "margin",
+                        "gutter",
+                        "overlay"
+                    ],
+                    "default": "highlight",
+                    "description": "Boundary visualization mode in editor"
+                },
+                "boundaryStudio.maxHierarchyDepth": {
+                    "type": "integer",
+                    "default": 10,
+                    "minimum": 3,
+                    "maximum": 50,
+                    "description": "Maximum depth for boundary hierarchy analysis"
+                },
+                "boundaryStudio.enableMultiLanguageSupport": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable multi-language boundary detection support"
+                },
+                "boundaryStudio.customRulesPath": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Path to custom boundary detection rules file"
+                },
+                "boundaryStudio.enableStatistics": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable detailed boundary detection statistics"
+                },
+                "boundaryStudio.autoValidation": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Enable automatic validation of boundary detection results"
+                }
+            }
+        },
+        "colors": [
+            {
+                "id": "boundaryStudio.paragraphBoundary",
+                "description": "Paragraph boundary",
+                "defaults": {
+                    "dark": "#0080ff80",
+                    "light": "#0080ff60"
+                }
+            },
+            {
+                "id": "boundaryStudio.sentenceBoundary",
+                "description": "Sentence boundary",
+                "defaults": {
+                    "dark": "#ff8000a0",
+                    "light": "#ff800080"
+                }
+            },
+            {
+                "id": "boundaryStudio.clauseBoundary",
+                "description": "Clause boundary",
+                "defaults": {
+                    "dark": "#00ff8080",
+                    "light": "#00ff8060"
+                }
+            },
+            {
+                "id": "boundaryStudio.semanticBoundary",
+                "description": "Semantic boundary",
+                "defaults": {
+                    "dark": "#ff00ff80",
+                    "light": "#ff00ff60"
+                }
+            },
+            {
+                "id": "boundaryStudio.weakBoundary",
+                "description": "Weak boundary detection",
+                "defaults": {
+                    "dark": "#ffffff40",
+                    "light": "#00000020"
+                }
+            },
+            {
+                "id": "boundaryStudio.strongBoundary",
+                "description": "Strong boundary detection",
+                "defaults": {
+                    "dark": "#ffff0080",
+                    "light": "#ffff0060"
+                }
+            }
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./"
+    },
+    "devDependencies": {
+        "@types/vscode": "^1.80.0",
+        "@types/node": "^18.0.0",
+        "typescript": "^5.0.0"
+    },
+    "dependencies": {
+        "compromise": "^14.10.0",
+        "natural": "^6.5.0",
+        "nltk": "^2.0.2",
+        "ml-matrix": "^6.10.4",
+        "d3": "^7.8.0",
+        "cytoscape": "^3.26.0",
+        "regression": "^2.0.1",
+        "simple-statistics": "^7.8.0"
+    }
+}

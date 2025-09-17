@@ -1,0 +1,119 @@
+{
+    "name": "turbulance-language-server",
+    "displayName": "Turbulance Language Support",
+    "description": "Language server for the Turbulance semantic programming language",
+    "version": "0.1.0",
+    "publisher": "kwasa-kwasa",
+    "engines": {
+        "vscode": "^1.80.0"
+    },
+    "categories": [
+        "Programming Languages",
+        "Linters",
+        "Formatters",
+        "Snippets"
+    ],
+    "activationEvents": [
+        "onLanguage:turbulance"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "languages": [
+            {
+                "id": "turbulance",
+                "aliases": ["Turbulance", "turbulance"],
+                "extensions": [".turb", ".trb"],
+                "configuration": "./language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "turbulance",
+                "scopeName": "source.turbulance",
+                "path": "./syntaxes/turbulance.tmLanguage.json"
+            }
+        ],
+        "configuration": {
+            "type": "object",
+            "title": "Turbulance Language Server",
+            "properties": {
+                "turbulanceLanguageServer.maxNumberOfProblems": {
+                    "scope": "resource",
+                    "type": "number",
+                    "default": 100,
+                    "description": "Controls the maximum number of problems produced by the server."
+                },
+                "turbulanceLanguageServer.trace.server": {
+                    "scope": "window",
+                    "type": "string",
+                    "enum": [
+                        "off",
+                        "messages",
+                        "verbose"
+                    ],
+                    "default": "off",
+                    "description": "Traces the communication between VS Code and the language server."
+                },
+                "turbulanceLanguageServer.enableSemanticValidation": {
+                    "scope": "resource",
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable semantic validation for propositions and evidence structures."
+                },
+                "turbulanceLanguageServer.scientificArgumentValidation": {
+                    "scope": "resource",
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable scientific argument validation and fallacy detection."
+                }
+            }
+        },
+        "commands": [
+            {
+                "command": "turbulance.validate",
+                "title": "Validate Turbulance File",
+                "category": "Turbulance"
+            },
+            {
+                "command": "turbulance.runScript",
+                "title": "Run Turbulance Script",
+                "category": "Turbulance"
+            },
+            {
+                "command": "turbulance.formatDocument",
+                "title": "Format Turbulance Document",
+                "category": "Turbulance"
+            }
+        ],
+        "menus": {
+            "editor/context": [
+                {
+                    "when": "editorLangId == turbulance",
+                    "command": "turbulance.validate",
+                    "group": "navigation"
+                }
+            ]
+        },
+        "snippets": [
+            {
+                "language": "turbulance",
+                "path": "./snippets/turbulance.json"
+            }
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./"
+    },
+    "devDependencies": {
+        "@types/vscode": "^1.80.0",
+        "@types/node": "^18.0.0",
+        "typescript": "^5.0.0"
+    },
+    "dependencies": {
+        "vscode-languageclient": "^8.1.0",
+        "vscode-languageserver": "^8.1.0",
+        "vscode-languageserver-textdocument": "^1.0.8"
+    }
+}

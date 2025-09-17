@@ -1,0 +1,154 @@
+{
+    "Function Declaration": {
+        "prefix": "funxn",
+        "body": [
+            "funxn ${1:function_name}(${2:parameters})${3: -> ${4:ReturnType}}:",
+            "\t${5:// Function body}",
+            "\t${0:return}"
+        ],
+        "description": "Create a Turbulance function"
+    },
+    "Proposition": {
+        "prefix": "proposition",
+        "body": [
+            "proposition ${1:PropositionName}:",
+            "\tmotion ${2:MotionName}(\"${3:Description of the motion}\")",
+            "\t",
+            "\twithin ${4:data_source}:",
+            "\t\tgiven ${5:condition}:",
+            "\t\t\tsupport ${2:MotionName}",
+            "\t\t\t${0:// Additional logic}"
+        ],
+        "description": "Create a proposition with motion"
+    },
+    "Evidence Block": {
+        "prefix": "evidence",
+        "body": [
+            "evidence ${1:EvidenceName}:",
+            "\tsources:",
+            "\t\t- ${2:source_name}: ${3:SourceType}(\"${4:source_description}\")",
+            "\t",
+            "\tcollection:",
+            "\t\tfrequency: ${5:daily}",
+            "\t\tvalidation: ${6:cross_reference}",
+            "\t\tquality_threshold: ${7:0.9}",
+            "\t",
+            "\tprocessing:",
+            "\t\t- ${8:remove_outliers}(method=\"${9:iqr}\")",
+            "\t\t- ${10:normalize_units}()",
+            "\t\t${0:// Additional processing steps}"
+        ],
+        "description": "Create an evidence collection block"
+    },
+    "Metacognitive Analysis": {
+        "prefix": "metacognitive",
+        "body": [
+            "metacognitive ${1:AnalysisName}:",
+            "\ttrack:",
+            "\t\t- ${2:reasoning_steps}",
+            "\t\t- ${3:confidence_levels}",
+            "\t\t- ${4:potential_biases}",
+            "\t",
+            "\tevaluate:",
+            "\t\t- ${5:logical_consistency()}",
+            "\t\t- ${6:evidence_quality()}",
+            "\t\t- ${7:conclusion_strength()}",
+            "\t",
+            "\treflect:",
+            "\t\t${0:// Self-reflection logic}"
+        ],
+        "description": "Create a metacognitive analysis block"
+    },
+    "Within Pattern": {
+        "prefix": "within",
+        "body": [
+            "within ${1:data_source} as ${2:item}:",
+            "\tgiven ${3:condition}:",
+            "\t\t${4:// Action when condition is true}",
+            "\tgiven otherwise:",
+            "\t\t${0:// Default action}"
+        ],
+        "description": "Create a within pattern matching block"
+    },
+    "Text Analysis Function": {
+        "prefix": "analyze_text",
+        "body": [
+            "funxn analyze_${1:aspect}(text: String) -> ${2:AnalysisResult}:",
+            "\t/// Analyze ${1:aspect} of the given text",
+            "\titem tokens = tokenize(text)",
+            "\titem features = extract_${1:aspect}_features(tokens)",
+            "\t",
+            "\twithin features as feature:",
+            "\t\tgiven feature.confidence > ${3:0.8}:",
+            "\t\t\tcollect_significant_feature(feature)",
+            "\t",
+            "\treturn compile_analysis_results(features)",
+            "\t${0:}"
+        ],
+        "description": "Create a text analysis function template"
+    },
+    "Scientific Test": {
+        "prefix": "test",
+        "body": [
+            "test \"${1:test description}\":",
+            "\titem ${2:test_data} = ${3:prepare_test_data()}",
+            "\titem expected = ${4:expected_result}",
+            "\titem actual = ${5:function_to_test}(${2:test_data})",
+            "\t",
+            "\tassert_equals(expected, actual, tolerance=${6:0.001})",
+            "\t${0:// Additional assertions}"
+        ],
+        "description": "Create a scientific test case"
+    },
+    "Hypothesis Validation": {
+        "prefix": "validate",
+        "body": [
+            "validate ${1:hypothesis_name}:",
+            "\tgiven ${2:condition}:",
+            "\t\tlog_decision(\"${1:hypothesis_name}: SUPPORTED\")",
+            "\t\tconfidence_boost(${3:target_system}, +${4:0.15})",
+            "\tgiven otherwise:",
+            "\t\tlog_decision(\"${1:hypothesis_name}: REJECTED\")",
+            "\t\trequire_additional_evidence(${5:evidence_type})",
+            "\t${0:}"
+        ],
+        "description": "Create a hypothesis validation block"
+    },
+    "Data Processing Pipeline": {
+        "prefix": "pipeline",
+        "body": [
+            "funxn process_${1:data_type}_pipeline(data: ${2:DataType}) -> ProcessedData:",
+            "\t/// Process ${1:data_type} through analysis pipeline",
+            "\t",
+            "\t// Phase 1: Data validation",
+            "\titem validated_data = validate_${1:data_type}(data)",
+            "\t",
+            "\t// Phase 2: Feature extraction",
+            "\titem features = extract_features(validated_data)",
+            "\t",
+            "\t// Phase 3: Analysis",
+            "\titem analysis_results = analyze_features(features)",
+            "\t",
+            "\t// Phase 4: Validation and confidence scoring",
+            "\titem final_results = validate_and_score(analysis_results)",
+            "\t",
+            "\treturn final_results",
+            "\t${0:}"
+        ],
+        "description": "Create a data processing pipeline template"
+    },
+    "Import Statement": {
+        "prefix": "import",
+        "body": [
+            "import ${1:module_name}"
+        ],
+        "description": "Import a module"
+    },
+    "From Import": {
+        "prefix": "from",
+        "body": [
+            "from ${1:module_name} import ${2:function_name}"
+        ],
+        "description": "Import specific functions from a module"
+    }
+}
