@@ -1,0 +1,162 @@
+{
+  "metadata": {
+    "analysis_timestamp": "2025-10-14T23:40:19.939457",
+    "data_file": "garmin_cleaned_20251013_000747.csv",
+    "n_datapoints": 93,
+    "duration_s": 92.0,
+    "available_sensors": [
+      "altitude"
+    ]
+  },
+  "consciousness": {
+    "frame_rate_hz": 2.0,
+    "frame_duration_ms": 500.0,
+    "total_conscious_frames": 184,
+    "total_duration_s": 92.0,
+    "perception_bandwidth": 230.4389094796726,
+    "hrv_cognitive_freq_hz": 2.0,
+    "motor_cognitive_freq_hz": 2.0,
+    "body_awareness_freq_hz": 2.0,
+    "interpretation": "MEDITATIVE: Very slow frame selection (> 500ms)"
+  },
+  "neural": {
+    "mean_firing_rate_hz": 20.0,
+    "total_neural_events": 1840,
+    "duration_s": 92.0,
+    "neural_bands_from_hr": {
+      "delta": 0.0,
+      "theta": 0.0,
+      "alpha": 0.0,
+      "beta": 0.0,
+      "gamma": 0.0
+    },
+    "neural_bands_from_gait": {
+      "delta": 0.0,
+      "theta": 0.0,
+      "alpha": 0.0,
+      "beta": 0.0,
+      "gamma": 0.0
+    },
+    "motor_cortex_power": 0.0,
+    "autonomic_power": 0.0,
+    "consciousness_power": 0.0,
+    "neural_efficiency": 1.3811493031609183
+  },
+  "atmospheric": {
+    "total_displacement_volume_m3": 686.3589611757492,
+    "total_air_mass_displaced_kg": 840.7897274402928,
+    "molecules_directly_displaced": 1.7459433581536012e+28,
+    "molecules_coupled_influenced": 6.983773432614405e+31,
+    "coupling_enhancement_factor": 4000.0,
+    "reynolds_number": 376383.8133909906,
+    "wake_length_m": 823.0983319772815,
+    "wake_volume_m3": 1481.5769975591068,
+    "energy_transferred_to_air_j": 7378.525454423869,
+    "wake_temperature_rise_k": 0.008745551303575723,
+    "vortex_shedding_freq_hz": 0.6179180972677487,
+    "mean_velocity_ms": 4.14512061005404,
+    "total_duration_s": 92.0
+  },
+  "oscillatory_scales": {
+    "atmospheric": {
+      "frequency_hz": 1e-05,
+      "power": 1.978597447021532,
+      "measured": false,
+      "name": "Atmospheric Gas Dynamics",
+      "reconstructed_from_coupling": true
+    },
+    "quantum_membrane": {
+      "frequency_hz": 10000000000000.0,
+      "power": 0.5,
+      "measured": false,
+      "name": "Quantum Membrane (Ion Channels)",
+      "reconstructed_from_coupling": true
+    },
+    "intracellular": {
+      "frequency_hz": 10000.0,
+      "power": 0.5,
+      "measured": false,
+      "name": "Intracellular Circuits",
+      "reconstructed_from_coupling": true
+    },
+    "cellular": {
+      "frequency_hz": 10,
+      "power": 0.5,
+      "measured": false,
+      "name": "Cellular Information",
+      "reconstructed_from_coupling": true
+    },
+    "tissue": {
+      "frequency_hz": 1.0,
+      "power": 0.5,
+      "measured": false,
+      "name": "Tissue Integration",
+      "reconstructed_from_coupling": true
+    },
+    "neural": {
+      "frequency_hz": 40,
+      "power": 0.5,
+      "measured": false,
+      "name": "Neural Processing (Gamma)",
+      "reconstructed_from_coupling": true
+    },
+    "cognitive": {
+      "frequency_hz": 0.5,
+      "power": 0.5,
+      "measured": false,
+      "name": "Cognitive (Consciousness Frame Selection)",
+      "reconstructed_from_coupling": true
+    },
+    "neuromuscular": {
+      "frequency_hz": 10,
+      "power": 1.978597447021532,
+      "measured": false,
+      "name": "Neuromuscular Control",
+      "reconstructed_from_coupling": true
+    },
+    "cardiovascular": {
+      "frequency_hz": 1.2,
+      "power": 19785.97447021532,
+      "measured": true,
+      "name": "Cardiovascular (Heart Rate)"
+    },
+    "respiratory": {
+      "frequency_hz": 0.25,
+      "power": 1.5009758467320833,
+      "measured": false,
+      "name": "Respiratory",
+      "reconstructed_from_coupling": true
+    },
+    "gait": {
+      "frequency_hz": 1.67,
+      "power": 28909.546392193613,
+      "measured": true,
+      "name": "Gait (Cadence)"
+    },
+    "circadian": {
+      "frequency_hz": 1.16e-05,
+      "power": 0.9636515464064538,
+      "measured": false,
+      "name": "Circadian Rhythm",
+      "reconstructed_from_coupling": true
+    }
+  },
+  "medical_grade_metrics": {
+    "mean_heart_rate_bpm": 139.91527439638944,
+    "heart_rate_variability_sdnn_ms": 125.86318096565911,
+    "max_heart_rate_bpm": 164.44255481810276,
+    "min_heart_rate_bpm": 114.38773340263889,
+    "estimated_respiratory_rate_bpm": 12.827969226549637,
+    "mean_cadence_spm": 169.84179785421898,
+    "mean_speed_ms": 4.14512061005404,
+    "mean_vertical_oscillation_m": 0.08999999999999997,
+    "consciousness_frame_rate_hz": 2.0,
+    "neural_firing_rate_hz": 20.0,
+    "motor_cortex_activation": 0.0,
+    "running_efficiency": 2.9625933465352983,
+    "neural_cardiovascular_coupling": 1.3811493031609183,
+    "consciousness_efficiency": 230.4389094796726,
+    "physiological_stress_index": 2.026070091249123,
+    "neuromuscular_coherence": -0.06664894787443865
+  }
+}

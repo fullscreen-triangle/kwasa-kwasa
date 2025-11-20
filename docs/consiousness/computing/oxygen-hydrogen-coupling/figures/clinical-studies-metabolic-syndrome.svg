@@ -1,0 +1,232 @@
+<svg width="1100" height="1100" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <style>
+        .title { font: bold 24px sans-serif; }
+        .subtitle { font: bold 18px sans-serif; }
+        .label { font: 14px sans-serif; }
+        .small { font: 12px sans-serif; }
+        .tiny { font: 10px sans-serif; }
+      </style>
+      
+      <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+        <polygon points="0 0, 10 3, 0 6" fill="#333" />
+      </marker>
+      
+      <marker id="arrow-green" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+        <polygon points="0 0, 10 3, 0 6" fill="#10b981" />
+      </marker>
+    </defs>
+    
+    <!-- Title -->
+    <text x="550" y="35" text-anchor="middle" class="title">
+      Clinical Case Studies: Phase-Lock Programming as Therapeutic Mechanism
+    </text>
+    
+    <!-- CASE 1: Major Depressive Disorder -->
+    <g id="case-mdd">
+      <rect x="50" y="60" width="1000" height="310" fill="#fef2f2" stroke="#ef4444" stroke-width="2" rx="10"/>
+      
+      <text x="550" y="95" text-anchor="middle" class="subtitle" fill="#ef4444">
+        Case 1: Major Depressive Disorder (MDD)
+      </text>
+      
+      <!-- Pathology -->
+      <g id="mdd-pathology">
+        <text x="200" y="130" text-anchor="middle" class="label" font-weight="bold">Pathology</text>
+        
+        <rect x="80" y="145" width="240" height="100" fill="white" stroke="#ef4444" stroke-width="2" rx="5"/>
+        <text x="200" y="170" text-anchor="middle" class="small" fill="#ef4444" font-weight="bold">
+          Monoamine Phase Desynchronization
+        </text>
+        <text x="100" y="195" class="tiny">• Serotonin oscillators unlocked</text>
+        <text x="100" y="212" class="tiny">• Dopamine phase drift</text>
+        <text x="100" y="229" class="tiny">• Order parameter r = 0.20</text>
+        
+        <!-- Desynchronized oscillators -->
+        <circle cx="200" cy="280" r="30" fill="none" stroke="#ef4444" stroke-width="2"/>
+        <line x1="200" y1="280" x2="210" y2="255" stroke="#ef4444" stroke-width="2"/>
+        <line x1="200" y1="280" x2="225" y2="280" stroke="#ef4444" stroke-width="2"/>
+        <line x1="200" y1="280" x2="190" y2="305" stroke="#ef4444" stroke-width="2"/>
+        <line x1="200" y1="280" x2="175" y2="270" stroke="#ef4444" stroke-width="2"/>
+        <text x="200" y="330" text-anchor="middle" class="tiny" fill="#ef4444">Desync</text>
+      </g>
+      
+      <!-- Intervention -->
+      <g id="mdd-intervention" transform="translate(340, 0)">
+        <text x="200" y="130" text-anchor="middle" class="label" font-weight="bold">Intervention</text>
+        
+        <rect x="80" y="145" width="240" height="100" fill="white" stroke="#2563eb" stroke-width="2" rx="5"/>
+        <text x="200" y="170" text-anchor="middle" class="small" fill="#2563eb" font-weight="bold">
+          SSRI (Sertraline 50-200 mg/day)
+        </text>
+        <text x="100" y="195" class="tiny">• Enhances serotonin coupling</text>
+        <text x="100" y="212" class="tiny">• K: 0.5 → 0.75</text>
+        <text x="100" y="229" class="tiny">• Q = 1.4 (EM resonance)</text>
+        
+        <!-- Drug molecule -->
+        <circle cx="200" cy="280" r="25" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+        <text x="200" y="285" text-anchor="middle" class="small" fill="#2563eb" font-weight="bold">SSRI</text>
+        <text x="200" y="330" text-anchor="middle" class="tiny" fill="#2563eb">Phase-Lock</text>
+      </g>
+      
+      <!-- Outcome -->
+      <g id="mdd-outcome" transform="translate(680, 0)">
+        <text x="200" y="130" text-anchor="middle" class="label" font-weight="bold">Outcome</text>
+        
+        <rect x="80" y="145" width="240" height="100" fill="white" stroke="#10b981" stroke-width="2" rx="5"/>
+        <text x="200" y="170" text-anchor="middle" class="small" fill="#10b981" font-weight="bold">
+          Monoamine Synchronization
+        </text>
+        <text x="100" y="195" class="tiny">• Serotonin oscillators locked</text>
+        <text x="100" y="212" class="tiny">• Dopamine phase coherent</text>
+        <text x="100" y="229" class="tiny">• Order parameter r = 0.85</text>
+        
+        <!-- Synchronized oscillators -->
+        <circle cx="200" cy="280" r="30" fill="none" stroke="#10b981" stroke-width="2"/>
+        <line x1="200" y1="280" x2="200" y2="250" stroke="#10b981" stroke-width="3"/>
+        <line x1="200" y1="280" x2="205" y2="252" stroke="#10b981" stroke-width="3"/>
+        <line x1="200" y1="280" x2="195" y2="252" stroke="#10b981" stroke-width="3"/>
+        <line x1="200" y1="280" x2="210" y2="255" stroke="#10b981" stroke-width="3"/>
+        <text x="200" y="330" text-anchor="middle" class="tiny" fill="#10b981">Sync</text>
+      </g>
+    </g>
+    
+    <!-- CASE 2: Generalized Anxiety Disorder -->
+    <g id="case-anxiety" transform="translate(0, 380)">
+      <rect x="50" y="60" width="1000" height="310" fill="#fefce8" stroke="#f59e0b" stroke-width="2" rx="10"/>
+      
+      <text x="550" y="95" text-anchor="middle" class="subtitle" fill="#f59e0b">
+        Case 2: Generalized Anxiety Disorder (GAD)
+      </text>
+      
+      <!-- Pathology -->
+      <g id="gad-pathology">
+        <text x="200" y="130" text-anchor="middle" class="label" font-weight="bold">Pathology</text>
+        
+        <rect x="80" y="145" width="240" height="100" fill="white" stroke="#f59e0b" stroke-width="2" rx="5"/>
+        <text x="200" y="170" text-anchor="middle" class="small" fill="#f59e0b" font-weight="bold">
+          GABA-Glutamate Imbalance
+        </text>
+        <text x="100" y="195" class="tiny">• Hyperactive glutamate</text>
+        <text x="100" y="212" class="tiny">• Insufficient GABA coupling</text>
+        <text x="100" y="229" class="tiny">• Oscillatory instability</text>
+        
+        <!-- Chaotic oscillators -->
+        <circle cx="200" cy="280" r="30" fill="none" stroke="#f59e0b" stroke-width="2"/>
+        <path d="M 200,280 L 215,260 L 190,265 L 210,290 L 185,285 L 205,270" 
+              stroke="#f59e0b" stroke-width="2" fill="none"/>
+        <text x="200" y="330" text-anchor="middle" class="tiny" fill="#f59e0b">Chaotic</text>
+      </g>
+      
+      <!-- Intervention -->
+      <g id="gad-intervention" transform="translate(340, 0)">
+        <text x="200" y="130" text-anchor="middle" class="label" font-weight="bold">Intervention</text>
+        
+        <rect x="80" y="145" width="240" height="100" fill="white" stroke="#7c3aed" stroke-width="2" rx="5"/>
+        <text x="200" y="170" text-anchor="middle" class="small" fill="#7c3aed" font-weight="bold">
+          Benzodiazepine + SSRI
+        </text>
+        <text x="100" y="195" class="tiny">• Enhances GABA coupling</text>
+        <text x="100" y="212" class="tiny">• Stabilizes glutamate phase</text>
+        <text x="100" y="229" class="tiny">• Dual-target phase-lock</text>
+        
+        <!-- Drug combination -->
+        <circle cx="185" cy="280" r="20" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
+        <text x="185" y="285" text-anchor="middle" class="tiny" font-weight="bold">BZD</text>
+        <circle cx="215" cy="280" r="20" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+        <text x="215" y="285" text-anchor="middle" class="tiny" font-weight="bold">SSRI</text>
+        <text x="200" y="330" text-anchor="middle" class="tiny" fill="#7c3aed">Combo</text>
+      </g>
+      
+      <!-- Outcome -->
+      <g id="gad-outcome" transform="translate(680, 0)">
+        <text x="200" y="130" text-anchor="middle" class="label" font-weight="bold">Outcome</text>
+        
+        <rect x="80" y="145" width="240" height="100" fill="white" stroke="#10b981" stroke-width="2" rx="5"/>
+        <text x="200" y="170" text-anchor="middle" class="small" fill="#10b981" font-weight="bold">
+          Excitatory-Inhibitory Balance
+        </text>
+        <text x="100" y="195" class="tiny">• GABA-Glutamate locked</text>
+        <text x="100" y="212" class="tiny">• Stable oscillatory regime</text>
+        <text x="100" y="229" class="tiny">• Reduced anxiety symptoms</text>
+        
+        <!-- Balanced oscillators -->
+        <circle cx="200" cy="280" r="30" fill="none" stroke="#10b981" stroke-width="2"/>
+        <line x1="200" y1="280" x2="200" y2="250" stroke="#10b981" stroke-width="2"/>
+        <line x1="200" y1="280" x2="230" y2="280" stroke="#10b981" stroke-width="2"/>
+        <line x1="200" y1="280" x2="200" y2="310" stroke="#10b981" stroke-width="2"/>
+        <line x1="200" y1="280" x2="170" y2="280" stroke="#10b981" stroke-width="2"/>
+        <text x="200" y="330" text-anchor="middle" class="tiny" fill="#10b981">Balanced</text>
+      </g>
+    </g>
+    
+    <!-- CASE 3: Metabolic Syndrome -->
+    <g id="case-metabolic" transform="translate(0, 760)">
+      <rect x="50" y="60" width="1000" height="310" fill="#f0f9ff" stroke="#2563eb" stroke-width="2" rx="10"/>
+      
+      <text x="550" y="95" text-anchor="middle" class="subtitle" fill="#2563eb">
+        Case 3: Metabolic Syndrome
+      </text>
+      
+      <!-- Pathology -->
+      <g id="metabolic-pathology">
+        <text x="200" y="130" text-anchor="middle" class="label" font-weight="bold">Pathology</text>
+        
+        <rect x="80" y="145" width="240" height="100" fill="white" stroke="#ef4444" stroke-width="2" rx="5"/>
+        <text x="200" y="170" text-anchor="middle" class="small" fill="#ef4444" font-weight="bold">
+          Metabolic Flux Cascade Failure
+        </text>
+        <text x="100" y="195" class="tiny">• TCA cycle blockage (L3)</text>
+        <text x="100" y="212" class="tiny">• Downstream levels inactive</text>
+        <text x="100" y="229" class="tiny">• End-to-end flux = 0%</text>
+        
+        <!-- Blocked cascade -->
+        <rect x="175" y="260" width="15" height="25" fill="#10b981" opacity="0.7"/>
+        <rect x="195" y="260" width="15" height="25" fill="#f59e0b" opacity="0.7"/>
+        <rect x="215" y="260" width="15" height="25" fill="#ef4444"/>
+        <line x1="215" y1="275" x2="235" y2="275" stroke="#ef4444" stroke-width="3"/>
+        <line x1="225" y1="265" x2="225" y2="285" stroke="#ef4444" stroke-width="3"/>
+        <text x="200" y="305" text-anchor="middle" class="tiny" fill="#ef4444">Blocked</text>
+      </g>
+      
+      <!-- Intervention -->
+      <g id="metabolic-intervention" transform="translate(340, 0)">
+        <text x="200" y="130" text-anchor="middle" class="label" font-weight="bold">Intervention</text>
+        
+        <rect x="80" y="145" width="240" height="100" fill="white" stroke="#2563eb" stroke-width="2" rx="5"/>
+        <text x="200" y="170" text-anchor="middle" class="small" fill="#2563eb" font-weight="bold">
+          Metformin (500-2000 mg/day)
+        </text>
+        <text x="100" y="195" class="tiny">• Restores TCA cycle coupling</text>
+        <text x="100" y="212" class="tiny">• Enhances mitochondrial phase</text>
+        <text x="100" y="229" class="tiny">• Q = 1.1 (moderate resonance)</text>
+        
+        <!-- Drug targeting blockage -->
+        <circle cx="200" cy="275" r="25" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+        <text x="200" y="280" text-anchor="middle" class="small" fill="#2563eb" font-weight="bold">Met</text>
+        <line x1="200" y1="250" x2="200" y2="300" stroke="#10b981" stroke-width="3" marker-end="url(#arrow-green)"/>
+        <text x="200" y="320" text-anchor="middle" class="tiny" fill="#2563eb">Unblock</text>
+      </g>
+      
+      <!-- Outcome -->
+      <g id="metabolic-outcome" transform="translate(680, 0)">
+        <text x="200" y="130" text-anchor="middle" class="label" font-weight="bold">Outcome</text>
+        
+        <rect x="80" y="145" width="240" height="100" fill="white" stroke="#10b981" stroke-width="2" rx="5"/>
+        <text x="200" y="170" text-anchor="middle" class="small" fill="#10b981" font-weight="bold">
+          Metabolic Flux Restoration
+        </text>
+        <text x="100" y="195" class="tiny">• TCA cycle reactivated</text>
+        <text x="100" y="212" class="tiny">• Downstream levels functional</text>
+        <text x="100" y="229" class="tiny">• End-to-end flux = 29.8%</text>
+        
+        <!-- Restored cascade -->
+        <rect x="175" y="260" width="15" height="25" fill="#10b981" opacity="0.9"/>
+        <rect x="195" y="260" width="15" height="25" fill="#10b981" opacity="0.7"/>
+        <rect x="215" y="260" width="15" height="25" fill="#10b981" opacity="0.5"/>
+        <line x1="190" y1="272" x2="220" y2="272" stroke="#10b981" stroke-width="2" marker-end="url(#arrow-green)"/>
+        <text x="200" y="305" text-anchor="middle" class="tiny" fill="#10b981">Flowing</text>
+      </g>
+    </g>
+  </svg>
+  

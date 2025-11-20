@@ -1,0 +1,27 @@
+{
+  "neural_gas": {
+    "n_molecules": 80000,
+    "temperature": 0.8350000000000001,
+    "pressure": 0.8,
+    "variance": 1.9077243280643016e-14,
+    "mean_frequency_hz": 50.0,
+    "band_powers": {
+      "delta": 0.013481631277384559,
+      "theta": 0.026963262554769118,
+      "alpha": 0.20222446916076842,
+      "beta": 0.43141220087630605,
+      "gamma": 0.26963262554769124,
+      "high_gamma": 0.056285810583080555
+    }
+  },
+  "perception": {
+    "variance_minimization_rate": 0.0,
+    "consciousness_quality": 0.7228656892483943,
+    "perception_bandwidth_bits_per_s": 50.0,
+    "cardiac_period_s": 0.4
+  },
+  "parameters": {
+    "cognitive_load": 0.8,
+    "oxygen_coupling_factor": 1.0
+  }
+}

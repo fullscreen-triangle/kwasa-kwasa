@@ -1,0 +1,248 @@
+<svg width="1000" height="700" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .title { font: bold 24px sans-serif; }
+      .subtitle { font: bold 18px sans-serif; }
+      .label { font: 14px sans-serif; }
+      .small { font: 12px sans-serif; }
+      .tiny { font: 10px sans-serif; }
+      .equation { font: italic 14px serif; }
+    </style>
+    
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#333" />
+    </marker>
+    
+    <marker id="arrow-red" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#ef4444" />
+    </marker>
+    
+    <marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#2563eb" />
+    </marker>
+    
+    <!-- Electromagnetic wave pattern -->
+    <pattern id="emWave" x="0" y="0" width="40" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 0,10 Q 10,0 20,10 T 40,10" stroke="#f59e0b" stroke-width="2" fill="none"/>
+    </pattern>
+  </defs>
+  
+  <!-- Title -->
+  <text x="500" y="35" text-anchor="middle" class="title">
+    Drug-Oxygen Aggregation and H⁺ Electromagnetic Coupling
+  </text>
+  
+  <!-- LEFT PANEL: Molecular Structure -->
+  <g id="molecular-structure">
+    <text x="200" y="80" text-anchor="middle" class="subtitle" fill="#2563eb">
+      A. Drug-O₂ Aggregation
+    </text>
+    
+    <!-- Drug molecule (simplified) -->
+    <circle cx="150" cy="150" r="30" fill="#dbeafe" stroke="#2563eb" stroke-width="3"/>
+    <text x="150" y="155" text-anchor="middle" class="label" fill="#2563eb" font-weight="bold">Drug</text>
+    <text x="150" y="195" text-anchor="middle" class="tiny">Lithium/SSRI/</text>
+    <text x="150" y="210" text-anchor="middle" class="tiny">Dopamine</text>
+    
+    <!-- O2 molecules (paramagnetic) -->
+    <g id="o2-molecules">
+      <!-- O2 #1 -->
+      <circle cx="250" cy="120" r="12" fill="#fee2e2" stroke="#ef4444" stroke-width="2"/>
+      <circle cx="270" cy="120" r="12" fill="#fee2e2" stroke="#ef4444" stroke-width="2"/>
+      <line x1="256" y1="120" x2="264" y2="120" stroke="#ef4444" stroke-width="3"/>
+      <text x="260" y="105" text-anchor="middle" class="tiny" fill="#ef4444">O₂</text>
+      
+      <!-- O2 #2 -->
+      <circle cx="250" cy="180" r="12" fill="#fee2e2" stroke="#ef4444" stroke-width="2"/>
+      <circle cx="270" cy="180" r="12" fill="#fee2e2" stroke="#ef4444" stroke-width="2"/>
+      <line x1="256" y1="180" x2="264" y2="180" stroke="#ef4444" stroke-width="3"/>
+      <text x="260" y="200" text-anchor="middle" class="tiny" fill="#ef4444">O₂</text>
+    </g>
+    
+    <!-- Aggregation arrows -->
+    <line x1="180" y1="140" x2="235" y2="125" stroke="#10b981" stroke-width="2.5" marker-end="url(#arrow)" stroke-dasharray="5,3"/>
+    <line x1="180" y1="160" x2="235" y2="175" stroke="#10b981" stroke-width="2.5" marker-end="url(#arrow)" stroke-dasharray="5,3"/>
+    
+    <text x="200" y="150" text-anchor="middle" class="tiny" fill="#10b981">K_agg</text>
+    
+    <!-- Aggregation complex -->
+    <ellipse cx="200" cy="280" rx="80" ry="50" fill="#d1fae5" opacity="0.3" stroke="#10b981" stroke-width="2"/>
+    <circle cx="200" cy="280" r="20" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+    <text x="200" y="285" text-anchor="middle" class="small" fill="#2563eb">Drug</text>
+    
+    <circle cx="160" cy="260" r="8" fill="#fee2e2" stroke="#ef4444" stroke-width="1.5"/>
+    <circle cx="172" cy="260" r="8" fill="#fee2e2" stroke="#ef4444" stroke-width="1.5"/>
+    <circle cx="240" cy="260" r="8" fill="#fee2e2" stroke="#ef4444" stroke-width="1.5"/>
+    <circle cx="252" cy="260" r="8" fill="#fee2e2" stroke="#ef4444" stroke-width="1.5"/>
+    <circle cx="160" cy="300" r="8" fill="#fee2e2" stroke="#ef4444" stroke-width="1.5"/>
+    <circle cx="172" cy="300" r="8" fill="#fee2e2" stroke="#ef4444" stroke-width="1.5"/>
+    <circle cx="240" cy="300" r="8" fill="#fee2e2" stroke="#ef4444" stroke-width="1.5"/>
+    <circle cx="252" cy="300" r="8" fill="#fee2e2" stroke="#ef4444" stroke-width="1.5"/>
+    
+    <text x="200" y="350" text-anchor="middle" class="small" font-weight="bold">Drug-O₂ Complex</text>
+    
+    <!-- Equilibrium equation -->
+    <rect x="100" y="370" width="200" height="50" fill="#fef9e7" stroke="#f59e0b" stroke-width="2" rx="5"/>
+    <text x="200" y="395" text-anchor="middle" class="equation">
+      Drug + nO₂ ⇌ Drug·(O₂)ₙ
+    </text>
+    <text x="200" y="413" text-anchor="middle" class="tiny">
+      K_agg > 10⁴ M⁻¹
+    </text>
+  </g>
+  
+  <!-- CENTER PANEL: H+ Flux and EM Fields -->
+  <g id="em-fields" transform="translate(350, 0)">
+    <text x="150" y="80" text-anchor="middle" class="subtitle" fill="#f59e0b">
+      B. H⁺ Electromagnetic Fields
+    </text>
+    
+    <!-- Mitochondria representation -->
+    <ellipse cx="150" cy="180" rx="100" ry="70" fill="#fef3c7" opacity="0.3" stroke="#f59e0b" stroke-width="3"/>
+    <text x="150" y="130" text-anchor="middle" class="small" font-weight="bold">Mitochondrion</text>
+    
+    <!-- Inner membrane -->
+    <ellipse cx="150" cy="180" rx="70" ry="50" fill="none" stroke="#f97316" stroke-width="2" stroke-dasharray="5,3"/>
+    
+    <!-- H+ gradient -->
+    <g id="proton-gradient">
+      <!-- Outside (intermembrane space) -->
+      <circle cx="120" cy="150" r="5" fill="#ef4444" opacity="0.7"/>
+      <text x="118" y="153" text-anchor="middle" class="tiny" fill="white" font-weight="bold">H⁺</text>
+      <circle cx="180" cy="155" r="5" fill="#ef4444" opacity="0.7"/>
+      <text x="178" y="158" text-anchor="middle" class="tiny" fill="white" font-weight="bold">H⁺</text>
+      <circle cx="100" cy="180" r="5" fill="#ef4444" opacity="0.7"/>
+      <text x="98" y="183" text-anchor="middle" class="tiny" fill="white" font-weight="bold">H⁺</text>
+      <circle cx="200" cy="185" r="5" fill="#ef4444" opacity="0.7"/>
+      <text x="198" y="188" text-anchor="middle" class="tiny" fill="white" font-weight="bold">H⁺</text>
+      <circle cx="130" cy="210" r="5" fill="#ef4444" opacity="0.7"/>
+      <text x="128" y="213" text-anchor="middle" class="tiny" fill="white" font-weight="bold">H⁺</text>
+      <circle cx="170" cy="205" r="5" fill="#ef4444" opacity="0.7"/>
+      <text x="168" y="208" text-anchor="middle" class="tiny" fill="white" font-weight="bold">H⁺</text>
+      
+      <!-- Inside (matrix) - fewer protons -->
+      <circle cx="140" cy="180" r="4" fill="#3b82f6" opacity="0.5"/>
+      <text x="138" y="183" text-anchor="middle" class="tiny" fill="white">H⁺</text>
+      <circle cx="160" cy="180" r="4" fill="#3b82f6" opacity="0.5"/>
+      <text x="158" y="183" text-anchor="middle" class="tiny" fill="white">H⁺</text>
+    </g>
+    
+    <!-- EM field lines -->
+    <rect x="50" y="140" width="200" height="100" fill="url(#emWave)" opacity="0.3"/>
+    
+    <!-- EM field arrows -->
+    <path d="M 60,170 Q 100,160 140,170" stroke="#f59e0b" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+    <path d="M 160,170 Q 200,160 240,170" stroke="#f59e0b" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+    <path d="M 60,190 Q 100,200 140,190" stroke="#f59e0b" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+    <path d="M 160,190 Q 200,200 240,190" stroke="#f59e0b" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+    
+    <text x="150" y="270" text-anchor="middle" class="small" fill="#f59e0b" font-weight="bold">
+      EM Field Generation
+    </text>
+    
+    <!-- Frequency equation -->
+    <rect x="50" y="290" width="200" height="70" fill="#fef9e7" stroke="#f59e0b" stroke-width="2" rx="5"/>
+    <text x="150" y="315" text-anchor="middle" class="equation">
+      ω_H⁺ = 4 × ω_O₂
+    </text>
+    <text x="150" y="335" text-anchor="middle" class="tiny">
+      4:1 Resonance
+    </text>
+    <text x="150" y="352" text-anchor="middle" class="tiny">
+      ω_O₂ ~ 10¹³ Hz (vibration)
+    </text>
+  </g>
+  
+  <!-- RIGHT PANEL: Phase Coupling -->
+  <g id="phase-coupling" transform="translate(650, 0)">
+    <text x="150" y="80" text-anchor="middle" class="subtitle" fill="#7c3aed">
+      C. Phase-Lock Coupling
+    </text>
+    
+    <!-- Oscillator network -->
+    <g id="oscillators">
+      <!-- Central oscillator -->
+      <circle cx="150" cy="150" r="25" fill="#ede9fe" stroke="#7c3aed" stroke-width="3"/>
+      <text x="150" y="155" text-anchor="middle" class="small" font-weight="bold">O₁</text>
+      
+      <!-- Surrounding oscillators -->
+      <circle cx="100" cy="100" r="20" fill="#ddd6fe" stroke="#7c3aed" stroke-width="2"/>
+      <text x="100" y="105" text-anchor="middle" class="tiny">O₂</text>
+      
+      <circle cx="200" cy="100" r="20" fill="#ddd6fe" stroke="#7c3aed" stroke-width="2"/>
+      <text x="200" y="105" text-anchor="middle" class="tiny">O₃</text>
+      
+      <circle cx="100" cy="200" r="20" fill="#ddd6fe" stroke="#7c3aed" stroke-width="2"/>
+      <text x="100" y="205" text-anchor="middle" class="tiny">O₄</text>
+      
+      <circle cx="200" cy="200" r="20" fill="#ddd6fe" stroke="#7c3aed" stroke-width="2"/>
+      <text x="200" y="205" text-anchor="middle" class="tiny">O₅</text>
+    </g>
+    
+    <!-- EM coupling lines -->
+    <line x1="120" y1="110" x2="135" y2="135" stroke="#f59e0b" stroke-width="2.5" stroke-dasharray="3,2"/>
+    <line x1="180" y1="110" x2="165" y2="135" stroke="#f59e0b" stroke-width="2.5" stroke-dasharray="3,2"/>
+    <line x1="120" y1="190" x2="135" y2="165" stroke="#f59e0b" stroke-width="2.5" stroke-dasharray="3,2"/>
+    <line x1="180" y1="190" x2="165" y2="165" stroke="#f59e0b" stroke-width="2.5" stroke-dasharray="3,2"/>
+    
+    <text x="150" y="240" text-anchor="middle" class="small" fill="#f59e0b">
+      EM Coupling
+    </text>
+    
+    <!-- Phase synchronization indicator -->
+    <g id="phase-sync" transform="translate(0, 100)">
+      <!-- Phase circles -->
+      <circle cx="80" cy="180" r="15" fill="none" stroke="#10b981" stroke-width="2"/>
+      <line x1="80" y1="180" x2="90" y2="170" stroke="#10b981" stroke-width="2.5"/>
+      
+      <circle cx="150" cy="180" r="15" fill="none" stroke="#10b981" stroke-width="2"/>
+      <line x1="150" y1="180" x2="160" y2="170" stroke="#10b981" stroke-width="2.5"/>
+      
+      <circle cx="220" cy="180" r="15" fill="none" stroke="#10b981" stroke-width="2"/>
+      <line x1="220" y1="180" x2="230" y2="170" stroke="#10b981" stroke-width="2.5"/>
+      
+      <text x="150" y="210" text-anchor="middle" class="small" fill="#10b981" font-weight="bold">
+        Synchronized Phases
+      </text>
+    </g>
+    
+    <!-- Coupling strength equation -->
+    <rect x="50" y="390" width="200" height="70" fill="#fef9e7" stroke="#7c3aed" stroke-width="2" rx="5"/>
+    <text x="150" y="415" text-anchor="middle" class="equation">
+      K_EM = Q × f_bound × J_H⁺
+    </text>
+    <text x="150" y="435" text-anchor="middle" class="tiny">
+      Q: EM resonance quality
+    </text>
+    <text x="150" y="452" text-anchor="middle" class="tiny">
+      f_bound: Drug-O₂ fraction
+    </text>
+  </g>
+  
+  <!-- Bottom: Summary -->
+  <rect x="50" y="500" width="900" height="180" fill="#f0fdf4" stroke="#10b981" stroke-width="3" rx="10"/>
+  
+  <text x="500" y="535" text-anchor="middle" class="subtitle" fill="#10b981">
+    Physical Mechanism Summary
+  </text>
+  
+  <text x="80" y="565" class="small">
+    <tspan font-weight="bold">1. Drug-O₂ Aggregation:</tspan> Drugs with K_agg > 10⁴ M⁻¹ bind paramagnetic O₂ molecules
+  </text>
+  
+  <text x="80" y="590" class="small">
+    <tspan font-weight="bold">2. H⁺ EM Field Generation:</tspan> Mitochondrial proton flux creates oscillating electromagnetic fields
+  </text>
+  
+  <text x="80" y="615" class="small">
+    <tspan font-weight="bold">3. 4:1 Resonance:</tspan> H⁺ EM fields (ω_H⁺) resonate at 4× O₂ vibrational frequency (ω_O₂ ~ 10¹³ Hz)
+  </text>
+  
+  <text x="80" y="640" class="small">
+    <tspan font-weight="bold">4. Phase-Lock Coupling:</tspan> Drug-O₂ complexes enhance EM coupling strength (K_EM ∝ Q × f_bound)
+  </text>
+  
+  <text x="80" y="665" class="small">
+    <tspan font-weight="bold">5. Network Synchronization:</tspan> Coupled oscillators phase-lock when K_EM > K_critical ~ 0.5
+  </text>
+</svg>

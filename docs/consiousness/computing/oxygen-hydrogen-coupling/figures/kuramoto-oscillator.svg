@@ -1,0 +1,265 @@
+<svg width="1100" height="900" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <style>
+        .title { font: bold 24px sans-serif; }
+        .subtitle { font: bold 18px sans-serif; }
+        .label { font: 14px sans-serif; }
+        .small { font: 12px sans-serif; }
+        .tiny { font: 10px sans-serif; }
+        .equation { font: italic 13px serif; }
+      </style>
+      
+      <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+        <polygon points="0 0, 10 3, 0 6" fill="#333" />
+      </marker>
+    </defs>
+    
+    <!-- Title -->
+    <text x="550" y="35" text-anchor="middle" class="title">
+      Kuramoto Oscillator Network: Drug-Induced Phase Synchronization
+    </text>
+    
+    <!-- TOP LEFT: Before Drug (Desynchronized) -->
+    <g id="before-drug">
+      <text x="200" y="80" text-anchor="middle" class="subtitle" fill="#ef4444">
+        A. Before Drug (K = 0.5)
+      </text>
+      
+      <!-- Phase circle representation -->
+      <circle cx="200" cy="200" r="80" fill="none" stroke="#333" stroke-width="2"/>
+      
+      <!-- Desynchronized oscillators (scattered phases) -->
+      <g id="desync-oscillators">
+        <!-- Oscillator 1 -->
+        <circle cx="200" cy="120" r="8" fill="#ef4444" opacity="0.7"/>
+        <line x1="200" y1="200" x2="200" y2="128" stroke="#ef4444" stroke-width="2"/>
+        
+        <!-- Oscillator 2 -->
+        <circle cx="256" cy="144" r="8" fill="#ef4444" opacity="0.7"/>
+        <line x1="200" y1="200" x2="248" y2="152" stroke="#ef4444" stroke-width="2"/>
+        
+        <!-- Oscillator 3 -->
+        <circle cx="276" cy="200" r="8" fill="#ef4444" opacity="0.7"/>
+        <line x1="200" y1="200" x2="268" y2="200" stroke="#ef4444" stroke-width="2"/>
+        
+        <!-- Oscillator 4 -->
+        <circle cx="256" cy="256" r="8" fill="#ef4444" opacity="0.7"/>
+        <line x1="200" y1="200" x2="248" y2="248" stroke="#ef4444" stroke-width="2"/>
+        
+        <!-- Oscillator 5 -->
+        <circle cx="200" cy="280" r="8" fill="#ef4444" opacity="0.7"/>
+        <line x1="200" y1="200" x2="200" y2="272" stroke="#ef4444" stroke-width="2"/>
+        
+        <!-- Oscillator 6 -->
+        <circle cx="144" cy="256" r="8" fill="#ef4444" opacity="0.7"/>
+        <line x1="200" y1="200" x2="152" y2="248" stroke="#ef4444" stroke-width="2"/>
+        
+        <!-- Oscillator 7 -->
+        <circle cx="124" cy="200" r="8" fill="#ef4444" opacity="0.7"/>
+        <line x1="200" y1="200" x2="132" y2="200" stroke="#ef4444" stroke-width="2"/>
+        
+        <!-- Oscillator 8 -->
+        <circle cx="144" cy="144" r="8" fill="#ef4444" opacity="0.7"/>
+        <line x1="200" y1="200" x2="152" y2="152" stroke="#ef4444" stroke-width="2"/>
+      </g>
+      
+      <text x="200" y="310" text-anchor="middle" class="label" fill="#ef4444" font-weight="bold">
+        Desynchronized
+      </text>
+      
+      <!-- Phase plot -->
+      <g id="phase-plot-before" transform="translate(0, 140)">
+        <rect x="100" y="200" width="200" height="120" fill="#fef2f2" stroke="#ef4444" stroke-width="2" rx="5"/>
+        <text x="200" y="225" text-anchor="middle" class="small" font-weight="bold">Phase Distribution</text>
+        
+        <!-- Scattered histogram -->
+        <rect x="115" y="245" width="15" height="20" fill="#ef4444" opacity="0.6"/>
+        <rect x="135" y="245" width="15" height="25" fill="#ef4444" opacity="0.6"/>
+        <rect x="155" y="245" width="15" height="18" fill="#ef4444" opacity="0.6"/>
+        <rect x="175" y="245" width="15" height="30" fill="#ef4444" opacity="0.6"/>
+        <rect x="195" y="245" width="15" height="22" fill="#ef4444" opacity="0.6"/>
+        <rect x="215" y="245" width="15" height="28" fill="#ef4444" opacity="0.6"/>
+        <rect x="235" y="245" width="15" height="24" fill="#ef4444" opacity="0.6"/>
+        <rect x="255" y="245" width="15" height="19" fill="#ef4444" opacity="0.6"/>
+        
+        <line x1="110" y1="280" x2="280" y2="280" stroke="#333" stroke-width="1"/>
+        <text x="200" y="300" text-anchor="middle" class="tiny">Phase (0-2π)</text>
+        
+        <text x="120" y="240" class="tiny" fill="#ef4444">Uniform</text>
+      </g>
+      
+      <!-- Order parameter -->
+      <rect x="100" y="490" width="200" height="60" fill="#fee2e2" stroke="#ef4444" stroke-width="2" rx="5"/>
+      <text x="200" y="515" text-anchor="middle" class="label">Order Parameter</text>
+      <text x="200" y="535" text-anchor="middle" class="equation" fill="#ef4444" font-size="20" font-weight="bold">
+        r = 0.15
+      </text>
+    </g>
+    
+    <!-- TOP CENTER: Drug Administration -->
+    <g id="drug-admin" transform="translate(400, 0)">
+      <text x="150" y="80" text-anchor="middle" class="subtitle" fill="#2563eb">
+        Drug Administration
+      </text>
+      
+      <!-- Syringe/pill icon -->
+      <circle cx="150" cy="180" r="50" fill="#dbeafe" stroke="#2563eb" stroke-width="3"/>
+      <rect x="130" y="165" width="40" height="30" fill="#2563eb" opacity="0.7" rx="5"/>
+      <text x="150" y="185" text-anchor="middle" class="label" fill="white" font-weight="bold">Drug</text>
+      
+      <!-- Arrow down -->
+      <line x1="150" y1="240" x2="150" y2="300" stroke="#2563eb" stroke-width="5" marker-end="url(#arrow)"/>
+      
+      <!-- Mechanism box -->
+      <rect x="50" y="310" width="200" height="140" fill="#eff6ff" stroke="#2563eb" stroke-width="2" rx="8"/>
+      <text x="150" y="335" text-anchor="middle" class="label" font-weight="bold" fill="#2563eb">
+        Coupling Enhancement
+      </text>
+      
+      <text x="70" y="360" class="small">K_baseline = 0.5</text>
+      <line x1="70" y1="370" x2="230" y2="370" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow)"/>
+      <text x="70" y="390" class="small" font-weight="bold" fill="#2563eb">K_drug = 0.75</text>
+      
+      <text x="70" y="415" class="tiny">• Drug-O₂ aggregation</text>
+      <text x="70" y="432" class="tiny">• Enhanced EM coupling</text>
+      <text x="70" y="449" class="tiny">• Increased phase-lock</text>
+      
+      <!-- Time arrow -->
+      <line x1="70" y1="480" x2="230" y2="480" stroke="#f59e0b" stroke-width="3" marker-end="url(#arrow)"/>
+      <text x="150" y="500" text-anchor="middle" class="small" fill="#f59e0b">Time</text>
+    </g>
+    
+    <!-- TOP RIGHT: After Drug (Synchronized) -->
+    <g id="after-drug" transform="translate(700, 0)">
+      <text x="200" y="80" text-anchor="middle" class="subtitle" fill="#10b981">
+        B. After Drug (K = 0.75)
+      </text>
+      
+      <!-- Phase circle representation -->
+      <circle cx="200" cy="200" r="80" fill="none" stroke="#333" stroke-width="2"/>
+      
+      <!-- Synchronized oscillators (aligned phases) -->
+      <g id="sync-oscillators">
+        <!-- All oscillators pointing roughly same direction (synchronized) -->
+        <circle cx="200" cy="120" r="8" fill="#10b981" opacity="0.9"/>
+        <line x1="200" y1="200" x2="200" y2="128" stroke="#10b981" stroke-width="3"/>
+        
+        <circle cx="215" cy="125" r="8" fill="#10b981" opacity="0.9"/>
+        <line x1="200" y1="200" x2="211" y2="130" stroke="#10b981" stroke-width="3"/>
+        
+        <circle cx="225" cy="135" r="8" fill="#10b981" opacity="0.9"/>
+        <line x1="200" y1="200" x2="220" y2="140" stroke="#10b981" stroke-width="3"/>
+        
+        <circle cx="210" cy="130" r="8" fill="#10b981" opacity="0.9"/>
+        <line x1="200" y1="200" x2="207" y2="135" stroke="#10b981" stroke-width="3"/>
+        
+        <circle cx="195" cy="122" r="8" fill="#10b981" opacity="0.9"/>
+        <line x1="200" y1="200" x2="196" y2="130" stroke="#10b981" stroke-width="3"/>
+        
+        <circle cx="185" cy="128" r="8" fill="#10b981" opacity="0.9"/>
+        <line x1="200" y1="200" x2="188" y2="133" stroke="#10b981" stroke-width="3"/>
+        
+        <circle cx="180" cy="138" r="8" fill="#10b981" opacity="0.9"/>
+        <line x1="200" y1="200" x2="185" y2="143" stroke="#10b981" stroke-width="3"/>
+        
+        <circle cx="190" cy="125" r="8" fill="#10b981" opacity="0.9"/>
+        <line x1="200" y1="200" x2="192" y2="130" stroke="#10b981" stroke-width="3"/>
+      </g>
+      
+      <text x="200" y="310" text-anchor="middle" class="label" fill="#10b981" font-weight="bold">
+        Synchronized
+      </text>
+      
+      <!-- Phase plot -->
+      <g id="phase-plot-after" transform="translate(0, 140)">
+        <rect x="100" y="200" width="200" height="120" fill="#f0fdf4" stroke="#10b981" stroke-width="2" rx="5"/>
+        <text x="200" y="225" text-anchor="middle" class="small" font-weight="bold">Phase Distribution</text>
+        
+        <!-- Peaked histogram (synchronized) -->
+        <rect x="115" y="265" width="15" height="5" fill="#10b981" opacity="0.4"/>
+        <rect x="135" y="260" width="15" height="10" fill="#10b981" opacity="0.5"/>
+        <rect x="155" y="250" width="15" height="20" fill="#10b981" opacity="0.7"/>
+        <rect x="175" y="235" width="15" height="35" fill="#10b981" opacity="0.9"/>
+        <rect x="195" y="230" width="15" height="40" fill="#10b981"/>
+        <rect x="215" y="235" width="15" height="35" fill="#10b981" opacity="0.9"/>
+        <rect x="235" y="250" width="15" height="20" fill="#10b981" opacity="0.7"/>
+        <rect x="255" y="260" width="15" height="10" fill="#10b981" opacity="0.5"/>
+        
+        <line x1="110" y1="280" x2="280" y2="280" stroke="#333" stroke-width="1"/>
+        <text x="200" y="300" text-anchor="middle" class="tiny">Phase (0-2π)</text>
+        
+        <text x="200" y="240" class="tiny" fill="#10b981">Peaked</text>
+      </g>
+      
+      <!-- Order parameter -->
+      <rect x="100" y="490" width="200" height="60" fill="#d1fae5" stroke="#10b981" stroke-width="2" rx="5"/>
+      <text x="200" y="515" text-anchor="middle" class="label">Order Parameter</text>
+      <text x="200" y="535" text-anchor="middle" class="equation" fill="#10b981" font-size="20" font-weight="bold">
+        r = 0.89
+      </text>
+    </g>
+    
+    <!-- BOTTOM: Time Evolution Plot -->
+    <g id="time-evolution" transform="translate(0, 580)">
+      <text x="550" y="30" text-anchor="middle" class="subtitle" fill="#7c3aed">
+        C. Time Evolution of Phase Coherence
+      </text>
+      
+      <!-- Axes -->
+      <line x1="100" y1="250" x2="1000" y2="250" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+      <text x="1010" y="255" class="label">Time</text>
+      
+      <line x1="100" y1="250" x2="100" y2="60" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+      <text x="80" y="50" class="label">r(t)</text>
+      
+      <!-- Y-axis labels -->
+      <line x1="95" y1="250" x2="100" y2="250" stroke="#333" stroke-width="1"/>
+      <text x="85" y="254" text-anchor="end" class="tiny">0.0</text>
+      
+      <line x1="95" y1="210" x2="100" y2="210" stroke="#333" stroke-width="1"/>
+      <text x="85" y="214" text-anchor="end" class="tiny">0.2</text>
+      
+      <line x1="95" y1="170" x2="100" y2="170" stroke="#333" stroke-width="1"/>
+      <text x="85" y="174" text-anchor="end" class="tiny">0.4</text>
+      
+      <line x1="95" y1="130" x2="100" y2="130" stroke="#333" stroke-width="1"/>
+      <text x="85" y="134" text-anchor="end" class="tiny">0.6</text>
+      
+      <line x1="95" y1="90" x2="100" y2="90" stroke="#333" stroke-width="1"/>
+      <text x="85" y="94" text-anchor="end" class="tiny">0.8</text>
+      
+      <line x1="95" y1="50" x2="100" y2="50" stroke="#333" stroke-width="1"/>
+      <text x="85" y="54" text-anchor="end" class="tiny">1.0</text>
+      
+      <!-- Drug administration marker -->
+      <line x1="400" y1="250" x2="400" y2="50" stroke="#2563eb" stroke-width="3" stroke-dasharray="8,4"/>
+      <text x="410" y="70" class="small" fill="#2563eb" font-weight="bold">Drug</text>
+      <text x="410" y="88" class="small" fill="#2563eb" font-weight="bold">Admin</text>
+      
+      <!-- Before drug (low coherence) -->
+      <path d="M 100,240 L 150,238 L 200,242 L 250,239 L 300,241 L 350,237 L 400,240" 
+            stroke="#ef4444" stroke-width="4" fill="none"/>
+      
+      <!-- Transition (rapid increase) -->
+      <path d="M 400,240 Q 450,200 500,110" 
+            stroke="#f59e0b" stroke-width="4" fill="none"/>
+      
+      <!-- After drug (high coherence) -->
+      <path d="M 500,110 L 550,105 L 600,108 L 650,103 L 700,107 L 750,104 L 800,106 L 850,102 L 900,105 L 950,103 L 1000,106" 
+            stroke="#10b981" stroke-width="4" fill="none"/>
+      
+      <!-- Shaded regions -->
+      <rect x="100" y="50" width="300" height="200" fill="#fee2e2" opacity="0.2"/>
+      <text x="250" y="160" text-anchor="middle" class="label" fill="#ef4444">Desynchronized</text>
+      
+      <rect x="500" y="50" width="500" height="200" fill="#d1fae5" opacity="0.2"/>
+      <text x="750" y="160" text-anchor="middle" class="label" fill="#10b981">Synchronized</text>
+    </g>
+    
+    <!-- Bottom Summary -->
+    <rect x="50" y="850" width="1000" height="40" fill="#ede9fe" stroke="#7c3aed" stroke-width="2" rx="5"/>
+    <text x="550" y="875" text-anchor="middle" class="small">
+      <tspan font-weight="bold">Kuramoto Validation:</tspan> Drug increases coupling K from 0.5 to 0.75, driving order parameter r from 0.15 (desynchronized) to 0.89 (synchronized)
+    </text>
+  </svg>
+  

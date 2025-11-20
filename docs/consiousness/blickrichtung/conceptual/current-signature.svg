@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-label="Plot of current in picoamperes over milliseconds showing pulses with durations around 150 ms and peaks near 450 pA.">
+
+    <style> :root{ --bg:#0f1218; --panel:#141824; --frame:#223047; --text:#eaf0ff; --pulse:#67e8ff; --grid:#2a2f3a; } .bg{fill:var(--bg);} .panel{fill:var(--panel); stroke:var(--frame); stroke-width:2;} .label{fill:var(--text); font: 24px/1.3 ui-sans-serif, system-ui, Segoe UI, Roboto, Arial;} .title{font-size:38px;} .grid{stroke:var(--grid); stroke-width:1;} </style> <rect class="bg" width="1600" height="900"/> <text x="60" y="80" class="label title">Current Signature of Thought Completion</text> <g transform="translate(100,140)"> <rect class="panel" x="0" y="0" width="1400" height="680" rx="14"/> <!-- Axes --> <g transform="translate(80,560)"> <line x1="0" y1="0" x2="1180" y2="0" stroke="#a8b4ff88" stroke-width="2"/> <line x1="0" y1="0" x2="0" y2="-480" stroke="#a8b4ff88" stroke-width="2"/> <!-- grid --> <g opacity="0.5"> <g> <path class="grid" d="M0,-80 H1180"/> <path class="grid" d="M0,-160 H1180"/> <path class="grid" d="M0,-240 H1180"/> <path class="grid" d="M0,-320 H1180"/> <path class="grid" d="M0,-400 H1180"/> <path class="grid" d="M0,-480 H1180"/> </g> <g> <path class="grid" d="M200,0 V-480"/> <path class="grid" d="M400,0 V-480"/> <path class="grid" d="M600,0 V-480"/> <path class="grid" d="M800,0 V-480"/> <path class="grid" d="M1000,0 V-480"/> </g> </g>
+      <!-- Labels -->
+  <text class="label" x="-70" y="-480" transform="rotate(-90 -70,-480)">Current (pA)</text>
+  <text class="label" x="520" y="60">Time (ms)</text>
+  <g fill="#a8b4ff">
+    <text class="label" x="-60" y="-400">800</text>
+    <text class="label" x="-60" y="-320">640</text>
+    <text class="label" x="-60" y="-240">480</text>
+    <text class="label" x="-60" y="-160">320</text>
+    <text class="label" x="-60" y="-80">160</text>
+    <text class="label" x="-60" y="0">0</text>
+    <text class="label" x="180" y="40">200</text>
+    <text class="label" x="380" y="40">400</text>
+    <text class="label" x="580" y="40">600</text>
+    <text class="label" x="780" y="40">800</text>
+    <text class="label" x="980" y="40">1000</text>
+  </g>
+
+  <!-- Pulses (150 ms width, 450 pA peak example) -->
+  <path d="M0,0 L140,0 L160,-240 L300,-240 L320,0 L480,0 L500,-220 L620,-220 L640,0 L800,0 L820,-230 L940,-230 L960,0 L1120,0"
+        stroke="var(--pulse)" stroke-width="4" fill="none"/>
+
+  <!-- Annotation -->
+  <g>
+    <line x1="160" y1="-240" x2="300" y2="-240" stroke="#ffd86b" stroke-width="3"/>
+    <line x1="160" y1="-240" x2="160" y2="0" stroke="#ffd86b55" stroke-dasharray="6 6"/>
+    <line x1="300" y1="-240" x2="300" y2="0" stroke="#ffd86b55" stroke-dasharray="6 6"/>
+    <text class="label" x="170" y="-270">Duration ≈ 150 ms</text>
+    <text class="label" x="320" y="-230">Peak ≈ 450 pA</text>
+  </g>
+</g>
+</g> </svg>

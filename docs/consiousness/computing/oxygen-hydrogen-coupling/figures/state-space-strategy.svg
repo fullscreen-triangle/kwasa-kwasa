@@ -1,0 +1,313 @@
+<svg width="1100" height="800" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <style>
+        .title { font: bold 24px sans-serif; }
+        .subtitle { font: bold 18px sans-serif; }
+        .label { font: 14px sans-serif; }
+        .small { font: 12px sans-serif; }
+        .tiny { font: 10px sans-serif; }
+        .equation { font: italic 13px serif; }
+      </style>
+      
+      <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+        <polygon points="0 0, 10 3, 0 6" fill="#333" />
+      </marker>
+      
+      <!-- Gradient for dose-response curves -->
+      <linearGradient id="lithiumGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" style="stop-color:#fee2e2;stop-opacity:1" />
+        <stop offset="30%" style="stop-color:#dcfce7;stop-opacity:1" />
+        <stop offset="70%" style="stop-color:#dcfce7;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#fee2e2;stop-opacity:1" />
+      </linearGradient>
+      
+      <linearGradient id="ssriGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" style="stop-color:#fee2e2;stop-opacity:1" />
+        <stop offset="20%" style="stop-color:#dcfce7;stop-opacity:1" />
+        <stop offset="80%" style="stop-color:#dcfce7;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#fee2e2;stop-opacity:1" />
+      </linearGradient>
+    </defs>
+    
+    <!-- Title -->
+    <text x="550" y="35" text-anchor="middle" class="title">
+      Therapeutic Windows and Categorical State Space Reduction
+    </text>
+    
+    <!-- LEFT PANEL: Dose-Response Curves -->
+    <g id="dose-response">
+      <text x="200" y="80" text-anchor="middle" class="subtitle" fill="#2563eb">
+        A. Therapeutic Dose Windows
+      </text>
+      
+      <!-- Axes -->
+      <line x1="50" y1="350" x2="350" y2="350" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+      <text x="360" y="355" class="small">Dose (mg)</text>
+      
+      <line x1="50" y1="350" x2="50" y2="100" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+      <text x="30" y="95" class="small" transform="rotate(-90 30 95)">Effect</text>
+      
+      <!-- Lithium (narrow window) -->
+      <g id="lithium-curve">
+        <!-- Sub-therapeutic zone -->
+        <rect x="50" y="120" width="60" height="230" fill="#fee2e2" opacity="0.3"/>
+        <text x="80" y="240" text-anchor="middle" class="tiny" fill="#ef4444">Sub-</text>
+        <text x="80" y="252" text-anchor="middle" class="tiny" fill="#ef4444">therapeutic</text>
+        
+        <!-- Therapeutic window -->
+        <rect x="110" y="120" width="90" height="230" fill="#dcfce7" opacity="0.4"/>
+        <text x="155" y="240" text-anchor="middle" class="small" fill="#10b981" font-weight="bold">Therapeutic</text>
+        <text x="155" y="256" text-anchor="middle" class="small" fill="#10b981" font-weight="bold">Window</text>
+        
+        <!-- Toxic zone -->
+        <rect x="200" y="120" width="150" height="230" fill="#fee2e2" opacity="0.3"/>
+        <text x="275" y="240" text-anchor="middle" class="tiny" fill="#ef4444">Toxic</text>
+        
+        <!-- Dose markers -->
+        <line x1="110" y1="350" x2="110" y2="355" stroke="#10b981" stroke-width="2"/>
+        <text x="110" y="370" text-anchor="middle" class="tiny" fill="#10b981">0.13 mg</text>
+        <text x="110" y="383" text-anchor="middle" class="tiny" fill="#10b981">Min</text>
+        
+        <line x1="155" y1="350" x2="155" y2="355" stroke="#2563eb" stroke-width="3"/>
+        <text x="155" y="370" text-anchor="middle" class="tiny" fill="#2563eb" font-weight="bold">0.29 mg</text>
+        <text x="155" y="383" text-anchor="middle" class="tiny" fill="#2563eb" font-weight="bold">Optimal</text>
+        
+        <line x1="200" y1="350" x2="200" y2="355" stroke="#ef4444" stroke-width="2"/>
+        <text x="200" y="370" text-anchor="middle" class="tiny" fill="#ef4444">32.4 mg</text>
+        <text x="200" y="383" text-anchor="middle" class="tiny" fill="#ef4444">Max</text>
+        
+        <!-- Curve -->
+        <path d="M 50,340 Q 80,320 110,250 T 155,150 Q 180,140 200,145 Q 250,160 300,200 Q 330,250 350,320" 
+              stroke="#7c3aed" stroke-width="3" fill="none"/>
+        
+        <text x="200" y="410" text-anchor="middle" class="label" fill="#7c3aed" font-weight="bold">
+          Lithium (Narrow Window)
+        </text>
+        <text x="200" y="428" text-anchor="middle" class="small">
+          TI = 252.6
+        </text>
+      </g>
+      
+      <!-- SSRI comparison (wider window) -->
+      <g id="ssri-curve" transform="translate(0, 170)">
+        <!-- Sub-therapeutic zone -->
+        <rect x="50" y="120" width="40" height="230" fill="#fee2e2" opacity="0.2"/>
+        
+        <!-- Therapeutic window (wider) -->
+        <rect x="90" y="120" width="180" height="230" fill="#dcfce7" opacity="0.3"/>
+        <text x="180" y="240" text-anchor="middle" class="small" fill="#10b981">Wider Window</text>
+        
+        <!-- Toxic zone -->
+        <rect x="270" y="120" width="80" height="230" fill="#fee2e2" opacity="0.2"/>
+        
+        <!-- Dose markers -->
+        <line x1="90" y1="350" x2="90" y2="355" stroke="#10b981" stroke-width="2"/>
+        <text x="90" y="370" text-anchor="middle" class="tiny" fill="#10b981">1.0 mg</text>
+        
+        <line x1="180" y1="350" x2="180" y2="355" stroke="#2563eb" stroke-width="3"/>
+        <text x="180" y="370" text-anchor="middle" class="tiny" fill="#2563eb" font-weight="bold">2.25 mg</text>
+        
+        <line x1="270" y1="350" x2="270" y2="355" stroke="#ef4444" stroke-width="2"/>
+        <text x="270" y="370" text-anchor="middle" class="tiny" fill="#ef4444">50 mg</text>
+        
+        <!-- Curve -->
+        <path d="M 50,340 Q 70,310 90,240 Q 120,160 180,140 Q 240,150 270,180 Q 310,240 350,310" 
+              stroke="#10b981" stroke-width="3" fill="none"/>
+        
+        <text x="200" y="410" text-anchor="middle" class="label" fill="#10b981" font-weight="bold">
+          Sertraline (Wide Window)
+        </text>
+        <text x="200" y="428" text-anchor="middle" class="small">
+          TI = 2631.6
+        </text>
+      </g>
+    </g>
+    
+    <!-- CENTER PANEL: State Space Reduction -->
+    <g id="state-space" transform="translate(400, 0)">
+      <text x="250" y="80" text-anchor="middle" class="subtitle" fill="#7c3aed">
+        B. Categorical State Space Reduction
+      </text>
+      
+      <!-- Before drug (large state space) -->
+      <g id="before-drug">
+        <text x="150" y="120" text-anchor="middle" class="small" font-weight="bold">Before Drug</text>
+        
+        <!-- Large scattered points -->
+        <circle cx="100" cy="160" r="4" fill="#ef4444" opacity="0.6"/>
+        <circle cx="130" cy="150" r="4" fill="#ef4444" opacity="0.6"/>
+        <circle cx="160" cy="170" r="4" fill="#ef4444" opacity="0.6"/>
+        <circle cx="110" cy="190" r="4" fill="#ef4444" opacity="0.6"/>
+        <circle cx="145" cy="185" r="4" fill="#ef4444" opacity="0.6"/>
+        <circle cx="175" cy="155" r="4" fill="#ef4444" opacity="0.6"/>
+        <circle cx="120" cy="210" r="4" fill="#ef4444" opacity="0.6"/>
+        <circle cx="155" cy="205" r="4" fill="#ef4444" opacity="0.6"/>
+        <circle cx="185" cy="190" r="4" fill="#ef4444" opacity="0.6"/>
+        <circle cx="95" cy="175" r="4" fill="#ef4444" opacity="0.6"/>
+        <circle cx="140" cy="225" r="4" fill="#ef4444" opacity="0.6"/>
+        <circle cx="170" cy="215" r="4" fill="#ef4444" opacity="0.6"/>
+        <circle cx="105" cy="235" r="4" fill="#ef4444" opacity="0.6"/>
+        <circle cx="135" cy="240" r="4" fill="#ef4444" opacity="0.6"/>
+        <circle cx="165" cy="230" r="4" fill="#ef4444" opacity="0.6"/>
+        <circle cx="125" cy="165" r="4" fill="#ef4444" opacity="0.6"/>
+        <circle cx="150" cy="195" r="4" fill="#ef4444" opacity="0.6"/>
+        <circle cx="180" cy="175" r="4" fill="#ef4444" opacity="0.6"/>
+        
+        <!-- Boundary -->
+        <ellipse cx="140" cy="190" rx="60" ry="55" fill="none" stroke="#ef4444" stroke-width="2" stroke-dasharray="5,3"/>
+        
+        <text x="150" y="260" text-anchor="middle" class="small" fill="#ef4444">
+          High Entropy
+        </text>
+        <text x="150" y="278" text-anchor="middle" class="tiny">
+          Disordered States
+        </text>
+      </g>
+      
+      <!-- Arrow -->
+      <line x1="220" y1="190" x2="280" y2="190" stroke="#2563eb" stroke-width="4" marker-end="url(#arrow)"/>
+      <text x="250" y="180" text-anchor="middle" class="small" fill="#2563eb" font-weight="bold">Drug</text>
+      
+      <!-- After drug (reduced state space) -->
+      <g id="after-drug">
+        <text x="380" y="120" text-anchor="middle" class="small" font-weight="bold">After Drug</text>
+        
+        <!-- Clustered points (reduced) -->
+        <circle cx="360" cy="180" r="5" fill="#10b981" opacity="0.8"/>
+        <circle cx="375" cy="185" r="5" fill="#10b981" opacity="0.8"/>
+        <circle cx="390" cy="180" r="5" fill="#10b981" opacity="0.8"/>
+        <circle cx="365" cy="195" r="5" fill="#10b981" opacity="0.8"/>
+        <circle cx="380" cy="200" r="5" fill="#10b981" opacity="0.8"/>
+        <circle cx="395" cy="195" r="5" fill="#10b981" opacity="0.8"/>
+        <circle cx="370" cy="210" r="5" fill="#10b981" opacity="0.8"/>
+        <circle cx="385" cy="215" r="5" fill="#10b981" opacity="0.8"/>
+        
+        <!-- Tight boundary -->
+        <ellipse cx="380" cy="195" rx="25" ry="25" fill="none" stroke="#10b981" stroke-width="3"/>
+        
+        <text x="380" y="240" text-anchor="middle" class="small" fill="#10b981">
+          Low Entropy
+        </text>
+        <text x="380" y="258" text-anchor="middle" class="tiny">
+          Ordered States
+        </text>
+      </g>
+      
+      <!-- Quantitative metrics -->
+      <rect x="80" y="300" width="400" height="110" fill="#fef9e7" stroke="#f59e0b" stroke-width="2" rx="8"/>
+      
+      <text x="280" y="325" text-anchor="middle" class="label" font-weight="bold">
+        State Space Reduction Metrics
+      </text>
+      
+      <g id="metrics-table">
+        <text x="100" y="350" class="small" font-weight="bold">Drug</text>
+        <text x="220" y="350" class="small" font-weight="bold">Reduction</text>
+        <text x="320" y="350" class="small" font-weight="bold">Phase Coherence</text>
+        <text x="430" y="350" class="small" font-weight="bold">Specificity</text>
+        
+        <line x1="90" y1="355" x2="470" y2="355" stroke="#333" stroke-width="1"/>
+        
+        <!-- Lithium -->
+        <text x="100" y="375" class="small">Lithium</text>
+        <text x="220" y="375" class="small" fill="#7c3aed" font-weight="bold">0.301</text>
+        <text x="320" y="375" class="small" fill="#10b981">0.369</text>
+        <text x="430" y="375" class="small" fill="#2563eb">0.910</text>
+        
+        <!-- Sertraline -->
+        <text x="100" y="395" class="small">Sertraline</text>
+        <text x="220" y="395" class="small" fill="#7c3aed" font-weight="bold">0.600</text>
+        <text x="320" y="395" class="small" fill="#10b981">0.912</text>
+        <text x="430" y="395" class="small" fill="#2563eb">0.990</text>
+      </g>
+    </g>
+    
+    <!-- RIGHT PANEL: Programming Efficiency -->
+    <g id="programming-efficiency" transform="translate(850, 0)">
+      <text x="125" y="80" text-anchor="middle" class="subtitle" fill="#f59e0b">
+        C. Programming Efficiency
+      </text>
+      
+      <!-- Bar chart -->
+      <g id="bar-chart">
+        <!-- Axes -->
+        <line x1="30" y1="320" x2="30" y2="120" stroke="#333" stroke-width="2"/>
+        <line x1="30" y1="320" x2="220" y2="320" stroke="#333" stroke-width="2"/>
+        
+        <text x="15" y="220" text-anchor="middle" class="tiny" transform="rotate(-90 15 220)">
+          Efficiency (0-1)
+        </text>
+        
+        <!-- Y-axis labels -->
+        <line x1="25" y1="320" x2="30" y2="320" stroke="#333" stroke-width="1"/>
+        <text x="20" y="323" text-anchor="end" class="tiny">0.0</text>
+        
+        <line x1="25" y1="270" x2="30" y2="270" stroke="#333" stroke-width="1"/>
+        <text x="20" y="273" text-anchor="end" class="tiny">0.2</text>
+        
+        <line x1="25" y1="220" x2="30" y2="220" stroke="#333" stroke-width="1"/>
+        <text x="20" y="223" text-anchor="end" class="tiny">0.4</text>
+        
+        <line x1="25" y1="170" x2="30" y2="170" stroke="#333" stroke-width="1"/>
+        <text x="20" y="173" text-anchor="end" class="tiny">0.6</text>
+        
+        <line x1="25" y1="120" x2="30" y2="120" stroke="#333" stroke-width="1"/>
+        <text x="20" y="123" text-anchor="end" class="tiny">1.0</text>
+        
+        <!-- Bars -->
+        <!-- Lithium -->
+        <rect x="50" y="143" width="40" height="177" fill="#7c3aed" opacity="0.8"/>
+        <text x="70" y="138" text-anchor="middle" class="small" fill="#7c3aed" font-weight="bold">0.87</text>
+        <text x="70" y="340" text-anchor="middle" class="tiny">Lithium</text>
+        
+        <!-- Sertraline -->
+        <rect x="110" y="120" width="40" height="200" fill="#10b981" opacity="0.8"/>
+        <text x="130" y="115" text-anchor="middle" class="small" fill="#10b981" font-weight="bold">1.00</text>
+        <text x="130" y="340" text-anchor="middle" class="tiny">Sertraline</text>
+        
+        <!-- Fluoxetine -->
+        <rect x="170" y="125" width="40" height="195" fill="#10b981" opacity="0.8"/>
+        <text x="190" y="120" text-anchor="middle" class="small" fill="#10b981" font-weight="bold">0.98</text>
+        <text x="190" y="340" text-anchor="middle" class="tiny">Fluoxetine</text>
+      </g>
+      
+      <!-- Information transfer rate -->
+      <rect x="20" y="370" width="210" height="90" fill="#ede9fe" stroke="#7c3aed" stroke-width="2" rx="5"/>
+      
+      <text x="125" y="395" text-anchor="middle" class="label" font-weight="bold" fill="#7c3aed">
+        Information Transfer
+      </text>
+      
+      <text x="125" y="420" text-anchor="middle" class="small">
+        Lithium: <tspan font-weight="bold" fill="#7c3aed">500 bits/s</tspan>
+      </text>
+      
+      <text x="125" y="440" text-anchor="middle" class="small">
+        SSRIs: <tspan font-weight="bold" fill="#10b981">600-610 bits/s</tspan>
+      </text>
+    </g>
+    
+    <!-- Bottom Summary -->
+    <rect x="50" y="650" width="1000" height="130" fill="#f0fdf4" stroke="#10b981" stroke-width="3" rx="10"/>
+    
+    <text x="550" y="685" text-anchor="middle" class="subtitle" fill="#10b981">
+      Computational Validation Summary
+    </text>
+    
+    <text x="80" y="715" class="small">
+      <tspan font-weight="bold">Therapeutic Windows:</tspan> Lithium exhibits narrow window (TI=252.6, 0.13-32.4 mg) requiring precise dosing,
+    </text>
+    
+    <text x="80" y="738" class="small">
+      while SSRIs show wider windows (TI=2631.6, 1.0-50 mg) enabling safer titration.
+    </text>
+    
+    <text x="80" y="761" class="small">
+      <tspan font-weight="bold">State Space Reduction:</tspan> Drugs compress categorical state space by 0.30-0.60 ratio within therapeutic window,
+    </text>
+    
+    <text x="80" y="784" class="small">
+      increasing phase coherence (0.37-0.91) and programming specificity (0.91-0.99) with efficiency 0.87-1.00.
+    </text>
+  </svg>
+  

@@ -1,0 +1,179 @@
+<svg width="1000" height="850" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <style>
+        .title { font: bold 24px sans-serif; }
+        .subtitle { font: bold 18px sans-serif; }
+        .label { font: 14px sans-serif; }
+        .small { font: 12px sans-serif; }
+        .tiny { font: 10px sans-serif; }
+      </style>
+      
+      <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+        <polygon points="0 0, 10 3, 0 6" fill="#333" />
+      </marker>
+      
+      <marker id="arrow-green" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+        <polygon points="0 0, 10 3, 0 6" fill="#10b981" />
+      </marker>
+      
+      <marker id="arrow-red" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+        <polygon points="0 0, 10 3, 0 6" fill="#ef4444" />
+      </marker>
+    </defs>
+    
+    <!-- Title -->
+    <text x="500" y="35" text-anchor="middle" class="title">
+      Hierarchical BMD Metabolic Flux Cascade
+    </text>
+    
+    <!-- LEFT: Baseline Condition -->
+    <g id="baseline">
+      <text x="250" y="80" text-anchor="middle" class="subtitle" fill="#10b981">
+        A. Baseline (Healthy)
+      </text>
+      
+      <!-- Level 1: Glucose Transport -->
+      <rect x="150" y="120" width="200" height="60" fill="#dcfce7" stroke="#10b981" stroke-width="3" rx="5"/>
+      <text x="250" y="145" text-anchor="middle" class="label" font-weight="bold">L1: Glucose Transport</text>
+      <text x="250" y="165" text-anchor="middle" class="small">Flux: 100.0 | Info: 8.00 bits</text>
+      
+      <!-- Arrow -->
+      <line x1="250" y1="180" x2="250" y2="210" stroke="#10b981" stroke-width="4" marker-end="url(#arrow-green)"/>
+      <text x="270" y="200" class="tiny" fill="#10b981">80%</text>
+      
+      <!-- Level 2: Glycolysis -->
+      <rect x="150" y="210" width="200" height="60" fill="#dcfce7" stroke="#10b981" stroke-width="3" rx="5"/>
+      <text x="250" y="235" text-anchor="middle" class="label" font-weight="bold">L2: Glycolysis</text>
+      <text x="250" y="255" text-anchor="middle" class="small">Flux: 80.0 | Info: 5.12 bits</text>
+      
+      <!-- Arrow -->
+      <line x1="250" y1="270" x2="250" y2="300" stroke="#10b981" stroke-width="4" marker-end="url(#arrow-green)"/>
+      <text x="270" y="290" class="tiny" fill="#10b981">76%</text>
+      
+      <!-- Level 3: TCA Cycle -->
+      <rect x="150" y="300" width="200" height="60" fill="#dcfce7" stroke="#10b981" stroke-width="3" rx="5"/>
+      <text x="250" y="325" text-anchor="middle" class="label" font-weight="bold">L3: TCA Cycle</text>
+      <text x="250" y="345" text-anchor="middle" class="small">Flux: 60.8 | Info: 2.96 bits</text>
+      
+      <!-- Arrow -->
+      <line x1="250" y1="360" x2="250" y2="390" stroke="#10b981" stroke-width="4" marker-end="url(#arrow-green)"/>
+      <text x="270" y="380" class="tiny" fill="#10b981">72%</text>
+      
+      <!-- Level 4: Oxidative Phosphorylation -->
+      <rect x="150" y="390" width="200" height="60" fill="#dcfce7" stroke="#10b981" stroke-width="3" rx="5"/>
+      <text x="250" y="415" text-anchor="middle" class="label" font-weight="bold">L4: Ox. Phosphorylation</text>
+      <text x="250" y="435" text-anchor="middle" class="small">Flux: 43.8 | Info: 1.53 bits</text>
+      
+      <!-- Arrow -->
+      <line x1="250" y1="450" x2="250" y2="480" stroke="#10b981" stroke-width="4" marker-end="url(#arrow-green)"/>
+      <text x="270" y="470" class="tiny" fill="#10b981">68%</text>
+      
+      <!-- Level 5: Gene Expression -->
+      <rect x="150" y="480" width="200" height="60" fill="#dcfce7" stroke="#10b981" stroke-width="3" rx="5"/>
+      <text x="250" y="505" text-anchor="middle" class="label" font-weight="bold">L5: Gene Expression</text>
+      <text x="250" y="525" text-anchor="middle" class="small">Flux: 29.8 | Info: 0.71 bits</text>
+      
+      <!-- Metrics box -->
+      <rect x="130" y="570" width="240" height="120" fill="#f0fdf4" stroke="#10b981" stroke-width="2" rx="5"/>
+      <text x="250" y="595" text-anchor="middle" class="label" font-weight="bold" fill="#10b981">
+        Baseline Metrics
+      </text>
+      <text x="150" y="620" class="small">Active Levels: <tspan font-weight="bold">5/5</tspan></text>
+      <text x="150" y="640" class="small">End-to-End Flux: <tspan font-weight="bold">0.298</tspan></text>
+      <text x="150" y="660" class="small">Total Info: <tspan font-weight="bold">7.29 bits</tspan></text>
+      <text x="150" y="680" class="small">ATP Efficiency: <tspan font-weight="bold">4.23 bits/kATP</tspan></text>
+    </g>
+    
+    <!-- CENTER: Comparison Arrow -->
+    <g id="comparison">
+      <line x1="400" y1="350" x2="550" y2="350" stroke="#2563eb" stroke-width="5" marker-end="url(#arrow)"/>
+      <text x="475" y="340" text-anchor="middle" class="label" fill="#2563eb" font-weight="bold">
+        Metabolic
+      </text>
+      <text x="475" y="360" text-anchor="middle" class="label" fill="#2563eb" font-weight="bold">
+        Syndrome
+      </text>
+    </g>
+    
+    <!-- RIGHT: Metabolic Syndrome -->
+    <g id="metabolic-syndrome" transform="translate(350, 0)">
+      <text x="250" y="80" text-anchor="middle" class="subtitle" fill="#ef4444">
+        B. Metabolic Syndrome (Dysfunction)
+      </text>
+      
+      <!-- Level 1: Glucose Transport (active) -->
+      <rect x="150" y="120" width="200" height="60" fill="#dcfce7" stroke="#10b981" stroke-width="3" rx="5"/>
+      <text x="250" y="145" text-anchor="middle" class="label" font-weight="bold">L1: Glucose Transport</text>
+      <text x="250" y="165" text-anchor="middle" class="small">Flux: 100.0 | Info: 8.00 bits</text>
+      
+      <!-- Arrow (reduced) -->
+      <line x1="250" y1="180" x2="250" y2="210" stroke="#f59e0b" stroke-width="3" marker-end="url(#arrow)" stroke-dasharray="5,3"/>
+      <text x="270" y="200" class="tiny" fill="#f59e0b">45%</text>
+      
+      <!-- Level 2: Glycolysis (impaired) -->
+      <rect x="150" y="210" width="200" height="60" fill="#fef3c7" stroke="#f59e0b" stroke-width="3" rx="5"/>
+      <text x="250" y="235" text-anchor="middle" class="label" font-weight="bold">L2: Glycolysis</text>
+      <text x="250" y="255" text-anchor="middle" class="small">Flux: 45.0 | Info: 2.03 bits</text>
+      
+      <!-- Arrow (blocked) -->
+      <line x1="250" y1="270" x2="250" y2="300" stroke="#ef4444" stroke-width="3" marker-end="url(#arrow-red)" stroke-dasharray="5,3"/>
+      <text x="270" y="290" class="tiny" fill="#ef4444">22%</text>
+      
+      <!-- Level 3: TCA Cycle (failed) -->
+      <rect x="150" y="300" width="200" height="60" fill="#fee2e2" stroke="#ef4444" stroke-width="3" rx="5"/>
+      <text x="250" y="325" text-anchor="middle" class="label" font-weight="bold">L3: TCA Cycle ✗</text>
+      <text x="250" y="345" text-anchor="middle" class="small">Flux: 10.1 | Info: 0.13 bits</text>
+      
+      <!-- Arrow (blocked) -->
+      <line x1="250" y1="360" x2="250" y2="390" stroke="#ef4444" stroke-width="3" marker-end="url(#arrow-red)" stroke-dasharray="8,4"/>
+      <text x="270" y="380" class="tiny" fill="#ef4444">0%</text>
+      
+      <!-- Level 4: Oxidative Phosphorylation (inactive) -->
+      <rect x="150" y="390" width="200" height="60" fill="#fee2e2" stroke="#ef4444" stroke-width="3" rx="5" opacity="0.5"/>
+      <text x="250" y="415" text-anchor="middle" class="label" font-weight="bold">L4: Ox. Phos. ✗</text>
+      <text x="250" y="435" text-anchor="middle" class="small">Flux: 0.0 | Info: 0.00 bits</text>
+      
+      <!-- Arrow (blocked) -->
+      <line x1="250" y1="450" x2="250" y2="480" stroke="#ef4444" stroke-width="3" stroke-dasharray="8,4" opacity="0.5"/>
+      <text x="270" y="470" class="tiny" fill="#ef4444">0%</text>
+      
+      <!-- Level 5: Gene Expression (inactive) -->
+      <rect x="150" y="480" width="200" height="60" fill="#fee2e2" stroke="#ef4444" stroke-width="3" rx="5" opacity="0.5"/>
+      <text x="250" y="505" text-anchor="middle" class="label" font-weight="bold">L5: Gene Expr. ✗</text>
+      <text x="250" y="525" text-anchor="middle" class="small">Flux: 0.0 | Info: 0.00 bits</text>
+      
+      <!-- Metrics box -->
+      <rect x="130" y="570" width="240" height="120" fill="#fef2f2" stroke="#ef4444" stroke-width="2" rx="5"/>
+      <text x="250" y="595" text-anchor="middle" class="label" font-weight="bold" fill="#ef4444">
+        Dysfunction Metrics
+      </text>
+      <text x="150" y="620" class="small">Active Levels: <tspan font-weight="bold" fill="#ef4444">2/5</tspan></text>
+      <text x="150" y="640" class="small">End-to-End Flux: <tspan font-weight="bold" fill="#ef4444">0.000</tspan></text>
+      <text x="150" y="660" class="small">Total Info: <tspan font-weight="bold" fill="#ef4444">0.13 bits</tspan></text>
+      <text x="150" y="680" class="small">ATP Efficiency: <tspan font-weight="bold" fill="#ef4444">0.32 bits/kATP</tspan></text>
+    </g>
+    
+    <!-- Bottom Summary -->
+    <rect x="50" y="720" width="900" height="110" fill="#fef9e7" stroke="#f59e0b" stroke-width="3" rx="10"/>
+    
+    <text x="500" y="750" text-anchor="middle" class="subtitle" fill="#f59e0b">
+      Hierarchical Information Cascade Failure
+    </text>
+    
+    <text x="80" y="775" class="small">
+      <tspan font-weight="bold">Baseline:</tspan> All 5 levels active with 29.8% end-to-end flux, 7.29 bits total information compression,
+    </text>
+    
+    <text x="80" y="795" class="small">
+      4.23 bits/kATP efficiency. Smooth cascade from glucose (100.0 flux) to gene expression (29.8 flux).
+    </text>
+    
+    <text x="80" y="815" class="small">
+      <tspan font-weight="bold">Metabolic Syndrome:</tspan> Cascade failure at L3 (TCA cycle) blocks downstream levels L4-L5, reducing
+    </text>
+    
+    <text x="80" y="835" class="small">
+      active levels to 2/5, end-to-end flux to 0%, information to 0.13 bits, and efficiency to 0.32 bits/kATP (13× drop).
+    </text>
+  </svg>
+  

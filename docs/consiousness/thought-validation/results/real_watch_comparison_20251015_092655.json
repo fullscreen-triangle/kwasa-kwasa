@@ -1,0 +1,51 @@
+{
+  "timestamp": "20251015_092655",
+  "watch1_file": "garmin_cleaned_20251013_000747.csv",
+  "watch2_file": "coros_cleaned_20251013_000747.csv",
+  "watch1_points": 93,
+  "watch2_points": 48,
+  "differences": {
+    "nanosecond": {
+      "mean_distance": 60.18305864857549,
+      "std_distance": 34.18364894753487,
+      "max_distance": 148.5056105975324,
+      "convergence": 0.02842229359129803
+    },
+    "picosecond": {
+      "mean_distance": 60.18305864836275,
+      "std_distance": 34.183648947409,
+      "max_distance": 148.50561059713175,
+      "convergence": 0.02842229359139971
+    },
+    "femtosecond": {
+      "mean_distance": 60.1830586480852,
+      "std_distance": 34.18364894732827,
+      "max_distance": 148.5056105971159,
+      "convergence": 0.028422293591464923
+    },
+    "attosecond": {
+      "mean_distance": 60.1830586478977,
+      "std_distance": 34.183648947227674,
+      "max_distance": 148.50561059673373,
+      "convergence": 0.028422293591546192
+    },
+    "zeptosecond": {
+      "mean_distance": 60.183058647944655,
+      "std_distance": 34.18364894721233,
+      "max_distance": 148.50561059696983,
+      "convergence": 0.028422293591558585
+    },
+    "planck": {
+      "mean_distance": 60.18305864730096,
+      "std_distance": 34.18364894701471,
+      "max_distance": 148.50561059624792,
+      "convergence": 0.028422293591718228
+    },
+    "trans_planckian": {
+      "mean_distance": 60.18305864723052,
+      "std_distance": 34.18364894697538,
+      "max_distance": 148.50561059627603,
+      "convergence": 0.02842229359175
+    }
+  }
+}

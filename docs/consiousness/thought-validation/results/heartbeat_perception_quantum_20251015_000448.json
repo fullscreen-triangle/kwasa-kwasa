@@ -1,0 +1,88 @@
+{
+  "hypothesis": "Heartbeat is fundamental boundary of conscious perception units",
+  "author_insight": "All oscillatory cycles must converge/complete before each heartbeat",
+  "cardiac_cycle": {
+    "mean_heart_rate_bpm": 140.68705396192834,
+    "heartbeat_frequency_hz": 2.3447842326988058,
+    "mean_rr_interval_ms": 426.4784733941244,
+    "perception_rate_hz": 2.3447842326988058,
+    "perception_frame_duration_ms": 426.4784733941244
+  },
+  "oscillatory_convergence": {
+    "neural_gamma": {
+      "frequency_hz": 40.0,
+      "cycles_per_heartbeat": 17.059138935764974,
+      "converges": true,
+      "convergence_type": "super-harmonic"
+    },
+    "neural_beta": {
+      "frequency_hz": 20.0,
+      "cycles_per_heartbeat": 8.529569467882487,
+      "converges": true,
+      "convergence_type": "super-harmonic"
+    },
+    "neural_alpha": {
+      "frequency_hz": 10.0,
+      "cycles_per_heartbeat": 4.2647847339412435,
+      "converges": true,
+      "convergence_type": "super-harmonic"
+    },
+    "neuromuscular": {
+      "frequency_hz": 10.0,
+      "cycles_per_heartbeat": 4.2647847339412435,
+      "converges": true,
+      "convergence_type": "super-harmonic"
+    },
+    "cognitive": {
+      "frequency_hz": 2.0,
+      "cycles_per_heartbeat": 0.8529569467882487,
+      "converges": true,
+      "convergence_type": "sub-harmonic"
+    },
+    "gait": {
+      "frequency_hz": 1.67,
+      "cycles_per_heartbeat": 0.7122190505681877,
+      "converges": true,
+      "convergence_type": "sub-harmonic"
+    },
+    "respiratory": {
+      "frequency_hz": 0.25,
+      "cycles_per_heartbeat": 0.10661961834853109,
+      "converges": true,
+      "convergence_type": "sub-harmonic"
+    },
+    "all_oscillations_converge": true,
+    "convergence_coefficient": 1.0
+  },
+  "phase_locking": {
+    "respiratory": {
+      "plv": 0.34821227274403227,
+      "phase_locked": true,
+      "locking_strength": "Weak",
+      "inferred_from_hrv": true
+    }
+  },
+  "perception_coherence": {
+    "coherence_score": 0.5900951387225896,
+    "interpretation": "MODERATE: Partial perception quantum support"
+  },
+  "cardiac_phases": {
+    "systole_duration_ms": 300.0,
+    "systole_fraction": 0.7034352698096417,
+    "systole_phase": "Integration - Neural signals converge",
+    "diastole_duration_ms": 126.47847339412442,
+    "diastole_fraction": 0.29656473019035834,
+    "diastole_phase": "Selection - BMD chooses frame",
+    "interpretation": "Each heartbeat: 300ms integration + 126ms selection = 1 perception quantum"
+  },
+  "hypothesis_validation": {
+    "hypothesis_validated": true,
+    "convergence_criterion": true,
+    "phase_locking_criterion": true,
+    "coherence_criterion": true,
+    "convergence_score": 1.0,
+    "phase_locking_score": 1.0,
+    "coherence_score": 0.5900951387225896,
+    "conclusion": "VALIDATED: Heartbeat serves as fundamental perception quantum. All oscillations converge before each heartbeat with 59.0% coherence. Rate of perception equals heart rate."
+  }
+}

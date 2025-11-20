@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 1000" role="img" aria-label="Hardware schematic of chamber, sensor array, electron source, and data acquisition.">
+
+    <style> :root{ --bg:#0f1218; --text:#eaf0ff; --panel:#141824; --frame:#223047; --accent:#67e8ff; --gas:#7c5cff55; } .bg{fill:var(--bg);} .label{fill:var(--text); font: 24px/1.3 ui-sans-serif, system-ui, Segoe UI, Roboto, Arial;} .title{font-size:40px;} .box{fill:var(--panel); stroke:var(--frame); stroke-width:2;} .pipe{stroke:#6c7a99; stroke-width:4; fill:none;} .arrow{marker-end:url(#arr);} </style> <defs> <marker id="arr" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"> <path d="M0,0 L12,6 L0,12 Z" fill="#67e8ff"/> </marker> </defs> <rect class="bg" width="1800" height="1000"/> <text x="60" y="80" class="label title">Hardware Setup</text> <!-- Chamber --> <g transform="translate(160,200)"> <rect class="box" x="0" y="0" width="680" height="640" rx="16"/> <text class="label" x="20" y="40">Gas chamber (10 cm × 10 cm × 10 cm)</text> <rect x="40" y="80" width="600" height="520" rx="12" fill="url(#gas)"/> <defs> <linearGradient id="gas" x1="0" y1="0" x2="1" y2="1"> <stop offset="0" stop-color="#7c5cff20"/> <stop offset="1" stop-color="#7c5cff10"/> </linearGradient> </defs>
+        <!-- Sensor grid -->
+<g transform="translate(60,120)">
+    <text class="label" x="0" y="-20">64-sensor array (4×4×4 projected)</text>
+    <g fill="#67e8ff">
+      <!-- 4x4 front plane -->
+      <g>
+        <circle cx="60" cy="60" r="6"/><circle cx="220" cy="60" r="6"/><circle cx="380" cy="60" r="6"/><circle cx="540" cy="60" r="6"/>
+        <circle cx="60" cy="180" r="6"/><circle cx="220" cy="180" r="6"/><circle cx="380" cy="180" r="6"/><circle cx="540" cy="180" r="6"/>
+        <circle cx="60" cy="300" r="6"/><circle cx="220" cy="300" r="6"/><circle cx="380" cy="300" r="6"/><circle cx="540" cy="300" r="6"/>
+        <circle cx="60" cy="420" r="6"/><circle cx="220" cy="420" r="6"/><circle cx="380" cy="420" r="6"/><circle cx="540" cy="420" r="6"/>
+      </g>
+    </g>
+  </g>
+  
+  <!-- Electron source -->
+  <g transform="translate(560,240)">
+    <rect class="box" x="0" y="0" width="120" height="80" rx="10"/>
+    <text class="label" x="10" y="48">Field emission cathode</text>
+    <line class="pipe arrow" x1="60" y1="80" x2="60" y2="220" stroke="#67e8ff"/>
+    <text class="label" x="0" y="230">e⁻ injection</text>
+  </g>
+</g> <!-- Odorant injection --> <g transform="translate(100,240)"> <rect class="box" x="0" y="0" width="300" height="120" rx="12"/> <text class="label" x="20" y="46">Odorant injector</text> <text class="label" x="20" y="80">5 μL, 2 μL/min</text> <path class="pipe arrow" d="M300,60 H360" stroke="#67e8ff"/> </g> <!-- DAQ and compute --> <g transform="translate(1000,200)"> <rect class="box" x="0" y="0" width="740" height="640" rx="16"/> <text class="label" x="20" y="40">Semiconductor circuit + DAQ</text>
+    <g transform="translate(20,80)">
+        <rect class="box" x="0" y="0" width="320" height="160" rx="12"/>
+        <text class="label" x="16" y="40">High-voltage supply (0.1–5 kV)</text>
+        <text class="label" x="16" y="80">Electron energy (100–500 eV)</text>
+      </g>
+      
+      <g transform="translate(20,280)">
+        <rect class="box" x="0" y="0" width="320" height="160" rx="12"/>
+        <text class="label" x="16" y="40">Picoammeter</text>
+        <text class="label" x="16" y="80">10–1000 pA, 1 fA res.</text>
+      </g>
+      
+      <g transform="translate(380,80)">
+        <rect class="box" x="0" y="0" width="320" height="160" rx="12"/>
+        <text class="label" x="16" y="40">Positioning system</text>
+        <text class="label" x="16" y="80">XYZ @ 1 kHz, 0.1 μm</text>
+      </g>
+      
+      <g transform="translate(380,280)">
+        <rect class="box" x="0" y="0" width="320" height="160" rx="12"/>
+        <text class="label" x="16" y="40">Compute + storage</text>
+        <text class="label" x="16" y="80">Signature calc, logging</text>
+      </g>
+    </g> <!-- Interconnects --> <g> <path class="pipe arrow" d="M840,520 C920,520 920,520 1000,520" stroke="#67e8ff"/> <text class="label" x="900" y="500">Signals and current</text> </g> </svg>        
