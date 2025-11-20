@@ -1,0 +1,85 @@
+// Simple Consciousness State Measurement
+// Demonstrates basic consciousness measurement functionality
+
+funxn main():
+    print("🧠 Consciousness State Measurement")
+    print("=" * 40)
+    
+    // Measure H⁺ field from MEG data
+    print("\n📊 Measuring H⁺ field...")
+    item h_field = measure_h_plus_field("data/patient.meg")
+    
+    print("H⁺ Field State:")
+    print("  Frequency: {:.2e} Hz", h_field.frequency)
+    print("  Coherence: {:.2}", h_field.coherence)
+    print("  Variance: {:.2}", h_field.variance)
+    print("  Emotional valence: {:.2}", h_field.emotional_valence)
+    
+    // Measure O₂ categorical completion rate
+    print("\n⚛️ Measuring O₂ categorical clock...")
+    item o2_rate = measure_o2_completion_rate("data/patient.nii")
+    
+    print("O₂ Completion Rate: {:.2} Hz", o2_rate)
+    print("(This is your thought formation rate)")
+    
+    // Calculate phase-locking between brain regions
+    print("\n🔗 Calculating phase-locking...")
+    
+    item theta_signal = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6]
+    item gamma_signal = [0.15, 0.25, 0.35, 0.45, 0.55, 0.65]
+    
+    item plv = calculate_phase_locking_value(theta_signal, gamma_signal)
+    
+    print("Theta-Gamma PLV: {:.2}", plv)
+    
+    if plv > 0.7:
+        print("  ✓ Strong phase-locking (healthy)")
+    elif plv > 0.4:
+        print("  ~ Moderate phase-locking")
+    else:
+        print("  ✗ Weak phase-locking (may need intervention)")
+    
+    // Map emotions to phase patterns
+    print("\n😊 Mapping emotions to oscillatory patterns...")
+    
+    item emotions = ["joy", "sadness", "anxiety", "calm"]
+    
+    considering emotion in emotions:
+        item pattern = emotion_to_phase_pattern(emotion)
+        print("\n{}:", emotion.capitalize())
+        print("  Coupling strength: {:.2}", pattern.coupling_strength)
+        
+        if emotion == "joy":
+            print("  Beta: {:.2}, Gamma: {:.2}", pattern.beta, pattern.gamma)
+        elif emotion == "sadness":
+            print("  Theta: {:.2}, Alpha: {:.2}", pattern.theta, pattern.alpha)
+        elif emotion == "anxiety":
+            print("  Theta: {:.2}, Alpha: {:.2}", pattern.theta, pattern.alpha)
+        elif emotion == "calm":
+            print("  Alpha: {:.2}, Beta: {:.2}", pattern.alpha, pattern.beta)
+    
+    // Comprehensive consciousness measurement
+    print("\n🌟 Complete consciousness state measurement...")
+    
+    item state = measure_consciousness_state("data/patient.meg")
+    
+    print("\nComplete Consciousness State:")
+    print("  Overall coherence: {:.2}", state.coherence)
+    print("  Emotional valence: {:.2} ({} to {})", 
+          state.emotional_valence, -1, +1)
+    print("  Thought rate: {:.2} Hz", state.thought_rate)
+    
+    // Interpret emotional state
+    if state.emotional_valence > 0.5:
+        print("\n😊 Emotional state: Positive")
+    elif state.emotional_valence > 0:
+        print("\n😐 Emotional state: Neutral-positive")
+    elif state.emotional_valence > -0.5:
+        print("\n😕 Emotional state: Neutral-negative")
+    else:
+        print("\n😢 Emotional state: Negative")
+    
+    print("\n✅ Measurement complete!")
+    
+    return state
+

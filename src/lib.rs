@@ -11,6 +11,7 @@
 //! - Four-File System for multi-modal processing
 //! - Semantic Engine for memory contamination and cognitive frame selection
 //! - Domain extensions for quantum, neural, molecular, and fuzzy systems
+//! - **Consciousness Programming**: H⁺ field operations, S-entropy alignment, molecular design
 //!
 //! # Quick Start
 //!
@@ -39,6 +40,7 @@ pub mod ai_enhancement;
 pub mod audio;
 pub mod chemistry;
 pub mod cli;
+pub mod consciousness;  // NEW: Consciousness programming primitives
 pub mod error;
 pub mod evidence;
 pub mod external_apis;
