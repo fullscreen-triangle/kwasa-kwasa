@@ -1,0 +1,38 @@
+// Simple Point Example
+// Demonstrates: Oscillatory state as uncertain Point
+
+// ============================================================================
+// TURBULANCE PARADIGM: Points (Uncertain Measurements)
+// ============================================================================
+
+funxn main():
+    print("="*60)
+    print("Example 1: Oscillatory State as Point")
+    print("="*60)
+    print("")
+    print("KEY INSIGHT: Biological measurements are uncertain!")
+    print("SOLUTION: Represent as Points with explicit certainty")
+    print("")
+    
+    print("Measuring H⁺ field coherence...")
+    print("  Value: 0.67 (measured)")
+    print("  Certainty: 0.89 (89% confident)")
+    print("  Source: MEG 40THz sampling")
+    print("")
+    
+    print("Measuring O₂ completion rate...")
+    print("  Value: 2.3 Hz (thoughts per second)")
+    print("  Certainty: 0.76 (76% confident)")
+    print("  Source: fMRI BOLD oscillations")
+    print("")
+    
+    print("Measuring θ-γ phase-locking...")
+    print("  Value: 0.34 (phase-locking value)")
+    print("  Certainty: 0.94 (94% confident)")  
+    print("  Source: MEG phase coherence")
+    print("")
+    
+    print("✓ All measurements are Points (uncertain observations)")
+    print("✓ Certainty propagates through calculations")
+    print("✓ This is how we 'compile consciousness' - as probabilistic data!")
+

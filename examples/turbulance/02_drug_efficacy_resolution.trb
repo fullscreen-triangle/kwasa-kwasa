@@ -1,0 +1,248 @@
+// Example 2: Drug Efficacy as Resolution (Debate Platform)
+// From: kuramoto-oscillator-phase-computing.tex + REVOLUTIONARY_FRAMEWORK_OVERVIEW.md
+//
+// KEY INSIGHT: Drug efficacy is contested, not certain!
+// - K_agg measurements have variability
+// - Clinical trials have conflicting results
+// - Mechanism hypotheses compete
+//
+// TURBULANCE PARADIGM: Resolutions are debate platforms
+// → Perfect for evaluating competing evidence about therapeutic effects!
+
+import consciousness.drug_properties
+import consciousness.phase_locking
+import resolution.strategies
+
+// CLAIM: "Sertraline is therapeutic for depression via O₂ aggregation"
+point sertraline_therapeutic_claim = {
+    content: "Sertraline achieves therapeutic effect through O₂ aggregation → phase-locking",
+    certainty: 0.0,  // Unknown initially
+    evidence_strength: 0.0,  // Will be determined by Resolution
+    mechanism: "K_agg > 10^4 M⁻¹ → EM coupling → θ-γ synchronization"
+}
+
+// RESOLUTION: Evaluate claim through debate
+resolution evaluate_sertraline_efficacy(claim: Point) -> ResolutionOutcome {
+    print("⚖️  Opening Resolution: {}", claim.content)
+    print()
+    
+    // AFFIRMATIONS (Supporting Evidence)
+    affirmation molecular_properties = {
+        content: "Sertraline K_agg = 2.47×10^5 M⁻¹ (exceeds 10^4 threshold)",
+        weight: 0.92,
+        source: "quantum_chemistry_DFT_calculation",
+        confidence: 0.94,
+        relevance: 1.0  // Directly tests mechanism
+    }
+    
+    affirmation em_coupling = {
+        content: "EM coupling strength = 0.74 (good)",
+        weight: 0.87,
+        source: "paramagnetic_susceptibility_measurement",
+        confidence: 0.89,
+        relevance: 0.95
+    }
+    
+    affirmation resonance_quality = {
+        content: "Resonance Q = 1.38 (good O₂ frequency match)",
+        weight: 0.85,
+        source: "vibrational_spectroscopy",
+        confidence: 0.91,
+        relevance: 0.88
+    }
+    
+    affirmation clinical_trials = {
+        content: "Meta-analysis: 65% response rate in MDD trials",
+        weight: 0.94,
+        source: "STAR*D_clinical_trial_n=4000",
+        confidence: 0.88,
+        relevance: 1.0  // Direct therapeutic endpoint
+    }
+    
+    affirmation kuramoto_simulation = {
+        content: "K=0.70 → R=0.845 (exceeds therapeutic R>0.7)",
+        weight: 0.79,
+        source: "kuramoto_oscillator_computational_validation",
+        confidence: 0.96,  // High (computational)
+        relevance: 0.82  // Indirect (simulation)
+    }
+    
+    // CONTENTIONS (Challenges)
+    contention ssri_delay = {
+        content: "Therapeutic effect takes 2-4 weeks (not immediate)",
+        weight: 0.71,
+        challenge: "If mechanism is direct O₂ aggregation, why delay?",
+        alternative_explanation: "Neuroplastic remodeling takes time",
+        confidence: 0.85
+    }
+    
+    contention placebo_effect = {
+        content: "30-40% placebo response rate in depression trials",
+        weight: 0.68,
+        challenge: "Some efficacy may not be drug-specific",
+        alternative_explanation: "Oscillatory coherence can be observer-guided",
+        confidence: 0.79
+    }
+    
+    contention individual_variability = {
+        content: "35% of patients don't respond to sertraline",
+        weight: 0.76,
+        challenge: "Universal mechanism should have universal response",
+        alternative_explanation: "Genetic polymorphisms (CYP2D6, 5-HTTLPR) affect K_eff",
+        confidence: 0.91
+    }
+    
+    contention alternative_mechanism = {
+        content: "May work via neurogenesis, not phase-locking",
+        weight: 0.63,
+        challenge: "Neurogenesis observed in animal models",
+        alternative_explanation: "Neurogenesis secondary to restored phase-locking",
+        confidence: 0.72
+    }
+    
+    // RESOLUTION STRATEGY: Bayesian (probabilistic integration)
+    strategy = ResolutionStrategy::Bayesian {
+        prior_belief: 0.50,  // Neutral prior
+        affirmation_weight: 0.6,  // Slightly favor positive evidence
+        contention_weight: 0.4,
+        evidence_threshold: 0.75
+    }
+    
+    print("  AFFIRMATIONS (Supporting):")
+    print("    • K_agg exceeds threshold (weight: {})", molecular_properties.weight)
+    print("    • EM coupling good (weight: {})", em_coupling.weight)
+    print("    • Clinical trials positive (weight: {})", clinical_trials.weight)
+    print("    • Kuramoto validates (weight: {})", kuramoto_simulation.weight)
+    print()
+    print("  CONTENTIONS (Challenges):")
+    print("    • Therapeutic delay (weight: {})", ssri_delay.weight)
+    print("    • Placebo effect (weight: {})", placebo_effect.weight)
+    print("    • Individual variability (weight: {})", individual_variability.weight)
+    print("    • Alternative mechanism (weight: {})", alternative_mechanism.weight)
+    print()
+    
+    // BAYESIAN INTEGRATION
+    item posterior_belief = calculate_bayesian_posterior(
+        prior: strategy.prior_belief,
+        affirmations: [molecular_properties, em_coupling, resonance_quality, 
+                      clinical_trials, kuramoto_simulation],
+        contentions: [ssri_delay, placebo_effect, individual_variability, 
+                     alternative_mechanism],
+        affirmation_weight: strategy.affirmation_weight,
+        contention_weight: strategy.contention_weight
+    )
+    
+    print("  BAYESIAN CALCULATION:")
+    print("    Prior: {}", strategy.prior_belief)
+    print("    Posterior: {}", posterior_belief)
+    print("    Evidence strength: {}", calculate_evidence_strength(posterior_belief))
+    print()
+    
+    // RESOLUTION OUTCOME
+    outcome = {
+        conclusion: if posterior_belief > 0.75:
+            "AFFIRMED: Sertraline is therapeutic via O₂ aggregation mechanism"
+        else if posterior_belief > 0.5:
+            "LIKELY: Evidence favors mechanism but with reservations"
+        else:
+            "CONTESTED: Insufficient evidence for mechanism",
+        
+        confidence: posterior_belief,
+        evidence_quality: weighted_average([
+            molecular_properties.confidence,
+            clinical_trials.confidence,
+            kuramoto_simulation.confidence
+        ]),
+        reliability: classify_reliability(posterior_belief),
+        
+        recommendations: [
+            "Measure K_agg in vivo to confirm ex vivo calculations",
+            "MEG study: Track θ-γ coupling changes week-by-week",
+            "Genetic stratification: Test CYP2D6/5-HTTLPR interaction with K_eff",
+            "Placebo-controlled: Compare oscillatory vs symptom changes"
+        ]
+    }
+    
+    print("  RESOLUTION OUTCOME:")
+    print("    Conclusion: {}", outcome.conclusion)
+    print("    Confidence: {}", outcome.confidence)
+    print("    Reliability: {}", outcome.reliability)
+    print()
+    
+    return outcome
+}
+
+// COMPARE MULTIPLE DRUGS via Resolution
+funxn compare_drug_efficacy_via_resolution(drugs: List[Drug]) -> Point {
+    print("="*60)
+    print("COMPARING MULTIPLE DRUGS VIA RESOLUTION")
+    print("="*60)
+    print()
+    
+    item drug_outcomes = []
+    
+    considering drug in drugs:
+        point drug_claim = {
+            content: "{} is therapeutic for depression".format(drug.name),
+            mechanism: drug.proposed_mechanism,
+            certainty: 0.0
+        }
+        
+        item outcome = evaluate_drug_efficacy_resolution(drug, drug_claim)
+        drug_outcomes.append((drug.name, outcome.confidence))
+        
+        print()
+    
+    // Rank by Resolution confidence
+    item ranked_drugs = sort_by_confidence(drug_outcomes)
+    
+    print("="*60)
+    print("RANKING BY RESOLUTION CONFIDENCE:")
+    print("="*60)
+    considering (drug_name, confidence) in ranked_drugs:
+        status = if confidence > 0.85:
+            "✓✓✓ STRONG"
+        else if confidence > 0.70:
+            "✓✓ GOOD"
+        else if confidence > 0.55:
+            "✓ MODERATE"
+        else:
+            "? WEAK"
+        
+        print("  {}: {} (confidence: {})", drug_name, status, confidence)
+    
+    return point {
+        content: "Drug comparison via Resolution debate",
+        rankings: ranked_drugs,
+        methodology: "Bayesian resolution with affirmations vs contentions"
+    }
+}
+
+// MAIN DEMONSTRATION
+funxn main() {
+    print("="*60)
+    print("TURBULANCE PARADIGM: Drug Efficacy as Resolution")
+    print("="*60)
+    print()
+    print("KEY INSIGHT: Therapeutic claims are contested!")
+    print("SOLUTION: Resolution = structured debate platform")
+    print()
+    
+    // Evaluate sertraline
+    item outcome = evaluate_sertraline_efficacy(sertraline_therapeutic_claim)
+    
+    print()
+    print("="*60)
+    print("WHAT WE LEARNED:")
+    print("="*60)
+    print()
+    print("✓ Resolutions integrate conflicting evidence systematically")
+    print("✓ Affirmations and contentions are weighted by quality")
+    print("✓ Bayesian integration produces probabilistic conclusions")
+    print("✓ Reliability classification (HighlyReliable, ModeratelyReliable, etc.)")
+    print("✓ Recommendations emerge from evidence gaps")
+    print()
+    print("This is how we 'compile consciousness' - through Resolution!")
+    print("Drug efficacy isn't binary - it's a probabilistic debate outcome.")
+}
+

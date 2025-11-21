@@ -1,0 +1,176 @@
+// Example 1: Representing Oscillatory States as Probabilistic Points
+// From: KWASA_KWASA_BIOLOGICAL_OSCILLATORY_COMPUTING.md
+//
+// KEY INSIGHT: Oscillatory states are inherently uncertain!
+// - H⁺ field coherence is measured, not exact
+// - Phase-locking values have confidence intervals
+// - Categorical states are probabilistic assignments
+//
+// TURBULANCE PARADIGM: Points represent uncertain semantic units
+// → Perfect for representing probabilistic oscillatory measurements!
+
+import consciousness.h_plus_field
+import consciousness.oxygen_categorical
+import consciousness.phase_locking
+
+// EXAMPLE: Measuring consciousness state as uncertain Point
+funxn measure_consciousness_state_as_point(patient_id: String) -> Point {
+    print("🧠 Measuring consciousness state for patient: {}", patient_id)
+    
+    // Each measurement is a Point (uncertain observation)
+    point h_plus_coherence = {
+        content: "H⁺ field coherence measured via MEG",
+        value: 0.67,              // Measured value
+        certainty: 0.89,          // Measurement confidence
+        evidence_strength: 0.92,  // Signal-to-noise ratio
+        source: "MEG_40THz_sampling",
+        measurement_variance: 0.03,
+        contextual_relevance: 0.95
+    }
+    
+    point oxygen_completion_rate = {
+        content: "O₂ categorical completion rate from BOLD fMRI",
+        value: 2.3,               // Hz (thoughts per second)
+        certainty: 0.76,          // Lower confidence (indirect measurement)
+        evidence_strength: 0.81,
+        source: "fMRI_BOLD_oscillations",
+        measurement_variance: 0.15,
+        contextual_relevance: 0.88
+    }
+    
+    point theta_gamma_coupling = {
+        content: "Theta-gamma phase-locking in mPFC-amygdala",
+        value: 0.34,              // PLV (phase-locking value)
+        certainty: 0.94,          // High confidence (direct measurement)
+        evidence_strength: 0.96,
+        source: "MEG_phase_coherence",
+        measurement_variance: 0.02,
+        contextual_relevance: 1.0  // Critical for depression diagnosis
+    }
+    
+    // Aggregate Points into consciousness state
+    point consciousness_state = {
+        content: "Complete oscillatory consciousness state",
+        components: [
+            h_plus_coherence,
+            oxygen_completion_rate,
+            theta_gamma_coupling
+        ],
+        certainty: calculate_aggregate_certainty([
+            h_plus_coherence.certainty,
+            oxygen_completion_rate.certainty,
+            theta_gamma_coupling.certainty
+        ]),
+        evidence_strength: weighted_average([
+            (h_plus_coherence.evidence_strength, 0.3),
+            (oxygen_completion_rate.evidence_strength, 0.2),
+            (theta_gamma_coupling.evidence_strength, 0.5)  // Most important
+        ]),
+        diagnosis: "desynchronized_state_depression"
+    }
+    
+    print("  H⁺ coherence: {} (certainty: {})", 
+          h_plus_coherence.value, h_plus_coherence.certainty)
+    print("  O₂ completion: {} Hz (certainty: {})", 
+          oxygen_completion_rate.value, oxygen_completion_rate.certainty)
+    print("  θ-γ coupling: {} (certainty: {})", 
+          theta_gamma_coupling.value, theta_gamma_coupling.certainty)
+    print("  Overall certainty: {}", consciousness_state.certainty)
+    
+    return consciousness_state
+}
+
+// EXAMPLE: Comparing consciousness states with uncertainty
+funxn compare_consciousness_states(baseline: Point, post_treatment: Point) -> Point {
+    print("📊 Comparing consciousness states...")
+    
+    // Calculate change with uncertainty propagation
+    point state_change = {
+        content: "Consciousness state improvement",
+        delta_h_plus: post_treatment.h_plus_coherence.value - baseline.h_plus_coherence.value,
+        delta_o2: post_treatment.oxygen_completion_rate.value - baseline.oxygen_completion_rate.value,
+        delta_coupling: post_treatment.theta_gamma_coupling.value - baseline.theta_gamma_coupling.value,
+        
+        // Uncertainty propagates: combined variances
+        certainty: sqrt(baseline.certainty² + post_treatment.certainty²) / sqrt(2),
+        
+        evidence_strength: min(baseline.evidence_strength, post_treatment.evidence_strength),
+        
+        clinical_significance: {
+            h_plus_improvement: calculate_significance(
+                delta_h_plus, 
+                baseline.h_plus_coherence.measurement_variance
+            ),
+            coupling_improvement: calculate_significance(
+                delta_coupling,
+                baseline.theta_gamma_coupling.measurement_variance
+            )
+        }
+    }
+    
+    print("  Δ H⁺ coherence: {} (certainty: {})", 
+          state_change.delta_h_plus, state_change.certainty)
+    print("  Δ θ-γ coupling: {} (certainty: {})", 
+          state_change.delta_coupling, state_change.certainty)
+    
+    if state_change.delta_coupling > 0.3 and state_change.certainty > 0.8:
+        print("  ✓ Clinically significant improvement detected")
+    else:
+        print("  ~ Improvement uncertain or insufficient")
+    
+    return state_change
+}
+
+// MAIN DEMONSTRATION
+funxn main() {
+    print("="*60)
+    print("TURBULANCE PARADIGM: Oscillatory States as Points")
+    print("="*60)
+    print()
+    print("KEY INSIGHT: Biological measurements are uncertain!")
+    print("SOLUTION: Represent as Points with explicit certainty")
+    print()
+    
+    // Measure baseline (depressed state)
+    item baseline_state = measure_consciousness_state_as_point("patient_001")
+    
+    print()
+    print("--- Treatment applied: Serotonin + Omega-3 for 14 days ---")
+    print()
+    
+    // Simulate post-treatment measurement
+    point post_treatment_state = {
+        content: "Post-treatment consciousness state",
+        h_plus_coherence: {
+            value: 0.82,
+            certainty: 0.91,
+            evidence_strength: 0.94
+        },
+        oxygen_completion_rate: {
+            value: 5.7,
+            certainty: 0.79,
+            evidence_strength: 0.85
+        },
+        theta_gamma_coupling: {
+            value: 0.78,
+            certainty: 0.96,
+            evidence_strength: 0.98
+        }
+    }
+    
+    // Compare with uncertainty propagation
+    item improvement = compare_consciousness_states(baseline_state, post_treatment_state)
+    
+    print()
+    print("="*60)
+    print("RESULT: Probabilistic Consciousness Measurement")
+    print("="*60)
+    print()
+    print("✓ Turbulance Points capture measurement uncertainty")
+    print("✓ Certainty propagates through computations")
+    print("✓ Evidence strength tracks signal quality")
+    print("✓ Biological reality is probabilistic, not deterministic!")
+    print()
+    print("This is how we 'compile consciousness' - as probabilistic Points!")
+}
+
