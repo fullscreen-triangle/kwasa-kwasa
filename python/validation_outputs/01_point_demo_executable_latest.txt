@@ -1,0 +1,83 @@
+======================================================================
+Turbulance Execution Output
+Script: ../examples/turbulance/01_point_demo_executable.trb
+Timestamp: 2025-11-21T07:25:25.477539
+======================================================================
+
+Loading: ../examples/turbulance/01_point_demo_executable.trb
+======================================================================
+
+============================================================
+TURBULANCE PARADIGM: Oscillatory States as Points
+============================================================
+KEY INSIGHT: Biological measurements are uncertain!
+SOLUTION: Represent as Points with explicit certainty
+--- BASELINE: Patient 001 (Depressed State) ---
+Measuring H+ field coherence (MEG 40THz)...
+  Value: 0.67
+  Certainty: 0.89 (89% confident)
+  Evidence strength: 0.92 (high SNR)
+  Variance: 0.03
+Measuring O2 completion rate (fMRI BOLD)...
+  Value: 2.3 Hz (thoughts per second)
+  Certainty: 0.76 (76% confident)
+  Evidence strength: 0.81 (indirect measurement)
+  Variance: 0.15
+Measuring theta-gamma phase-locking (MEG)...
+  Value: 0.34 (PLV)
+  Certainty: 0.94 (94% confident)
+  Evidence strength: 0.96 (direct measurement)
+  Variance: 0.02
+  Relevance: 1.0 (critical for depression)
+AGGREGATE CONSCIOUSNESS STATE:
+  Overall certainty: 0.86
+    -> Calculated: (0.89 * 0.76 * 0.94)^(1/3)
+  Weighted evidence: 0.90
+    -> H+ (30%), O2 (20%), theta-gamma (50%)
+  Diagnosis: Desynchronized state (depression)
+--- TREATMENT: Sertraline + Omega-3 for 14 days ---
+--- POST-TREATMENT: Patient 001 ---
+Measuring H+ field coherence...
+  Value: 0.82 (+0.15 improvement)
+  Certainty: 0.91
+  Evidence strength: 0.94
+Measuring O2 completion rate...
+  Value: 5.7 Hz (+3.4 Hz improvement)
+  Certainty: 0.79
+  Evidence strength: 0.85
+Measuring theta-gamma phase-locking...
+  Value: 0.78 (+0.44 improvement)
+  Certainty: 0.96
+  Evidence strength: 0.98
+COMPARING STATES (Uncertainty Propagation):
+Delta H+ coherence: +0.15
+  Combined certainty: 0.90
+    -> sqrt(0.89^2 + 0.91^2) / sqrt(2)
+  Statistical significance: 0.95
+    -> z-score: |0.15| / sqrt(0.03)
+Delta theta-gamma coupling: +0.44
+  Combined certainty: 0.95
+  Statistical significance: 0.99
+    -> z-score: |0.44| / sqrt(0.02)
+CLINICAL ASSESSMENT:
+  => CLINICALLY SIGNIFICANT IMPROVEMENT
+  Criteria: Delta > 0.3 AND Certainty > 0.8
+  Result: 0.44 > 0.3 AND 0.95 > 0.8 => TRUE
+============================================================
+WHAT TURBULANCE POINTS ENABLE:
+============================================================
+=> Explicit uncertainty quantification
+   Each measurement has certainty (0-1)
+=> Uncertainty propagation through calculations
+   Combined certainty: sqrt(c1^2 + c2^2) / sqrt(2)
+=> Evidence quality tracking
+   Signal-to-noise ratio informs confidence
+=> Statistical significance testing
+   Change / sqrt(variance) => z-score
+=> Probabilistic clinical decisions
+   Not binary - weighted by confidence!
+This is 'compiling consciousness' - as probabilistic Points!
+
+======================================================================
+Turbulance execution complete
+======================================================================

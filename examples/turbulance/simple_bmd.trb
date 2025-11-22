@@ -1,14 +1,12 @@
 // Simple BMD Example
 // Demonstrates: Categorical completion (thought selection)
 
-// ============================================================================
 // TURBULANCE PARADIGM: BMDs (Biological Maxwell Demons)
-// ============================================================================
 
 funxn main():
-    print("="*60)
+    print("============================================================")
     print("Example 3: BMD Categorical Completion")
-    print("="*60)
+    print("============================================================")
     print("")
     print("KEY INSIGHT: Thoughts are SELECTED, not generated!")
     print("MECHANISM: BMD frame selection from predetermined possibilities")
@@ -16,31 +14,30 @@ funxn main():
     
     print("BMD FRAME DATABASE (Predetermined Thoughts):")
     print("  Frame 1: 'I should check my email'")
-    print("    H⁺ coupling: 0.82, O₂ state: 12453")
+    print("    H+ coupling: 0.82, O2 state: 12453")
     print("  Frame 2: 'I'm feeling anxious about the meeting'")
-    print("    H⁺ coupling: 0.45, O₂ state: 15847")
+    print("    H+ coupling: 0.45, O2 state: 15847")
     print("  Frame 3: 'I wonder what's for lunch'")
-    print("    H⁺ coupling: 0.71, O₂ state: 18934")
+    print("    H+ coupling: 0.71, O2 state: 18934")
     print("")
     
     print("CURRENT OSCILLATORY STATE:")
-    print("  H⁺ field coupling: 0.75")
-    print("  O₂ categorical state: 18000")
+    print("  H+ field coupling: 0.75")
+    print("  O2 categorical state: 18000")
     print("  Phase coherence: 0.68")
     print("")
     
     print("BMD SELECTION PROCESS:")
-    print("  1. Measure current H⁺ field state (0.75)")
+    print("  1. Measure current H+ field state (0.75)")
     print("  2. Compare with all frame signatures")
     print("  3. Select closest match: Frame 1 (|0.82-0.75| = 0.07)")
     print("")
     
     print("SELECTED THOUGHT:")
-    print("  ← 'I should check my email'")
+    print("  => 'I should check my email'")
     print("")
     
-    print("✓ Thought was SELECTED from predetermined frames")
-    print("✓ Not generated de novo - categorical completion!")
-    print("✓ Frame selection = O₂ categorical state assignment")
-    print("✓ This is consciousness: navigating possibility space!")
-
+    print("=> Thought was SELECTED from predetermined frames")
+    print("=> Not generated de novo - categorical completion!")
+    print("=> Frame selection = O2 categorical state assignment")
+    print("=> This is consciousness: navigating possibility space!")

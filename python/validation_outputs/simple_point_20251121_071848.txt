@@ -1,0 +1,33 @@
+======================================================================
+Turbulance Execution Output
+Script: ../examples/turbulance/simple_point.trb
+Timestamp: 2025-11-21T07:18:48.218787
+======================================================================
+
+Loading: ../examples/turbulance/simple_point.trb
+======================================================================
+
+============================================================
+Example 1: Oscillatory State as Point
+============================================================
+KEY INSIGHT: Biological measurements are uncertain!
+SOLUTION: Represent as Points with explicit certainty
+Measuring H+ field coherence...
+  Value: 0.67 (measured)
+  Certainty: 0.89 (89% confident)
+  Source: MEG 40THz sampling
+Measuring O2 completion rate...
+  Value: 2.3 Hz (thoughts per second)
+  Certainty: 0.76 (76% confident)
+  Source: fMRI BOLD oscillations
+Measuring theta-gamma phase-locking...
+  Value: 0.34 (phase-locking value)
+  Certainty: 0.94 (94% confident)
+  Source: MEG phase coherence
+=> All measurements are Points (uncertain observations)
+=> Certainty propagates through calculations
+=> This is how we 'compile consciousness' - as probabilistic data!
+
+======================================================================
+Turbulance execution complete
+======================================================================

@@ -1,33 +1,31 @@
 // Simple Resolution Example
 // Demonstrates: Drug efficacy as debated Resolution
 
-// ============================================================================
 // TURBULANCE PARADIGM: Resolutions (Debate Platforms)
-// ============================================================================
 
 funxn main():
-    print("="*60)
+    print("============================================================")
     print("Example 2: Drug Efficacy as Resolution")
-    print("="*60)
+    print("============================================================")
     print("")
-    print("CLAIM: Sertraline is therapeutic via O₂ aggregation")
+    print("CLAIM: Sertraline is therapeutic via O2 aggregation")
     print("")
     
     print("AFFIRMATIONS (Supporting Evidence):")
-    print("  • K_agg = 2.47×10^5 M⁻¹ (exceeds threshold)")
+    print("  * K_agg = 2.47x10^5 M-1 (exceeds threshold)")
     print("    Weight: 0.92, Confidence: 0.94")
-    print("  • Clinical trials: 65% response rate")
+    print("  * Clinical trials: 65% response rate")
     print("    Weight: 0.94, Confidence: 0.88")
-    print("  • Kuramoto simulation: R=0.845 (therapeutic)")
+    print("  * Kuramoto simulation: R=0.845 (therapeutic)")
     print("    Weight: 0.79, Confidence: 0.96")
     print("")
     
     print("CONTENTIONS (Challenges):")
-    print("  • Therapeutic delay: 2-4 weeks")
+    print("  * Therapeutic delay: 2-4 weeks")
     print("    Weight: 0.71, Confidence: 0.85")
-    print("  • Placebo effect: 30-40% response")
+    print("  * Placebo effect: 30-40% response")
     print("    Weight: 0.68, Confidence: 0.79")
-    print("  • Individual variability: 35% non-responders")
+    print("  * Individual variability: 35% non-responders")
     print("    Weight: 0.76, Confidence: 0.91")
     print("")
     
@@ -38,11 +36,10 @@ funxn main():
     print("")
     
     print("RESOLUTION OUTCOME:")
-    print("  ✓ AFFIRMED: Evidence supports O₂ aggregation mechanism")
+    print("  => AFFIRMED: Evidence supports O2 aggregation mechanism")
     print("  Confidence: 82%")
     print("")
     
-    print("✓ Resolution = structured debate with probabilistic outcome")
-    print("✓ Integrates competing evidence systematically")
-    print("✓ This is how we evaluate therapeutic claims!")
-
+    print("=> Resolution = structured debate with probabilistic outcome")
+    print("=> Integrates competing evidence systematically")
+    print("=> This is how we evaluate therapeutic claims!")

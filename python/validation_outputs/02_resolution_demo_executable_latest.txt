@@ -1,0 +1,141 @@
+======================================================================
+Turbulance Execution Output
+Script: ../examples/turbulance/02_resolution_demo_executable.trb
+Timestamp: 2025-11-21T07:25:58.693253
+======================================================================
+
+Loading: ../examples/turbulance/02_resolution_demo_executable.trb
+======================================================================
+
+============================================================
+TURBULANCE PARADIGM: Drug Efficacy as Resolution
+============================================================
+CLAIM: Sertraline is therapeutic via O2 aggregation
+KEY INSIGHT: Therapeutic claims are CONTESTED!
+SOLUTION: Resolution = structured debate platform
+--- AFFIRMATIONS (Supporting Evidence) ---
+[1] Molecular Properties
+    Content: K_agg = 2.47x10^5 M-1 (exceeds 10^4 threshold)
+    Weight: 0.92
+    Source: Quantum chemistry DFT calculation
+    Confidence: 0.94
+    Relevance: 1.0 (directly tests mechanism)
+[2] EM Coupling
+    Content: EM coupling strength = 0.74 (good)
+    Weight: 0.87
+    Source: Paramagnetic susceptibility measurement
+    Confidence: 0.89
+    Relevance: 0.95
+[3] Resonance Quality
+    Content: Resonance Q = 1.38 (good O2 frequency match)
+    Weight: 0.85
+    Source: Vibrational spectroscopy
+    Confidence: 0.91
+    Relevance: 0.88
+[4] Clinical Trials
+    Content: Meta-analysis shows 65% response rate in MDD
+    Weight: 0.94
+    Source: STAR*D clinical trial (n=4000)
+    Confidence: 0.88
+    Relevance: 1.0 (direct therapeutic endpoint)
+[5] Kuramoto Simulation
+    Content: K=0.70 -> R=0.845 (exceeds therapeutic R>0.7)
+    Weight: 0.79
+    Source: Computational validation
+    Confidence: 0.96 (high for computational)
+    Relevance: 0.82 (indirect - simulation)
+--- CONTENTIONS (Challenges) ---
+[1] Therapeutic Delay
+    Content: Effect takes 2-4 weeks (not immediate)
+    Weight: 0.71
+    Challenge: If direct O2 aggregation, why delay?
+    Alternative: Neuroplastic remodeling takes time
+    Confidence: 0.85
+[2] Placebo Effect
+    Content: 30-40% placebo response in depression trials
+    Weight: 0.68
+    Challenge: Some efficacy may not be drug-specific
+    Alternative: Oscillatory coherence can be observer-guided
+    Confidence: 0.79
+[3] Individual Variability
+    Content: 35% of patients don't respond to sertraline
+    Weight: 0.76
+    Challenge: Universal mechanism should have universal response
+    Alternative: Genetic polymorphisms (CYP2D6, 5-HTTLPR)
+    Confidence: 0.91
+[4] Alternative Mechanism
+    Content: May work via neurogenesis, not phase-locking
+    Weight: 0.63
+    Challenge: Neurogenesis observed in animal models
+    Alternative: Neurogenesis secondary to phase-locking
+    Confidence: 0.72
+--- BAYESIAN INTEGRATION ---
+Resolution Strategy: Bayesian
+  Prior belief: 0.50 (neutral)
+  Affirmation weight: 0.60
+  Contention weight: 0.40
+  Evidence threshold: 0.75
+Calculating posterior probability...
+Step 1: Affirmation likelihood
+  L_aff = product of (1 + w_i * c_i * r_i * 0.6)
+  L_aff = (1 + 0.92*0.94*1.0*0.6)
+        * (1 + 0.87*0.89*0.95*0.6)
+        * (1 + 0.85*0.91*0.88*0.6)
+        * (1 + 0.94*0.88*1.0*0.6)
+        * (1 + 0.79*0.96*0.82*0.6)
+  L_aff = 1.52 * 1.43 * 1.40 * 1.50 * 1.37
+  L_aff = 6.21
+Step 2: Contention likelihood
+  L_cont = product of (1 - w_i * c_i * 0.5 * 0.4)
+  L_cont = (1 - 0.71*0.85*0.5*0.4)
+         * (1 - 0.68*0.79*0.5*0.4)
+         * (1 - 0.76*0.91*0.5*0.4)
+         * (1 - 0.63*0.72*0.5*0.4)
+  L_cont = 0.88 * 0.89 * 0.86 * 0.91
+  L_cont = 0.61
+Step 3: Posterior calculation
+  Numerator = Prior * L_aff * L_cont
+  Numerator = 0.50 * 6.21 * 0.61
+  Numerator = 1.89
+  Denominator = Numerator + (1 - Prior)
+  Denominator = 1.89 + 0.50
+  Denominator = 2.39
+  Posterior = Numerator / Denominator
+  Posterior = 1.89 / 2.39
+  Posterior = 0.79
+Evidence strength: |0.79 - 0.50| * 2 = 0.58
+Reliability: ModeratelyReliable (0.75 < 0.79 < 0.90)
+--- RESOLUTION OUTCOME ---
+Posterior: 0.79
+Threshold check: 0.79 > 0.75 => TRUE
+CONCLUSION:
+  => AFFIRMED: Sertraline is therapeutic via O2 aggregation
+Confidence: 79%
+Evidence quality: 0.91 (high)
+Reliability: ModeratelyReliable
+RECOMMENDATIONS:
+  1. Measure K_agg in vivo (confirm ex vivo calculations)
+  2. MEG study: Track theta-gamma coupling week-by-week
+  3. Genetic stratification: CYP2D6/5-HTTLPR interaction
+  4. Placebo-controlled: Compare oscillatory vs symptom changes
+============================================================
+WHAT TURBULANCE RESOLUTIONS ENABLE:
+============================================================
+=> Structured debate with affirmations vs contentions
+   Not binary accept/reject!
+=> Weighted evidence integration
+   Weight * Confidence * Relevance
+=> Bayesian probabilistic conclusions
+   Prior -> Posterior via evidence
+=> Reliability classification
+   HighlyReliable, ModeratelyReliable, RequiresReview
+=> Actionable recommendations
+   Emerge from evidence gaps
+=> Transparent reasoning
+   Show all evidence, show all calculations
+This is 'compiling consciousness' - through Resolution!
+Drug efficacy is not binary - it's a probabilistic debate!
+
+======================================================================
+Turbulance execution complete
+======================================================================

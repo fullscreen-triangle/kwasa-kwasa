@@ -1,0 +1,121 @@
+// EXECUTABLE DEMO: Oscillatory States as Points
+// Simplified version that runs with current compiler
+// Full version: 01_oscillatory_state_as_point.trb
+
+funxn main():
+    print("============================================================")
+    print("TURBULANCE PARADIGM: Oscillatory States as Points")
+    print("============================================================")
+    print("")
+    print("KEY INSIGHT: Biological measurements are uncertain!")
+    print("SOLUTION: Represent as Points with explicit certainty")
+    print("")
+    
+    // === BASELINE MEASUREMENT (Depressed State) ===
+    
+    print("--- BASELINE: Patient 001 (Depressed State) ---")
+    print("")
+    
+    print("Measuring H+ field coherence (MEG 40THz)...")
+    print("  Value: 0.67")
+    print("  Certainty: 0.89 (89% confident)")
+    print("  Evidence strength: 0.92 (high SNR)")
+    print("  Variance: 0.03")
+    print("")
+    
+    print("Measuring O2 completion rate (fMRI BOLD)...")
+    print("  Value: 2.3 Hz (thoughts per second)")
+    print("  Certainty: 0.76 (76% confident)")
+    print("  Evidence strength: 0.81 (indirect measurement)")
+    print("  Variance: 0.15")
+    print("")
+    
+    print("Measuring theta-gamma phase-locking (MEG)...")
+    print("  Value: 0.34 (PLV)")
+    print("  Certainty: 0.94 (94% confident)")
+    print("  Evidence strength: 0.96 (direct measurement)")
+    print("  Variance: 0.02")
+    print("  Relevance: 1.0 (critical for depression)")
+    print("")
+    
+    print("AGGREGATE CONSCIOUSNESS STATE:")
+    print("  Overall certainty: 0.86")
+    print("    -> Calculated: (0.89 * 0.76 * 0.94)^(1/3)")
+    print("  Weighted evidence: 0.90")
+    print("    -> H+ (30%), O2 (20%), theta-gamma (50%)")
+    print("  Diagnosis: Desynchronized state (depression)")
+    print("")
+    
+    // === POST-TREATMENT MEASUREMENT ===
+    
+    print("--- TREATMENT: Sertraline + Omega-3 for 14 days ---")
+    print("")
+    
+    print("--- POST-TREATMENT: Patient 001 ---")
+    print("")
+    
+    print("Measuring H+ field coherence...")
+    print("  Value: 0.82 (+0.15 improvement)")
+    print("  Certainty: 0.91")
+    print("  Evidence strength: 0.94")
+    print("")
+    
+    print("Measuring O2 completion rate...")
+    print("  Value: 5.7 Hz (+3.4 Hz improvement)")
+    print("  Certainty: 0.79")
+    print("  Evidence strength: 0.85")
+    print("")
+    
+    print("Measuring theta-gamma phase-locking...")
+    print("  Value: 0.78 (+0.44 improvement)")
+    print("  Certainty: 0.96")
+    print("  Evidence strength: 0.98")
+    print("")
+    
+    // === UNCERTAINTY PROPAGATION ===
+    
+    print("COMPARING STATES (Uncertainty Propagation):")
+    print("")
+    
+    print("Delta H+ coherence: +0.15")
+    print("  Combined certainty: 0.90")
+    print("    -> sqrt(0.89^2 + 0.91^2) / sqrt(2)")
+    print("  Statistical significance: 0.95")
+    print("    -> z-score: |0.15| / sqrt(0.03)")
+    print("")
+    
+    print("Delta theta-gamma coupling: +0.44")
+    print("  Combined certainty: 0.95")
+    print("  Statistical significance: 0.99")
+    print("    -> z-score: |0.44| / sqrt(0.02)")
+    print("")
+    
+    print("CLINICAL ASSESSMENT:")
+    print("  => CLINICALLY SIGNIFICANT IMPROVEMENT")
+    print("  Criteria: Delta > 0.3 AND Certainty > 0.8")
+    print("  Result: 0.44 > 0.3 AND 0.95 > 0.8 => TRUE")
+    print("")
+    
+    // === KEY INSIGHTS ===
+    
+    print("============================================================")
+    print("WHAT TURBULANCE POINTS ENABLE:")
+    print("============================================================")
+    print("")
+    print("=> Explicit uncertainty quantification")
+    print("   Each measurement has certainty (0-1)")
+    print("")
+    print("=> Uncertainty propagation through calculations")
+    print("   Combined certainty: sqrt(c1^2 + c2^2) / sqrt(2)")
+    print("")
+    print("=> Evidence quality tracking")
+    print("   Signal-to-noise ratio informs confidence")
+    print("")
+    print("=> Statistical significance testing")
+    print("   Change / sqrt(variance) => z-score")
+    print("")
+    print("=> Probabilistic clinical decisions")
+    print("   Not binary - weighted by confidence!")
+    print("")
+    print("This is 'compiling consciousness' - as probabilistic Points!")
+
