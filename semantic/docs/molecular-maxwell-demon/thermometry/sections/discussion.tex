@@ -1,0 +1,158 @@
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{Principal Achievements}
+
+This work establishes a non-invasive thermometry protocol achieving a temperature resolution of \(\Delta T \sim 17\) pK through categorical state measurement. The key enabling principles are:
+
+\begin{enumerate}
+\item \textbf{Information-Based Measurement}: Temperature inferred from categorical state \(\mathcal{C}(t)\) encoding the momentum distribution, rather than direct kinetic energy measurement. This bypasses quantum backaction constraints.
+
+\item \textbf{Trans-Planckian Precision}: H\(^+\) oscillator timing at 71 THz provides energy resolution \(\Delta E \sim 10^{-34}\) J, \(\sim 10^4\times\) better than the photon recoil limit.
+
+\item \textbf{Zero Energy Input}: Far-detuned optical coupling to a virtual spectrometer introduces heating \(\Delta T < 1\) fK per second—negligible for measurement times \(\sim\) milliseconds.
+
+\item \textbf{Real-Time Monitoring}: Non-destructive measurement enables continuous temperature tracking during cooling, allowing for adaptive protocol optimization.
+\end{enumerate}
+
+These capabilities transform temperature measurement in the ultra-cold regime from a crude diagnostic (\(\Delta T / T \sim 1\%\)) into a precision tool (\(\Delta T / T \sim 10^{-7}\)).
+
+\subsection{Comparison with Existing Methods}
+
+\subsubsection{Time-of-Flight Imaging}
+
+\textbf{Conventional Approach:} Release atoms from the trap, image after ballistic expansion, and fit the cloud size to extract temperature.
+
+\textbf{Advantages:}
+\begin{itemize}
+\item Well-established technique with decades of development
+\item Works for wide temperature range (nK to mK)
+\item Simple theoretical interpretation
+\end{itemize}
+
+\textbf{Limitations:}
+\begin{itemize}
+\item Destructive: Sample lost after measurement
+\item Accuracy: \(\Delta T / T \sim 1\)--5\%
+\item Slow: Requires \(t_{\text{TOF}} \sim\) 10–100 ms plus imaging
+\item Systematic errors from residual fields during expansion
+\end{itemize}
+
+\textbf{Categorical Improvement:}
+\begin{itemize}
+\item Non-destructive: Enables repeated measurements
+\item Accuracy: \(\Delta T / T \sim 10^{-7}\) (\(10^5\times\) better)
+\item Fast: Limited by integration time (\(\sim 1\) ms)
+\item No free expansion: Immune to systematic field effects
+\end{itemize}
+
+\subsubsection{In-Situ Absorption Imaging}
+
+\textbf{Conventional Approach:} A resonant probe beam measures optical density, and fitting to the thermal distribution yields temperature.
+
+\textbf{Advantages:}
+\begin{itemize}
+\item Non-destructive (in principle)
+\item Provides spatial information
+\item Faster than time-of-flight
+\end{itemize}
+
+\textbf{Limitations:}
+\begin{itemize}
+\item Photon scattering heats the sample: \(\Delta T \sim 100\) nK per image
+\item Requires careful calibration of the imaging system
+\item Difficult at very low \(T\) levels where the optical density is small
+\item Probe light perturbs quantum states
+\end{itemize}
+
+\textbf{Categorical Improvement:}
+\begin{itemize}
+\item Truly non-invasive: \(\Delta T < 1\) femtoK per measurement
+\item No calibration of the absorption cross-section is needed
+\item Works down to picokelvin regime
+\item Far-detuned light preserves quantum coherence
+\end{itemize}
+
+\subsubsection{Thermometry via Spectroscopy}
+
+\textbf{Conventional Approach:} Measure spectral linewidth (Doppler or motional sidebands), extract temperature from width.
+
+\textbf{Advantages:}
+\begin{itemize}
+\item Non-destructive for weak spectroscopy
+\item High precision possible for narrow lines
+\item Direct access to the velocity distribution
+\end{itemize}
+
+\textbf{Limitations:}
+\begin{itemize}
+\item Requires resolved sidebands: \(\omega_{\text{trap}} > \Gamma_{\text{line}}\)
+\item AC Stark shifts from probe light introduce systematic errors
+\item Limited to specific atomic species/transitions
+\item Heating from spectroscopy light
+\end{itemize}
+
+\textbf{Categorical Improvement:}
+\begin{itemize}
+\item No sideband resolution requirement
+\item No light-shift systematics (far-detuned)
+\item Universal: Works for any atomic species
+\item Negligible heating
+\end{itemize}
+
+\subsection{Experimental Validation Strategy}
+
+\subsubsection{Phase 1: Calibration Against Known Methods}
+
+\textbf{Setup:} Rb-87 BEC at \(T \sim 100\) nK, well-characterised by time-of-flight.
+
+\textbf{Protocol:}
+\begin{enumerate}
+\item Measure \(T_{\text{TOF}}\) using standard imaging
+\item Immediately prepare identical sample
+\item Measure \(T_{\text{cat}}\) using categorical thermometry
+\item Compare: \(|T_{\text{cat}} - T_{\text{TOF}}| / T_{\text{TOF}} < 0.01\)
+\end{enumerate}
+
+\textbf{Goal:} Establish the accuracy of the categorical method in a regime accessible to conventional techniques.
+
+\subsubsection{Phase 2: Sub-Recoil Regime Demonstration}
+
+\textbf{Setup:} Apply Raman sideband cooling to reach \(T < T_{\text{recoil}} = 273\) nK (regime where optical thermometry fails).
+
+\textbf{Protocol:}
+\begin{enumerate}
+\item Cool to \(T \approx 50\) nK (verified by sideband occupations)
+\item Monitor \(S_e(t)\) continuously during cooling
+\item Extract \(T_{\text{cat}}(t)\) from categorical coordinates
+\item Verify \(T_{\text{cat}}\) consistent with sideband cooling theory
+\end{enumerate}
+
+\textbf{Goal:} Demonstrate categorical thermometry in regime inaccessible to standard methods.
+
+\subsubsection{Phase 3: Real-Time Cooling Optimization}
+
+\textbf{Setup:} Evaporative cooling with adaptive protocol based on categorical feedback.
+
+\textbf{Protocol:}
+\begin{enumerate}
+\item Define target temperature \(T_{\text{target}} = 10\) nK
+\item Implement feedback loop: Adjust evaporation parameters to minimize \(\tau_{\text{cool}}\) while reaching \(T_{\text{target}}\)
+\item Compare with fixed-parameter evaporation
+\end{enumerate}
+
+\textbf{Goal:} Demonstrate the practical advantages of real-time temperature monitoring.
+
+\subsubsection{Phase 4: Picokelvin Resolution}
+
+\textbf{Setup:} Optical lattice clock atoms (Sr, Yb) cooled to sub-nanokelvin in 3D lattice.
+
+\textbf{Protocol:}
+\begin{enumerate}
+\item Apply final stage cooling to reach \(T \sim 100\) pK (theoretically)
+\item Measure \(T_{\text{cat}}\) with maximum integration time (\(\sim 1\) s)
+\item Achieve \(\Delta T < 20\) pK resolution
+\item Verify the stability of the picokelvin state over time
+\end{enumerate}
+
+\textbf{Goal:} Push categorical thermometry to fundamental limits, accessing previously unmeasurable regime.

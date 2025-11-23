@@ -1,0 +1,93 @@
+\section{Two-Station Experimental Architecture}
+\label{sec:architecture}
+
+\subsection{Station Configuration}
+
+Each interferometric station comprises:
+
+\subsubsection{Virtual Spectrometer Module}
+\begin{itemize}
+\item \textbf{LED Source Array}: Modulated at CPU frequency (\(f_{\text{CPU}} = 16.1\) MHz) for hardware synchronisation
+\item \textbf{Sample Chamber}: Contains H\(^+\) ions (e.g., HCl solution at a controlled pH)
+\item \textbf{Photodetector}: Silicon-based detector responsive across 300–1100 nm
+\item \textbf{Data Acquisition}: 16-bit ADC at a minimum sampling rate of 1 MS/s
+\end{itemize}
+
+\subsubsection{Astronomical Input Coupler}
+\begin{itemize}
+\item \textbf{Telescope}: Refractive or reflective optics directing astronomical light into the sample chamber
+\item \textbf{Aperture}: \(D_{\text{tel}} \sim\) 10–100 cm determines photon collection efficiency
+\item \textbf{Spectral Filter}: Optional wavelength selection for single-band operation
+\end{itemize}
+
+\subsubsection{Categorical Encoder/Decoder}
+\begin{itemize}
+\item \textbf{State Extraction}: Software algorithm mapping photodetector time series to categorical coordinates \(\mathbf{S}(t)\)
+\item \textbf{Prediction Engine}: Implements categorical state prediction \cite{author2024prediction} for station-to-station state transfer
+\item \textbf{Correlation Module}: Computes the categorical visibility function
+\end{itemize}
+
+\subsection{Baseline Geometry}
+
+For source direction \(\mathbf{s}\) and baseline vector \(\mathbf{D} = \mathbf{r}_B - \mathbf{r}_A\), the geometric delay is:
+\begin{equation}
+\tau_g = \frac{\mathbf{D} \cdot \mathbf{s}}{c}
+\end{equation}
+
+In conventional interferometry, signals must be delayed by \(\tau_g\) before correlation. In categorical interferometry, the categorical state prediction includes the geometric phase:
+\begin{equation}
+\mathcal{C}_A(t) \to \mathcal{C}'_A(t + \tau_g) \quad \text{through categorical transform}
+\end{equation}
+
+This compensation occurs in software through the categorical prediction algorithm, not through physical delay lines.
+
+\subsection{Synchronization Protocol}
+
+\textbf{Initial Alignment}: Both stations begin observations at GPS-synchronised time \(t_0\) (precision \(\sim 10\) ns, sufficient for initial alignment).
+
+\textbf{Categorical Lock}: CPU clocks at both stations couple to H\(^+\) oscillators, establishing categorical synchronisation through hardware-molecular coupling \cite{author2024hardware}. The coupling equation:
+\begin{equation}
+\frac{d\mathcal{C}}{dt} = -i\omega_{\text{H}^+}\mathcal{C} + g_{\text{CPU}} e^{-2\pi i f_{\text{CPU}} t}
+\end{equation}
+where \(g_{\text{CPU}}\) is the coupling strength. Since both CPUs operate at an identical nominal frequency (locked to the same crystal oscillator specification), categorical states synchronise.
+
+\textbf{Maintenance}: Once established, categorical synchronisation persists indefinitely (limited only by hardware stability, not fundamental decoherence).
+
+\subsection{Data Flow}
+
+\begin{enumerate}
+\item \textbf{Observation Phase} (duration \(\tau_{\text{obs}}\)):
+   \begin{itemize}
+   \item Both stations record photodetector time series: \(I_A(t)\), \(I_B(t)\)
+   \item Extract categorical states: \(\mathcal{C}_A(t)\), \(\mathcal{C}_B(t)\)
+   \end{itemize}
+
+\item \textbf{Categorical Transfer} (duration \(\tau_{\text{trans}} = |\mathbf{D}|/v_{\text{cat}}\)):
+   \begin{itemize}
+   \item Station A transmits categorical state representation to station B
+   \item For \(|\mathbf{D}| = 1000\) km and \(v_{\text{cat}} = 10c\): \(\tau_{\text{trans}} = 0.33\) ms
+   \end{itemize}
+
+\item \textbf{Correlation} (real-time):
+   \begin{itemize}
+   \item Station B computes: \(\Gamma(\tau) = \langle \mathcal{C}_A(t) \mathcal{C}_B^*(t+\tau) \rangle\)
+   \item Extract fringe visibility: \(|V| = \max_{\tau} |\Gamma(\tau)|/|\Gamma(0)|\)
+   \item Determine the source position from the fringe phase
+   \end{itemize}
+\end{enumerate}
+
+Total latency: \(\tau_{\text{total}} = \tau_{\text{obs}} + \tau_{\text{trans}} + \tau_{\text{comp}} \sim \tau_{\text{obs}}\) (observation-limited, not correlation-limited).
+
+\subsection{Network Generalization}
+
+Extension to \(N\) stations follows standard aperture synthesis \cite{thompson2017interferometry}. With \(N\) stations, there are \(N(N-1)/2\) independent baselines. Each baseline \(ij\) measures visibility:
+\begin{equation}
+V_{ij}(\mathbf{u}_{ij}) = \int I(\mathbf{s}) e^{2\pi i \mathbf{u}_{ij} \cdot \mathbf{s}} d\mathbf{s}
+\end{equation}
+where \(\mathbf{u}_{ij} = (\mathbf{r}_i - \mathbf{r}_j)/\lambda\).
+
+Categorical correlation enables all \(N(N-1)/2\) baselines to be correlated in parallel (each station predicts its state to all others simultaneously), providing complete \(uv\)-coverage in time:
+\begin{equation}
+t_{\text{synthesis}} = \tau_{\text{obs}} + \max_{ij} \tau_{\text{trans},ij}
+\end{equation}
+significantly faster than sequential correlation in traditional VLBI.

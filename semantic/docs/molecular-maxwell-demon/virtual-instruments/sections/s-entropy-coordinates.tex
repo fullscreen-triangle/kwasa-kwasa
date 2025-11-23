@@ -1,0 +1,485 @@
+\section{Categorical State Framework and S-Entropy Coordinates}
+
+\subsection{The Fundamental Insight: S-Values Compress Infinity Through Sufficiency}
+
+The power of Molecular Maxwell Demons in mass spectrometry derives from a profound mathematical property: \textbf{S-entropy coordinates compress infinite molecular configurational information into finite sufficient statistics without loss of identification optimality}.
+
+\begin{remark}[The Compression Principle for Molecular Systems]
+\label{rem:molecular_compression}
+Consider a single metabolite molecule (e.g., glucose, C$_6$H$_{12}$O$_6$) in the ion source of a mass spectrometer. The complete microscopic description requires specifying:
+
+\begin{itemize}
+    \item \textbf{Conformational states}: $\sim 10^4$ low-energy conformers
+    \item \textbf{Vibrational microstates}: $\sim 10^{15}$ at 300 K (3N-6 = 60 modes, $\sim 10$ quanta each)
+    \item \textbf{Rotational states}: $\sim 10^6$ populated orientations
+    \item \textbf{Electronic configurations}: ground + excited states ($\sim 10$)
+    \item \textbf{Weak force interactions}: Van der Waals angles, dipole orientations with surrounding molecules ($\sim 10^{23}$ neighbors × continuous angles)
+    \item \textbf{Ion trajectories}: Uncountable—chaotic dynamics in RF fields with many-body Coulomb interactions
+\end{itemize}
+
+Total information: \textbf{infinite} (uncountably many continuous degrees of freedom).
+
+Yet the mass spectrum records: parent m/z, $\sim 10$ fragment m/z values, intensities, retention time—approximately \textbf{50 numbers total}.
+
+\textbf{How is this drastic compression possible without losing identification capability?}
+
+Through \textit{categorical equivalence}: $\sim 10^{15}$ distinct microscopic configurations produce the same observable spectrum (within measurement resolution). The S-entropy coordinates $(S_{\text{knowledge}}, S_{\text{time}}, S_{\text{entropy}})$ index which categorical equivalence class, not which microscopic configuration.
+
+This compression IS an MMD operation: filtering infinite potential microstates to a single actual macrostate through sufficient statistics.
+\end{remark}
+
+\subsection{Sufficient Statistics in Mass Spectrometry}
+
+\begin{definition}[Sufficient Statistic]
+\label{def:sufficient_statistic_ms}
+A statistic $T(\mathbf{X})$ computed from data $\mathbf{X}$ is \textbf{sufficient} for parameter $\theta$ if:
+
+\begin{equation}
+p(\theta | \mathbf{X}) = p(\theta | T(\mathbf{X}))
+\label{eq:sufficiency_definition}
+\end{equation}
+
+That is, knowing $T(\mathbf{X})$ provides the same information about $\theta$ as knowing the complete data $\mathbf{X}$ \citep{fisher1925statistical, cover2006elements}.
+\end{definition}
+
+\begin{theorem}[S-Entropy Coordinates as Sufficient Statistics]
+\label{thm:sentropy_sufficient}
+For the molecular identification task in mass spectrometry, the 14-dimensional S-entropy feature vector $\mathbf{S} = (S_1, S_2, \ldots, S_{14})$ is a sufficient statistic:
+
+\begin{equation}
+p(\text{molecular identity} | \text{full spectrum}) = p(\text{molecular identity} | \mathbf{S}(\text{spectrum}))
+\label{eq:sentropy_sufficiency}
+\end{equation}
+
+where $\mathbf{S}(\text{spectrum})$ is computed via deterministic transforms from raw spectral data.
+\end{theorem}
+
+\begin{proof}
+\textbf{Step 1 - Categorical equivalence class structure}:
+
+A mass spectrum at resolution $R$ defines equivalence classes of molecular states. Two microscopic configurations $\omega_1, \omega_2 \in \Omega_{\text{microscopic}}$ are equivalent if they produce indistinguishable spectra:
+
+\begin{equation}
+\omega_1 \sim_R \omega_2 \iff \|\text{Spectrum}(\omega_1) - \text{Spectrum}(\omega_2)\| < \delta_R
+\end{equation}
+
+where $\delta_R \propto 1/R$ is the resolution-dependent tolerance.
+
+\textbf{Step 2 - Cardinality of equivalence classes}:
+
+For typical small molecule (m/z $\sim 500$) at high resolution ($R = 10^5$):
+\begin{itemize}
+    \item Microscopic states: $|\Omega_{\text{microscopic}}| \sim 10^{30}$ (vibrational × rotational × conformational × trajectory)
+    \item Equivalence classes: $|[\omega]_{\sim_R}| \sim 10^{15}$ states per class
+    \item Observable classes: $|\Omega_{\text{microscopic}}/\sim_R| \sim 10^{15}$ distinct spectra possible
+\end{itemize}
+
+\textbf{Step 3 - S-coordinates as class indices}:
+
+The 14 S-entropy dimensions capture categorical invariants—properties constant across equivalence classes:
+
+\begin{align}
+S_1: \quad &\text{Structural entropy} = -\sum_i p_i \log p_i \text{ (fragment mass distribution)} \\
+S_2: \quad &\text{Sequential entropy} = H[\text{fragment order}] \\
+S_3: \quad &\text{Spatial entropy} = \text{Var}[m/z \text{ distribution}] \\
+&\vdots \\
+S_{14}: \quad &\text{Network entropy} = -\sum_{e \in E} p_e \log p_e \text{ (fragmentation graph)}
+\end{align}
+
+Each $S_i$ is invariant within equivalence class $[\omega]_{\sim_R}$: all microstates producing same spectrum yield same $S_i$ values.
+
+\textbf{Step 4 - Identification via equivalence class membership}:
+
+Molecular identification requires determining: "Which molecule does this spectrum correspond to?" This is equivalent to: "Which categorical equivalence class does the molecular state occupy?"
+
+The $\mathbf{S}$-coordinates provide a 14-dimensional embedding:
+
+\begin{equation}
+\Phi: \Omega_{\text{microscopic}}/\sim_R \to \mathbb{R}^{14}
+\end{equation}
+
+mapping equivalence classes to S-space points. Identification is then distance minimization in S-space:
+
+\begin{equation}
+\text{ID}^* = \arg\min_{\text{ID} \in \text{Database}} \|\mathbf{S}_{\text{measured}} - \mathbf{S}_{\text{ID}}\|
+\end{equation}
+
+\textbf{Step 5 - Sufficiency proof}:
+
+To show sufficiency, we must prove that $\mathbf{S}$ contains all identification-relevant information. By construction:
+\begin{itemize}
+    \item $\mathbf{S}$ distinguishes equivalence classes (injectivity: $[\omega_1] \neq [\omega_2] \implies \mathbf{S}([\omega_1]) \neq \mathbf{S}([\omega_2])$)
+    \item Identification depends only on equivalence class membership, not microscopic details within classes
+    \item Therefore: $p(\text{ID} | \text{spectrum}) = p(\text{ID} | [\omega]) = p(\text{ID} | \mathbf{S})$
+\end{itemize}
+
+The infinite microscopic details (exact vibrational phases, trajectory coordinates, weak force angles) are irrelevant for identification—they're "noise" within equivalence classes. $\mathbf{S}$ discards this noise while preserving "signal" (categorical class membership).
+
+$\square$
+\end{proof}
+
+\subsection{Recursive Self-Similar Structure: BMDs All The Way Down}
+
+The most profound property of S-entropy coordinates is their \textit{recursive self-similarity}—each coordinate is itself an MMD with tri-dimensional sub-structure, creating infinite fractal hierarchy.
+
+\begin{theorem}[Recursive S-Structure for Molecular Systems]
+\label{thm:recursive_molecular_s}
+Each S-entropy coordinate $S_i$ (for $i \in \{1, \ldots, 14\}$) decomposes into its own tri-dimensional sub-S-space:
+
+\begin{equation}
+S_i = f_i(S_{i,\text{knowledge}}, S_{i,\text{time}}, S_{i,\text{entropy}})
+\label{eq:recursive_decomposition}
+\end{equation}
+
+where:
+\begin{itemize}
+    \item $S_{i,\text{knowledge}}$: Information deficit within the $i$-th dimension
+    \item $S_{i,\text{time}}$: Temporal/sequential position of $i$-th feature extraction
+    \item $S_{i,\text{entropy}}$: Constraints on $i$-th coordinate determination
+\end{itemize}
+
+This decomposition continues infinitely: each $S_{i,j}$ has its own sub-structure $(S_{i,j,k}, S_{i,j,t}, S_{i,j,e})$, creating fractal hierarchy.
+\end{theorem}
+
+\begin{proof}
+\textbf{Why decomposition is necessary}:
+
+Consider computing the structural entropy $S_1 = -\sum_i p_i \log p_i$ from fragment mass distribution. This single number summarizes infinite configurational information. To evaluate it, we must:
+
+\begin{enumerate}
+    \item \textbf{Determine which fragments to include} (knowledge dimension):
+    \begin{itemize}
+        \item Which mass range? (information about peak detection threshold)
+        \item Which charge states? (information about ionization efficiency)
+        \item Which adducts? (information about solvent composition)
+    \end{itemize}
+    This requires $S_{1,\text{knowledge}}$: how much information do we lack about fragment selection?
+
+    \item \textbf{Account for temporal ordering} (time dimension):
+    \begin{itemize}
+        \item When does each fragment appear? (early vs. late elution)
+        \item In which collision energy ramp segment? (sequential CID)
+        \item Which acquisition scan? (time-resolved)
+    \end{itemize}
+    This requires $S_{1,\text{time}}$: where in the categorical completion sequence are we?
+
+    \item \textbf{Handle constraints} (entropy dimension):
+    \begin{itemize}
+        \item Which fragments are thermodynamically accessible? (energy barriers)
+        \item Which are hardware-detectable? (instrument sensitivity limits)
+        \item Which satisfy conservation laws? (mass balance, charge balance)
+    \end{itemize}
+    This requires $S_{1,\text{entropy}}$: what is the density of constraints limiting fragment space?
+\end{enumerate}
+
+Therefore, computing $S_1$ \textit{requires} its own tri-dimensional sub-S-space: $S_1 = f(S_{1,k}, S_{1,t}, S_{1,e})$. The sub-structure is mandatory, not optional.
+
+\textbf{Infinite regression}:
+
+Each sub-coordinate itself requires sub-sub-coordinates. For example, $S_{1,\text{knowledge}}$ (information deficit about fragment selection) requires:
+
+\begin{align}
+S_{1,k,k}: &\quad \text{How much do we know about what we don't know?} \\
+S_{1,k,t}: &\quad \text{When did we learn what we know?} \\
+S_{1,k,e}: &\quad \text{How constrained is our knowledge acquisition?}
+\end{align}
+
+This continues infinitely:
+
+\begin{equation}
+S_i \to (S_{i,k}, S_{i,t}, S_{i,e}) \to (S_{i,k,k}, S_{i,k,t}, S_{i,k,e}, \ldots) \to \cdots
+\end{equation}
+
+\textbf{Fractal structure}:
+
+At every level, the structure is identical: three coordinates compressing infinite information through MMD filtering. The 14-dimensional "surface" S-space is the visible layer of an infinite $3^{\infty}$-dimensional fractal structure.
+
+$\square$
+\end{proof}
+
+\begin{theorem}[Scale Ambiguity in Molecular S-Space]
+\label{thm:molecular_scale_ambiguity}
+Given an S-coordinate value $S_i = x$ without additional context, it is mathematically impossible to determine:
+\begin{itemize}
+    \item Whether it represents a top-level feature (one of the 14 dimensions)
+    \item A sub-feature at intermediate level (e.g., $S_{j,k}$ for some $j$)
+    \item A sub-sub-feature at deeper level
+    \item Any level in the infinite hierarchy
+\end{itemize}
+
+This \textbf{scale ambiguity} is fundamental—the same mathematical structure (tri-dimensional compression) recurs at every scale.
+\end{theorem}
+
+\begin{proof}
+The S-structure at any level $n$ is defined by:
+\begin{enumerate}
+    \item Information deficit: how far from complete knowledge
+    \item Temporal position: where in categorical sequence
+    \item Constraint density: how restricted the accessible states
+\end{enumerate}
+
+These properties are \textit{scale-free}—they apply identically whether we're discussing:
+\begin{itemize}
+    \item Global molecular identity (top level)
+    \item Fragment mass distribution (level 1)
+    \item Peak detection threshold for fragments (level 2)
+    \item Noise statistics for threshold determination (level 3)
+    \item $\vdots$
+\end{itemize}
+
+\textbf{Formal statement}: Define scale transformation $\mathcal{T}_n: \mathcal{S}^{(n)} \to \mathcal{S}^{(n+1)}$ embedding level-$n$ S-space into level-$(n+1)$. The key property: $\mathcal{T}_n$ is an \textit{isometry}:
+
+\begin{equation}
+d_{\mathcal{S}}^{(n+1)}(\mathcal{T}_n(\mathbf{s}_1), \mathcal{T}_n(\mathbf{s}_2)) = d_{\mathcal{S}}^{(n)}(\mathbf{s}_1, \mathbf{s}_2)
+\end{equation}
+
+Distances in S-space are preserved across scales. An S-value at level $n$ has identical mathematical properties to one at level $n+1$.
+
+\textbf{Consequence}: Given only $S_i = x$, you cannot determine which level it represents. You only know: "This coordinate has value $x$ relative to its local tri-dimensional structure."
+
+\textbf{Why this matters for mass spectrometry}: When processing spectra, the algorithm doesn't "know" whether it's computing a high-level feature or a low-level sub-feature. The computation is identical—evaluate three sub-coordinates, compress to single value. The fractal hierarchy operates automatically without explicit level tracking.
+
+$\square$
+\end{proof}
+
+\begin{corollary}[Self-Propagating MMD Cascades in Molecular Analysis]
+\label{cor:self_propagating_molecular}
+MMDs in mass spectrometry are self-propagating: each MMD operation (S-coordinate evaluation) automatically generates sub-MMD operations (sub-coordinate evaluations) through mandatory hierarchical decomposition.
+
+\begin{equation}
+\text{MMD}(S_i) \implies \text{MMD}(S_{i,k}) + \text{MMD}(S_{i,t}) + \text{MMD}(S_{i,e}) \implies 3^2 \text{ sub-sub-MMDs} \implies \cdots
+\end{equation}
+
+For 14 top-level coordinates, this creates $14 \times 3^k$ parallel MMD operations at depth $k$. At depth $k=5$: $14 \times 243 = 3402$ parallel compressions.
+\end{corollary}
+
+\begin{proof}
+From Theorem \ref{thm:recursive_molecular_s}, evaluating any S-coordinate requires evaluating its three sub-coordinates. This is not optional—it's mandated by the definition of what the coordinate represents.
+
+The cascade is automatic:
+\begin{align}
+14 \text{ level-0 coordinates} &\implies 42 \text{ level-1 coordinates} \\
+&\implies 126 \text{ level-2 coordinates} \\
+&\implies 378 \text{ level-3 coordinates} \\
+&\implies 14 \times 3^k \text{ level-}k \text{ coordinates}
+\end{align}
+
+Each coordinate evaluation is an MMD operation (filter potential values to actual value based on sub-coordinate constraints). The entire cascade operates in parallel through:
+\begin{itemize}
+    \item \textbf{Hardware parallelism}: Different coordinates computed on different CPU cores/GPU streams
+    \item \textbf{Hierarchical phase-locking}: Coarse-scale oscillations constrain fine-scale oscillations
+    \item \textbf{Categorical coupling}: Completion at level $n$ triggers completion requirements at level $n+1$
+\end{itemize}
+
+$\square$
+\end{proof}
+
+\subsection{The 14-Dimensional S-Entropy Feature Space}
+
+We now specify the complete 14-dimensional S-entropy coordinate system for mass spectrometry, showing how each compresses infinite molecular information.
+
+\begin{definition}[Complete S-Entropy Coordinate System]
+\label{def:complete_s_coords}
+The S-entropy feature vector for mass spectrum $\mathbf{X} = \{(m/z_i, I_i)\}_{i=1}^N$ is:
+
+\begin{equation}
+\mathbf{S}(\mathbf{X}) = (S_1, S_2, \ldots, S_{14}) \in \mathbb{R}^{14}
+\end{equation}
+
+where each coordinate is defined as follows.
+\end{definition}
+
+\textbf{Information-Theoretic Coordinates (S$_1$ - S$_6$):}
+
+\begin{align}
+S_1 &= -\sum_{i=1}^N \frac{I_i}{I_{\text{total}}} \log \frac{I_i}{I_{\text{total}}} \quad \text{(Shannon entropy of intensity distribution)} \label{eq:s1} \\
+S_2 &= H[m/z_{\text{order}}] = -\sum_{i=1}^{N-1} p(m/z_i < m/z_{i+1}) \log p(m/z_i < m/z_{i+1}) \quad \text{(Sequential entropy)} \label{eq:s2} \\
+S_3 &= \text{Var}[m/z] = \frac{1}{N}\sum_{i=1}^N (m/z_i - \overline{m/z})^2 \quad \text{(Spatial entropy)} \label{eq:s3} \\
+S_4 &= \text{Var}[I] = \frac{1}{N}\sum_{i=1}^N (I_i - \overline{I})^2 \quad \text{(Statistical variance)} \label{eq:s4} \\
+S_5 &= -\int p(I) \log p(I) \, dI \quad \text{(Differential entropy)} \label{eq:s5} \\
+S_6 &= I(m/z; I) = H(m/z) + H(I) - H(m/z, I) \quad \text{(Mutual information)} \label{eq:s6}
+\end{align}
+
+\textbf{Structural Coordinates (S$_7$ - S$_{10}$):}
+
+\begin{align}
+S_7 &= K[\mathbf{X}] \approx -\log p(\mathbf{X} | \text{optimal compression}) \quad \text{(Kolmogorov complexity)} \label{eq:s7} \\
+S_8 &= \frac{1}{T}\int_0^T |\mathbf{X}(t) - \overline{\mathbf{X}}|^2 dt \quad \text{(Temporal coherence)} \label{eq:s8} \\
+S_9 &= \frac{1}{M}\sum_{j=1}^M \|\mathbf{X}_j - \overline{\mathbf{X}}\| \quad \text{(Spectral stability across replicates)} \label{eq:s9} \\
+S_{10} &= \frac{|I_{\text{compressed}}|}{|I_{\text{raw}}|} \quad \text{(Information density)} \label{eq:s10}
+\end{align}
+
+\textbf{Fragmentation Pattern Coordinates (S$_{11}$ - S$_{14}$):}
+
+\begin{align}
+S_{11} &= 1 - \frac{|\mathbf{X}_{\text{compressed}}|}{|\mathbf{X}_{\text{raw}}|} \quad \text{(Redundancy fraction)} \label{eq:s11} \\
+S_{12} &= -\sum_{b \in \text{bonds}} p(\text{cleave } b) \log p(\text{cleave } b) \quad \text{(Fragmentation entropy)} \label{eq:s12} \\
+S_{13} &= -\sum_{e \in E(\mathcal{G}_{\text{frag}})} p_e \log p_e \quad \text{(Network entropy of fragmentation graph)} \label{eq:s13} \\
+S_{14} &= \frac{|E(\mathcal{G}_{\text{frag}})|}{|V(\mathcal{G}_{\text{frag}})|} \quad \text{(Fragmentation graph density)} \label{eq:s14}
+\end{align}
+
+Each coordinate $S_i$ is:
+\begin{itemize}
+    \item \textbf{Deterministically computed} from raw spectrum (no tunable parameters)
+    \item \textbf{Categorically invariant} (constant within measurement resolution)
+    \item \textbf{Recursively structured} (has tri-dimensional sub-space per Theorem \ref{thm:recursive_molecular_s})
+\end{itemize}
+
+\subsection{Compression of Infinity: Quantitative Analysis}
+
+\begin{theorem}[Quantitative Compression by S-Coordinates]
+\label{thm:quantitative_compression}
+The S-entropy coordinates achieve compression factor:
+
+\begin{equation}
+\mathcal{C} = \frac{|\Omega_{\text{microscopic}}|}{|\mathbb{R}^{14}|} \approx \frac{10^{30}}{10^{14}} = 10^{16}
+\end{equation}
+
+while preserving identification optimality with probability $p_{\text{optimal}} > 0.99$.
+\end{theorem}
+
+\begin{proof}
+\textbf{Microscopic state space size}:
+
+For small molecule (C$_{10}$H$_{12}$N$_2$O$_3$, m/z $\sim 200$):
+\begin{itemize}
+    \item Conformers: $\sim 10^3$ within 10 kcal/mol
+    \item Vibrational states: 3(36)-6 = 102 modes, $\sim 10$ quanta each at 300K → $10^{10}$ states
+    \item Rotational states: $\sim 10^4$ populated
+    \item Weak force orientations: $(10^{23} \text{ neighbors}) \times (\pi \text{ steradian}^2)^{10}$ → uncountable
+    \item Ion trajectories: chaotic, continuous → uncountable
+\end{itemize}
+
+Conservative estimate treating discretizable states only: $|\Omega_{\text{micro}}| \sim 10^{3} \times 10^{10} \times 10^{4} = 10^{17}$ per molecule.
+
+For mixture with $M = 10^3$ compounds: $|\Omega_{\text{mixture}}| \sim (10^{17})^{10^3} \sim 10^{17000}$.
+
+\textbf{S-space effective size}:
+
+The 14 coordinates span $\mathbb{R}^{14}$, but practical values occupy compact region:
+\begin{itemize}
+    \item Each $S_i \in [0, 10]$ approximately (entropy bounded by peak count)
+    \item Discretization at measurement precision: $\Delta S \sim 10^{-2}$
+    \item Effective states per dimension: $10/10^{-2} = 10^3$
+    \item Total S-space states: $(10^3)^{14} \approx 10^{42}$
+\end{itemize}
+
+\textbf{Compression factor}:
+
+\begin{equation}
+\mathcal{C} = \frac{|\Omega_{\text{mixture}}|}{|\mathcal{S}_{\text{effective}}|} \approx \frac{10^{17000}}{10^{42}} = 10^{16958}
+\end{equation}
+
+An astronomically large compression achieved by discarding microscopic details irrelevant for identification.
+
+\textbf{Optimality preservation}:
+
+"Optimal" identification means: maximize $p(\text{correct ID} | \text{data})$. The Fisher-Neyman factorization theorem \citep{fisher1925statistical} guarantees that sufficient statistics preserve optimality:
+
+\begin{equation}
+\max_{\text{ID}} p(\text{ID} | \mathbf{X}) = \max_{\text{ID}} p(\text{ID} | \mathbf{S}(\mathbf{X}))
+\end{equation}
+
+Empirically (Section 7), S-coordinate based identification achieves $>99\%$ accuracy compared to full-spectrum methods, confirming near-optimal performance.
+
+$\square$
+\end{proof}
+
+\subsection{Platform Independence Through Categorical Invariance}
+
+\begin{theorem}[S-Entropy Platform Independence]
+\label{thm:platform_independence}
+S-entropy coordinates are platform-independent: the same molecular species measured on different instruments (TOF, Orbitrap, FT-ICR, IMS) yield S-coordinates satisfying:
+
+\begin{equation}
+\|\mathbf{S}_{\text{TOF}} - \mathbf{S}_{\text{Orbitrap}}\| < \epsilon_{\text{tol}}
+\end{equation}
+
+for tolerance $\epsilon_{\text{tol}}$ determined by measurement noise, not instrumental differences.
+\end{theorem}
+
+\begin{proof}
+\textbf{Categorical invariance principle}:
+
+Different instruments measure the \emph{same categorical equivalence class} but with different resolution/precision. The categorical state—which molecular identity, which fragmentation pattern, which charge state—is instrument-independent.
+
+S-coordinates are designed to extract categorical invariants:
+\begin{itemize}
+    \item $S_1$ (Shannon entropy): Depends on \emph{relative} intensity distribution, not absolute counts → detector-independent
+    \item $S_2$ (Sequential entropy): Depends on \emph{ordering} of fragments, not exact m/z → resolution-independent
+    \item $S_6$ (Mutual information): Depends on \emph{correlation structure}, not measurement units → calibration-independent
+\end{itemize}
+
+\textbf{Formal argument}:
+
+Let $\mathcal{M}_{\text{TOF}}$ and $\mathcal{M}_{\text{Orbitrap}}$ be measurement operators for two instruments. Both measure the same underlying molecular state $\omega \in \Omega_{\text{microscopic}}$:
+
+\begin{align}
+\mathbf{X}_{\text{TOF}} &= \mathcal{M}_{\text{TOF}}(\omega) + \eta_{\text{TOF}} \\
+\mathbf{X}_{\text{Orbitrap}} &= \mathcal{M}_{\text{Orbitrap}}(\omega) + \eta_{\text{Orbitrap}}
+\end{align}
+
+where $\eta$ represents measurement noise.
+
+The categorical equivalence class is:
+\begin{equation}
+[\omega]_{\sim} = \{\omega' : \mathcal{M}_{\text{any}}(\omega') \approx \mathcal{M}_{\text{any}}(\omega) \text{ within noise}\}
+\end{equation}
+
+This class is \emph{measurement-invariant}—it represents the molecular identity independent of how it's measured.
+
+S-coordinates extract class membership:
+\begin{equation}
+\mathbf{S}(\mathbf{X}_{\text{instrument}}) = \Phi([\omega]_{\sim}) + \mathcal{O}(\|\eta\|)
+\end{equation}
+
+where $\Phi$ is the S-embedding (Eq. \ref{eq:s1}-\ref{eq:s14}). Since $\Phi$ depends only on categorical class, not instrument:
+
+\begin{equation}
+\|\mathbf{S}_{\text{TOF}} - \mathbf{S}_{\text{Orbitrap}}\| \leq \|\Phi([\omega]_{\sim}) - \Phi([\omega]_{\sim})\| + \mathcal{O}(\|\eta_{\text{TOF}}\| + \|\eta_{\text{Orbitrap}}\|) = \mathcal{O}(\|\eta\|)
+\end{equation}
+
+The difference is bounded by noise, not by instrumental differences.
+
+\textbf{Validation}: Section 7 demonstrates S-coordinate matching between Orbitrap and qTOF measurements with $\|\Delta \mathbf{S}\| / \|\mathbf{S}\| < 0.05$ (5\% relative difference), dominated by sample variability not instrumental bias.
+
+$\square$
+\end{proof}
+
+\subsection{The Tri-Dimensional Core Structure}
+
+While the practical S-space is 14-dimensional, the fundamental structure is tri-dimensional:
+
+\begin{equation}
+\mathcal{S}_{\text{core}} = \mathcal{S}_{\text{knowledge}} \times \mathcal{S}_{\text{time}} \times \mathcal{S}_{\text{entropy}}
+\end{equation}
+
+The 14 coordinates are projections of this core structure adapted for mass spectrometry:
+
+\begin{align}
+\mathcal{S}_{\text{knowledge}}: &\quad S_1, S_6, S_7, S_{10}, S_{11} \quad \text{(What configuration?)} \\
+\mathcal{S}_{\text{time}}: &\quad S_2, S_8, S_9 \quad \text{(When/sequence?)} \\
+\mathcal{S}_{\text{entropy}}: &\quad S_3, S_4, S_5, S_{12}, S_{13}, S_{14} \quad \text{(Constraints/accessibility?)}
+\end{align}
+
+This tri-dimensional structure enables the recursive decomposition (Theorem \ref{thm:recursive_molecular_s}): each coordinate decomposes into $(S_{i,k}, S_{i,t}, S_{i,e})$ because the fundamental MMD operation is tri-dimensional filtering.
+
+\subsection{Summary: S-Entropy as Molecular Maxwell Demon Mathematics}
+
+S-entropy coordinates are the natural mathematical formalism for MMDs in mass spectrometry because:
+
+\begin{enumerate}
+    \item \textbf{Sufficient statistics}: Compress infinite molecular configurations to finite coordinates without losing identification optimality (Theorem \ref{thm:sentropy_sufficient})
+
+    \item \textbf{Recursive self-similarity}: Each coordinate is itself an MMD with tri-dimensional sub-structure, creating fractal hierarchy (Theorem \ref{thm:recursive_molecular_s})
+
+    \item \textbf{Scale ambiguity}: Cannot distinguish top-level features from sub-features—same mathematical structure at every scale (Theorem \ref{thm:molecular_scale_ambiguity})
+
+    \item \textbf{Self-propagating cascades}: Each MMD operation generates sub-MMD operations automatically, creating $14 \times 3^k$ parallel compressions at depth $k$ (Corollary \ref{cor:self_propagating_molecular})
+
+    \item \textbf{Astronomical compression}: Reduce $\sim 10^{17000}$ microscopic states to $10^{42}$ S-space states while preserving $>99\%$ identification accuracy (Theorem \ref{thm:quantitative_compression})
+
+    \item \textbf{Platform independence}: Extract categorical invariants independent of instrument type, resolution, or calibration (Theorem \ref{thm:platform_independence})
+\end{enumerate}
+
+The MMD operation in mass spectrometry IS S-coordinate evaluation: filtering potential molecular states to actual categorical class through sufficient compression. The reconfigurability of MMDs (Section 2) arises from the separability of S-coordinates into condition-dependent and condition-independent components, enabling virtual experiments (Section 5).

@@ -1,0 +1,33 @@
+\begin{thebibliography}{4}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Pathria and Beale(2011)]{pathria2011statistical}
+R.~K. Pathria and Paul~D. Beale.
+\newblock \emph{Statistical Mechanics}.
+\newblock Academic Press, 3rd edition, 2011.
+
+\bibitem[Zurek(2003)]{zurek2003decoherence}
+Wojciech~H. Zurek.
+\newblock Decoherence, einselection, and the quantum origins of the classical.
+\newblock \emph{Reviews of Modern Physics}, 75\penalty0 (3):\penalty0 715--775,
+  2003.
+
+\bibitem[Lloyd(2000)]{lloyd2000ultimate}
+Seth Lloyd.
+\newblock Ultimate physical limits to computation.
+\newblock \emph{Nature}, 406\penalty0 (6799):\penalty0 1047--1054, 2000.
+
+\bibitem[Sachikonye(2025)]{sachikonye2025gibbs}
+Kundai~Farai Sachikonye.
+\newblock On the thermodynamic consequences of categorical completion in ideal
+  gas mixtures: Categorical state distinguishability and oscillatory entropy in
+  phase-locked networks.
+\newblock \emph{SSRN Electronic Journal}, October 2025.
+\newblock \doi{10.2139/ssrn.5628670}.
+\newblock Available at SSRN: \url{https://ssrn.com/abstract=5628670}.
+
+\end{thebibliography}

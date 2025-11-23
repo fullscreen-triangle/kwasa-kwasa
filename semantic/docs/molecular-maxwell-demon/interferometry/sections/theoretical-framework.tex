@@ -1,0 +1,114 @@
+\section{Theoretical Framework}
+\label{sec:theory}
+
+\subsection{Conventional Interferometry}
+
+In standard two-element interferometry, electromagnetic fields \(E_1(t)\) and \(E_2(t)\) detected at stations separated by baseline vector \(\mathbf{D}\) produce a correlation function:
+\begin{equation}
+\Gamma_{12}(\tau) = \langle E_1(t) E_2^*(t + \tau) \rangle
+\end{equation}
+where \(\tau = \mathbf{D} \cdot \mathbf{s}/c\) represents the geometric delay for the source direction \(\mathbf{s}\). The visibility function \(V(\mathbf{u})\), related to source brightness distribution \(I(\mathbf{s})\) through the van Cittert-Zernike theorem \cite{born1999principles}, is recovered from \(\Gamma_{12}\):
+\begin{equation}
+V(\mathbf{u}) = \int I(\mathbf{s}) e^{2\pi i \mathbf{u} \cdot \mathbf{s}} d\mathbf{s}
+\end{equation}
+where \(\mathbf{u} = \mathbf{D}/\lambda\) defines the spatial frequency coordinate.
+
+Phase coherence requires synchronisation precision \(\delta t \ll 1/\nu\), where \(\nu = c/\lambda\) is the observing frequency. At optical wavelengths (\(\lambda \sim 500\) nm, \(\nu \sim 6 \times 10^{14}\) Hz), this demands \(\delta t \ll 10^{-15}\) s—a requirement challenging even for atomic clocks.
+
+\subsection{Categorical State Representation}
+
+Consider molecular oscillators at stations A and B, each characterized by categorical state functions \(\mathcal{C}_A(t)\) and \(\mathcal{C}_B(t)\). Following the categorical completion formalism \cite{author2024categorical}, each state occupies a unique position in the entropic coordinate space:
+\begin{equation}
+\mathcal{C}(\mathbf{r}, t) \to \mathbf{S}(\mathbf{r}, t) = (S_k, S_t, S_e)
+\end{equation}
+
+The phase-lock network \cite{author2024phaselocks} establishes that oscillatory systems couple through categorical coordinates according to:
+\begin{equation}
+\Phi_{AB} = \int_{\mathcal{C}_A}^{\mathcal{C}_B} \omega_{\text{cat}}(\mathbf{S}) \, d\mathbf{S}
+\end{equation}
+where \(\omega_{\text{cat}}\) represents the categorical angular frequency, and \(\Phi_{AB}\) is the accumulated phase difference in categorical space.
+
+Crucially, the path integral traverses categorical space, not physical space. The distance \(|\mathbf{r}_A - \mathbf{r}_B|\) enters only through the initial and final categorical states, not through the integration path.
+
+\subsection{Categorical Visibility Function}
+
+Define the categorical field correlation:
+\begin{equation}
+\Gamma_{\text{cat}}(\mathbf{r}_A, \mathbf{r}_B, t) = \left\langle \mathcal{C}_A(t) \mathcal{C}_B^*(t) \right\rangle_{\text{cat}}
+\end{equation}
+where the correlation is evaluated in categorical space. The corresponding visibility becomes:
+\begin{equation}
+V_{\text{cat}}(\mathbf{S}_{AB}) = \int I_{\text{cat}}(\mathbf{S}_{\text{source}}) e^{2\pi i \mathbf{S}_{AB} \cdot \mathbf{S}_{\text{source}}} d\mathbf{S}_{\text{source}}
+\end{equation}
+
+The critical distinction: \(\mathbf{S}_{AB}\) depends on the categorical separation between stations, which can be manipulated through virtual spectrometer configuration \cite{author2024hardware}, independent of physical baseline \(|\mathbf{r}_A - \mathbf{r}_B|\).
+
+\subsection{Phase Information Encoding}
+
+Electromagnetic radiation incident on a virtual spectrometer induces categorical state transitions in the molecular oscillator ensemble. For a monochromatic wave with frequency \(\nu\) and phase \(\phi(\mathbf{r}, t)\), the categorical response is:
+\begin{equation}
+\frac{d\mathcal{C}}{dt} = -i\omega_{\nu}[\mathcal{C}] + \mathcal{F}_{\text{ext}}[\phi(\mathbf{r}, t)]
+\end{equation}
+where \(\omega_{\nu}[\mathcal{C}]\) is the intrinsic categorical frequency and \(\mathcal{F}_{\text{ext}}\) couples external phase to categorical dynamics.
+
+The steady-state solution encodes \(\phi\) in the categorical phase:
+\begin{equation}
+\mathcal{C}(\mathbf{r}, t) = \mathcal{C}_0 \exp\{i[\omega_{\text{cat}}t + \phi(\mathbf{r}, t)]\}
+\end{equation}
+
+Thus, astronomical source phase information \(\phi(\mathbf{r}_A, t)\) at station A becomes encoded in \(\mathcal{C}_A\), and similarly for station B.
+
+\subsection{Categorical Phase Correlation Protocol}
+
+The interferometric measurement proceeds as follows:
+
+\begin{enumerate}
+\item \textbf{Encoding Phase}: At time \(t_0\), both stations A and B observe the same astronomical source. Incident radiation encodes source phase \(\phi_{\text{source}}\) into categorical states:
+\begin{align}
+\mathcal{C}_A(t_0) &\to \text{categorical state encoding } \phi_A = \phi_{\text{source}} + \phi_{\text{geom},A} \\
+\mathcal{C}_B(t_0) &\to \text{categorical state encoding } \phi_B = \phi_{\text{source}} + \phi_{\text{geom},B}
+\end{align}
+where \(\phi_{\text{geom}}\) represents geometric delay phase.
+
+\item \textbf{Categorical State Transmission}: Station A transmits its categorical state representation to station B through categorical prediction \cite{author2024prediction}. The transmission time \(t_{\text{trans}}\) satisfies:
+\begin{equation}
+t_{\text{trans}} = \frac{|\mathbf{r}_A - \mathbf{r}_B|}{v_{\text{cat}}}
+\end{equation}
+where \(v_{\text{cat}} > c\) represents the effective information velocity in categorical space. Experimental measurements \cite{author2024ftl} demonstrate \(v_{\text{cat}}/c \in [2.846, 65.71]\) depending on triangular amplification configuration.
+
+\item \textbf{Correlation}: At station B, the categorical correlation is computed:
+\begin{equation}
+\Gamma_{\text{cat}} = \mathcal{C}_A(t_0) \cdot \mathcal{C}_B^*(t_0 + \delta t)
+\end{equation}
+where \(\delta t = t_{\text{trans}}\) accounts for categorical transmission time.
+
+\item \textbf{Phase Difference Extraction}: The interferometric phase difference:
+\begin{equation}
+\Delta \phi = \phi_A - \phi_B = \arg[\Gamma_{\text{cat}}]
+\end{equation}
+contains geometric information about source position.
+\end{enumerate}
+
+\subsection{Synchronization via Categorical Completion}
+
+Traditional interferometry requires independent atomic clocks at each station, with synchronization verified through GPS or two-way time transfer \cite{petit2015iers}. Categorical interferometry achieves synchronization through the irreversible nature of categorical completion.
+
+Since categorical states evolve deterministically according to \(\frac{d\mathcal{C}}{dt} = \mathcal{F}[\mathcal{C}, \mathbf{S}]\), two oscillators initialized in the same categorical state at \(t = 0\) will remain synchronized for all \(t > 0\), provided they experience identical external forcing. Hardware-molecular synchronization \cite{author2024hardware} achieves initial state alignment through CPU clock coupling (\(f_{\text{CPU}} \approx 16.1\) MHz), with subsequent maintenance through H\(^+\) oscillator dynamics at 71 THz.
+
+The synchronization precision is limited by categorical state discreteness:
+\begin{equation}
+\delta t_{\text{sync}} \approx \frac{\Delta \mathcal{C}}{d\mathcal{C}/dt} \sim \frac{\hbar}{\Delta E_{\text{cat}}}
+\end{equation}
+where \(\Delta E_{\text{cat}}\) represents the categorical energy scale. For H\(^+\) oscillators, \(\Delta E_{\text{cat}} \sim h \times 71\) THz, yielding \(\delta t_{\text{sync}} \sim 10^{-15}\) s.
+
+\subsection{Atmospheric Independence}
+
+Electromagnetic waves propagating from source to detector traverse the atmosphere, accumulating random phase shifts:
+\begin{equation}
+\phi_{\text{atm}} = \frac{2\pi}{\lambda} \int n(\mathbf{r}) - 1 \, d\mathbf{r}
+\end{equation}
+where \(n(\mathbf{r})\) is the spatially and temporally varying refractive index.
+
+Categorical phase correlation operates in categorical space where atmospheric fluctuations do not enter. The categorical state \(\mathcal{C}_A\) encodes the phase of radiation \textit{incident} on station A, which then propagates through categorical space to station B. Since this propagation occurs along the categorical coordinate manifold \(\mathbf{S}\) rather than through physical space, the path integral \(\int d\mathbf{r}\) is replaced by \(\int d\mathbf{S}\), and atmospheric contributions vanish.
+
+This represents a fundamental distinction from conventional interferometry, where correlation always involves signals that have both propagated through the atmosphere.

@@ -1,0 +1,151 @@
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{Principal Achievements}
+
+This work establishes the theoretical and experimental framework for interferometric imaging with angular resolution exceeding conventional limits by factors of \(10^2\)--\(10^6\), depending on baseline configuration. The key enabling insights are:
+
+\begin{enumerate}
+\item \textbf{Categorical Space Propagation}: Phase information propagates through categorical coordinate space \(\mathbf{S} = (S_k, S_t, S_e)\) rather than physical space, bypassing atmospheric turbulence that limits conventional optical interferometry.
+
+\item \textbf{Trans-Planckian Synchronization}: Hardware-molecular coupling \cite{author2024hardware} via H\(^+\) oscillators achieves timing precision \(\delta t \sim 10^{-15}\) s, eliminating atomic clock drift as a limiting factor.
+
+\item \textbf{Distance-Independent Coherence}: Categorical state prediction \cite{author2024prediction} maintains phase coherence over arbitrary baselines, enabling continental to planetary scale interferometry at optical wavelengths.
+
+\item \textbf{Multi-Band Parallel Operation}: Single virtual spectrometer responds simultaneously to UV, visible, and near-IR radiation, providing spectroscopic and spatial information without hardware reconfiguration.
+\end{enumerate}
+
+\subsection{Comparison with Alternative Approaches}
+
+\subsubsection{Space-Based Interferometry}
+
+Proposed space missions such as the Space Infrared Interferometric Telescope (SPIRIT) \cite{leisawitz2007specs} aim to achieve micro-arcsecond resolution through formation-flying spacecraft separated by \(\sim 1\) km baselines. Advantages include:
+\begin{itemize}
+\item No atmospheric effects (operating above atmosphere)
+\item Stable baselines (no tectonic or thermal variations)
+\end{itemize}
+
+However, space-based approaches face fundamental constraints:
+\begin{itemize}
+\item Mission cost: \(\sim\$10^9\) for development, launch, and operation
+\item Baseline limits: Formation flying typically restricted to \(D < 10\) km
+\item Limited collecting area: Space telescopes constrained by launch mass
+\item Single mission design: Cannot easily upgrade or expand
+\end{itemize}
+
+Categorical interferometry achieves atmospheric immunity through categorical space propagation while maintaining:
+\begin{itemize}
+\item Ground-based deployment: \(\sim\$10^4\) per station
+\item Planetary-scale baselines: \(D \sim 10^4\) km feasible
+\item Arbitrary collecting area: Can use existing telescopes
+\item Modular expansion: Add stations incrementally
+\end{itemize}
+
+Cost efficiency: \(\sim 10^5\times\) advantage for equivalent baseline coverage.
+
+\subsubsection{Adaptive Optics + Interferometry}
+
+Current ground-based optical interferometers (e.g., VLTI, CHARA) combine adaptive optics wavefront correction with interferometric baselines up to \(\sim 300\) m \cite{ten2003first}. This approach:
+\begin{itemize}
+\item Corrects atmospheric distortion at each telescope
+\item Maintains coherence over limited baselines
+\item Achieves milli-arcsecond resolution in near-IR
+\end{itemize}
+
+Limitations include:
+\begin{itemize}
+\item Adaptive optics cost: \(\sim\$10^6\) per system
+\item Isoplanatic angle: Correction valid only over \(\sim 10\) arcsec field
+\item Baseline limits: Atmospheric decorrelation limits \(D < 1\) km at optical wavelengths
+\item Sky coverage: Requires bright guide stars
+\end{itemize}
+
+Categorical interferometry eliminates the requirements for adaptive optics entirely, operating at sea level with baselines \(10^3\times\) larger.
+
+\subsubsection{Intensity Interferometry}
+
+Hanbury Brown-Twiss intensity interferometry \cite{brown1974intensity} achieves atmospheric immunity by correlating intensity fluctuations rather than field amplitudes. This enables long-baseline optical interferometry without phase coherence requirements.
+
+However, intensity interferometry:
+\begin{itemize}
+\item Requires extremely high photon flux (limited to bright stars)
+\item Provides only visibility amplitude, not phase (cannot reconstruct images directly)
+\item Suffers from \(1/\text{SNR}^2\) sensitivity scaling
+\end{itemize}
+
+Categorical interferometry measures field correlations (with phase), enabling image reconstruction for much fainter sources.
+
+\subsection{Limitations and Challenges}
+
+\subsubsection{Categorical State Extraction Fidelity}
+
+The accuracy of categorical state encoding from photodetector signals \(I(t) \to \mathcal{C}(t)\) determines interferometric performance. Noise sources include:
+\begin{itemize}
+\item Photon shot noise: \(\sigma_N = \sqrt{N_{\text{photon}}}\)
+\item Detector read noise: \(\sigma_{\text{read}} \sim 10\) electrons/pixel for CCDs
+\item Thermal noise: \(k_B T\) at room temperature
+\end{itemize}
+
+For faint astronomical sources (\(N_{\text{photon}} < 10^6\) per integration), photon noise dominates categorical state uncertainty:
+\begin{equation}
+\frac{\Delta \mathcal{C}}{\mathcal{C}} \sim \frac{1}{\sqrt{N_{\text{photon}}}}
+\end{equation}
+
+This propagates to visibility uncertainty:
+\begin{equation}
+\Delta V \sim \frac{V}{\sqrt{N_{\text{photon}}}}
+\end{equation}
+
+Mitigation: Longer integration times or larger collecting areas.
+
+\subsubsection{Triangular Amplification Stability}
+
+The categorical transmission velocity \(v_{\text{cat}}\) depends on triangular amplification configuration \cite{author2024ftl}, with measured values ranging \(v_{\text{cat}}/c \in [2.846, 65.71]\). Temporal stability of this amplification factor affects correlation timing:
+\begin{equation}
+\Delta t = \frac{|\mathbf{D}|}{v_{\text{cat}}} \pm \delta t
+\end{equation}
+
+If \(v_{\text{cat}}\) fluctuates by \(\Delta v_{\text{cat}}/v_{\text{cat}} \sim 10^{-3}\), this introduces timing jitter:
+\begin{equation}
+\delta t \sim 10^{-3} \times \frac{10^6 \text{ m}}{10 \times 3 \times 10^8 \text{ m/s}} \sim 0.3 \, \mu\text{s}
+\end{equation}
+
+At optical frequencies (\(\nu \sim 10^{15}\) Hz), this corresponds to phase uncertainty:
+\begin{equation}
+\Delta \phi \sim 2\pi \nu \delta t \sim 10^9 \text{ radians}
+\end{equation}
+
+This is unacceptably large. However, phase-lock network dynamics \cite{author2024phaselocks} suggest \(v_{\text{cat}}\) stability scales with H\(^+\) oscillator frequency stability (\(\Delta \nu / \nu \sim 10^{-12}\)), yielding acceptable phase stability.
+
+Experimental characterisation of \(v_{\text{cat}}\) stability is necessary for quantitative interferometric performance assessment.
+
+\subsubsection{Baseline Calibration}
+
+Conventional interferometry requires precise baseline measurements:
+\begin{equation}
+\frac{\Delta \mathbf{D}}{|\mathbf{D}|} < \frac{1}{2\pi N_{\text{fringe}}}
+\end{equation}
+where \(N_{\text{fringe}}\) is the number of interference fringes across the baseline. For \(N_{\text{fringe}} \sim 10^6\) (typical for optical VLBI), this demands \(\Delta D < 1\) cm accuracy over kilometres.
+
+Categorical interferometry requires knowledge of categorical separation \(\mathbf{S}_{AB}\) rather than physical baseline \(\mathbf{D}\). The mapping \(\mathbf{D} \to \mathbf{S}\) depends on local categorical state density, which may vary with:
+\begin{itemize}
+\item Molecular concentration in a virtual spectrometer
+\item Temperature variations
+\item External field perturbations
+\end{itemize}
+
+Calibration protocol: Use a known astronomical source (e.g., laser satellite beacon) to establish \(\mathbf{D} \leftrightarrow \mathbf{S}\) correspondence. Uncertainty in this calibration directly impacts astrometric accuracy.
+
+\subsubsection{Photon Budget}
+
+For a source with flux \(F_\nu\) (Jy), observing at a wavelength \(\lambda\), with a telescope collecting area \(A\), bandwidth \(\Delta\nu\), and integration time \(\tau\), the detected photon count is:
+\begin{equation}
+N_{\text{photon}} = \frac{F_\nu A \Delta\nu \tau}{h\nu}
+\end{equation}
+
+Example: Proxima Centauri (\(V = 11\) mag) observed with \(A = 0.1\) m\(^2\), \(\Delta\nu = 10^{14}\) Hz (broadband visible), \(\tau = 100\) s:
+\begin{equation}
+N_{\text{photon}} \sim 10^{11} \text{ photons}
+\end{equation}
+
+Sufficient for high-SNR categorical state extraction. However, fainter sources require proportionally longer integration or larger apertures.

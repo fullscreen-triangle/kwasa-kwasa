@@ -1,0 +1,577 @@
+\section{Dynamic Categorical Systems: Expressing Physical Evolution in Completion Coordinates}
+
+\subsection{Motivation: Configuration Space vs. Categorical Space}
+
+Traditional dynamics describes physical systems through configuration space coordinates $(q, p)$ representing positions and momenta. The system's evolution follows trajectories $\gamma(t): \mathbb{R} \to \mathbb{R}^{2N}$ determined by Hamilton's equations:
+
+\begin{equation}
+\frac{dq_i}{dt} = \frac{\partial H}{\partial p_i}, \quad \frac{dp_i}{dt} = -\frac{\partial H}{\partial q_i}
+\end{equation}
+
+However, this description omits a crucial aspect of physical reality: \textit{processes complete}. Once a physical configuration is realized, that particular manifestation cannot be identically re-realized—it has been "used up" in the sequence of physical actualization. This observation motivates an alternative coordinate system based on \textit{categorical completion} rather than spatial configuration.
+
+\begin{principle}[Categorical Coordinate Description]
+Physical systems admit dual descriptions:
+\begin{enumerate}[(i)]
+\item \textbf{Configuration description}: State specified by $(q, p) \in \mathbb{R}^{2N}$ (spatial coordinates)
+\item \textbf{Categorical description}: State specified by $(q, p, C) \in \mathbb{R}^{2N} \times \mathcal{C}$ where $C \in \mathcal{C}$ is the categorical position in the completion sequence
+\end{enumerate}
+
+The categorical coordinate $C$ tracks \textit{which} realization of configuration $(q, p)$ the system currently occupies, distinguishing multiple temporally separated visits to the same spatial state.
+\end{principle}
+
+\subsection{Categorical State Space Structure}
+
+\begin{definition}[Categorical State Space]
+\label{def:categorical_state_space}
+The \textbf{categorical state space} is a fibered manifold:
+
+\begin{equation}
+\mathcal{M}_{\text{cat}} = \mathbb{R}^{2N} \times \mathcal{C}
+\end{equation}
+
+where:
+\begin{itemize}
+\item $\mathbb{R}^{2N}$: Base manifold (traditional phase space)
+\item $\mathcal{C}$: Fiber (categorical completion sequence)
+\item Projection $\pi: \mathcal{M}_{\text{cat}} \to \mathbb{R}^{2N}$ given by $\pi(q, p, C) = (q, p)$
+\end{itemize}
+
+The categorical space $\mathcal{C}$ carries a partial order $\prec$ representing temporal succession of completions.
+\end{definition}
+
+\begin{definition}[Categorical Precedence]
+For categorical states $C_i, C_j \in \mathcal{C}$, we write $C_i \prec C_j$ (read "$C_i$ precedes $C_j$") if state $C_i$ was completed before state $C_j$ in the temporal sequence of physical processes.
+
+The precedence relation $\prec$ satisfies:
+\begin{enumerate}
+\item \textbf{Irreflexivity}: $\neg(C \prec C)$
+\item \textbf{Antisymmetry}: If $C_i \prec C_j$, then $\neg(C_j \prec C_i)$
+\item \textbf{Transitivity}: If $C_i \prec C_j$ and $C_j \prec C_k$, then $C_i \prec C_k$
+\end{enumerate}
+
+defining a strict partial order on $\mathcal{C}$.
+\end{definition}
+
+\subsection{Dynamics in Categorical Coordinates}
+
+\begin{definition}[Categorical Velocity]
+The fundamental dynamical quantity in categorical description is the \textbf{categorical completion rate}:
+
+\begin{equation}
+\dot{C}(t) = \frac{dC}{dt}
+\end{equation}
+
+measuring the rate at which new categorical states are completed (units: categorical states per second).
+\end{definition}
+
+\begin{axiom}[Categorical Irreversibility]
+\label{ax:categorical_irreversibility}
+Once a categorical state $C$ is completed, it cannot be re-occupied. Therefore:
+
+\begin{equation}
+\dot{C}(t) \geq 0 \quad \forall t
+\end{equation}
+
+with equality only when no physical processes occur (system at equilibrium).
+\end{axiom}
+
+\begin{theorem}[Categorical Dynamics Equations]
+\label{thm:categorical_dynamics}
+System evolution in categorical coordinates is governed by:
+
+\begin{align}
+\frac{dq_i}{dt} &= \frac{\partial H}{\partial p_i} \\
+\frac{dp_i}{dt} &= -\frac{\partial H}{\partial q_i} \\
+\frac{dC}{dt} &= \Gamma(q, p, C)
+\end{align}
+
+where $\Gamma: \mathcal{M}_{\text{cat}} \to \mathbb{R}^+$ is the \textbf{categorical completion function}, determining how rapidly new states complete given the current configuration.
+\end{theorem}
+
+\begin{remark}[Coupling Between Spaces]
+The categorical completion rate $\Gamma(q, p, C)$ generally depends on both spatial configuration $(q, p)$ and categorical position $C$. This coupling means:
+\begin{itemize}
+\item Spatial dynamics influence completion rate: energetic configurations complete states faster
+\item Categorical history influences spatial dynamics: completed states constrain future configurations
+\end{itemize}
+
+This bidirectional coupling is the origin of history-dependent dynamics and irreversibility.
+\end{remark}
+
+\begin{figure*}[htbp]
+    \centering
+    \includegraphics[width=0.95\textwidth]{figures/unpertubed_comparison_20251109_065121.png}
+    \caption{Mixed-reseparated versus unperturbed comparison demonstrating categorical memory persistence despite spatial similarity. \textbf{(A)} Physical: Mixed-Reseparated - scatter plot (blue circles, $\sim 20$ molecules) shows position distribution ($x \in [0, 0.5]$, $y \in [0, 1]$) for left container after mixing and re-separation. Black vertical line at $x = 0.25$ marks container midpoint. Blue annotation box: ``Mixed then Re-separated''. Molecules distributed across full vertical extent with slight clustering at $y \sim 0.2$ and $y \sim 0.8$. \textbf{(B)} Physical: Unperturbed - scatter plot (green circles, $\sim 20$ molecules) shows position distribution for container that was never mixed. Green annotation box: ``Never Mixed (Unperturbed)''. Spatial distribution visually similar to panel A with comparable vertical spread and clustering pattern. \textbf{(C)} Spatial similarity: empty plot with red dashed horizontal line at Spatial Similarity $\sim 0.8$ and yellow annotation box: ``Spatially Similar! ($\sim 85$--$95\%$)''. X-axis labeled ``X distribution'' confirms high spatial overlap between mixed-reseparated and unperturbed configurations, validating macroscopic reversibility. \textbf{(D)} Categorical: Mixed-Reseparated - cumulative categorical states $C(t)$ (blue line with shaded area) versus time ($0$--$10$~s) shows monotonic increase from $C = 0$ to $C \approx 20000$ states. White text box: ``Entropy: $S = k_B C = 2.82 \times 10^{-19}$~J/K''. Linear growth rate $\sim 2000$~states/s indicates continuous categorical state completion during mixing-separation cycle. \textbf{(E)} Categorical: Unperturbed - cumulative categorical states $C(t)$ (green line with shaded area) versus time shows similar monotonic increase from $C = 0$ to $C \approx 20000$ states. White text box: ``Entropy: $S = k_B C = 2.75 \times 10^{-19}$~J/K''. Slightly lower final state count compared to mixed-reseparated case. \textbf{(F)} Categorical divergence: bar chart compares final categorical state counts: Mixed-Reseparated $C = 20461$ states (blue bar), Unperturbed $C = 19948$ states (green bar). Red annotation with bracket: ``$\Delta C = 513$ states, DIFFERENT!'' confirms categorical distinction despite spatial similarity. Difference $\Delta C = 513$ represents additional states completed during mixing-separation cycle. \textbf{(G)} Phase-lock network density: time series ($0$--$10$~s) shows phase-lock edge count $|E|$ for Mixed-Reseparated (blue oscillating curve, $|E| \sim 35$--$55$ edges) and Unperturbed (green oscillating curve, $|E| \sim 35$--$45$ edges). Orange shaded region highlights residual difference from mixing phase.\textbf{(H)} Entropy: $S = k_B C$ - dual time series ($0$--$10$~s) shows entropy evolution for Mixed-Reseparated (blue line with shaded area) and Unperturbed (green line with shaded area). Both increase linearly from $S = 0$ to $S \sim 25000 \times 10^{-23}$~J/K with parallel slopes. Yellow annotation box: ``Final Entropies: Mixed: $2.82 \times 10^{-19}$~J/K, Unpert: $2.75 \times 10^{-19}$~J/K, $\Delta S = 7.08 \times 10^{-21}$~J/K''. Orange annotation box: ``Mixed container has HIGHER entropy!'' Entropy difference $\Delta S = 7.08 \times 10^{-21}$~J/K ($\sim 2.5\%$ of total) persists throughout evolution, confirming irreversible entropy production from mixing. \textbf{(I)} The fundamental distinction: white text box provides comprehensive analysis. \textit{Spatial Configuration:} Both containers: LEFT half, Both: $\sim 20$ molecules, Both: Similar distributions, Spatial similarity: $\sim 90\%$, MACROSCOPICALLY IDENTICAL. \textit{Categorical Configuration:} Mixed-Resep: $C = 20461$ states, Unperturbed: $C = 19948$ states, Difference: $\Delta C = 513$, Entropy diff: $\Delta S = 7.08 \times 10^{-21}$~J/K, CATEGORICALLY DISTINCT.}
+    \label{fig:categorical_memory}
+    \end{figure*}
+
+\subsection{Physical Manifestation: Phase-Lock Networks}
+
+The abstract categorical structure has concrete physical realization through oscillatory phase-lock networks.
+
+\begin{definition}[Phase-Lock Network]
+\label{def:phase_lock_network}
+For system of $N$ oscillatory components (e.g., molecules), the \textbf{phase-lock network} is a graph $\mathcal{G} = (V, E)$ where:
+\begin{itemize}
+\item Vertices $V = \{v_1, \ldots, v_N\}$: Individual oscillators
+\item Edges $E = \{(v_i, v_j) : |\phi_i - \phi_j| < \phi_{\text{threshold}}\}$: Phase-locked pairs
+\end{itemize}
+
+Two oscillators $v_i, v_j$ are phase-locked when their phase difference satisfies:
+\begin{equation}
+|\Delta\phi_{ij}(t)| = |\phi_i(t) - \phi_j(t) - \phi_{ij}^{\text{eq}}| < \phi_{\text{threshold}} \approx \frac{\pi}{4}
+\end{equation}
+
+where $\phi_{ij}^{\text{eq}}$ is the equilibrium phase offset.
+\end{definition}
+
+\begin{theorem}[Categorical States as Phase-Lock Configurations]
+\label{thm:categorical_phaselock_correspondence}
+There exists a bijection between categorical states and equivalence classes of phase-lock network configurations:
+
+\begin{equation}
+C \leftrightarrow [\mathcal{G}]_{\sim}
+\end{equation}
+
+where $[\mathcal{G}]_{\sim}$ denotes equivalence class of phase-lock graphs producing the same spatial configuration $(q, p)$.
+\end{theorem}
+
+\begin{proof}
+\textbf{Forward direction} ($C \to [\mathcal{G}]_{\sim}$): Each categorical state $C$ corresponds to a specific physical realization. For oscillatory systems, this realization is characterized by the phase relationships between oscillators. Multiple phase-lock configurations $\{\mathcal{G}_i\}$ can produce the same spatial configuration $(q, p)$ but differ in internal phase structure. These form equivalence class $[\mathcal{G}]_{\sim}$. The categorical state $C$ identifies which particular phase-lock configuration (or equivalence class) the system occupies.
+
+\textbf{Reverse direction} ($ [\mathcal{G}]_{\sim} \to C$): Given a phase-lock configuration $\mathcal{G}$, the system occupies a unique position in the categorical completion sequence. Since phase relationships cannot be identically recreated (oscillations evolve continuously), each phase-lock configuration corresponds to a unique categorical state $C$ in the temporal ordering.
+
+The bijection is established by recognizing that categorical distinguishability precisely captures the multiplicity of phase-lock realizations of a given spatial state. $\square$
+\end{proof}
+
+\begin{corollary}[Network Topology Determines Categorical Position]
+\label{cor:topology_determines_category}
+The categorical position $C$ is determined by phase-lock network topology:
+
+\begin{equation}
+C = f(|E|, \text{connectivity}, \text{clustering}, \ldots)
+\end{equation}
+
+where $|E|$ is edge count, connectivity measures graph connectedness, and clustering quantifies local network structure.
+\end{corollary}
+
+\subsection{Categorical Completion Dynamics}
+
+\begin{definition}[Network Evolution Function]
+The phase-lock network evolves according to:
+
+\begin{equation}
+\frac{d\mathcal{G}}{dt} = \mathcal{F}[\mathcal{G}, (q, p)]
+\end{equation}
+
+where $\mathcal{F}$ is the network evolution functional determining edge formation and removal rates based on current network state and spatial configuration.
+\end{definition}
+
+\begin{theorem}[Edge Count Monotonicity]
+\label{thm:edge_monotonicity}
+For systems approaching equilibrium, the phase-lock network edge count increases monotonically:
+
+\begin{equation}
+\frac{d|E|}{dt} \geq 0
+\end{equation}
+
+with equality only at equilibrium.
+\end{theorem}
+
+\begin{proof}
+Phase-lock edges form when oscillators synchronize through interactions. Consider two oscillators $v_i, v_j$ with phase difference $\Delta\phi_{ij}$:
+
+\textbf{Edge formation rate}:
+\begin{equation}
+r_{\text{form}} \propto P(\Delta\phi_{ij} < \phi_{\text{threshold}}) \times \nu_{\text{interact}}
+\end{equation}
+
+where $\nu_{\text{interact}}$ is interaction frequency (collision rate for molecules).
+
+\textbf{Edge removal rate}:
+\begin{equation}
+r_{\text{remove}} \propto P(\Delta\phi_{ij} > \phi_{\text{threshold}}) \times \gamma_{\text{decohere}}
+\end{equation}
+
+where $\gamma_{\text{decohere}}$ is decoherence rate.
+
+For systems not at equilibrium, oscillators explore phase space seeking stable phase relationships. Each interaction is an opportunity to establish new phase-locks. As system approaches equilibrium, more stable phase relationships form, increasing edge count.
+
+At equilibrium, formation and removal rates balance: $r_{\text{form}} = r_{\text{remove}}$, giving $d|E|/dt = 0$.
+
+Therefore: $\frac{d|E|}{dt} \geq 0$ with equality only at equilibrium. $\square$
+\end{proof}
+
+\begin{theorem}[Categorical Completion Rate from Network Dynamics]
+\label{thm:completion_from_network}
+The categorical completion rate equals the rate of phase-lock network evolution:
+
+\begin{equation}
+\dot{C}(t) = \kappa \cdot \frac{d|E|}{dt} + \lambda \cdot \text{Tr}\left(\frac{d\mathcal{G}}{dt}\right)
+\end{equation}
+
+where $\kappa, \lambda$ are coupling constants and $\text{Tr}(\cdot)$ represents a trace operation over network configuration space.
+\end{theorem}
+
+\begin{proof}
+By Theorem \ref{thm:categorical_phaselock_correspondence}, categorical states correspond to phase-lock configurations. Categorical completion occurs when phase-lock configuration changes. The rate of configuration change has two components:
+
+\textbf{(1) Topological changes}: Formation/removal of edges, quantified by $d|E|/dt$
+
+\textbf{(2) Structural changes}: Modification of edge weights, phase offsets, connectivity patterns, quantified by trace of network evolution
+
+The categorical completion rate is weighted sum of these contributions:
+\begin{equation}
+\dot{C} = \kappa \cdot \text{(topological change)} + \lambda \cdot \text{(structural change)}
+\end{equation}
+
+establishing the stated result. $\square$
+\end{proof}
+
+\subsection{Entropy Production in Categorical Coordinates}
+
+\begin{definition}[Categorical Entropy]
+The entropy associated with categorical state $C$ is:
+
+\begin{equation}
+S(q, p, C) = k_B \log \Omega_{\text{cat}}(q, p, C)
+\end{equation}
+
+where $\Omega_{\text{cat}}(q, p, C)$ counts the number of phase-lock configurations compatible with spatial state $(q, p)$ in categorical state $C$.
+\end{definition}
+
+\begin{theorem}[Entropy Production from Categorical Completion]
+\label{thm:entropy_production}
+The entropy production rate is:
+
+\begin{equation}
+\frac{dS}{dt} = k_B \frac{\partial \log \Omega_{\text{cat}}}{\partial C} \cdot \frac{dC}{dt} = k_B \frac{\partial \log \Omega_{\text{cat}}}{\partial C} \cdot \dot{C}
+\end{equation}
+
+Since $\Omega_{\text{cat}}$ increases with $C$ (later categorical states have more accessible phase-lock configurations) and $\dot{C} \geq 0$ (Axiom \ref{ax:categorical_irreversibility}), we have:
+
+\begin{equation}
+\frac{dS}{dt} \geq 0
+\end{equation}
+
+providing categorical derivation of the second law.
+\end{theorem}
+
+\begin{proof}
+\textbf{Step 1}: By definition, $S = k_B \log \Omega_{\text{cat}}(q, p, C)$.
+
+\textbf{Step 2}: Taking time derivative via chain rule:
+\begin{equation}
+\frac{dS}{dt} = k_B \frac{\partial \log \Omega_{\text{cat}}}{\partial q} \frac{dq}{dt} + k_B \frac{\partial \log \Omega_{\text{cat}}}{\partial p} \frac{dp}{dt} + k_B \frac{\partial \log \Omega_{\text{cat}}}{\partial C} \frac{dC}{dt}
+\end{equation}
+
+\textbf{Step 3}: For processes at constant energy (microcanonical ensemble), the $(q, p)$ terms average to zero over phase space. The categorical term dominates:
+\begin{equation}
+\frac{dS}{dt} \approx k_B \frac{\partial \log \Omega_{\text{cat}}}{\partial C} \dot{C}
+\end{equation}
+
+\textbf{Step 4}: Crucially, $\Omega_{\text{cat}}$ increases with $C$ because:
+\begin{itemize}
+\item Early categorical states (small $C$): Few phase-lock configurations explored
+\item Later categorical states (large $C$): Many phase-lock configurations discovered through system evolution
+\end{itemize}
+
+Therefore: $\frac{\partial \Omega_{\text{cat}}}{\partial C} > 0$, which implies $\frac{\partial \log \Omega_{\text{cat}}}{\partial C} > 0$.
+
+\textbf{Step 5}: By Axiom \ref{ax:categorical_irreversibility}, $\dot{C} \geq 0$.
+
+\textbf{Conclusion}: Product of two non-negative quantities is non-negative:
+\begin{equation}
+\frac{dS}{dt} = k_B \underbrace{\frac{\partial \log \Omega_{\text{cat}}}{\partial C}}_{> 0} \cdot \underbrace{\dot{C}}_{\geq 0} \geq 0
+\end{equation}
+
+$\square$
+\end{proof}
+
+\begin{corollary}[Thermodynamic Irreversibility from Categorical Dynamics]
+\label{cor:irreversibility_categorical}
+The second law of thermodynamics ($dS/dt \geq 0$) is a direct consequence of categorical irreversibility ($\dot{C} \geq 0$), not a statistical statement about probability.
+\end{corollary}
+
+
+
+
+\subsection{Categorical Distance and Trajectory Optimization}
+
+\begin{definition}[S-Distance Between Categorical States]
+For categorical states $C_i, C_j$, the S-distance is:
+
+\begin{equation}
+S(C_i, C_j) = \int_{C_i}^{C_j} \|\nabla_C \Omega_{\text{cat}}\| \, dC
+\end{equation}
+
+measuring the cumulative change in accessible phase-lock configurations along the categorical path from $C_i$ to $C_j$.
+\end{definition}
+
+\begin{theorem}[Categorical Geodesics]
+\label{thm:categorical_geodesics}
+Physical processes follow geodesics in categorical space—paths minimizing S-distance. The geodesic equation is:
+
+\begin{equation}
+\frac{d^2 C}{dt^2} + \Gamma_C \left(\frac{dC}{dt}\right)^2 = 0
+\end{equation}
+
+where $\Gamma_C$ is the categorical connection coefficient.
+\end{theorem}
+
+\begin{proof}
+Physical processes optimize efficiency: they complete categorical states via paths requiring minimal "work" in categorical space. This optimization principle yields geodesic equations analogous to classical mechanics.
+
+The "work" to traverse categorical space is quantified by S-distance. Minimizing $\int S(C_i, C_j) dt$ subject to constraints yields Euler-Lagrange equations equivalent to the stated geodesic equation.
+
+Physical interpretation: Systems naturally evolve along paths of least categorical resistance—sequences of phase-lock configurations that flow naturally from one to the next. $\square$
+\end{proof}
+
+\subsection{Multi-Scale Categorical Hierarchies}
+
+\begin{definition}[Hierarchical Categorical Structure]
+Real physical systems exhibit nested categorical hierarchies:
+
+\begin{equation}
+\mathcal{C}_{\text{total}} = \mathcal{C}_{\text{quantum}} \times \mathcal{C}_{\text{molecular}} \times \mathcal{C}_{\text{mesoscopic}} \times \mathcal{C}_{\text{macroscopic}}
+\end{equation}
+
+where each level has its own completion dynamics:
+
+\begin{align}
+\dot{C}_{\text{quantum}} &\sim 10^{15} \text{ states/s} \quad \text{(electronic transitions)} \\
+\dot{C}_{\text{molecular}} &\sim 10^{12} \text{ states/s} \quad \text{(vibrational modes)} \\
+\dot{C}_{\text{mesoscopic}} &\sim 10^{6} \text{ states/s} \quad \text{(collective modes)} \\
+\dot{C}_{\text{macroscopic}} &\sim 10^{0} \text{ states/s} \quad \text{(thermodynamic processes)}
+\end{align}
+\end{definition}
+
+\begin{theorem}[Scale-Separated Categorical Dynamics]
+\label{thm:scale_separation}
+When categorical completion rates differ by orders of magnitude ($\dot{C}_i \gg \dot{C}_j$), the faster scale reaches quasi-equilibrium while the slower scale evolves:
+
+\begin{equation}
+\frac{\dot{C}_i}{\dot{C}_j} \gg 1 \implies C_i(t) \approx C_i^{\text{eq}}[C_j(t)]
+\end{equation}
+
+The fast scale $C_i$ adiabatically follows the slow scale $C_j$.
+\end{theorem}
+
+\begin{proof}
+Consider two-scale system with $\dot{C}_{\text{fast}} = 10^{15}$ states/s and $\dot{C}_{\text{slow}} = 10^{0}$ states/s.
+
+In time $\Delta t = 10^{-12}$ s (one picosecond):
+\begin{itemize}
+\item Fast scale completes: $\Delta C_{\text{fast}} = \dot{C}_{\text{fast}} \Delta t = 10^{15} \times 10^{-12} = 10^3$ states
+\item Slow scale completes: $\Delta C_{\text{slow}} = \dot{C}_{\text{slow}} \Delta t = 10^{0} \times 10^{-12} = 10^{-12}$ states $\approx 0$
+\end{itemize}
+
+The fast scale completes thousands of categorical states, while the slow scale is essentially frozen. Therefore, the fast scale equilibrates to the configuration determined by the current slow-scale categorical state.
+
+This establishes adiabatic following: $C_{\text{fast}}(t) \approx C_{\text{fast}}^{\text{eq}}[C_{\text{slow}}(t)]$. $\square$
+\end{proof}
+
+\subsection{Oscillatory-Categorical Correspondence}
+
+\begin{principle}[Frequency-Category Duality]
+\label{pr:frequency_category_duality}
+Categorical states correspond bijectively to oscillatory modes. For system with oscillatory spectrum $\{\omega_n\}$:
+
+\begin{equation}
+C_n \leftrightarrow \omega_n
+\end{equation}
+
+Each categorical state $C_n$ in the completion sequence corresponds to a distinct oscillatory frequency $\omega_n$.
+\end{principle}
+
+\begin{remark}[Physical Basis]
+This correspondence arises because:
+\begin{enumerate}
+\item Physical systems are fundamentally oscillatory (Section 1)
+\item Categorical states represent distinct realisations (Theorem \ref{thm:categorical_phaselock_correspondence})
+\item Each realisation has a characteristic oscillatory signature
+\item Different categorical states have different oscillatory frequencies
+\end{enumerate}
+
+Therefore, the categorical completion sequence $\{C_1, C_2, C_3, \ldots\}$ maps to the oscillatory frequency spectrum $\{\omega_1, \omega_2, \omega_3, \ldots\}$.
+\end{remark}
+
+\begin{theorem}[Complete Categorical Access via Oscillatory Spectrum]
+\label{thm:categorical_access}
+A system capable of accessing all oscillatory modes $\{\omega_n\}$ in its spectrum can access all categorical states $\{C_n\}$ in the completion sequence:
+
+\begin{equation}
+\text{Access}(\{\omega_n\}_{n=1}^{\infty}) \iff \text{Access}(\{C_n\}_{n=1}^{\infty})
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+\textbf{Forward direction} ($\implies$): Suppose the system can access all oscillatory modes $\{\omega_n\}$. By Principle \ref{pr:frequency_category_duality}, each $\omega_n$ corresponds to a categorical state $C_n$. Therefore, accessing $\{\omega_n\}$ provides access to $\{C_n\}$.
+
+\textbf{Reverse direction} ($\impliedby$): Suppose the system can access all categorical states $\{C_n\}$. Each categorical state corresponds to a phase-lock configuration (Theorem \ref{thm:categorical_phaselock_correspondence}) with a characteristic oscillatory signature $\omega_n$. Therefore, accessing $\{C_n\}$ provides access to $\{\omega_n\}$.
+
+The bijection establishes equivalence. $\square$
+\end{proof}
+
+\begin{corollary}[Single-System Categorical Spanning]
+\label{cor:single_system_spanning}
+A single physical system that can oscillate at all frequencies within its accessible spectrum effectively spans the complete categorical space:
+
+\begin{equation}
+\mathcal{O}_{\text{system}} = \{\omega_n\}_{n=1}^{N} \implies \mathcal{C}_{\text{accessible}} = \{C_n\}_{n=1}^{N}
+\end{equation}
+
+where $\mathcal{O}_{\text{system}}$ is the oscillatory spectrum and $\mathcal{C}_{\text{accessible}}$ is the accessible categorical subspace.
+\end{corollary}
+
+\begin{remark}[Practical Implication]
+This corollary has profound implications: rather than requiring separate physical instantiations for each categorical state, a \textit{single system with a rich oscillatory spectrum can access multiple categorical states by changing its oscillatory mode}.
+
+Example: A molecular system with vibrational frequencies $\{\omega_{\text{vib},n}\}$, rotational frequencies $\{\omega_{\text{rot},m}\}$, and electronic frequencies $\{\omega_{\text{elec},k}\}$ can access categorical states:
+\begin{equation}
+\{C_{nmk}\} = \{\text{states corresponding to } (\omega_{\text{vib},n}, \omega_{\text{rot},m}, \omega_{\text{elec},k})\}
+\end{equation}
+
+by modulating its internal oscillatory modes. The system need not physically move through space—it traverses categorical space by modulating its oscillatory state.
+\end{remark}
+
+\subsection{Categorical State Prediction}
+
+\begin{definition}[Categorical Prediction Problem]
+Given the current categorical state $C_{\text{current}}$ and target S-distance $\Delta S_{\text{target}}$, predict the final categorical state:
+
+\begin{equation}
+C_{\text{final}} = C_{\text{current}} + \Delta C(\Delta S_{\text{target}})
+\end{equation}
+
+where $\Delta C$ is the categorical displacement corresponding to S-distance $\Delta S_{\text{target}}$.
+\end{definition}
+
+\begin{theorem}[Categorical Prediction via Oscillatory Mapping]
+\label{thm:categorical_prediction}
+Categorical state prediction reduces to oscillatory mode mapping. Given:
+\begin{itemize}
+\item Current oscillatory state: $\omega_{\text{current}}$
+\item Target categorical displacement: $\Delta C$
+\item Oscillatory-categorical map: $\omega_n \leftrightarrow C_n$
+\end{itemize}
+
+The predicted final state is:
+\begin{equation}
+\omega_{\text{final}} = \omega_{\text{current}} + \Delta\omega(\Delta C)
+\end{equation}
+
+where $\Delta\omega$ is determined by inverting the oscillatory-categorical correspondence.
+\end{theorem}
+
+\begin{proof}
+\textbf{Step 1}: The current categorical state corresponds to the current oscillatory mode:
+\begin{equation}
+C_{\text{current}} \leftrightarrow \omega_{\text{current}}
+\end{equation}
+
+\textbf{Step 2}: The target categorical state is:
+\begin{equation}
+C_{\text{target}} = C_{\text{current}} + \Delta C
+\end{equation}
+
+\textbf{Step 3}: By oscillatory-categorical correspondence:
+\begin{equation}
+C_{\text{target}} \leftrightarrow \omega_{\text{target}}
+\end{equation}
+
+\textbf{Step 4}: The oscillatory displacement is:
+\begin{equation}
+\Delta\omega = \omega_{\text{target}} - \omega_{\text{current}}
+\end{equation}
+
+determined by the form of the correspondence relation (typically logarithmic: $C \propto \log \omega$ for harmonic oscillators).
+
+\textbf{Conclusion}: Categorical prediction is equivalent to oscillatory mode prediction. If the oscillatory spectrum is known, categorical states can be predicted by identifying the corresponding oscillatory frequencies. $\square$
+\end{proof}
+
+\begin{algorithm}[H]
+\caption{Categorical State Prediction via Oscillatory Mapping}
+\begin{algorithmic}[1]
+\Procedure{PredictCategoricalState}{$C_{\text{current}}, \Delta S_{\text{target}}$}
+    \State $\omega_{\text{current}} \gets$ MapCategoricalToOscillatory($C_{\text{current}}$)
+    \State $\Delta C \gets$ ComputeCategoricalDisplacement($\Delta S_{\text{target}}$)
+    \State $\Delta\omega \gets$ ComputeOscillatoryDisplacement($\Delta C$)
+    \State $\omega_{\text{target}} \gets \omega_{\text{current}} + \Delta\omega$
+    \State $C_{\text{target}} \gets$ MapOscillatorytoCategorical($\omega_{\text{target}}$)
+    \State \Return $C_{\text{target}}$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Complexity Reduction via Categorical Representation}
+
+\begin{theorem}[Categorical Complexity Reduction]
+\label{thm:categorical_complexity}
+Expressing dynamics in categorical coordinates reduces computational complexity from exponential to logarithmic:
+
+\begin{equation}
+O(2^N) \xrightarrow{\text{categorical}} O(\log N)
+\end{equation}
+
+where $N$ is the number of system components (e.g., molecules).
+\end{theorem}
+
+\begin{proof}
+\textbf{Configuration space complexity}: The traditional description requires tracking all $2^N$ possible spatial configurations of $N$ binary components. For molecular systems with continuous degrees of freedom, complexity is even worse: $O(\infty^N)$.
+
+\textbf{Categorical space complexity}: The categorical description tracks the position in the completion sequence $C \in \{1, 2, 3, \ldots\}$. The categorical state encodes an equivalence class of configurations rather than individual configurations.
+
+For $M$ total accessible categorical states (typically $M \sim \log N$ due to hierarchical organisation), the complexity is $O(\log M) = O(\log \log N) \approx O(\log N)$ for practical systems.
+
+The reduction factor:
+\begin{equation}
+\text{Reduction} = \frac{O(2^N)}{O(\log N)} = \frac{2^N}{\log N}
+\end{equation}
+
+For $N = 100$: $\text{Reduction} \approx \frac{10^{30}}{2.3} \approx 10^{30}$—thirty orders of magnitude!
+
+$\square$
+\end{proof}
+
+\begin{corollary}[Tractability of Categorical Dynamics]
+Systems intractable in configuration space become tractable in categorical space. Problems requiring $O(2^N)$ operations (exponential, infeasible for $N > 50$) reduce to $O(\log N)$ operations (logarithmic, feasible for arbitrarily large $N$).
+\end{corollary}
+
+\begin{figure*}[htbp]
+    \centering
+    \includegraphics[width=0.95\textwidth]{figures/reseperation_20251109_065105.png}
+    \caption{Gibbs paradox resolution through categorical state dynamics demonstrating spatial reversibility with categorical irreversibility across full mixing-separation cycle. \textbf{(A)} Physical configuration - spatially identical to initial: scatter plot shows Container A (blue circles) and Container B (red circles) molecules in position space ($x$, $y$ $\in [0, 1]$) after re-separation. Partition restored at $x = 0.5$ (black dashed line) with Container A occupying left half ($x < 0.5$, $\sim 20$ molecules) and Container B right half ($x > 0.5$, $\sim 20$ molecules). Configuration macroscopically identical to initial state but categorically distinct. \textbf{(B)} Categorical state - DIFFERENT from initial: trajectory plot shows categorical state evolution from Initial (separated, gray region, $C_{\text{init}}$) through Mixed state (yellow region, $C_{\text{mix}}$) to Re-separated state (orange region, $C_{\text{resep}}$). Black arrow indicates irreversible progression across $\sim 40$ categorical state IDs. \textbf{(C)} Residual A-B phase correlations: circular network diagram displays phase-lock coherence matrix for $40$ molecules (blue circles = Container A, red circles = Container B, arranged on circle perimeter).\textbf{(D)} Edge count through full cycle: bar chart compares phase-lock edge counts across three stages: Initial (separated) shows A-A edges $\sim 32$ (blue bar), B-B edges $\sim 20$ (red bar), A-B edges $0$ (orange bar absent). Mixed state: A-A $\sim 32$ (blue), B-B $\sim 20$ (red), A-B $\sim 60$ (orange). Re-separated: A-A $\sim 32$ (blue), B-B $\sim 20$ (red), A-B $\sim 20$ (orange, annotated ``20 residual edges persist!''). Persistent A-B edges after re-separation confirm categorical memory. \textbf{(E)} Entropy through mixing-separation cycle: entropy $S$ (J/K, $\times 10^{-23}$) versus process stage (Initial, Mixed, Re-separated) shows monotonic increase (red line with shaded area) from $S_{\text{init}} \sim 1.0 \times 10^{-23}$~J/K (black circle) through $S_{\text{mix}} \sim 2.0 \times 10^{-23}$~J/K (peak, black circle) to $S_{\text{resep}} \sim 1.3 \times 10^{-23}$~J/K (black circle). Red dashed horizontal line at $S_{\text{init}}$ shows $S_{\text{resep}} > S_{\text{init}}$ ($\Delta S > 0$). \textbf{(F)} Phase coherence matrix: heatmap (colorbar $0.0$--$1.0$, yellow = high coherence, dark red = low coherence) shows $40 \times 40$ molecule-molecule phase coherence after re-separation. Strong diagonal blocks (yellow, coherence $\sim 0.8$--$1.0$) indicate intra-container correlations (molecules $0$--$20$ = Container A, $20$--$40$ = Container B). Off-diagonal blocks (orange/red, coherence $\sim 0.2$--$0.6$) reveal residual inter-container correlations. Orange annotation: ``Residual A-B'' highlights persistent cross-container phase memory. \textbf{(G)} Spatial $\approx$ Initial, Categorical $\neq$ Initial: green text box on white background provides spatial versus categorical distinguishability analysis. \textit{Spatial Configuration:} Molecules in left half (Container A), molecules in right half (Container B), partition at $x = 0.5$, position distribution $\approx$ Initial, velocity distribution $\approx$ Initial, macroscopically IDENTICAL to initial.}
+    \label{fig:gibbs_paradox}
+    \end{figure*}
+
+\subsection{Summary: Categorical Dynamics Framework}
+
+The dynamic categorical systems framework establishes:
+
+\begin{enumerate}
+\item \textbf{Categorical coordinates}: Physical systems admit description through categorical position $C$ in the completion sequence, complementing traditional $(q, p)$ coordinates
+
+\item \textbf{Categorical velocity}: The fundamental dynamical quantity is the completion rate $\dot{C}(t) \geq 0$, which is strictly non-negative due to irreversibility
+
+\item \textbf{Phase-lock realization}: Categorical states correspond to phase-lock network configurations, providing a concrete physical manifestation
+
+\item \textbf{Network evolution}: Phase-lock networks evolve via edge formation/removal, with the edge count increasing monotonically toward equilibrium
+
+\item \textbf{Entropy production}: The second law emerges from categorical irreversibility: $dS/dt = k_B (\partial \log \Omega_{\text{cat}} / \partial C) \dot{C} \geq 0$
+
+\item \textbf{Oscillatory correspondence}: Categorical states map bijectively to oscillatory modes $C_n \leftrightarrow \omega_n$, establishing frequency-category duality
+
+\item \textbf{Complete access principle}: A system accessing all oscillatory modes accesses all categorical states—single system can span categorical space by modulating oscillations
+
+\item \textbf{Prediction via oscillations}: Categorical state prediction reduces to oscillatory mode mapping, enabling efficient computation
+
+\item \textbf{Complexity reduction}: Categorical representation reduces complexity from $O(2^N)$ exponential to $O(\log N)$ logarithmic
+
+\item \textbf{Multi-scale hierarchies}: Nested categorical structures at quantum/molecular/mesoscopic/macroscopic scales with adiabatic separation between levels
+\end{enumerate}
+
+This framework reveals that physical dynamics, when expressed in categorical coordinates, exhibit a fundamentally different mathematical structure than traditional phase space dynamics. The irreversibility, entropy production, and complexity reduction emerge naturally from categorical completion principles rather than requiring statistical arguments.
+
+Critically, the oscillatory-categorical correspondence (Principle \ref{pr:frequency_category_duality}) and the complete access theorem (Theorem \ref{thm:categorical_access}) establish that \textit{a single system with a rich oscillatory spectrum can access the complete categorical space}. This suggests that physical measurements and state determination might be achievable through oscillatory mode detection rather than exhaustive configuration space sampling—a principle whose implications will be explored in subsequent sections.

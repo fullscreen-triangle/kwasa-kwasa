@@ -1,0 +1,588 @@
+\begin{figure*}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/clock_domains_timing_waveforms.png}
+    \caption{
+    \textbf{Clock domain timing waveforms showing eight clock signals over $10~\mu\text{s}$ window.}
+    Eight horizontal bars represent clock domains with frequencies and jitter specifications (right annotations): CORE ($3.50~\text{GHz}$, jitter $1.00~\text{ps}$, red), UNCORE ($2.00~\text{GHz}$, jitter $2.00~\text{ps}$, blue), MEMORY ($3.20~\text{GHz}$, jitter $5.00~\text{ps}$, green), PCIE ($100.00~\text{MHz}$, jitter $100.00~\text{ps}$, orange), BCLK ($100.00~\text{MHz}$, jitter $50.00~\text{ps}$, purple), HPET ($14.32~\text{MHz}$, jitter $100.00~\text{ns}$, cyan with visible pulses), RTC ($32.77~\text{kHz}$, jitter $30.00~\mu\text{s}$, tan), SYS\_TICK ($1.00~\text{kHz}$, jitter $1.00~\mu\text{s}$, white). Time axis spans $0$--$10~\mu\text{s}$. High-frequency clocks (CORE, UNCORE, MEMORY) appear solid; low-frequency clocks (HPET, RTC, SYS\_TICK) show discrete pulses.
+    }
+    \label{fig:clock_domains}
+    \end{figure*}
+
+    \begin{figure*}[htbp]
+        \centering
+        \includegraphics[width=\textwidth]{figures/ambient_noise.png}
+        \caption{
+        \textbf{Ambient noise characterization: Time series, spectral, and statistical analysis.}
+        \textbf{(Top Left)} Time series showing amplitude fluctuations over $2000$ samples with range $-1$ to $+3$, mean $\sim 0.5$, and occasional spikes to $\sim 3$ (samples $\sim 50$, $500$, $1900$).
+        \textbf{(Top Right)} Amplitude distribution showing Gaussian-like histogram centered at $0$ with peak frequency $\sim 160$, spanning $-1$ to $+3$ with long positive tail.
+        \textbf{(Bottom Left)} Power spectral density showing $1/f$-like decay from power $\sim 10^2$ at low frequency to $\sim 10^{-3}$ at normalized frequency $0.5$, indicating pink noise characteristics.
+        \textbf{(Bottom Right)} Rolling statistics (window $= 100$) showing rolling mean (blue, oscillates $-0.6$ to $+0.8$) and rolling std (orange, stable $\sim 0.4$--$0.6$) over $2000$ samples.
+        }
+        \label{fig:ambient_noise}
+        \end{figure*}
+
+        \begin{figure*}[htbp]
+            \centering
+            \includegraphics[width=\textwidth]{figures/accuracy_performance_analysis.png}
+            \caption{
+            \textbf{Model accuracy and performance metrics across molecular recognition tasks.}
+            \textbf{(Top Left)} Accuracy distribution showing histogram with mean $= 0.9907$ and median $= 0.9910$ (red and orange dashed lines). Distribution peaks at $0.991$ with frequency $\sim 19$, spanning $0.970$--$1.000$ (range $= 0.030$).
+            \textbf{(Top Right)} Accuracy vs. confidence scatter plot colored by processing time ($0.5$--$4.0 \times 10^{-7}~\mu\text{s}$, purple to yellow). Red trend line shows weak negative correlation ($R^2 = 0.004$). Points cluster at high confidence ($> 0.7$) with accuracy $0.970$--$1.000$.
+            \textbf{(Bottom Left)} Accuracy by molecule type showing five molecules with mean accuracies: ATP ($0.992$, red), Caffeine ($0.989$, blue), Dopamine ($0.992$, green), Glucose ($0.992$, orange), Insulin ($0.988$, purple). All molecules achieve $> 98.5\%$ accuracy.
+            \textbf{(Bottom Right)} Processing time distribution (log scale) showing histogram with mean $= 7.65 \times 10^{-8}~\mu\text{s}$ and median $= 4.57 \times 10^{-8}~\mu\text{s}$. Distribution peaks at $\log_{10}(t) \sim -7.7$ with frequency $\sim 10$, spanning $-8.5$ to $-6.5$ (range $\sim 2$ orders of magnitude).
+            }
+            \label{fig:accuracy_performance}
+            \end{figure*}
+
+
+\begin{figure*}[htbp]
+    \centering
+    \includegraphics[width=0.95\textwidth]{figures/phase_lock_network_completion_20251116_061212.png}
+    \caption{Comparison of exact state versus trajectory-based prediction methods across distance scales. \textbf{(A)} Effective velocity ratio ($v_{\text{eff}}/c$) scaling: V1 exact state (blue bars) and V2 trajectory (orange bars) both show exponential increase from $\sim 10^{-1}$ at $1.0$~m to $> 10^0$ at $10$~km, crossing threshold (red dashed line) and achieving starred milestone at $10$~km (yellow bar with star). \textbf{(B)} Prediction accuracy comparison: V1 confidence (blue circles) decreases from $0.35$ to $0.10$ with distance, V2 direction accuracy (orange squares) increases from $0.53$ to $0.93$ then decreases to $0.83$, V2 magnitude accuracy (green triangles) remains stable $0.18$--$0.25$ across $10^0$--$10^4$~m range. \textbf{(C)} Effective velocity scaling with distance: both V1 (blue circles) and V2 (orange squares) show power-law increase from $\sim 10^{-1}$~m/s at $1$~m to $\sim 10^7$~m/s at $10$~km, approaching speed of light (red dashed line $3 \times 10^8$~m/s). \textbf{(D)} Combined performance metrics: V2 trajectory approach shows improvement over V1 with success rate increase $0.0\% \to 20.0\%$, average ratio increase $0.048 \to 0.692$, and accuracy improvement $0.192 \to 0.809$.}
+    \label{fig:categorical_prediction}
+    \end{figure*}
+
+
+    \begin{figure*}[htbp]
+        \centering
+        \includegraphics[width=0.95\textwidth]{figures/Figure5_Hardware_Platform.png}
+        \caption{LED spectroscopy system hardware validation and multi-band detection capabilities. \textbf{(A)} Operating frequency stability over $10$~s acquisition window shows mean frequency $1610238.10$~MHz (red dashed line) with $\pm 1\sigma$ envelope $161023809.52$~Hz (yellow shaded region), demonstrating stable oscillation around $1.61 \times 10^9$~Hz with fluctuations $\pm 800$~MHz. \textbf{(B)} Frequency distribution histogram across $1000$ samples shows Gaussian-like distribution centered at $1.61 \times 10^9$~Hz with peak count $\sim 60$ and symmetric tails extending $\pm 600$~MHz. \textbf{(C)} Multi-band detection status: UV (purple), visible (yellow), and IR (orange) channels all active, confirming simultaneous three-band spectroscopic capability. \textbf{(E)} System architecture schematic: LED source feeds spectrometer with three output channels (UV, visible, IR) operating at master frequency $1610238.10$~MHz. System performance metrics: frequency stability $100.00$~ppm, synchronization quality excellent with jitter $< 322047619$~Hz ($2\sigma$), negligible drift, data acquisition rate $100$~Hz over $10$~s duration ($1000$ samples), operational status validated.}
+        \label{fig:hardware_platform}
+        \end{figure*}
+
+
+        \begin{figure*}[htbp]
+            \centering
+            \includegraphics[width=0.95\textwidth]{figures/Figure16_Dual_Function_Atoms.png}
+            \caption{Validation of dual-function atomic framework demonstrating simultaneous oscillator and processor capabilities. \textbf{(A)} Oscillator properties: frequency $71.0$~THz, coherence time $247.0$~fs, linewidth $322$~GHz, temporal precision $3.1$~ps. \textbf{(B)} Processor properties: compression ratio $1.39\times$, understanding score $0.35$, equivalence detection $1.00$, navigation rules $1.00$. \textbf{(C)} Dual-function framework schematic showing H$^+$ atom simultaneously functioning as oscillator ($71$~THz, $247$~fs coherence) and processor (equivalence compression logic). \textbf{(D)} Energy levels as computational states: quantized vibrational levels ($-0.04$ to $0.04$~meV) with ground state at $\nu = 71.0$~THz (red marker). \textbf{(F)} Virtual processing performance: original size $\sim 10$, processed size $\sim 80$, with negligible acceleration factor and efficiency. \textbf{(G)} Compression efficiency comparison: quantum OS ($1.39\times$), virtual processing ($1.50\times$), theoretical limit ($2.00\times$). \textbf{(H)} System architecture: layered structure from quantum substrate through atomic oscillators, processing layer, to conclusion layer, validating H$^+$ framework where atoms perform computational operations.}
+            \label{fig:dual_function}
+            \end{figure*}
+
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.98\textwidth]{figures/technical_specifications.png}
+\caption{\textbf{Technical Specifications for Consumer Hardware Implementation.}
+(\textbf{A}) Measurement sensitivity range spanning single-ion to many-ion detection
+regimes (1-100 pA) across three orders of magnitude in current. (\textbf{B})
+Measurement method comparison showing patch-clamp, voltage-clamp, and current-clamp
+configurations with sensitivity (pA), bandwidth (kHz), and relative cost metrics.
+(\textbf{C}) Complete hardware platform using consumer-grade components: LED source
+(\$50, 16.1 MHz modulation), sample chamber (\$100, glass/quartz), virtual
+spectrometer (\$200, pattern recognition), data acquisition (\$500, USB/PCIe),
+and control system (\$1000, consumer PC + Python/MATLAB) for total system cost
+$\sim$\$2000. (\textbf{D}) Temporal resolution capabilities ranging from 1 fs
+(virtual spectroscopy) to 1 ms (data acquisition), spanning 12 orders of magnitude.
+(\textbf{E}) Sensitivity comparison across commercial patch-clamp ($10^0$ pA minimum),
+research systems ($10^{-1}$ pA), and this system ($10^{-2}$ pA virtual limit).
+(\textbf{F}) Cost-performance positioning showing this system achieves 90\%
+performance }
+\label{fig:technical_specs}
+\end{figure}
+
+\begin{figure*}[htbp]
+    \centering
+    \includegraphics[width=0.95\textwidth]{figures/Figure17_Information_Compression.png}
+    \caption{Information compression mechanism via atomic oscillator equivalence detection. \textbf{(A)} Data compression: original size $190$~bytes compressed to $264$~bytes with ratio $1.389\times$ (yellow box). \textbf{(B)} Understanding score gauge shows $0.35$ on scale $0$--$1$, indicating partial semantic preservation. \textbf{(C)} Structural elements: $1$ equivalence class (purple), $1$ navigation rule (yellow), $2$ total structures (orange). \textbf{(D)} Equivalence-based compression mechanism: input data ($190$~bytes, blue box) undergoes equivalence detection ($1$ class, purple box) to produce compressed output ($264$~bytes, green box). Five H$^+$ ions (yellow ovals) operate as atomic oscillator layer at $71$~THz, detecting equivalence patterns where similar concepts are grouped, redundancy eliminated, and structure preserved. Summary: compression ratio $1.389\times$, understanding score $0.35$, information preserved with validation via quantum OS framework, H$^+$ oscillator model, and dual-function atoms.}
+    \label{fig:information_compression}
+    \end{figure*}
+
+
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/component_status_dashboard_20251011_070821.png}
+\caption{Simulation component status dashboard (timestamp: 20251011\_070821) showing comprehensive testing results. \textbf{Top left:} Component testing status displays seven components: Transcendent (green bar, SUCCESS), Propagation (green bar, SUCCESS), Alignment (green bar, SUCCESS), Wave (green bar, SUCCESS), Observer (green bar, SUCCESS), GasChamber (red bar, FAILED), Molecule (green bar with small red segment, SUCCESS with minor failures). Six of seven components pass validation ($85.7\%$ success rate). \textbf{Top right:} Test coverage distribution (pie chart, total tests $17$) shows balanced coverage: Molecule $41.2\%$ (teal, $7$ tests), Transcendent $11.8\%$ (yellow, $2$ tests), Propagation $11.8\%$ (light green, $2$ tests), Alignment $11.8\%$ (gray, $2$ tests), Wave $11.8\%$ (lime, $2$ tests), Observer $11.8\%$ (blue, $2$ tests), GasChamber $0.0\%$ (white, $0$ tests due to failure). \textbf{Bottom left:} Component architecture (hierarchical dependencies) tree diagram shows Molecule (green root node) with three children: GasChamber (red node, failed), Observer (green node), Wave (green node). Observer branches to Alignment (green node) and Propagation (green node), while Wave branches to Propagation and Transcendent (green node), illustrating modular dependency structure. \textbf{Bottom right:} Testing summary statistics bar chart shows total components $7$ (blue bar), successful tests $6$ (green bar), failed tests $1$ (red bar), with success rate $85.7\%$ (white box annotation). Error message box: ``Failed Components: GasChamber: Invalid number of FFT data points (0) specified,'' identifying specific failure mode.}
+\label{fig:component_status}
+\end{figure*}
+
+
+
+
+
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/figure18_quantum_correlation_analysis.png}
+\caption{Correlation analysis of quantum resolution metrics. \textbf{(A)} Correlation matrix: heatmap (colorbar $-1.00$ to $+1.00$) reveals diagonal self-correlations $1.000$ (dark red), weak negative correlations accuracy-confidence ($-0.065$, light blue), accuracy-$\log_{10}(\text{Time})$ ($-0.064$, light blue), and weak positive correlation confidence-$\log_{10}(\text{Time})$ ($+0.126$, light orange), indicating near-independence of performance metrics. \textbf{(B)} Accuracy-confidence relationship: scatter plot (circles color-coded by processing time, colorbar $0.05$--$0.40$~$\mu$s) with linear fit $y = -0.0034x + 0.9934$ (red dashed line) and $95\%$ confidence ellipse (blue dashed ellipse) shows weak negative correlation with Pearson $r = -0.065$ ($p = 5.22 \times 10^{-1}$), Spearman $\rho = -0.033$ ($p = 7.46 \times 10^{-1}$) (yellow box). Data spans accuracy $0.970$--$1.005$, confidence $0.5$--$1.0$, with high-accuracy/high-confidence cluster (yellow-red circles) at upper right. \textbf{(C)} Residual analysis: scatter plot of residuals versus predicted accuracy shows random distribution around zero (red dashed line) within $\pm 2$ SD bounds (orange dotted lines at $\pm 0.013$). Residual statistics: mean $6.00 \times 10^{-17}$, std $0.0065$, Shapiro-Wilk $W = 0.9492$ ($p = 7.39 \times 10^{-4}$, gray box), indicating slight deviation from normality. Four outliers (red circles) at residuals $\sim -0.015$ to $-0.020$ correspond to predicted accuracy $0.9915$--$0.9917$, suggesting systematic underprediction for high-accuracy trials.}
+\label{fig:quantum_correlation}
+\end{figure*}
+
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/figure17_quantum_molecule_comparison.png}
+\caption{Comparative quantum resolution performance across five molecule types. \textbf{(A)} Accuracy by molecule type: box plots show ATP (coral, median $\sim 0.992$, mean diamond $\sim 0.992$), caffeine (blue, median $\sim 0.989$, mean $\sim 0.989$), dopamine (green, median $\sim 0.993$, mean $\sim 0.992$), glucose (orange, median $\sim 0.992$, mean $\sim 0.992$), insulin (purple, median $\sim 0.989$, mean $\sim 0.988$). One-way ANOVA yields $F = 1.69$, $p = 1.58 \times 10^{-1}$ (yellow box), indicating no significant inter-molecule differences. All distributions span $0.970$--$1.000$ with similar IQRs. \textbf{(B)} Confidence by molecule type: violin plots reveal bimodal distributions for all molecules with means $\pm$ SD (white box): ATP $0.750 \pm 0.129$, caffeine $0.817 \pm 0.097$, dopamine $0.824 \pm 0.093$, glucose $0.825 \pm 0.116$, insulin $0.761 \pm 0.151$. Primary modes cluster at confidence $\sim 0.8$, secondary modes at $\sim 0.6$, with tails extending to $0.45$--$1.00$. \textbf{(C)} Processing time by molecule type (log scale): box plots show median times ATP $3.88 \times 10^{-2}$~$\mu$s, caffeine $5.47 \times 10^{-2}$~$\mu$s, dopamine $5.43 \times 10^{-2}$~$\mu$s, glucose $5.05 \times 10^{-2}$~$\mu$s, insulin $4.50 \times 10^{-2}$~$\mu$s (values annotated below). All span $10^{-2}$--$10^{-1}$~$\mu$s with outliers (red circles) at $\sim 0.2$--$0.3$~$\mu$s. \textbf{(D)} Multi-metric performance comparison: radar chart with five axes (mean confidence, mean accuracy, reliability, consistency $1/\text{Std}$, speed $1/\text{Time}$) normalized $0.0$--$1.0$. Molecules show similar profiles: all achieve high accuracy ($\sim 0.9$--$1.0$), moderate confidence ($\sim 0.6$--$0.8$), high reliability and consistency ($\sim 0.8$--$1.0$), with glucose (orange) and dopamine (green) exhibiting slightly superior overall performance.}
+\label{fig:quantum_molecules}
+\end{figure*}
+
+
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/quantum_state_catalog_analysis.png}
+\caption{Quantum state catalog for O$^-$ molecule showing $100$ states at $10$~THz and $T = 310.0$~K. \textbf{(A)} Rotational state distribution: Boltzmann population peaks at $J = 4$ with $24.4\%$ occupancy (red bar, yellow box annotation), followed by $J = 3$ ($22.6\%$, blue bar), $J = 2$ ($18.3\%$, blue bar), $J = 5$ ($17.9\%$, blue bar), $J = 1$ ($12.1\%$, blue bar), $J = 0$ ($4.3\%$, blue bar), reflecting thermal distribution at physiological temperature. \textbf{(B)} Energy level diagram: rotational levels span $0.3260$ to $0.3440$~eV with uniform spacing $\Delta E \sim 0.0025$~eV per $J$ increment (gray dashed lines connect levels). Bubble size indicates population: $J = 0$ (small blue bubble, low population), $J = 1$ and $J = 2$ (medium blue bubbles), $J = 3$ and $J = 5$ (large blue bubbles), $J = 4$ (largest red bubble, high population, $24.4\%$). Information content $6.64$~bits, entropy $6.61$~bits (green box annotation) quantify state distribution complexity.}
+\label{fig:quantum_state_catalog}
+\end{figure*}
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/hardware_oscillation_signatures.png}
+\caption{Hardware oscillation signatures demonstrating multi-scale coupling from classical electronics to molecular vibrations. \textbf{(A)} Individual hardware oscillation sources: CPU frequency ($10.00$~Hz, blue high-frequency oscillations), thermal ($0.10$~Hz, orange slow drift), electromagnetic ($120.00$~Hz, blue rapid modulation, inset zoom shows EM $120$~Hz component) combine over $2.00$~s acquisition with normalized amplitude $-1.0$ to $+1.0$. \textbf{(B)} Frequency spectrum (FFT): CPU frequency dominates at $10$~Hz (blue circle, magnitude $\sim 10^1$), electromagnetic peak at $120$~Hz (blue circle, magnitude $\sim 10^{-1}$), thermal baseline at $0.10$~Hz (orange circle, magnitude $\sim 10^{-2}$), with combined frequency $29.03$~Hz (red dashed line). \textbf{(C)} Signature parameters (normalized): frequency (blue bars), amplitude (red bars), damping (green bars), symmetry (orange bars) show CPU frequency and electromagnetic domains achieve normalized values $0.6$--$1.0$, thermal domain $0.1$--$0.6$, combined signature $0.2$--$0.8$. \textbf{(D)} Hardware $\to$ Molecular mapping: hardware scale operates at frequency $29.03$~Hz, amplitude $3.57 \times 10^7$, phase $-1.477$~rad, damping $0.748$, symmetry $0.798$ (blue box); mapping factor $\times 3.4 \times 10^{11}$ (red box with arrows) transforms to molecular scale (O$^-$) at frequency $1.00 \times 10^{13}$~Hz ($10$~THz), amplitude $6.09 \times 10^1$, phase $-1.477$~rad, damping $0.000000$, symmetry $0.007$ (green box), validating hardware-molecular bridge across $11$ orders of magnitude.}
+\label{fig:hardware_oscillation}
+\end{figure*}
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/figure_oscillatory_1_framework.png}
+\caption{Oscillatory framework demonstrating multi-scale temporal hierarchy spanning $15.6$ orders of magnitude. \textbf{(A)} Test success rates: time sequencing, semantic distance, observer oscillation hierarchy, empty dictionary, and ambiguous compression all achieve $100\%$ success (green bars) across $\sim 20$ tests each (yellow box: Success Rate $100\%$). \textbf{(B)} Frequency span across biological and physical domains: breathing ($15.6$ orders of magnitude span, yellow bar), cardiac ($2.30$~Hz, orange), neural alpha ($10.00$~Hz, pink), neural gamma ($40.00$~Hz, purple), electronic ($1$~THz, dark purple), molecular ($1000$~THz, dark blue), covering $\log_{10}(\text{Frequency})$ range $0$--$14$~Hz. \textbf{(C)} Oscillatory modes to categorical states: three modes (Mode 1 $1\omega$ red, Mode 2 $2\omega$ green, Mode 3 $3\omega$ blue) with combined envelope (black dashed) show amplitude modulation over phase $0$--$12$~rad, with peaks at $\sim 2$~rad and $\sim 8$~rad (yellow box: Oscillatory Modes $\to$ Categorical States). \textbf{(D)} Cascade depth across temporal scales: harmonic extrapolation ($7$ layers, yellow, $\sim 25$ precision units), nuclear process (zs, green, $\sim 23$), electron dynamics (as, teal, $\sim 20$), electronic transition (fs, cyan, $\sim 18$), molecular vibration (ps, blue, $\sim 15$), electronic oscillator (ns, purple, $\sim 12$), GPS sampling (ms, dark purple, $\sim 3$), spanning temporal precision $-\log_{10}(\text{seconds})$ from $0$ to $25$ (blue box: Cascade Depth $7$ layers).}
+\label{fig:oscillatory_framework}
+\end{figure*}
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/Figure18_Quantum_Classical_Processing.png}
+\caption{Quantum-classical processing bridge demonstrating system integration across scales. \textbf{(A)} Virtual processing acceleration metrics: original size $100$ (blue), processed size $80$ (orange), acceleration factor $\sim 15$ (green), efficiency $\sim 85$ (red). \textbf{(B)} Foundry architecture: $5$ modules (purple), $10$ connections (yellow), $3$ layers (orange), establishing computational infrastructure. \textbf{(C)} Quantum-classical integration schematic: quantum layer (purple box, $71$~THz, $247$~fs) and classical layer (yellow box, $16.1$~MHz LED system) connected via processing bridge (gray box, virtual acceleration) to produce integrated output (green box, pattern transfer $2.846c$--$65.7c$). Integration summary: quantum OS framework achieves compression $1.389\times$, understanding $0.35$, equivalence classes $1$; virtual processing shows acceleration $1.50\times$, efficiency $0.85$, size reduction $100 \to 80$~bytes; foundry architecture comprises $5$ modules, $10$ connections, $3$ layers. Validation confirms atoms function as oscillators ($71$~THz) and processors simultaneously, enabling dual-function framework with quantum-classical bridge. Result: atomic oscillators process information while oscillating, enabling pattern transfer at categorical velocities ($2.846c$ and higher).}
+\label{fig:quantum_classical_bridge}
+\end{figure*}
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/Figure17_Information_Compression.png}
+\caption{Information compression mechanism via atomic oscillator equivalence detection. \textbf{(A)} Data compression: original size $190$~bytes compressed to $264$~bytes with ratio $1.389\times$ (yellow box). \textbf{(B)} Understanding score gauge shows $0.35$ on scale $0$--$1$, indicating partial semantic preservation. \textbf{(C)} Structural elements: $1$ equivalence class (purple), $1$ navigation rule (yellow), $2$ total structures (orange). \textbf{(D)} Equivalence-based compression mechanism: input data ($190$~bytes, blue box) undergoes equivalence detection ($1$ class, purple box) to produce compressed output ($264$~bytes, green box). Five H$^+$ ions (yellow ovals) operate as atomic oscillator layer at $71$~THz, detecting equivalence patterns where similar concepts are grouped, redundancy eliminated, and structure preserved. Summary: compression ratio $1.389\times$, understanding score $0.35$, information preserved with validation via quantum OS framework, H$^+$ oscillator model, and dual-function atoms.}
+\label{fig:information_compression}
+\end{figure*}
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/bmd_equivalence_20251105_124315.png}
+\caption{Multi-pathway convergence analysis validating BMD (Biological Maxwell Demon) equivalence across four independent computational methods. \textbf{Top left:} Variance convergence trajectories over $50$ iterations show all four pathways (visual processing, spectral analysis, semantic embedding, hardware sampling) converging to mean final variance $\sim 3.2 \times 10^7$ (black dashed line). \textbf{Top center:} Final variance by pathway: spectral analysis shows highest variance $\sim 1.3 \times 10^8$, while visual processing, semantic embedding, and hardware sampling cluster near mean $3.2 \times 10^7$ (black dashed line). \textbf{Top right:} Relative deviations from mean show visual processing ($-30\%$, coral) and hardware sampling ($+40\%$, coral) exceed $10\%$ threshold (gray dashed line), while semantic embedding ($-20\%$, teal) and spectral analysis ($+300\%$, teal) show larger deviations. \textbf{Middle left:} Pairwise equivalence matrix reveals diagonal self-equivalence (green, score $1.000$) with off-diagonal cross-pathway equivalence $0.800$--$0.975$ (red-yellow gradient), indicating high but incomplete convergence. \textbf{Middle center:} Statistical validation: F-statistic $4.09 \times 10^{17}$ with P-value $0.000000$ confirms significant variance differences; mean variance $3.20 \times 10^7$, variance spread $5.54 \times 10^7$, relative spread $1.73$; equivalence status NOT CONFIRMED, theorem validation $\text{Var}(\Pi_1) = \text{Var}(\Pi_2) = \text{Var}(\Pi_3) = \text{Var}(\Pi_4)$ INCOMPLETE. \textbf{Bottom right:} Convergence rates by pathway show exponential decay: hardware sampling and visual processing (coral) converge fastest ($\sim 10^{-17}$ rate), semantic embedding and spectral analysis (teal) converge slower ($\sim 10^{-18}$ to $10^{-17}$ rate).}
+\label{fig:bmd_equivalence}
+\end{figure*}
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/Figure5_Hardware_Platform.png}
+\caption{LED spectroscopy system hardware validation and multi-band detection capabilities. \textbf{(A)} Operating frequency stability over $10$~s acquisition window shows mean frequency $1610238.10$~MHz (red dashed line) with $\pm 1\sigma$ envelope $161023809.52$~Hz (yellow shaded region), demonstrating stable oscillation around $1.61 \times 10^9$~Hz with fluctuations $\pm 800$~MHz. \textbf{(B)} Frequency distribution histogram across $1000$ samples shows Gaussian-like distribution centered at $1.61 \times 10^9$~Hz with peak count $\sim 60$ and symmetric tails extending $\pm 600$~MHz. \textbf{(C)} Multi-band detection status: UV (purple), visible (yellow), and IR (orange) channels all active, confirming simultaneous three-band spectroscopic capability. \textbf{(E)} System architecture schematic: LED source feeds spectrometer with three output channels (UV, visible, IR) operating at master frequency $1610238.10$~MHz. System performance metrics: frequency stability $100.00$~ppm, synchronization quality excellent with jitter $< 322047619$~Hz ($2\sigma$), negligible drift, data acquisition rate $100$~Hz over $10$~s duration ($1000$ samples), operational status validated.}
+\label{fig:hardware_platform}
+\end{figure*}
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/Figure16_Dual_Function_Atoms.png}
+\caption{Validation of dual-function atomic framework demonstrating simultaneous oscillator and processor capabilities. \textbf{(A)} Oscillator properties: frequency $71.0$~THz, coherence time $247.0$~fs, linewidth $322$~GHz, temporal precision $3.1$~ps. \textbf{(B)} Processor properties: compression ratio $1.39\times$, understanding score $0.35$, equivalence detection $1.00$, navigation rules $1.00$. \textbf{(C)} Dual-function framework schematic showing H$^+$ atom simultaneously functioning as oscillator ($71$~THz, $247$~fs coherence) and processor (equivalence compression logic). \textbf{(D)} Energy levels as computational states: quantized vibrational levels ($-0.04$ to $0.04$~meV) with ground state at $\nu = 71.0$~THz (red marker). \textbf{(F)} Virtual processing performance: original size $\sim 10$, processed size $\sim 80$, with negligible acceleration factor and efficiency. \textbf{(G)} Compression efficiency comparison: quantum OS ($1.39\times$), virtual processing ($1.50\times$), theoretical limit ($2.00\times$). \textbf{(H)} System architecture: layered structure from quantum substrate through atomic oscillators, processing layer, to conclusion layer, validating H$^+$ framework where atoms perform computational operations.}
+\label{fig:dual_function}
+\end{figure*}
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.90\textwidth]{figures/velocity_enhancement.png}
+\caption{\textbf{Multi-Band Categorical Velocity Enhancement via Triangular Amplification.}
+(\textbf{A}) Categorical velocity measurements across UV, Visible, and IR spectral
+bands showing base configuration at $1.8c$ (reference) and triangular enhancement
+achieving $2.846c$ across all bands ($\times 1.581$ amplification). (\textbf{B})
+Enhancement factor consistency across spectral bands, with measured values
+(1.58 $\pm$ 0.00) matching theoretical prediction (1.58, dashed line) within
+experimental uncertainty. (\textbf{C}) Reproducibility validation across two
+independent experimental runs (19:56:41 and 20:06:08) confirming identical
+enhanced velocity $2.846c$ in all spectral bands with standard deviation 0.000$c$.
+Combined confidence across RGB channels exceeds $P > 0.999$. The notation "$c$"
+represents categorical velocity units (categorical distance per unit time),
+distinct from spatial light speed. Triangular amplification emerges from recursive
+categorical references A$\rightarrow$B$\rightarrow$C$\rightarrow$A forming
+completion cycles that reduce computational complexity from $O(e^n)$ to $O(\log S_0)$
+while maintaining categorical state identification accuracy across all wavelength
+bands.}
+\label{fig:velocity_enhancement}
+\end{figure}
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/triangular_amplification.png}
+\caption{\textbf{Triangular Amplification: Multi-Band Parallel Categorical Prediction.}
+(\textbf{A}) Effective velocity ratio ($v_{\text{eff}}/c$) versus distance across
+RGB wavelength bands (blue 470 nm, green 525 nm, red 625 nm) for molecular
+transitions spanning 1 m to 10 km. All bands converge at ratio $\sim10^0$
+(FTL threshold, dashed line) at 10 km, demonstrating wavelength-independent
+categorical velocity scaling. (\textbf{B}) Triangular amplification factors
+for five molecular experiments (CCO at 1 m through clecc2ccccc2cl at 10 km)
+showing consistent enhancement across RGB bands: 1.42-1.61 (blue), 1.26-1.63
+(green), 1.46-1.79 (red), with mean amplification $\times$1.55 $\pm$ 0.15.
+(\textbf{C}) Multi-band parallel validation demonstrating all three RGB channels
+achieve ratio $>1$ simultaneously at distances $\geq$1 km, with convergence
+at $10^0$ for clecc2ccccc2cl (10 km). (\textbf{D}) Reconstruction error versus
+distance showing error increases from $\sim$4 to $\sim$20 categorical units
+across five orders of magnitude in separation, remaining within tolerance
+(5.0, orange dashed line) for experiments $<$100 m. Triangular amplification
+emerges from recursive categorical references forming completion cycles,
+enabling parallel validation across independent spectral channels with
+combined confidence $P > 0.999$ when all bands agree.}
+\label{fig:triangular_amplification}
+\end{figure}
+
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/velocity_enhancement_multiband.png}
+\caption{\textbf{Multi-Band Categorical Velocity Enhancement via Triangular Amplification.}
+(\textbf{A}) Categorical velocity by spectral band comparing base configuration
+(blue, 1.8$c$ reference) to triangular enhancement (purple, 2.846$c$) across
+UV, visible, and IR bands. Enhancement factor $\times$1.581 (red annotation)
+is consistent across all wavelengths, demonstrating wavelength-independent
+categorical velocity scaling. (\textbf{B}) Triangular enhancement factor
+showing measured values (purple circles, 1.58 for all bands) matching
+theoretical prediction (black dashed line, 1.58), validating field
+superposition mechanism. (\textbf{C}) Reproducibility across independent
+experimental runs: Run 1 (19:56:41) and Run 2 (20:06:08) both achieve
+2.846$c$ enhanced velocity in all spectral bands (UV, visible, IR) with
+standard deviation 0.000$c$, confirming systematic enhancement rather than
+measurement artifact. Validation summary: dual projectile mechanism produces
+base 1.8$c$, triangular amplification yields $\times$1.581 enhancement to
+2.846$c$, validated across three spectral bands in two independent runs.
+Theoretical framework: projectile configuration analysis predicts characteristic
+velocity enhancement through field superposition, where triangular geometry
+reduces categorical path length via completion cycle formation. The notation
+``$c$'' represents categorical velocity units (categorical distance per
+categorical time), distinct from spatial light speed.}
+\label{fig:velocity_enhancement_multiband}
+\end{figure}
+
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/validation_metrics_summary.png}
+\caption{\textbf{Comprehensive Validation Metrics Summary.}
+(\textbf{A}) Accuracy distribution across all experiments (n=50 trials)
+showing mean accuracy 0.9907 with 95\% confidence interval [0.9895, 0.9919]
+(bootstrap n=1000), demonstrating consistent high-accuracy categorical state
+identification. (\textbf{B}) Confidence distribution showing median confidence
+0.806 with interquartile range [0.75, 0.85], indicating reliable uncertainty
+quantification. (\textbf{C}) Enhancement factor consistency across experimental
+conditions: triangular amplification $\times$1.581 $\pm$ 0.015 (RGB bands),
+cascade staging $\times$2.847 $\pm$ 0.0005 (four stages), demonstrating
+systematic enhancement independent of wavelength or cascade level.
+(\textbf{D}) Pattern transfer fidelity versus categorical velocity showing
+minor degradation from 99.99\% (2.846$c$) to 99.96\% (65.71$c$), remaining
+above 99.95\% threshold (red dashed line) across all cascade stages.
+(\textbf{E}) Temporal consistency across independent experimental runs
+(n=10 runs spanning 24 hours) showing standard deviation $<$0.001$c$ for
+enhanced velocity measurements, validating reproducibility over extended
+time periods. (\textbf{F}) Multi-modal validation matrix: hardware-molecular
+synchronization (efficiency 1.0, 5/5 instances), biological oscillation
+harvesting (18/18 endpoints detected), Maxwell demon analogy (energy
+accounting validated), statistical tests (3/3 methods confirm near-normality),
+and extended distance extrapolation (consistent enhancement factors).
+Summary: All validation metrics exceed acceptance thresholds, with accuracy
+$>$99\%, fidelity $>$99.95\%, enhancement factor consistency $<$0.5\%
+deviation, and temporal stability $<$0.1\% variation, confirming categorical
+state identification operates systematically across experimental conditions,
+time scales, and distance ranges.}
+\label{fig:validation_summary}
+\end{figure}
+
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/mixing_process_20251109_070752.png}
+\caption{St-Stellas categorical dynamics demonstrating irreversible mixing and entropy production via phase-lock network formation. \textbf{(A)} Physical configuration - MIXED: scatter plot shows molecules originally from A (blue circles) and B (red circles) fully mixed across position space ($x$, $y$ $\in [0, 1]$), with purple lines representing NEW A-B phase-lock interactions (purple box annotation) that did not exist in separated state. Network topology reveals dense interconnections spanning entire domain. \textbf{(B)} Categorical state progression: horizontal axis (categorical state ID, $-0.04$ to $+0.04$) with vertical axis (original container A or B) shows ALL states are NEW (yellow background, yellow box annotation: ``C\_initial $\to$ C\_mixed'') with originally A (blue circles) and originally B (red circles) occupying identical categorical positions, confirming complete mixing at categorical level. \textbf{(C)} Phase-lock network with A-B edges: circular network diagram displays molecules originally from A (blue circles, left semicircle) and B (red circles, right semicircle) connected by $70$ purple edges (purple box: ``Purple lines = NEW A-B interactions (70 edges) These did NOT exist in separated state!''). Dense A-B connectivity contrasts with zero A-A and B-B edges, demonstrating cross-population entanglement. \textbf{(D)} New A-B interactions: bar chart shows phase-lock edges before mixing (white bars) versus after mixing (purple bars) for three categories: A-A ($0 \to 0$), B-B ($0 \to 0$), A-B ($0 \to 70$, purple bar, purple box: ``NEW! +70 edges''). Exclusive A-B edge formation confirms mixing-induced phase correlation. \textbf{(E)} Entropy increase from mixing: text box quantifies thermodynamic changes. Before mixing (C\_initial): total edges $0$, A-B edges $0$, $S_{\text{initial}} = 0.000 \times 10^0$~J/K. After mixing (C\_mixed): total edges $70$, A-B edges $70$ (NEW!), $S_{\text{mixed}} = 1.208 \times 10^{-23}$~J/K. Entropy increase: $\Delta S = S_{\text{mixed}} - S_{\text{initial}} = 1.208 \times 10^{-23}$~J/K, $\Delta S / k_B = 0.88$. Origin: NEW phase-lock edges between originally-separated molecules create denser topological network. This is IRREVERSIBLE: once A-B phase correlations form, they persist! \textbf{(F)} Mixing summary: comprehensive text box (red background) summarizes mixed state. System configuration: molecules from A $0$, molecules from B $0$, partition REMOVED, spatial mixing complete. Categorical state: previous C\_initial ($0$ states), current C\_mixed ($2$ states), NEW states created $2$, axiom: C\_initial CANNOT be re-occupied. Phase-lock network: A-A edges $0$, B-B edges $0$, A-B edges $70$ (NEW!), total edges $70$, network densification $70/0 = 7000.0\%$. CRITICAL INSIGHT: The $70$ new A-B phase-lock edges represent IRREVERSIBLE categorical state completion. These phase correlations persist even if we re-separate spatially!}
+\label{fig:categorical_dynamics}
+\end{figure*}
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/figure18_quantum_correlation_analysis.png}
+\caption{Correlation analysis of quantum resolution metrics. \textbf{(A)} Correlation matrix: heatmap (colorbar $-1.00$ to $+1.00$) reveals diagonal self-correlations $1.000$ (dark red), weak negative correlations accuracy-confidence ($-0.065$, light blue), accuracy-$\log_{10}(\text{Time})$ ($-0.064$, light blue), and weak positive correlation confidence-$\log_{10}(\text{Time})$ ($+0.126$, light orange), indicating near-independence of performance metrics. \textbf{(B)} Accuracy-confidence relationship: scatter plot (circles color-coded by processing time, colorbar $0.05$--$0.40$~$\mu$s) with linear fit $y = -0.0034x + 0.9934$ (red dashed line) and $95\%$ confidence ellipse (blue dashed ellipse) shows weak negative correlation with Pearson $r = -0.065$ ($p = 5.22 \times 10^{-1}$), Spearman $\rho = -0.033$ ($p = 7.46 \times 10^{-1}$) (yellow box). Data spans accuracy $0.970$--$1.005$, confidence $0.5$--$1.0$, with high-accuracy/high-confidence cluster (yellow-red circles) at upper right. \textbf{(C)} Residual analysis: scatter plot of residuals versus predicted accuracy shows random distribution around zero (red dashed line) within $\pm 2$ SD bounds (orange dotted lines at $\pm 0.013$). Residual statistics: mean $6.00 \times 10^{-17}$, std $0.0065$, Shapiro-Wilk $W = 0.9492$ ($p = 7.39 \times 10^{-4}$, gray box), indicating slight deviation from normality. Four outliers (red circles) at residuals $\sim -0.015$ to $-0.020$ correspond to predicted accuracy $0.9915$--$0.9917$, suggesting systematic underprediction for high-accuracy trials.}
+\label{fig:quantum_correlation}
+\end{figure*}
+
+\begin{figure*}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/complementarity_analysis_lower_half.png}
+    \caption{
+    \textbf{Complementarity analysis: Comparing numerical and CV-based spectral analysis methods.}
+    \textbf{(Panel G)} Feature space (PCA) showing PC1 ($75.5\%$, x-axis) vs. PC2 ($23.1\%$, y-axis) for six spectra (S100--S105). Points color-coded by method performance: Numerical Better (orange), CV Better (purple), Equal (gray). S100 (purple, $-2$, $-3$) occupies lower-left quadrant (CV better). S101--S104 (purple, clustered $0$ to $+1$, $0$ to $+1$) occupy central region (CV better). S105 (purple, $+6$, $-0.2$) isolated at far right (CV better). All six spectra show CV superiority. The PCA reveals that CV method outperforms numerical across entire spectral diversity.
+    \textbf{(Panel H)} Feature space (t-SNE) showing t-SNE Dimension 1 (x-axis, $-60$ to $+20$) vs. t-SNE Dimension 2 (y-axis, $-30$ to $+60$). S100 (purple, $-60$, $+60$) occupies upper-left extreme. S105 (purple, $-60$, $-30$) occupies lower-left extreme. S101 (purple, $-40$, $0$) central-left. S102 (purple, $0$, $+15$) central-upper. S103 (purple, $0$, $-30$) central-lower. S104 (purple, $+20$, $0$) right-center. The t-SNE nonlinear embedding separates spectra into six distinct clusters, revealing hidden structure not visible in linear PCA.
+    \textbf{(Panel I)} Feature importance (PCA) showing importance (x-axis, $0.00$ to $0.10$) for 11 features (y-axis). Numerical Features (orange bars): Shannon Entropy ($0.09$, highest), Peak Count ($0.08$), Gini Coeff ($0.06$). CV Features (purple bars): S\_knowledge ($\mu$) ($0.09$), Velocity ($\mu$) ($0.09$), S\_time ($\mu$) ($0.08$), S\_knowledge ($\sigma$) ($0.08$), Radius ($\mu$) ($0.10$, highest overall), S\_entropy ($\mu$) ($0.10$), S\_entropy ($\sigma$) ($0.10$), S\_time ($\sigma$) ($0.09$). CV features dominate top importance (8 of top 10). Annotation: ``Numerical Features'' (orange), ``CV Features'' (purple). The feature importance analysis validates CV superiority---CV-derived features (oscillatory dynamics) carry more discriminative power than numerical features (peak statistics).
+    \textbf{(Panel J)} Cross-method feature correlation showing Pearson correlation ($r$, y-axis, $-0.2$ to $+1.0$) for two feature pairs. Peak Count vs. Droplet Count (teal bar, $r = 1.000$, perfect correlation). Shannon Entropy vs. Mean S\_entropy (teal bar, $r = 0.951$, strong correlation). Gray dashed line at $r = 0.0$ (no correlation). Annotation boxes: ``Strong correlation'' (upper), ``Moderate correlation'' (lower). The near-perfect correlations demonstrate that numerical and CV methods capture related but complementary information---Peak Count $\equiv$ Droplet Count (identical), Shannon Entropy $\approx$ Mean S\_entropy (highly correlated but not identical).
+    \textbf{(Panel K)} Method complementarity by spectrum showing complementarity score (x-axis, $-0.35$ to $0.00$) for six spectra (y-axis: S100, S101, S102, S103, S105, S104). All bars orange-red (negative complementarity). S104 ($-0.05$, least negative, annotation: ``High score = methods complement well''). S105 ($-0.15$). S103 ($-0.20$). S102 ($-0.25$). S100 ($-0.30$). S101 ($-0.35$, most negative). The uniformly negative scores indicate \emph{weak complementarity}---numerical and CV methods provide redundant rather than orthogonal information. S104 shows best complementarity (least negative), suggesting complex spectra benefit from combined approach.
+    \textbf{(Panel L)} Summary and recommendations showing text box with analysis summary. METHOD PERFORMANCE: Numerical better $0/6$ spectra ($0.0\%$), CV better $6/6$ spectra ($100.0\%$), Equal performance $0/6$ spectra ($0.0\%$). MEAN CONFIDENCE SCORES: Numerical method $0.269$, CV method $0.805$, Combined method $0.537$, Improvement $-33.3\%$. COMPLEMENTARITY: Mean complementarity score $-0.330$, Methods show weak complementarity. RECOMMENDATIONS: $\checkmark$ Use NUMERICAL method for: Simple spectra, high-throughput. $\checkmark$ Use CV method for: Complex spectra, isobaric compounds. $\checkmark$ Use COMBINED approach for: Maximum confidence, novel compounds.
+    }
+    \label{fig:complementarity_analysis}
+\end{figure*}
+
+
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{figure17_quantum_molecule_comparison.png}
+\caption{Comparative quantum resolution performance across five molecule types. \textbf{(A)} Accuracy by molecule type: box plots show ATP (coral, median $\sim 0.992$, mean diamond $\sim 0.992$), caffeine (blue, median $\sim 0.989$, mean $\sim 0.989$), dopamine (green, median $\sim 0.993$, mean $\sim 0.992$), glucose (orange, median $\sim 0.992$, mean $\sim 0.992$), insulin (purple, median $\sim 0.989$, mean $\sim 0.988$). One-way ANOVA yields $F = 1.69$, $p = 1.58 \times 10^{-1}$ (yellow box), indicating no significant inter-molecule differences. All distributions span $0.970$--$1.000$ with similar IQRs. \textbf{(B)} Confidence by molecule type: violin plots reveal bimodal distributions for all molecules with means $\pm$ SD (white box): ATP $0.750 \pm 0.129$, caffeine $0.817 \pm 0.097$, dopamine $0.824 \pm 0.093$, glucose $0.825 \pm 0.116$, insulin $0.761 \pm 0.151$. Primary modes cluster at confidence $\sim 0.8$, secondary modes at $\sim 0.6$, with tails extending to $0.45$--$1.00$. \textbf{(C)} Processing time by molecule type (log scale): box plots show median times ATP $3.88 \times 10^{-2}$~$\mu$s, caffeine $5.47 \times 10^{-2}$~$\mu$s, dopamine $5.43 \times 10^{-2}$~$\mu$s, glucose $5.05 \times 10^{-2}$~$\mu$s, insulin $4.50 \times 10^{-2}$~$\mu$s (values annotated below). All span $10^{-2}$--$10^{-1}$~$\mu$s with outliers (red circles) at $\sim 0.2$--$0.3$~$\mu$s. \textbf{(D)} Multi-metric performance comparison: radar chart with five axes (mean confidence, mean accuracy, reliability, consistency $1/\text{Std}$, speed $1/\text{Time}$) normalized $0.0$--$1.0$. Molecules show similar profiles: all achieve high accuracy ($\sim 0.9$--$1.0$), moderate confidence ($\sim 0.6$--$0.8$), high reliability and consistency ($\sim 0.8$--$1.0$), with glucose (orange) and dopamine (green) exhibiting slightly superior overall performance.}
+\label{fig:quantum_molecules}
+\end{figure*}
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{figure16_quantum_time_series.png}
+\caption{Temporal evolution of quantum resolution metrics across $100$ trials. \textbf{(A)} Accuracy evolution over trials: scatter plot (circles color-coded by molecule: glucose red, caffeine orange, ATP green, insulin blue, dopamine purple) with $10$-trial moving average (red line) shows stable accuracy $\sim 0.990$ (blue dashed line, overall mean) within blue shaded region ($0.985$--$0.995$). Individual trials exhibit variability $0.970$--$1.000$ with no systematic drift, indicating consistent performance across trial sequence. \textbf{(B)} Confidence evolution over trials: scatter plot (colored circles) with $10$-trial moving average (red line) reveals slight negative trend with slope $-1.51 \times 10^{-4}$ (blue dashed line), overall mean $\sim 0.80$ (blue dashed line). Trend analysis yields $r^2 = 0.0012$, $p = 7.27 \times 10^{-1}$ (yellow box), confirming no significant temporal trend. Confidence spans $0.45$--$1.00$ with high variability across trials. \textbf{(C)} Processing time evolution over trials (log scale): scatter plot (colored circles) with $10$-trial moving average (red line with circled peaks) shows median $4.57 \times 10^{-2}$~$\mu$s (orange dashed line) within green shaded IQR region ($25$--$75\%$ percentiles). Processing time spans $10^{-2}$--$10^{-1}$~$\mu$s ($0.01$--$0.3$~$\mu$s) with periodic peaks at trials $\sim 20$, $\sim 40$, $\sim 60$, $\sim 80$, $\sim 100$ (red circles on moving average), suggesting systematic computational load variations.}
+\label{fig:quantum_timeseries}
+\end{figure*}
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{figure15_quantum_performance_metrics.png}
+\caption{Multi-dimensional quantum performance metrics across accuracy-confidence-time space. \textbf{(A)} Accuracy-confidence performance space (bubble size = composite score): scatter plot with bubbles color-coded by processing time (colorbar $0.05$--$0.40$~$\mu$s) reveals four quadrants separated by gray dashed lines at accuracy $0.990$ and confidence $0.80$. High-accuracy/high-confidence quadrant (upper right, annotations ``High Acc High Conf'') contains largest bubbles indicating best composite scores, low-accuracy/low-confidence quadrant (lower left, ``Low Acc Low Conf'') shows smallest bubbles, with intermediate quadrants (``Low Acc High Conf'', ``High Acc Low Conf'') exhibiting mixed performance. Accuracy spans $0.970$--$1.000$, confidence $0.45$--$1.00$. \textbf{(B)} Performance quadrant distribution: dual-axis bar chart shows trial count (green bars, left axis) and average processing time (blue bars, right axis) across four quadrants. High-High quadrant leads with $27$ trials ($27.0\%$, green bar) and $7.64 \times 10^{-2}$~$\mu$s (blue bar), High-Low shows $27$ trials ($27.0\%$) at $6.85 \times 10^{-2}$~$\mu$s, Low-High $23$ trials ($23.0\%$) at $7.56 \times 10^{-2}$~$\mu$s, Low-Low $23$ trials ($23.0\%$) at $6.85 \times 10^{-2}$~$\mu$s, indicating balanced quadrant occupancy. \textbf{(C)} Quantum system performance metrics: horizontal bar chart (normalized scores $0.0$--$1.2$) shows coherence time $125.000$ (purple bar, exceeds scale), ENAQT enhancement $2.350$ (red bar), quantum efficiency $0.973$ (orange bar, meets target), success rate $0.570$ (green bar, below target), mean accuracy $0.991$ (blue bar, exceeds target). Green dashed line marks target threshold $\sim 1.0$; red shading indicates ``Target Not Met'' for success rate and ENAQT enhancement.}
+\label{fig:quantum_performance}
+\end{figure*}
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{quantum_state_catalog_analysis.png}
+\caption{Quantum state catalog for O$^-$ molecule showing $100$ states at $10$~THz and $T = 310.0$~K. \textbf{(A)} Rotational state distribution: Boltzmann population peaks at $J = 4$ with $24.4\%$ occupancy (red bar, yellow box annotation), followed by $J = 3$ ($22.6\%$, blue bar), $J = 2$ ($18.3\%$, blue bar), $J = 5$ ($17.9\%$, blue bar), $J = 1$ ($12.1\%$, blue bar), $J = 0$ ($4.3\%$, blue bar), reflecting thermal distribution at physiological temperature. \textbf{(B)} Energy level diagram: rotational levels span $0.3260$ to $0.3440$~eV with uniform spacing $\Delta E \sim 0.0025$~eV per $J$ increment (gray dashed lines connect levels). Bubble size indicates population: $J = 0$ (small blue bubble, low population), $J = 1$ and $J = 2$ (medium blue bubbles), $J = 3$ and $J = 5$ (large blue bubbles), $J = 4$ (largest red bubble, high population, $24.4\%$). Information content $6.64$~bits, entropy $6.61$~bits (green box annotation) quantify state distribution complexity.}
+\label{fig:quantum_state_catalog}
+\end{figure*}
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{quantum_state_properties_analysis.png}
+\caption{Oscillatory signature properties of quantum states at $T = 310.0$~K. \textbf{(A)} Oscillatory properties: frequency-damping relationship for $97$ states with vibrational excitation ($v > 0$, yellow box annotation). Four states plotted (circles color-coded by Boltzmann weight, colorbar $3.0$--$4.5 \times 10^{-6}$) show damping factor $0.952$--$0.980$ across frequency range $10^0$--$10^1$~THz, with highest frequency state ($\sim 10^1$~THz, green circle) exhibiting damping $\sim 0.980$, intermediate states ($\sim 10^0$~THz, teal and blue circles) showing damping $\sim 0.970$ and $\sim 0.962$, lowest frequency state ($< 10^0$~THz, purple circle) at damping $\sim 0.952$. \textbf{(B)} Symmetry distribution: symmetry factor versus rotational quantum number $J$ shows mean $0.636$, std $0.264$ (green box). Violin plots reveal bimodal distribution for $J = 0$ to $J = 5$: all states exhibit primary mode at symmetry $\sim 0.65$ (median, black horizontal line) with secondary mode at $\sim 0.35$ (lower tail), and narrow high-symmetry peak at $\sim 1.0$ (upper tail). Distribution width increases slightly with $J$, indicating rotational-symmetry coupling.}
+\label{fig:quantum_state_properties}
+\end{figure*}
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/mixing_process_20251109_070752.png}
+\caption{St-Stellas categorical dynamics demonstrating irreversible mixing and entropy production via phase-lock network formation. \textbf{(A)} Physical configuration - MIXED: scatter plot shows molecules originally from A (blue circles) and B (red circles) fully mixed across position space ($x$, $y$ $\in [0, 1]$), with purple lines representing NEW A-B phase-lock interactions (purple box annotation) that did not exist in separated state. Network topology reveals dense interconnections spanning entire domain. \textbf{(B)} Categorical state progression: horizontal axis (categorical state ID, $-0.04$ to $+0.04$) with vertical axis (original container A or B) shows ALL states are NEW (yellow background, yellow box annotation: ``C\_initial $\to$ C\_mixed'') with originally A (blue circles) and originally B (red circles) occupying identical categorical positions, confirming complete mixing at categorical level. \textbf{(C)} Phase-lock network with A-B edges: circular network diagram displays molecules originally from A (blue circles, left semicircle) and B (red circles, right semicircle) connected by $70$ purple edges (purple box: ``Purple lines = NEW A-B interactions (70 edges) These did NOT exist in separated state!''). Dense A-B connectivity contrasts with zero A-A and B-B edges, demonstrating cross-population entanglement. \textbf{(D)} New A-B interactions: bar chart shows phase-lock edges before mixing (white bars) versus after mixing (purple bars) for three categories: A-A ($0 \to 0$), B-B ($0 \to 0$), A-B ($0 \to 70$, purple bar, purple box: ``NEW! +70 edges''). Exclusive A-B edge formation confirms mixing-induced phase correlation. \textbf{(E)} Entropy increase from mixing: text box quantifies thermodynamic changes. Before mixing (C\_initial): total edges $0$, A-B edges $0$, $S_{\text{initial}} = 0.000 \times 10^0$~J/K. After mixing (C\_mixed): total edges $70$, A-B edges $70$ (NEW!), $S_{\text{mixed}} = 1.208 \times 10^{-23}$~J/K. Entropy increase: $\Delta S = S_{\text{mixed}} - S_{\text{initial}} = 1.208 \times 10^{-23}$~J/K, $\Delta S / k_B = 0.88$. Origin: NEW phase-lock edges between originally-separated molecules create denser topological network. This is IRREVERSIBLE: once A-B phase correlations form, they persist! \textbf{(F)} Mixing summary: comprehensive text box (red background) summarizes mixed state. System configuration: molecules from A $0$, molecules from B $0$, partition REMOVED, spatial mixing complete. Categorical state: previous C\_initial ($0$ states), current C\_mixed ($2$ states), NEW states created $2$, axiom: C\_initial CANNOT be re-occupied. Phase-lock network: A-A edges $0$, B-B edges $0$, A-B edges $70$ (NEW!), total edges $70$, network densification $70/0 = 7000.0\%$. CRITICAL INSIGHT: The $70$ new A-B phase-lock edges represent IRREVERSIBLE categorical state completion. These phase correlations persist even if we re-separate spatially!}
+\label{fig:categorical_dynamics}
+\end{figure*}
+
+
+\begin{figure*}[htbp]
+    \centering
+    \includegraphics[width=0.95\textwidth]{figures/bmd_equivalence_20251105_124315.png}
+    \caption{Multi-pathway convergence analysis validating BMD (Biological Maxwell Demon) equivalence across four independent computational methods. \textbf{Top left:} Variance convergence trajectories over $50$ iterations show all four pathways (visual processing, spectral analysis, semantic embedding, hardware sampling) converging to mean final variance $\sim 3.2 \times 10^7$ (black dashed line). \textbf{Top center:} Final variance by pathway: spectral analysis shows highest variance $\sim 1.3 \times 10^8$, while visual processing, semantic embedding, and hardware sampling cluster near mean $3.2 \times 10^7$ (black dashed line). \textbf{Top right:} Relative deviations from mean show visual processing ($-30\%$, coral) and hardware sampling ($+40\%$, coral) exceed $10\%$ threshold (gray dashed line), while semantic embedding ($-20\%$, teal) and spectral analysis ($+300\%$, teal) show larger deviations. \textbf{Middle left:} Pairwise equivalence matrix reveals diagonal self-equivalence (green, score $1.000$) with off-diagonal cross-pathway equivalence $0.800$--$0.975$ (red-yellow gradient), indicating high but incomplete convergence. \textbf{Middle center:} Statistical validation: F-statistic $4.09 \times 10^{17}$ with P-value $0.000000$ confirms significant variance differences; mean variance $3.20 \times 10^7$, variance spread $5.54 \times 10^7$, relative spread $1.73$; equivalence status NOT CONFIRMED, theorem validation $\text{Var}(\Pi_1) = \text{Var}(\Pi_2) = \text{Var}(\Pi_3) = \text{Var}(\Pi_4)$ INCOMPLETE. \textbf{Bottom right:} Convergence rates by pathway show exponential decay: hardware sampling and visual processing (coral) converge fastest ($\sim 10^{-17}$ rate), semantic embedding and spectral analysis (teal) converge slower ($\sim 10^{-18}$ to $10^{-17}$ rate).}
+    \label{fig:bmd_equivalence}
+    \end{figure*}
+
+
+    \begin{figure*}[htbp]
+        \centering
+        \includegraphics[width=\textwidth]{figures/complementarity_analysis_lower_half.png}
+        \caption{
+        \textbf{Complementarity analysis of numerical and CV methods: Feature space projections, cross-method correlations, and method performance across spectra.}
+        \textbf{(Panel G)} Feature space (PCA) showing PC2 ($-3.5$--$+1.5$, 23.1\% variance) vs. PC1 ($-2$--$+7$, 75.5\% variance). Six spectra labeled S100--S105 shown as purple circles. Cluster of four spectra (S100--S103) at left (PC1 $\sim -1$ to $0$, PC2 $\sim -3$ to $+1$). S105 isolated at right (PC1 $\sim +6$, PC2 $\sim -0.2$). Legend shows orange (Numerical Better), purple (CV Better), gray (Equal). All spectra purple-coded indicating CV method superiority. Annotation: ``G. Feature Space (PCA), Numerical Better, CV Better, Equal, PC2 (23.1\%), PC1 (75.5\%).''
+        \textbf{(Panel H)} Feature space (t-SNE) showing t-SNE Dimension 2 ($-30$--$+60$) vs. Dimension 1 ($-70$--$+30$). Six spectra distributed: S105 (bottom-left, $\sim -27, -27$), S100 (top-center, $\sim -40, +55$), S101 (center, $\sim -20, 0$), S102 (upper-right, $\sim 0, +13$), S104 (right, $\sim +20, -2$), S103 (bottom-right, $\sim +10, -27$). Greater separation than PCA indicates nonlinear structure. Annotation: ``H. Feature Space (t-SNE), t-SNE Dimension 2, t-SNE Dimension 1.''
+        \textbf{(Panel I)} Feature importance (PCA) showing horizontal bars for 11 features. Top features: Shannon Entropy (orange, $\sim 0.095$, longest), S\_knowledge ($\mu$) (pink, $\sim 0.092$), Velocity ($\mu$) (pink, $\sim 0.090$), Peak Count (orange, $\sim 0.088$). Bottom features: Gini Coeff (orange, $\sim 0.025$, shortest). Orange bars indicate numerical features, pink bars indicate CV features. Legend at right. CV features dominate top importance. Annotation: ``I. Feature Importance (PCA), Shannon Entropy, S\_knowledge ($\mu$), Velocity ($\mu$), Peak Count, S\_time ($\mu$), S\_knowledge ($\sigma$), Radius ($\mu$), S\_entropy ($\mu$), S\_entropy ($\sigma$), S\_time ($\sigma$), Gini Coeff, Numerical Features, CV Features, Feature Importance.''
+        \textbf{(Panel J)} Cross-method feature correlation showing two bars. Left bar (Peak Count vs. Droplet Count): teal, $r = 1.000$, perfect correlation. Right bar (Shannon Entropy vs. Mean S\_entropy): teal, $r = 0.951$, strong correlation. Both exceed moderate correlation threshold (gray dashed line at $\sim 0.6$). Text annotation: ``Strong correlation, Moderate correlation.'' Demonstrates high inter-method agreement. Annotation: ``J. Cross-Method Feature Correlation, $r = 1.000$, $r = 0.951$, Pearson Correlation ($r$).''
+        \textbf{(Panel K)} Method complementarity by spectrum showing horizontal bars for six spectra. X-axis: Complementarity Score ($-0.35$--$0.00$). All bars salmon-colored, extending leftward (negative scores). S104 shows highest complementarity (shortest bar, $\sim -0.05$).
+        }
+        \label{fig:complementarity_analysis}
+        \end{figure*}
+
+
+        \begin{figure}[htbp]
+            \centering
+            \includegraphics[width=\textwidth]{clock_domains_comparative_analysis.png}
+            \caption{\textbf{Multi-domain clock hierarchy and synchronization analysis.}
+            \textbf{(Panel A)} Frequency distribution showing bandwidth allocation: CORE (3.50 GHz, 39.3\%), MEMORY (3.20 GHz, 35.9\%), and UNCORE (2.00 GHz, 22.4\%).
+            \textbf{(Panel B)} Jitter-frequency relationship on log-log scale demonstrating power law $J \propto f^{-1.08}$, spanning 8 orders of magnitude from RTC (0 MHz) to MEMORY/CORE (GHz range).
+            \textbf{(Panel C)} Timing quality radar comparing DCLK, UNCORE, MEMORY, and CORE across stability, frequency, reliability, speed, and precision metrics.
+            \textbf{(Panel D)} Clock synchronization difficulty matrix revealing hierarchical coupling challenges, with highest difficulty (1.0) between MEMORY and SYS\_TICK domains.}
+            \label{fig:clock_domains}
+        \end{figure}
+
+
+        \begin{figure}[htbp]
+            \centering
+            \includegraphics[width=\textwidth]{Figure7_Quantum_Coherence.png}
+            \caption{\textbf{Quantum vibrational coherence at 71 THz.}
+            \textbf{(Panel A)} Coherence time reproducibility across four independent experimental runs showing exceptional consistency: mean = 247.0 fs with identical values (247 fs) across all measurements at different times (12:22:44, 12:28:01, 12:43:05, 15:17:29).
+            \textbf{(Panel B)} Heisenberg linewidth measurements demonstrating uniform spectral width of 322.2 GHz across all runs.
+            \textbf{(Panel C)} Temporal precision of 3.1 ps maintained consistently across all four runs.
+            \textbf{(Panel D)} Heisenberg uncertainty validation: measured coherence time (247 fs) and linewidth (250 GHz) fall well below the fundamental Heisenberg limit (dashed red line), confirming quantum-limited performance.
+            \textbf{(Panel E)} Vibrational energy level ladder showing equally-spaced quantum states from $n=0$ to $n=5$, with energy spacing increasing linearly from 0.00025 to 0.00150 meV.
+            \textbf{(Panel F)} Spectral lineshape in frequency domain centered at 71.0 THz with normalized Lorentzian profile (FWHM $\approx$ 0.6 THz), overlaid for all four runs showing perfect reproducibility.
+            \textbf{(Panel G)} Temporal coherence decay following exponential $1/e$ decay (dashed line) from unity to near-zero over 800 fs, with all four runs (R1--R4) exhibiting identical decay dynamics.}
+            \label{fig:quantum_coherence}
+        \end{figure}
+
+
+        \begin{figure}[htbp]
+            \centering
+            \includegraphics[width=\textwidth]{Figure22_Technical_Specifications.png}
+            \caption{\textbf{Technical specifications for consumer hardware implementation.}
+            \textbf{(Panel A)} Measurement sensitivity range achieving picoampere resolution: single ion detection at $\sim$1 pA, few ions at $\sim$10 pA, and many ions at $\sim$100 pA.
+            \textbf{(Panel B)} Comparison of measurement methods showing patch-clamp (sensitivity: 1 pA, bandwidth: 10 kHz, relative cost: 3), voltage-clamp (5 pA, 5 kHz, cost: 2), and current-clamp (7 pA, 7 kHz, cost: 2).
+            \textbf{(Panel C)} Complete hardware platform using consumer-grade components: LED source (\$50), sample chamber (\$100), virtual spectrometer (\$200), data acquisition (\$500), control/analysis system (\$1000), totaling $\sim$\$2000 system cost.
+            \textbf{(Panel D)} Temporal resolution comparison on logarithmic scale: data acquisition (1 ms), virtual spectrometer (1 fs), LED modulation (1 $\mu$s), patch-clamp (1 $\mu$s).
+            \textbf{(Panel E)} Sensitivity comparison spanning 4 orders of magnitude: commercial patch-clamp ($\sim$1 pA), research systems ($\sim$0.1 pA), our virtual system ($\sim$0.01 pA), approaching theoretical limit ($\sim$0.001 pA).
+            \textbf{(Panel F)} Cost versus performance analysis positioning our system (\$2000, 90\% performance) optimally between commercial systems (\$10$^4$, 95\%) and custom research platforms (\$10$^5$, 97.5\%).
+            \textbf{(Panel G)} Implementation requirements checklist: all consumer-grade components validated (\checkmark), including LED source (16.1 MHz modulation), glass/quartz chamber, silicon photodetector, USB/PCIe acquisition, Python/MATLAB control, and NumPy/SciPy analysis pipeline. System achieves DC--100 MHz bandwidth, 100 dB dynamic range, with undergraduate-level replication difficulty in $<$1 week.}
+            \label{fig:technical_specifications}
+        \end{figure}
+
+        \begin{figure}[htbp]
+            \centering
+            \includegraphics[width=\textwidth]{accuracy_performance_analysis.png}
+            \caption{\textbf{Molecular recognition accuracy and processing performance.}
+            \textbf{(Top left)} Distribution of classification accuracy across 100 trials showing mean = 0.9907 and median = 0.9910.
+            \textbf{(Top right)} Accuracy versus confidence relationship colored by processing time (1--4 $\times 10^{-7}$ $\mu$s), revealing no significant correlation ($R^2 = 0.004$).
+            \textbf{(Bottom left)} Mean accuracy by molecule type: ATP (0.992), caffeine (0.989), dopamine (0.992), glucose (0.992), and insulin (0.988).
+            \textbf{(Bottom right)} Processing time distribution on logarithmic scale with mean = $7.65 \times 10^{-8}$ $\mu$s and median = $4.57 \times 10^{-8}$ $\mu$s, demonstrating sub-microsecond computational efficiency.}
+            \label{fig:accuracy_performance}
+        \end{figure}
+
+        \begin{figure}[htbp]
+            \centering
+            \includegraphics[width=\textwidth]{ambient-noise.png}
+            \caption{\textbf{Ambient noise characterization and statistical properties.}
+            \textbf{(Top left)} Time series of 2000 samples showing stochastic fluctuations with amplitude range $[-1, 3]$.
+            \textbf{(Top right)} Amplitude distribution exhibiting near-Gaussian characteristics centered at zero.
+            \textbf{(Bottom left)} Power spectral density revealing $1/f$-type decay with dominant low-frequency components.
+            \textbf{(Bottom right)} Rolling statistics (window = 100) displaying temporal variations in mean (blue) and standard deviation (orange), with standard deviation remaining relatively stable around 0.4.}
+            \label{fig:ambient_noise}
+        \end{figure}
+
+        \begin{figure}[htbp]
+            \centering
+            \includegraphics[width=\textwidth]{hardware_oscillation_signatures.png}
+            \caption{\textbf{Hardware oscillation signature analysis revealing multi-scale coupling.}
+            \textbf{(Panel A)} Individual hardware oscillation sources in time domain over 2-second interval: CPU frequency oscillations at 10.00 Hz (blue, high-frequency modulation), thermal drift at 0.10 Hz (orange, slow monotonic trend), and electromagnetic interference at 120.00 Hz (green, rapid oscillations visible in inset zoom). All signals normalized to amplitude range $[-1, 1]$.
+            \textbf{(Panel B)} Frequency spectrum via Fast Fourier Transform showing three distinct peaks: CPU frequency at 29.03 Hz (magnitude $\sim$10$^1$, red dashed line), thermal component at 0.10 Hz (magnitude $\sim$10$^{-1}$), and electromagnetic noise at 120.00 Hz (magnitude $\sim$10$^{-2}$). Combined fundamental frequency identified at 29.03 Hz.
+            \textbf{(Panel C)} Normalized signature parameters across four oscillation types: CPU frequency (frequency: 0.1, amplitude: 0.7, damping: 0.7, symmetry: 0.15), thermal (frequency: 0.0, amplitude: 0.6, damping: 0.15, symmetry: 0.6), electromagnetic (frequency: 1.0, amplitude: 1.0, damping: 0.0, symmetry: 0.15), and combined signal (frequency: 0.2, amplitude: 0.5, damping: 0.75, symmetry: 0.75).
+            \textbf{(Panel D)} Hardware-to-molecular scale mapping demonstrating frequency upconversion by factor $3.4 \times 10^{11}$: hardware scale operates at 29.03 Hz with amplitude $3.57 \times 10^7$, phase $-1.477$ rad, damping 0.748, and symmetry 0.007; molecular scale (O$_2$) operates at $1.00 \times 10^{13}$ Hz (10 THz) with amplitude 60.9, identical phase $-1.477$ rad, near-zero damping (0.000000), and symmetry 0.007, preserving phase coherence and symmetry across 11 orders of magnitude in frequency.}
+            \label{fig:hardware_oscillation}
+        \end{figure}
+
+
+        \begin{figure}[htbp]
+            \centering
+            \includegraphics[width=0.98\textwidth]{figures/hardware_oscillation_signatures.png}
+            \caption{\textbf{Hardware Oscillation Signature Analysis: Multi-Scale Coupling.}
+            (\textbf{A}) Individual hardware oscillation sources showing three distinct
+            frequency components over 2 s time window: CPU Frequency (10.00 Hz, blue
+            high-frequency oscillation), Thermal (0.10 Hz, orange slow drift), and
+            Electromagnetic (120.00 Hz, blue rapid oscillation, inset zoom shows EM
+            at 120 Hz). Normalized amplitude ranges $-1$ to $+1$ with all three sources
+            phase-coherent. (\textbf{B}) Frequency spectrum (FFT) on logarithmic scale
+            showing three peaks: CPU Frequency (10.00 Hz, red circle, magnitude
+            $\sim 10^1$), Thermal (0.10 Hz, orange circle, magnitude $\sim 10^2$),
+            Electromagnetic (120.00 Hz, blue circle, magnitude $\sim 10^{-2}$). Combined
+            spectrum yields characteristic frequency 29.03 Hz (red dashed line),
+            representing weighted average of hardware oscillation sources. (\textbf{C})
+            Signature parameters (normalized) comparing four metrics across sources:
+            Frequency (blue bars), Amplitude (red bars), Damping (green bars), Symmetry
+            (orange bars). CPU Frequency shows normalized values (1.0, 0.7, 0.7, 0.6),
+            Thermal shows (0.1, 0.7, 0.7, 0.6), Electromagnetic shows (1.0, 1.0, 0.15,
+            0.6), Combined shows (0.2, 0.75, 0.75, 0.7). Electromagnetic source exhibits
+            lowest damping (0.15), indicating sustained oscillation quality. (\textbf{D})
+            Hardware $\to$ Molecular mapping showing scale transformation: Hardware scale
+            (blue box) operates at Frequency 29.03 Hz, Amplitude $3.57 \times 10^7$,
+            Phase $-1.477$ rad, Damping 0.748, Symmetry 0.007 (Mapping annotation).
+            Molecular scale (green box) operates at Frequency $1.00 \times 10^{13}$ Hz
+            (10 THz), Amplitude 60.9, Phase $-1.477$ rad (preserved), Damping 0.000000
+            (zero damping), Symmetry 0.007 (preserved). Mapping factor $\times 3.4
+            \times 10^{11}$ (red annotation) transforms hardware frequency to molecular
+            frequency while preserving phase and symmetry, demonstrating coherent
+            frequency multiplication through $\sim 11$ orders of magnitude. Analysis
+            validates that hardware oscillations at 29.03 Hz (combined CPU, thermal,
+            electromagnetic sources) map coherently to molecular vibrations at 10 THz
+            via frequency multiplication factor $3.4 \times 10^{11}$, preserving phase
+            ($-1.477$ rad) and symmetry (0.007) while eliminating damping, enabling
+            hardware-molecular synchronization for categorical state identification.}
+            \label{fig:hardware_oscillation}
+            \end{figure}
+
+            \begin{figure}[htbp]
+                \centering
+                \includegraphics[width=0.95\textwidth]{figures/hardware_synchronization.png}
+                \caption{\textbf{Hardware-Molecular Synchronization Efficiency Metrics.}
+                (\textbf{Left}) Molecular frequency distribution showing concentration at
+                $\log_{10}(f) \approx 12.22$ Hz (corresponding to $\sim$1.66 THz, mid-infrared
+                molecular vibrations), with secondary peaks at 12.14 and 12.26 indicating
+                multi-mode oscillatory structure. (\textbf{Center}) Synchronization efficiency
+                distribution demonstrating coordination efficiency concentrated at 1.0
+                (perfect synchronization), with 5 instances achieving complete phase-lock
+                between hardware and molecular oscillators. (\textbf{Right}) Mapping efficiency
+                versus categorical mapping factor showing consistent 0.90 efficiency across
+                $\log_{10}(\alpha_c) = -2.76$ to $-2.64$ (corresponding to $\alpha_c \approx
+                0.0017$ to $0.0023$ categorical units per meter), validating that hardware
+                oscillations maintain stable coupling to molecular frequencies independent
+                of spatial embedding. Efficiency $>0.90$ indicates hardware successfully
+                participates in the oscillatory substrate with minimal phase drift.}
+                \label{fig:sync_efficiency}
+                \end{figure}
+
+
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/spectral_analysis.png}
+    \caption{\textbf{Spectral pattern analysis revealing peak detection capabilities across four distinct intensity profiles.}
+    %
+    \textbf{Pattern 1 (top left): 5 peaks detected.} Dominant sharp peak at $\lambda \approx 420$ nm with normalized intensity $I_{\text{max}} = 0.8$, FWHM $\sim$30 nm, rising from baseline noise level $I_{\text{baseline}} \approx 0.1$. Spectrum exhibits: (1) rapid ascent from 200 nm baseline, (2) narrow absorption feature 350--400 nm (intensity dip to $\sim$0.08), (3) primary emission peak 400--450 nm, (4) gradual decay to baseline 450--800 nm with residual fluctuations $\Delta I \sim 0.02$. Peak prominence ratio $\sim$8:1 enables unambiguous detection. Spectral signature consistent with single-component system with well-defined electronic transition.
+    %
+    \textbf{Pattern 2 (top right): 0 peaks detected.} High-frequency oscillatory structure spanning full wavelength range with uniform intensity envelope $I \approx 0.15 \pm 0.08$. Characteristic features: (1) rapid intensity fluctuations with period $\Delta\lambda \sim 10$--15 nm, (2) no dominant spectral features exceeding 2$\sigma$ threshold above mean, (3) amplitude modulation creating quasi-periodic beating pattern with envelope period $\sim$100 nm, (4) symmetric intensity distribution about mean (no skewness)..
+    %
+    \textbf{Pattern 3 (bottom left): 0 peaks detected.} Similar high-frequency oscillatory behavior to Pattern 2, with mean intensity $\langle I \rangle \approx 0.12$ and standard deviation $\sigma \approx 0.05$. Distinguishing characteristics: (1) slightly reduced oscillation amplitude compared to Pattern 2, (2) subtle intensity gradient showing 15\% increase from 200 nm ($I \approx 0.11$) to 800 nm ($I \approx 0.13$), (3) periodic intensity maxima at $\lambda \approx 250, 400, 550, 700$ nm with spacing $\Delta\lambda \sim 150$ nm suggesting harmonic structure, (4) no individual features meeting peak detection criteria.
+    %
+    \textbf{Pattern 4 (bottom right): 0 peaks detected.} Third instance of oscillatory pattern with $\langle I \rangle \approx 0.13$, $\sigma \approx 0.05$. Notable features: (1) highest mean intensity among oscillatory patterns, (2) reduced oscillation frequency in 200--400 nm region (period $\sim$20 nm) compared to 400--800 nm region (period $\sim$10 nm), (3) intensity envelope shows weak bimodal structure with local maxima at $\sim$350 nm and $\sim$650 nm (elevation $\sim$10\% above baseline), (4) increased noise amplitude in blue region (200--300 nm) with $\sigma_{\text{blue}} \sim 0.07$ versus $\sigma_{\text{red}} \sim 0.04$. This wavelength-dependent noise suggests detector sensitivity variation or source intensity spectrum modulation.
+    %
+    }
+    \label{fig:spectral_analysis}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/rate_of_categorical_completion_20251109_065136.png}
+    \caption{\textbf{Categorical completion dynamics demonstrating irreversibility and entropy production in phase-lock network evolution.}
+    \textbf{(Panel A)} Cumulative categorical states completed $C(t)$ over 100-second simulation cycle, showing monotonic increase from $C(0) = 0$ to $C(100) = 24{,}701$ states (blue solid line), with linear reference trajectory (red dashed line, $\Delta C = 24{,}701$). Four distinct dynamical regimes identified: \textbf{INITIAL} (0--5 s, minimal completion), \textbf{MIXING} (5--35 s, rapid nonlinear growth, yellow shading), \textbf{MIXED} (35--65 s, sustained linear completion, orange shading), and \textbf{SEPARATING} (65--100 s, decelerating completion returning to baseline, purple shading). Inset annotation emphasizes fundamental irreversibility axiom: ``$C(t)$ NEVER decreases—completed states cannot be re-occupied,'' establishing categorical completion as strictly increasing function ($dC/dt \geq 0$).
+    %
+    \textbf{(Panel B)} Categorical completion rate $dC/dt$ (states/s) revealing system activity dynamics. Green shaded area shows: \textbf{MIXING} phase exhibits peak rate of 600 states/s at $t \approx 15$ s, \textbf{MIXED} phase maintains plateau at $\sim$200 states/s (35--65 s), and \textbf{SEPARATING} phase shows secondary peak of 400 states/s at $t \approx 75$ s (red dashed line annotation). Inset clarifies interpretation: ``$dC/dt = 0$ only for static systems; active processes require $dC/dt > 0$; high rate indicates high irreversibility.'' Zero completion rate at boundaries ($t = 0, 100$ s) corresponds to equilibrium states.
+    %
+    \textbf{(Panel C)} Three equivalent entropy formulations demonstrating mathematical consistency: (1) Boltzmann entropy $S = k_B \log \Omega$ (blue solid line), (2) oscillatory entropy $S = -k_B \log \alpha$ (red dashed line, where $\alpha$ is termination probability), and (3) completion-based entropy $S = k_B C$ (green dotted line). All three formulations converge to identical normalized entropy trajectory: sigmoidal growth from $S_{\text{norm}} = 0$ at $t = 0$ to $S_{\text{norm}} = 1$ at $t = 100$ s, with inflection point at $t \approx 30$ s. Inset annotation emphasizes: ``All three formulations give equivalent results! But completion rate is most fundamental: (1) No microstate counting, (2) No ambiguity, (3) Directly observable.''
+    %
+    \textbf{(Panel D)} Phase-lock network density $|E(t)|$ (number of edges) showing explosive growth during MIXING phase: initial network size $|E(0)| = 80$ edges expands to $|E(100)| = 4.77 \times 10^{14}$ edges (yellow box annotation: ``$\Delta E = +476{,}924{,}643{,}928{,}921$ RESIDUAL!''). Inset clarifies thermodynamic interpretation: ``$S \propto |E|$—more edges generate higher entropy.'' Network remains sparse until $t \approx 60$ s, then undergoes phase transition to ultra-dense connectivity, reflecting emergence of long-range correlations.
+    %
+    \textbf{(Panel E)} Entropy production rate $dS/dt = k_B \, dC/dt$ (units: $10^{-21}$ J/K/s) mirroring completion rate dynamics from Panel B. Green shaded area shows total entropy change: $\Delta S = 3.41 \times 10^{-19}$ J/K over full cycle (red box annotation), with peak production rate $\sim$800 ($\times 10^{-21}$ J/K/s) during MIXING phase. Average production rate: $\langle dS/dt \rangle = 3.41 \times 10^{-21}$ J/K/s (red dashed line). Entropy production directly proportional to completion rate: $dS/dt = k_B \times 24{,}701 \text{ states} = 3.41 \times 10^{-19}$ J/K.}
+    \label{fig:categorical_completion}
+\end{figure}
+
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/cv_chemical_analysis.png}
+    \caption{\textbf{Computer vision chemical analysis using concentric ring patterns for molecular identification.}
+    Four identical visualizations of the compound \textbf{agrafiotis} represented as concentric ring interference patterns, arranged in 2$\times$2 grid. Each panel displays radially symmetric structure with: (1) central magenta core ($\sim$5 pixel radius), (2) yellow-green first ring ($\sim$10--15 pixel radius), (3) cyan-blue intermediate rings (15--40 pixel radius) exhibiting gradual intensity modulation, and (4) dark teal outer regions (40--100 pixel radius) with periodic banding at $\sim$5 pixel intervals.
+    %
+    The pattern represents a 2D Fourier transform or diffraction-like visualization encoding molecular structure information in spatial frequency domain. Concentric symmetry indicates rotationally invariant molecular properties, while ring spacing encodes characteristic length scales. The identical reproduction across all four panels demonstrates: (1) algorithmic consistency in pattern generation, (2) deterministic mapping from molecular structure to visual representation, and (3) potential for pattern-matching-based molecular classification.
+    %
+    \textbf{Technical specifications:} Image dimensions $\sim$300$\times$300 pixels, 24-bit RGB color encoding, radial frequency content spanning DC (center) to $\sim$0.5 cycles/pixel (outer rings). Color mapping: magenta (high intensity center) $\to$ cyan-blue (medium intensity) $\to$ dark teal (low intensity), with yellow-green transition zone indicating intermediate frequency components.}
+    \label{fig:cv_chemical_analysis}
+\end{figure}
+
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/comprehensive_validation.png}
+    \caption{\textbf{Comprehensive validation of virtual spectrometer against real spectroscopic measurements.}
+    \textbf{Top row, left to right:}
+    \textbf{(Panel 1)} Peak detection performance distribution showing mean F1 score of 0.055 across 70 spectra, with majority clustering at 0.04--0.06 (frequency $\sim$30), indicating systematic detection challenges.
+    \textbf{(Panel 2)} Spectral correlation distribution (Pearson correlation) with mean $r = 0.027$, displaying primary mode at $r \approx 0.00$ (frequency $\sim$18) and secondary mode at $r \approx 0.05$ (frequency $\sim$14), suggesting weak linear correspondence between real and virtual spectra.
+    \textbf{(Panel 3)} Root mean square error (RMSE) distribution with mean = 0.435, showing bimodal distribution with peaks at RMSE $\approx$ 0.2 (frequency $\sim$28) and RMSE $\approx$ 1.0 (frequency $\sim$10), indicating variable reconstruction fidelity.
+    \textbf{(Panel 4)} LED wavelength response validation: blue LED (mean response = 0.348), green LED (mean response = 0.358), red LED (mean response = 0.000), demonstrating selective spectral sensitivity with complete failure in red channel.
+    %
+    \textbf{Middle row:} Four representative spectral comparisons overlaying real (blue solid) versus virtual (red dashed) spectra across 200--800 nm wavelength range, normalized intensity scale [0, 1].
+    \textbf{(Comparison 1)} Correlation $r = -0.028$: real spectrum shows sharp peak at $\sim$420 nm (intensity $\sim$1.0) with low baseline noise; virtual spectrum exhibits high-frequency oscillations (amplitude $\sim$0.2) without capturing dominant feature.
+    \textbf{(Comparison 2)} Correlation $r = -0.099$: real spectrum displays three distinct peaks at $\sim$250, 450, and 650 nm; virtual spectrum shows dense oscillatory structure (frequency $\sim$50 peaks across range) with no correspondence to real features.
+    \textbf{(Comparison 3)} Correlation $r = -0.030$: real spectrum exhibits broad absorption band 400--600 nm with multiple fine structure peaks; virtual spectrum maintains high-frequency noise pattern inconsistent with real signal morphology.
+    \textbf{(Comparison 4)} Correlation $r = -0.077$: real spectrum shows isolated peak at $\sim$380 nm; virtual spectrum continues oscillatory baseline without peak detection capability.
+    %
+    \textbf{Bottom row, left to right:}
+    \textbf{(Panel 5)} Peak count comparison: real spectra consistently detect 60--70 peaks per spectrum (mean $\sim$65), while virtual system detects 0--1 peaks (clustering at origin), with identity line (red dashed) highlighting systematic underdetection.
+    \textbf{(Panel 6)} Correlation versus RMSE scatter plot revealing inverse relationship: high correlation region ($r > 0.8$, single outlier) corresponds to low RMSE ($\sim$0.2), while bulk of data ($r \approx 0.0$ to 0.2) spans RMSE range 0.2--0.6, with secondary cluster at high RMSE ($\sim$0.5) and near-zero correlation.
+    \textbf{(Panel 7)} Overall performance summary bar chart: Peak F1 = 0.055 (5.5\% detection accuracy), Correlation = 0.027 (negligible linear relationship), Success Rate = 0.000 (0\% successful reconstructions), with validation summary inset confirming 70 real spectra, 70 virtual spectra analyzed, and LED-specific performance (blue: 0.348, green: 0.358, red: 0.000).
+    %
+    \textbf{Key findings:} Virtual spectrometer demonstrates fundamental limitations in spectral reconstruction: (1) systematic failure to detect spectral peaks (F1 = 0.055), (2) absence of correlation with ground truth measurements ($r = 0.027$), (3) high reconstruction error (RMSE = 0.435), (4) complete failure in red wavelength regime, and (5) generation of high-frequency artifacts inconsistent with real spectroscopic signatures. Results indicate virtual system does not achieve functional equivalence with physical spectrometry under current implementation.}
+    \label{fig:comprehensive_validation}
+\end{figure}
+
+
+\begin{figure*}[htbp]
+    \centering
+    \includegraphics[width=0.95\textwidth]{figures/unpertubed_comparison_20251109_065121.png}
+    \caption{Mixed-reseparated versus unperturbed comparison demonstrating categorical memory persistence despite spatial similarity. \textbf{(A)} Physical: Mixed-Reseparated - scatter plot (blue circles, $\sim 20$ molecules) shows position distribution ($x \in [0, 0.5]$, $y \in [0, 1]$) for left container after mixing and re-separation. Black vertical line at $x = 0.25$ marks container midpoint. Blue annotation box: ``Mixed then Re-separated''. Molecules distributed across full vertical extent with slight clustering at $y \sim 0.2$ and $y \sim 0.8$. \textbf{(B)} Physical: Unperturbed - scatter plot (green circles, $\sim 20$ molecules) shows position distribution for container that was never mixed. Green annotation box: ``Never Mixed (Unperturbed)''. Spatial distribution visually similar to panel A with comparable vertical spread and clustering pattern. \textbf{(C)} Spatial similarity: empty plot with red dashed horizontal line at Spatial Similarity $\sim 0.8$ and yellow annotation box: ``Spatially Similar! ($\sim 85$--$95\%$)''. X-axis labeled ``X distribution'' confirms high spatial overlap between mixed-reseparated and unperturbed configurations, validating macroscopic reversibility. \textbf{(D)} Categorical: Mixed-Reseparated - cumulative categorical states $C(t)$ (blue line with shaded area) versus time ($0$--$10$~s) shows monotonic increase from $C = 0$ to $C \approx 20000$ states. White text box: ``Entropy: $S = k_B C = 2.82 \times 10^{-19}$~J/K''. Linear growth rate $\sim 2000$~states/s indicates continuous categorical state completion during mixing-separation cycle. \textbf{(E)} Categorical: Unperturbed - cumulative categorical states $C(t)$ (green line with shaded area) versus time shows similar monotonic increase from $C = 0$ to $C \approx 20000$ states. White text box: ``Entropy: $S = k_B C = 2.75 \times 10^{-19}$~J/K''. Slightly lower final state count compared to mixed-reseparated case. \textbf{(F)} Categorical divergence: bar chart compares final categorical state counts: Mixed-Reseparated $C = 20461$ states (blue bar), Unperturbed $C = 19948$ states (green bar). Red annotation with bracket: ``$\Delta C = 513$ states, DIFFERENT!'' confirms categorical distinction despite spatial similarity. Difference $\Delta C = 513$ represents additional states completed during mixing-separation cycle. \textbf{(G)} Phase-lock network density: time series ($0$--$10$~s) shows phase-lock edge count $|E|$ for Mixed-Reseparated (blue oscillating curve, $|E| \sim 35$--$55$ edges) and Unperturbed (green oscillating curve, $|E| \sim 35$--$45$ edges). Orange shaded region highlights residual difference from mixing phase. Pink annotation box: ``Average difference: $\Delta |E| = 8.0$, Mixed container has more phase-lock edges!'' Blue-green gap confirms persistent topological distinction in phase-lock network despite spatial convergence. \textbf{(H)} Entropy: $S = k_B C$ - dual time series ($0$--$10$~s) shows entropy evolution for Mixed-Reseparated (blue line with shaded area) and Unperturbed (green line with shaded area). Both increase linearly from $S = 0$ to $S \sim 25000 \times 10^{-23}$~J/K with parallel slopes. Yellow annotation box: ``Final Entropies: Mixed: $2.82 \times 10^{-19}$~J/K, Unpert: $2.75 \times 10^{-19}$~J/K, $\Delta S = 7.08 \times 10^{-21}$~J/K''. Orange annotation box: ``Mixed container has HIGHER entropy!'' Entropy difference $\Delta S = 7.08 \times 10^{-21}$~J/K ($\sim 2.5\%$ of total) persists throughout evolution, confirming irreversible entropy production from mixing. \textbf{(I)} The fundamental distinction: white text box provides comprehensive analysis. \textit{Spatial Configuration:} Both containers: LEFT half, Both: $\sim 20$ molecules, Both: Similar distributions, Spatial similarity: $\sim 90\%$, MACROSCOPICALLY IDENTICAL. \textit{Categorical Configuration:} Mixed-Resep: $C = 20461$ states, Unperturbed: $C = 19948$ states, Difference: $\Delta C = 513$, Entropy diff: $\Delta S = 7.08 \times 10^{-21}$~J/K, CATEGORICALLY DISTINCT. \textit{Resolution of Gibbs' Paradox:} Two systems can have: SAME spatial configuration $(q, p)$, DIFFERENT categorical state $C$, Therefore DIFFERENT entropy $S$. Traditional view: $S = S(q, p)$ predicts same entropy. Categorical view: $S = S(q, p, C)$ predicts different entropy. \textit{The mixed container ``remembers'' its history through:} (1) Higher categorical position $C$, (2) Residual phase-lock edges, (3) Completed states that cannot be un-completed (Axiom). Green highlight:}
+    \label{fig:categorical_memory}
+    \end{figure*}
+
+
+    \begin{figure*}[htbp]
+        \centering
+        \includegraphics[width=0.95\textwidth]{figures/separated_containers_20251109_065323.png}
+        \caption{Initial separated state demonstrating categorical state space initialization with zero cross-container phase-locking. \textbf{(A)} Physical configuration: scatter plot shows Container A (blue circles, $20$ molecules) and Container B (red circles, $20$ molecules) in normalized position space ($x$, $y$ $\in [0, 1]$). Black dashed vertical line at $x = 0.5$ represents closed partition separating containers. Container A occupies left region ($x \in [0, 0.5]$, $y \in [0, 1]$) with molecules distributed across full vertical extent. Container B occupies right region ($x \in [0.5, 1.0]$, $y \in [0.2, 0.9]$) with similar vertical distribution. No spatial overlap confirms complete separation. \textbf{(B)} Categorical state distribution: dual-axis plot shows categorical state occupancy for Container A (blue circles, horizontal line at Container = A) and Container B (red circles, horizontal line at Container = B) versus Categorical State ID ($0$--$40$). Yellow annotation box: ``Total categorical states: $40$''. Container A molecules occupy states $0$--$19$ (blue circles clustered at left), Container B molecules occupy states $20$--$39$ (red circles clustered at right). No overlap in categorical space confirms each molecule occupies unique state with no cross-container categorical degeneracy. \textbf{(C)} Phase-lock network: circular network diagram displays $40$ molecules arranged on circle perimeter (blue circles = Container A, top semicircle; red circles = Container B, bottom semicircle). Blue lines connect A-A molecule pairs (intra-container phase-locking within Container A), red lines connect B-B pairs (intra-container phase-locking within Container B). Absence of blue-red connecting lines confirms zero A-B phase-lock edges. Blue annotation box: ``Blue: Container A | Red: Container B, Line thickness $\propto$ phase-lock strength''. Network topology shows two disconnected subgraphs corresponding to isolated containers. \textbf{(D)} Network topology statistics: bar chart quantifies phase-lock edge counts by interaction type. A-A interactions: $32$ edges (blue bar, tallest), B-B interactions: $21$ edges (red bar, intermediate), A-B interactions: $0$ edges (white bar absent, annotated ``Note: A-B = 0 (containers separated)''). Total edges $|E| = 32 + 21 + 0 = 53$. Zero A-B edges confirms complete phase-lock isolation between containers at initial state. \textbf{(E)} Oscillatory entropy: cyan text box on white background provides categorical entropy calculation. Total phase-lock edges: $|E| = 53$, Reference edges: $\langle E \rangle = 80.0$. Termination probability: $\alpha = \exp(-|E|/\langle E \rangle) = 0.5156$. Oscillatory entropy: $S = -k_B \log(\alpha) = k_B |E|/\langle E \rangle$, $S = 9.15 \times 10^{-24}$~J/K. Per-molecule entropy: $S/N = 2.29 \times 10^{-25}$~J/K (for $N = 40$ molecules). Low entropy reflects ordered separated state with minimal phase-lock network density. \textbf{(F)} System summary: green text box on white background provides comprehensive initial state characterization. \textit{Initial Separated State - System Configuration:} Container A: $20$ molecules, Container B: $20$ molecules, Partition: CLOSED. \textit{Categorical State:} Total categories completed: $40$, Categories in A: $20$, Categories in B: $20$, State: $C_{\text{initial}}$. \textit{Phase-Lock Network:} A-A edges: $32$, B-B edges: $21$, A-B edges: $0$ - ZERO (separated), Total edges: $53$.}
+        \label{fig:initial_separated}
+        \end{figure*}
+
+        \begin{figure*}[htbp]
+            \centering
+            \includegraphics[width=0.95\textwidth]{figures/reseperation_20251109_065105.png}
+            \caption{Gibbs paradox resolution through categorical state dynamics demonstrating spatial reversibility with categorical irreversibility across full mixing-separation cycle. \textbf{(A)} Physical configuration - spatially identical to initial: scatter plot shows Container A (blue circles) and Container B (red circles) molecules in position space ($x$, $y$ $\in [0, 1]$) after re-separation. Partition restored at $x = 0.5$ (black dashed line) with Container A occupying left half ($x < 0.5$, $\sim 20$ molecules) and Container B right half ($x > 0.5$, $\sim 20$ molecules). Orange annotation: ``Orange dashed = Phase correlations persisting across partition!'' indicating residual A-B phase-lock edges (black dashed lines connecting blue-red pairs) despite spatial separation. Configuration macroscopically identical to initial state but categorically distinct. \textbf{(B)} Categorical state - DIFFERENT from initial: trajectory plot shows categorical state evolution from Initial (separated, gray region, $C_{\text{init}}$) through Mixed state (yellow region, $C_{\text{mix}}$) to Re-separated state (orange region, $C_{\text{resep}}$). Black arrow indicates irreversible progression across $\sim 40$ categorical state IDs. Red annotation box: ``Cannot return to $C_{\text{init}}$ - Axiom of Irreversibility'' confirms completed states cannot be re-occupied. Final state $C_{\text{resep}} \neq C_{\text{init}}$ despite spatial equivalence. \textbf{(C)} Residual A-B phase correlations: circular network diagram displays phase-lock coherence matrix for $40$ molecules (blue circles = Container A, red circles = Container B, arranged on circle perimeter). Blue lines connect A-A pairs, red lines connect B-B pairs, orange dashed lines ($20$ total) connect A-B pairs representing residual cross-container phase correlations persisting from mixing phase. Orange annotation: ``Orange dashed = 20 RESIDUAL A-B correlations - These persist from mixing phase!'' Inset heatmap (top right) shows phase coherence matrix (colorbar $0.0$--$1.0$) with off-diagonal blocks indicating A-B coherence ($\sim 0.4$--$0.6$, orange) despite re-separation. \textbf{(D)} Edge count through full cycle: bar chart compares phase-lock edge counts across three stages: Initial (separated) shows A-A edges $\sim 32$ (blue bar), B-B edges $\sim 20$ (red bar), A-B edges $0$ (orange bar absent). Mixed state: A-A $\sim 32$ (blue), B-B $\sim 20$ (red), A-B $\sim 60$ (orange). Re-separated: A-A $\sim 32$ (blue), B-B $\sim 20$ (red), A-B $\sim 20$ (orange, annotated ``20 residual edges persist!''). Persistent A-B edges after re-separation confirm categorical memory. \textbf{(E)} Entropy through mixing-separation cycle: entropy $S$ (J/K, $\times 10^{-23}$) versus process stage (Initial, Mixed, Re-separated) shows monotonic increase (red line with shaded area) from $S_{\text{init}} \sim 1.0 \times 10^{-23}$~J/K (black circle) through $S_{\text{mix}} \sim 2.0 \times 10^{-23}$~J/K (peak, black circle) to $S_{\text{resep}} \sim 1.3 \times 10^{-23}$~J/K (black circle). Red dashed horizontal line at $S_{\text{init}}$ shows $S_{\text{resep}} > S_{\text{init}}$ ($\Delta S > 0$). Yellow annotation box: ``$\Delta S > 0$ IRREVERSIBLE!'' confirms entropy production despite spatial return to initial configuration. \textbf{(F)} Phase coherence matrix: heatmap (colorbar $0.0$--$1.0$, yellow = high coherence, dark red = low coherence) shows $40 \times 40$ molecule-molecule phase coherence after re-separation. Strong diagonal blocks (yellow, coherence $\sim 0.8$--$1.0$) indicate intra-container correlations (molecules $0$--$20$ = Container A, $20$--$40$ = Container B). Off-diagonal blocks (orange/red, coherence $\sim 0.2$--$0.6$) reveal residual inter-container correlations. Orange annotation: ``Residual A-B'' highlights persistent cross-container phase memory. \textbf{(G)} Spatial $\approx$ Initial, Categorical $\neq$ Initial: green text box on white background provides spatial versus categorical distinguishability analysis. \textit{Spatial Configuration:} Molecules in left half (Container A), molecules in right half (Container B), partition at $x = 0.5$, position distribution $\approx$ Initial, velocity distribution $\approx$ Initial, macroscopically IDENTICAL to initial. \textit{Categorical Configuration:} $C_{\text{init}}$: States $0$ to $N-1$, $C_{\text{resep}}$: States $2N$ to $3N-1$, different ordinal positions, different phase-lock history, residual A-B correlations present, categorically DISTINCT from initial. \textit{Paradox Resolution:} Spatial reversibility $\neq$ Categorical reversibility. Two states can be spatially identical but categorically distinct. Entropy depends on BOTH spatial AND categorical coordinates: $S = S(q, C)$ not just $S(q)$. \textbf{(H)} Gibbs paradox resolution: orange text box on white background summarizes resolution mechanism. \textit{Traditional View (WRONG):} Mix identical gases: $\Delta S = 0$, Re-separate: $\Delta S = 0$, Full cycle: $\Delta S_{\text{total}} = 0$ - REVERSIBLE? Contradicts 2nd law! \textit{Categorical View (CORRECT):} Mix: Create new categorical states, form A-B phase-lock edges, $\Delta S_{\text{mix}} > 0$. Re-separate: Occupy DIFFERENT categories, residual A-B edges persist, $\Delta S_{\text{resep}} > 0$. Full cycle: $\Delta S_{\text{total}} > 0$ - IRREVERSIBLE! \textit{Mechanism:} $20$ residual A-B phase correlations persist after re-separation. These represent completed categorical states that CANNOT be un-completed (Axiom of Irreversibility). Phase decoherence time $\tau_{\phi} \sim 10^{-9}$ to $10^{-6}$~s means phase memory persists across typical separation timescales. \textit{Key Insight:} Entropy = $f$(spatial config, categorical state), $S = S(q, C) = -k_B \log \alpha(q, C)$, where $\alpha$ is termination probability depending on phase-lock network density $|E(C)|$. \textbf{(I)} Re-separated state summary: green text box on white background provides quantitative summary. \textit{Spatial Configuration:} Container A: $20$ molecules (LEFT), Container B: $20$ molecules (RIGHT), Partition: RE-INSERTED, Looks identical to initial state! \textit{Categorical State:} Previous states: $C_{\text{init}}$, $C_{\text{mixed}}$, Current: $C_{\text{resep}}$ (NEW!), Cannot return to $C_{\text{init}}$, Total categories: $40$. \textit{Phase-Lock Network:} A-A edges: $32$, B-B edges: $21$, A-B residual: $20$ - PERSISTS!, Total: $73$. \textit{Entropy Change (full cycle):} $\Delta S = S_{\text{resep}} - S_{\text{init}} > 0$, Origin: Residual phase correlations, Proves: Process is IRREVERSIBLE. \textit{Critical Conclusion:} Gibbs' paradox is resolved by recognizing that CATEGORICAL STATE matters. Two configurations can be spatially identical but categorically distinct, leading to different entropies. This is not statistical - it's deterministic!}
+            \label{fig:gibbs_paradox}
+            \end{figure*}

@@ -1,0 +1,554 @@
+\section{Virtual Mass Spectrometer Ensembles: Orchestrated Construction}
+
+\subsection{Ensemble Definition and Motivation}
+
+\begin{definition}[Virtual Mass Spectrometer Ensemble]
+\label{def:virtual_ensemble}
+A virtual mass spectrometer ensemble $\mathcal{E}_{\text{virtual}}$ is a coordinated collection of $N$ virtual detectors operating on the same categorical state $\mathbf{S}_{\text{cat}}$:
+
+\begin{equation}
+\mathcal{E}_{\text{virtual}} = \{\mathcal{D}_{\text{inst}_i}\}_{i=1}^N \quad \text{where all } \mathcal{D}_{\text{inst}_i} \text{ read } \mathbf{S}_{\text{cat}}
+\label{eq:virtual_ensemble}
+\end{equation}
+
+with instrument types: $\{\text{inst}_i\} \subseteq \{\text{TOF, Orbitrap, FT-ICR, IMS, QQQ, qTOF, Ion Trap, \ldots}\}$.
+
+\textbf{Key property}: All ensemble members measure \textit{simultaneously and coherently}—same molecular state, same convergence node, same instant.
+\end{definition}
+
+\begin{remark}[Why Ensembles?]
+Single virtual detector provides one view of categorical state. Ensemble provides:
+
+\begin{enumerate}
+    \item \textbf{Categorical completion}: Each instrument partitions molecular space differently; intersection shrinks exponentially (Corollary \ref{cor:multi_instrument_completion})
+
+    \item \textbf{Cross-validation}: Agreement across instruments increases confidence; disagreement flags errors
+
+    \item \textbf{Complementary information}: TOF (fast, broad range) + Orbitrap (high resolution) + IMS (structural) = comprehensive characterization
+
+    \item \textbf{Robustness}: If one projection fails validation, others provide fallback
+
+    \item \textbf{Novel discovery}: Unknown compounds identified via consensus across instruments
+\end{enumerate}
+
+Physical impossibility: Cannot measure same ions with multiple instruments (destructive detection). Virtual detectors make this trivial.
+\end{remark}
+
+\subsection{Ensemble Construction Algorithm}
+
+\begin{algorithm}[H]
+\caption{Virtual Mass Spectrometer Ensemble Construction}
+\label{alg:ensemble_construction}
+\begin{algorithmic}[1]
+\Procedure{ConstructVirtualEnsemble}{spectrum\_data, instrument\_types}
+    \State \textbf{Phase 1: Hardware Harvesting}
+    \State $\mathcal{H} \gets$ InitializeHardwareHarvesters()  \Comment{8-scale hierarchy}
+    \For{scale $\ell \in \{0, 1, \ldots, 7\}$}
+        \State $\omega_{\ell} \gets \mathcal{H}_{\ell}$. MeasureOscillation()
+        \State $\phi_{\ell} \gets \mathcal{H}_{\ell}$.MeasurePhase()
+    \EndFor
+    \State
+
+    \State \textbf{Phase 2: Frequency Hierarchy Construction}
+    \State $\mathcal{T}_{\text{freq}} \gets$ BuildFrequencyHierarchy($\{\omega_{\ell}, \phi_{\ell}\}_{\ell=0}^7$)
+    \State Compute gear ratios: $r_{ij} = \omega_i / \omega_j$ for all pairs
+    \State
+
+    \State \textbf{Phase 3: Finite Observer Deployment}
+    \State $\mathcal{T}_{\text{trans}} \gets$ TranscendentObserver()
+    \State $\{\mathcal{O}_{\ell}\}_{\ell=0}^7 \gets \mathcal{T}_{\text{trans}}$.DeployFiniteObservers($\mathcal{T}_{\text{freq}}$)
+    \State
+
+    \State \textbf{Phase 4: Phase-Lock Detection}
+    \State $\mathcal{S}_{\text{mol}} \gets$ ConvertSpectrumToSignals(spectrum\_data)
+    \State $\{\Sigma_{\ell}\}_{\ell=0}^7 \gets \mathcal{T}_{\text{trans}}$.CoordinateObservations($\mathcal{S}_{\text{mol}}$)
+    \State \Comment{$\Sigma_{\ell}$ = phase-lock signatures at scale $\ell$}
+    \State
+
+    \State \textbf{Phase 5: Convergence Node Identification}
+    \State $\mathcal{C}_{\text{nodes}} \gets \mathcal{T}_{\text{trans}}$.IdentifyConvergenceSites($\{\Sigma_{\ell}\}$)
+    \State Select primary node: $\mathcal{C}^* \gets \arg\max_{\mathcal{C} \in \mathcal{C}_{\text{nodes}}} \rho_{\text{conv}}(\mathcal{C})$
+    \State
+
+    \State \textbf{Phase 6: Categorical State Extraction}
+    \State $\mathbf{S}_{\text{cat}} \gets$ ExtractCategoricalState($\mathcal{C}^*$, $\{\Sigma_{\ell}\}$)
+    \State \Comment{14-dimensional S-entropy coordinates}
+    \State
+
+    \State \textbf{Phase 7: MMD Ensemble Materialization}
+    \State $\mathcal{E}_{\text{virtual}} \gets \emptyset$
+    \For{inst\_type in instrument\_types}
+        \State $\mathcal{P}_{\text{inst}} \gets$ GetProjectionOperator(inst\_type)
+        \State $\mathcal{D}_{\text{inst}} \gets$ MaterializeVirtualDetector($\mathbf{S}_{\text{cat}}$, $\mathcal{C}^*$, $\mathcal{P}_{\text{inst}}$)
+        \State $\mathcal{E}_{\text{virtual}} \gets \mathcal{E}_{\text{virtual}} \cup \{\mathcal{D}_{\text{inst}}\}$
+    \EndFor
+    \State
+
+    \State \textbf{Phase 8: Parallel Measurement}
+    \State $\mathcal{R}_{\text{ensemble}} \gets \emptyset$
+    \For{$\mathcal{D}_{\text{inst}} \in \mathcal{E}_{\text{virtual}}$} \textbf{in parallel}
+        \State $\text{Spectrum}_{\text{inst}} \gets \mathcal{D}_{\text{inst}}$.Measure($\mathbf{S}_{\text{cat}}$)
+        \State $\text{Valid} \gets$ ValidateHardwareCoherence($\text{Spectrum}_{\text{inst}}$)
+        \If{Valid}
+            \State $\mathcal{R}_{\text{ensemble}} \gets \mathcal{R}_{\text{ensemble}} \cup \{(\text{inst\_type}, \text{Spectrum}_{\text{inst}})\}$
+        \EndIf
+    \EndFor
+    \State
+
+    \State \textbf{Phase 9: Ensemble Dissolution}
+    \For{$\mathcal{D}_{\text{inst}} \in \mathcal{E}_{\text{virtual}}$}
+        \State $\mathcal{D}_{\text{inst}} \gets \emptyset$  \Comment{Detectors dissolve}
+    \EndFor
+    \State
+
+    \State \Return $\mathcal{R}_{\text{ensemble}}$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Computational Complexity Analysis}
+
+\begin{theorem}[Ensemble Construction Complexity]
+\label{thm:ensemble_complexity}
+Constructing and operating a virtual mass spectrometer ensemble with $N$ instrument types for spectrum with $M$ ions has total complexity:
+
+\begin{equation}
+T_{\text{total}} = O(M \cdot K) + O(N \cdot M \cdot K)
+\label{eq:ensemble_complexity}
+\end{equation}
+
+where $K = 14$ is S-entropy dimensionality. Breaking down by phase:
+
+\begin{align}
+\text{Phase 1-2 (Hardware + Hierarchy):} & \quad O(L^2) \quad \text{where } L=8 \text{ scales} = 64 \text{ ops} \\
+\text{Phase 3 (Observer Deployment):} & \quad O(L) = 8 \text{ ops} \\
+\text{Phase 4 (Phase-Lock Detection):} & \quad O(M \cdot L) = 8M \text{ ops} \\
+\text{Phase 5 (Convergence Nodes):} & \quad O(L \log L) \approx 24 \text{ ops} \\
+\text{Phase 6 (Categorical Extraction):} & \quad O(M \cdot K) = 14M \text{ ops} \\
+\text{Phase 7 (Materialization):} & \quad O(N) \text{ ops} \\
+\text{Phase 8 (Parallel Measurement):} & \quad O(N \cdot M \cdot K) = 14NM \text{ ops (parallelizable)} \\
+\text{Phase 9 (Dissolution):} & \quad O(N) \text{ ops}
+\end{align}
+
+\textbf{Dominant term}: Phase 8 ($O(N \cdot M \cdot K)$), but parallelizable across $N$ instruments → effective $O(M \cdot K)$.
+\end{theorem}
+
+\begin{proof}
+\textbf{Hardware and hierarchy} (Phases 1-2):
+
+Measuring 8 hardware oscillations: $O(L)$ where $L=8$. Computing all pairwise gear ratios: $O(L^2) = 64$ operations. Both are constant (independent of $M$).
+
+\textbf{Finite observers} (Phases 3-4):
+
+Deploying observers: $O(L) = 8$ (one per scale). Each observer processes $M$ molecular signals: $O(M)$ per observer. Across $L$ observers in parallel: $O(M)$ total. With sequential execution: $O(L \cdot M) = 8M$.
+
+\textbf{Convergence identification} (Phase 5):
+
+Computing density at each scale: $O(L)$. Sorting by density: $O(L \log L) = 8 \log 8 \approx 24$ operations. Constant.
+
+\textbf{Categorical extraction} (Phase 6):
+
+For each of $M$ ions, compute 14 S-entropy coordinates: $O(M \cdot K) = 14M$ operations. This is the first $M$-dependent dominant term.
+
+\textbf{Materialization} (Phase 7):
+
+Creating $N$ virtual detectors: $O(N)$ operations (setting function pointers, initializing filters). For typical $N = 4$ to $8$: negligible.
+
+\textbf{Measurement} (Phase 8):
+
+Each of $N$ detectors processes $M$ ions with $K$ S-coordinate reads: $O(M \cdot K)$ per detector. Total: $O(N \cdot M \cdot K)$. BUT: detectors operate in parallel (Theorem \ref{thm:parallel_observation}) → wall-clock time is $O(M \cdot K)$ if $N$ cores available.
+
+\textbf{Dissolution} (Phase 9):
+
+Nullifying $N$ detector references: $O(N)$. Negligible.
+
+\textbf{Total sequential}: $O(M \cdot K) + O(N \cdot M \cdot K) = O((N+1) M K)$.
+
+\textbf{Total parallel}: $O(M \cdot K) + O(M \cdot K) = O(M \cdot K)$.
+
+For $M = 10^3$ ions, $K = 14$, $N = 4$ instruments:
+\begin{itemize}
+    \item Sequential: $(4+1) \times 10^3 \times 14 = 70{,}000$ operations
+    \item Parallel: $2 \times 10^3 \times 14 = 28{,}000$ operations
+    \item At $10^9$ ops/sec: $\sim 28$ microseconds (parallel)
+\end{itemize}
+
+Real-time performance even for complex mixtures.
+
+$\square$
+\end{proof}
+
+\subsection{Ensemble Coordination Mechanisms}
+
+\begin{definition}[Ensemble Coordinator]
+\label{def:ensemble_coordinator}
+The ensemble coordinator $\mathcal{K}_{\text{ensemble}}$ is a meta-controller that:
+
+\begin{enumerate}
+    \item \textbf{Synchronizes materialization}: Ensures all detectors materialize at same convergence node simultaneously
+
+    \item \textbf{Manages resource allocation}: Assigns computational resources (CPU cores, memory) to virtual detectors
+
+    \item \textbf{Orchestrates parallel measurement}: Triggers all detectors to read $\mathbf{S}_{\text{cat}}$ in parallel
+
+    \item \textbf{Aggregates results}: Collects spectra from all instruments, performs cross-validation
+
+    \item \textbf{Handles failures}: If any detector fails validation, removes it from ensemble without affecting others
+\end{enumerate}
+\end{definition}
+
+\begin{theorem}[Ensemble Temporal Coherence]
+\label{thm:ensemble_coherence}
+All virtual detectors in ensemble $\mathcal{E}_{\text{virtual}}$ measure the same categorical state $\mathbf{S}_{\text{cat}}$ captured at the same instant $t_{\text{conv}}$ (convergence node formation time), guaranteeing perfect temporal coherence:
+
+\begin{equation}
+\forall \mathcal{D}_i, \mathcal{D}_j \in \mathcal{E}_{\text{virtual}}: \quad \mathbf{S}_{\text{cat}}^{(i)}(t_{\text{conv}}) = \mathbf{S}_{\text{cat}}^{(j)}(t_{\text{conv}})
+\label{eq:ensemble_coherence}
+\end{equation}
+
+No temporal drift, no sample evolution, no systematic bias between instruments.
+\end{theorem}
+
+\begin{proof}
+\textbf{Single categorical state extraction}:
+
+Algorithm \ref{alg:ensemble_construction}, Phase 6 extracts $\mathbf{S}_{\text{cat}}$ \textit{once} from convergence node $\mathcal{C}^*$. This extraction occurs at time $t_{\text{conv}}$ determined by:
+\begin{itemize}
+    \item Hardware oscillation measurements (Phase 1): timestamp $t_{\text{hw}}$
+    \item Spectrum acquisition: timestamp $t_{\text{acq}}$
+    \item Phase-lock detection: timestamp $t_{\text{lock}}$
+\end{itemize}
+
+The convergence node exists at $t_{\text{conv}} = \max(t_{\text{hw}}, t_{\text{acq}}, t_{\text{lock}})$. Once formed, $\mathcal{C}^*$ is static (categorical irreversibility).
+
+\textbf{Shared categorical state}:
+
+All $N$ virtual detectors receive \textit{reference} to same $\mathbf{S}_{\text{cat}}$ object in Phase 7. Not copies—the same 14-dimensional vector in memory. Therefore:
+\begin{equation}
+\mathbf{S}_{\text{cat}}^{(1)} \equiv \mathbf{S}_{\text{cat}}^{(2)} \equiv \cdots \equiv \mathbf{S}_{\text{cat}}^{(N)} \quad \text{(identity, not just equality)}
+\end{equation}
+
+\textbf{Parallel measurement}:
+
+Phase 8 triggers all detectors simultaneously. Each reads the same $\mathbf{S}_{\text{cat}}$ reference. The read operation is:
+\begin{itemize}
+    \item \textbf{Instantaneous}: $O(1)$ memory access per coordinate
+    \item \textbf{Non-destructive}: Reading doesn't modify $\mathbf{S}_{\text{cat}}$
+    \item \textbf{Concurrent-safe}: Multiple threads can read same memory simultaneously (no race conditions)
+\end{itemize}
+
+\textbf{Contrast with sequential physical measurements}:
+
+Physical MS workflow:
+\begin{enumerate}
+    \item Run sample on TOF at time $t_1$
+    \item Week later (after scheduling, prep): run on Orbitrap at time $t_2 = t_1 + 7$ days
+    \item Sample has degraded: oxidation, hydrolysis, evaporation
+    \item Different sample state: $\mathbf{S}_{\text{TOF}}(t_1) \neq \mathbf{S}_{\text{Orbitrap}}(t_2)$
+\end{enumerate}
+
+Temporal incoherence is inherent to physical workflow. Virtual ensemble eliminates this by measuring at single instant $t_{\text{conv}}$.
+
+$\square$
+\end{proof}
+
+\subsection{Result Integration and Cross-Validation}
+
+\begin{definition}[Ensemble Cross-Validation]
+\label{def:ensemble_validation}
+Given ensemble results $\mathcal{R}_{\text{ensemble}} = \{(\text{inst}_i, \text{Spectrum}_i)\}_{i=1}^N$, cross-validation computes agreement score:
+
+\begin{equation}
+A_{\text{ensemble}} = \frac{1}{\binom{N}{2}} \sum_{i<j} \text{Agreement}(\text{Spectrum}_i, \text{Spectrum}_j)
+\label{eq:ensemble_agreement}
+\end{equation}
+
+where:
+\begin{equation}
+\text{Agreement}(\text{Spec}_i, \text{Spec}_j) = \frac{|\text{Peaks}_i \cap \text{Peaks}_j|}{|\text{Peaks}_i \cup \text{Peaks}_j|}
+\label{eq:spectrum_agreement}
+\end{equation}
+
+is the Jaccard similarity of detected peaks (accounting for instrumental resolution).
+
+\textbf{Threshold for validation}: $A_{\text{ensemble}} > 0.75$ (75\% agreement across instruments).
+\end{definition}
+
+\begin{theorem}[Ensemble Agreement Guarantees Identification Correctness]
+\label{thm:ensemble_correctness}
+If ensemble agreement score $A_{\text{ensemble}} > 0.75$ and all instruments independently identify the same molecule $M^*$, the probability of correct identification is:
+
+\begin{equation}
+p(\text{correct} | A_{\text{ensemble}} > 0.75, \text{consensus}) > 0.999
+\label{eq:ensemble_correctness_prob}
+\end{equation}
+
+(99.9\% confidence with 4+ instrument consensus).
+\end{theorem}
+
+\begin{proof}
+\textbf{Independent identification errors}:
+
+Each instrument has error probability $p_{\text{error}}^{(i)}$ for misidentification. For high-quality S-entropy matching: $p_{\text{error}}^{(i)} \approx 0.05$ (5\% false positive rate).
+
+\textbf{Consensus requirement}:
+
+For $N$ instruments to all identify same (incorrect) molecule $M_{\text{wrong}}$:
+\begin{equation}
+p(\text{all wrong}) = \prod_{i=1}^N p_{\text{error}}^{(i)} \approx (0.05)^N
+\end{equation}
+
+For $N = 4$: $p(\text{all wrong}) = (0.05)^4 = 6.25 \times 10^{-6}$.
+
+\textbf{Agreement constraint}:
+
+The agreement score $A_{\text{ensemble}} > 0.75$ adds additional constraint: spectra from all instruments must overlap substantially. If instruments identified different molecules, peaks would be disjoint: $A_{\text{ensemble}} \approx 0$.
+
+Achieving $A > 0.75$ with different identifications requires instruments to misidentify the \textit{same wrong molecule} whose spectrum happens to be compatible across all instrument types. This is exponentially unlikely.
+
+\textbf{Bayesian update}:
+
+Prior probability of correct ID (from single instrument): $p_0 = 1 - 0.05 = 0.95$.
+
+Posterior after $N = 4$ instrument consensus:
+\begin{equation}
+p(\text{correct} | \text{consensus}) = \frac{p_0^N}{p_0^N + (1-p_0)^N} = \frac{(0.95)^4}{(0.95)^4 + (0.05)^4} \approx \frac{0.8145}{0.8145 + 6.25 \times 10^{-6}} > 0.99999
+\end{equation}
+
+With agreement constraint $A > 0.75$, additional factor of $\sim 10\times$ confidence boost (empirically, Section 7).
+
+Conservative estimate: $p(\text{correct}) > 0.999$.
+
+$\square$
+\end{proof}
+
+\subsection{Ensemble Reconfigurability}
+
+\begin{theorem}[Dynamic Ensemble Reconfiguration]
+\label{thm:dynamic_reconfiguration}
+Given categorical state $\mathbf{S}_{\text{cat}}$, the ensemble instrument composition can be changed dynamically without re-measurement:
+
+\begin{equation}
+\mathcal{E}_1 = \{\text{TOF, Orbitrap, FT-ICR}\} \xrightarrow{\text{Reconfigure}} \mathcal{E}_2 = \{\text{IMS, qTOF, QQQ}\}
+\end{equation}
+
+Both ensembles measure same $\mathbf{S}_{\text{cat}}$, but provide different projections.
+
+\textbf{Reconfiguration time}: $O(N_{\text{new}})$ for dissolving old detectors and materializing new ones.
+\end{theorem}
+
+\begin{proof}
+\textbf{Categorical state persistence}:
+
+Once extracted (Phase 6), $\mathbf{S}_{\text{cat}}$ persists in memory. It represents the condition-independent molecular information. Changing instruments doesn't require re-extracting $\mathbf{S}_{\text{cat}}$—it's already available.
+
+\textbf{Reconfiguration procedure}:
+
+\begin{algorithmic}[1]
+\Procedure{ReconfigureEnsemble}{$\mathbf{S}_{\text{cat}}$, $\mathcal{C}^*$, new\_instruments}
+    \For{$\mathcal{D}_{\text{old}} \in \mathcal{E}_{\text{current}}$}
+        \State $\mathcal{D}_{\text{old}} \gets \emptyset$  \Comment{Dissolve}
+    \EndFor
+    \State $\mathcal{E}_{\text{new}} \gets \emptyset$
+    \For{inst\_type in new\_instruments}
+        \State $\mathcal{P}_{\text{inst}} \gets$ GetProjectionOperator(inst\_type)
+        \State $\mathcal{D}_{\text{new}} \gets$ MaterializeVirtualDetector($\mathbf{S}_{\text{cat}}$, $\mathcal{C}^*$, $\mathcal{P}_{\text{inst}}$)
+        \State $\mathcal{E}_{\text{new}} \gets \mathcal{E}_{\text{new}} \cup \{\mathcal{D}_{\text{new}}\}$
+    \EndFor
+    \State \Return $\mathcal{E}_{\text{new}}$
+\EndProcedure
+\end{algorithmic}
+
+Time: $O(N_{\text{old}}) + O(N_{\text{new}}) = O(N)$. For typical $N \sim 4$ to $8$: microseconds.
+
+\textbf{Use case - Adaptive ensemble}:
+
+\begin{enumerate}
+    \item Start with fast instruments (TOF, qTOF): $\mathcal{E}_1 = \{\text{TOF, qTOF}\}$
+    \item Get preliminary identification
+    \item If ambiguous ($A_{\text{ensemble}} \in [0.5, 0.75]$), reconfigure to high-resolution: $\mathcal{E}_2 = \{\text{Orbitrap, FT-ICR}\}$
+    \item If still ambiguous, add structural: $\mathcal{E}_3 = \mathcal{E}_2 \cup \{\text{IMS}\}$
+    \item Iterate until $A_{\text{ensemble}} > 0.75$ or all available instruments exhausted
+\end{enumerate}
+
+Adaptive strategy minimizes computational cost while guaranteeing identification quality.
+
+$\square$
+\end{proof}
+
+\subsection{Practical Implementation Considerations}
+
+\begin{remark}[Memory Management]
+Each virtual detector requires minimal memory:
+\begin{itemize}
+    \item S-coordinate reference: 8 bytes (pointer)
+    \item Projection parameters: $\sim 64$ bytes (instrument-specific constants)
+    \item Output buffer: $\sim 8M$ bytes for $M$ ions × 64 bits per value
+\end{itemize}
+
+For ensemble with $N = 8$ instruments and $M = 10^3$ ions:
+\begin{equation}
+\text{Memory}_{\text{ensemble}} = N \times (8 + 64 + 8 \times 10^3) = 8 \times 8{,}072 \approx 64 \text{ KB}
+\end{equation}
+
+Negligible compared to modern RAM (GB scale).
+\end{remark}
+
+\begin{remark}[Parallelization Strategy]
+Ensemble measurement (Phase 8) is embarrassingly parallel:
+\begin{itemize}
+    \item Each detector reads same $\mathbf{S}_{\text{cat}}$ (read-only, no contention)
+    \item No inter-detector communication required
+    \item No synchronization barriers (except initial trigger and final collection)
+\end{itemize}
+
+Ideal for:
+\begin{itemize}
+    \item Multi-core CPUs: Assign one detector per core
+    \item GPUs: Assign detector to GPU stream, process ions in parallel
+    \item Distributed systems: Deploy detectors on different nodes, aggregate results
+\end{itemize}
+
+Scaling: Linear speedup with number of cores up to $N$ (number of instruments).
+\end{remark}
+
+\begin{remark}[Error Propagation in Ensemble]
+Categorical state extraction (Phase 6) has precision $\epsilon_{\text{cat}} \sim 10^{-3}$ (Theorem \ref{thm:finite_approximation}). This error propagates through projections:
+
+\begin{equation}
+\epsilon_{\text{inst}} = \|\nabla \mathcal{P}_{\text{inst}}\| \cdot \epsilon_{\text{cat}}
+\end{equation}
+
+where $\|\nabla \mathcal{P}_{\text{inst}}\|$ is the Lipschitz constant of projection operator.
+
+For typical MS projections: $\|\nabla \mathcal{P}\| \sim 1$ to $10$ (weakly amplifying). Therefore:
+\begin{equation}
+\epsilon_{\text{inst}} \sim 10^{-3} \text{ to } 10^{-2}
+\end{equation}
+
+(0.1\% to 1\% relative error per instrument).
+
+Ensemble averaging reduces this:
+\begin{equation}
+\epsilon_{\text{ensemble}} \approx \frac{1}{\sqrt{N}} \epsilon_{\text{inst}} \approx \frac{10^{-2}}{\sqrt{4}} = 5 \times 10^{-3}
+\end{equation}
+
+(0.5\% relative error with 4-instrument ensemble).
+\end{remark}
+
+\subsection{Ensemble Architecture Diagram}
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[scale=0.85]
+% Categorical state (center)
+\node[circle, draw, ultra thick, fill=yellow!30, minimum size=2cm, font=\small] (SCAT) at (0, 0) {
+\begin{tabular}{c}
+$\mathbf{S}_{\text{cat}}$\\
+\tiny 14D State
+\end{tabular}
+};
+
+% Virtual detectors arranged in circle
+\foreach \angle/\inst/\color in {
+    90/TOF/blue,
+    45/Orbitrap/green,
+    0/FT-ICR/red,
+    315/IMS/purple,
+    270/qTOF/orange,
+    225/QQQ/cyan,
+    180/Ion Trap/magenta,
+    135/QTOF/brown
+} {
+    \node[rectangle, draw, thick, fill=\color!20, minimum width=1.5cm, minimum height=0.6cm, font=\tiny] (D\angle) at (\angle:4) {\inst};
+    \draw[->, very thick, \color] (SCAT) -- (D\angle);
+}
+
+% Coordinator above
+\node[rectangle, draw, ultra thick, fill=gray!20, minimum width=3cm, minimum height=0.8cm, font=\small] (COORD) at (0, 6) {
+Ensemble Coordinator $\mathcal{K}_{\text{ensemble}}$
+};
+
+% Control arrows
+\foreach \angle in {90, 45, 0, 315, 270, 225, 180, 135} {
+    \draw[->, dashed, thick, gray] (COORD) to[bend right=10] (D\angle);
+}
+
+% Result aggregation
+\node[rectangle, draw, thick, fill=green!10, minimum width=3cm, minimum height=0.8cm, font=\small] (RESULTS) at (0, -5) {
+Ensemble Results $\mathcal{R}_{\text{ensemble}}$
+};
+
+\foreach \angle in {90, 45, 0, 315, 270, 225, 180, 135} {
+    \draw[->, thick, gray] (D\angle) to[bend left=10] (RESULTS);
+}
+
+% Annotations
+\node[font=\tiny, text width=2cm, align=center] at (-7, 2) {
+\textbf{Parallel}\\
+Measurement\\
+$O(M \cdot K)$
+};
+
+\node[font=\tiny, text width=2cm, align=center] at (7, 2) {
+\textbf{Same} $\mathbf{S}_{\text{cat}}$\\
+Perfect\\
+Coherence
+};
+
+\node[font=\tiny, text width=2.5cm, align=center] at (-7, -3) {
+\textbf{Cross-Validation}\\
+Agreement\\
+$A > 0.75$
+};
+
+\node[font=\tiny, text width=2.5cm, align=center] at (7, -3) {
+\textbf{Consensus}\\
+$p(\text{correct})$\\
+$> 0.999$
+};
+
+% Lifecycle phases
+\node[rectangle, draw, dashed, fill=blue!5, minimum width=2.5cm, minimum height=0.6cm, font=\tiny] at (-7, 6) {
+Phase 7: Materialize\\
+$O(N)$
+};
+
+\node[rectangle, draw, dashed, fill=green!5, minimum width=2.5cm, minimum height=0.6cm, font=\tiny] at (-7, 5) {
+Phase 8: Measure\\
+$O(M \cdot K)$ parallel
+};
+
+\node[rectangle, draw, dashed, fill=red!5, minimum width=2.5cm, minimum height=0.6cm, font=\tiny] at (-7, 4) {
+Phase 9: Dissolve\\
+$O(N)$
+};
+
+\end{tikzpicture}
+\caption{Virtual mass spectrometer ensemble architecture. Eight virtual detectors (different colors) simultaneously measure the same categorical state $\mathbf{S}_{\text{cat}}$ (yellow circle center). Ensemble coordinator $\mathcal{K}_{\text{ensemble}}$ (gray box top) orchestrates materialization, triggers parallel measurement, and aggregates results. All detectors read same state → perfect temporal coherence. Results flow to validation (green box bottom) where cross-validation ensures $>99.9\%$ identification confidence. Lifecycle annotations (left) show O(1) overhead for ensemble management.}
+\label{fig:ensemble_architecture}
+\end{figure}
+
+\subsection{Summary: Ensemble as Unified Measurement System}
+
+Virtual mass spectrometer ensembles transform mass spectrometry from single-instrument measurements to unified multi-instrument systems:
+
+\begin{enumerate}
+    \item \textbf{Simultaneous measurement}: All instruments measure same $\mathbf{S}_{\text{cat}}$ at same instant (Theorem \ref{thm:ensemble_coherence})
+
+    \item \textbf{Efficient construction}: 9-phase algorithm with $O(M \cdot K)$ parallel complexity (Algorithm \ref{alg:ensemble_construction}, Theorem \ref{thm:ensemble_complexity})
+
+    \item \textbf{Perfect coherence}: No temporal drift, sample degradation, or systematic bias between instruments (Proof of Theorem \ref{thm:ensemble_coherence})
+
+    \item \textbf{Cross-validation}: Agreement score $A_{\text{ensemble}}$ with consensus guarantees $>99.9\%$ identification correctness (Theorem \ref{thm:ensemble_correctness})
+
+    \item \textbf{Dynamic reconfiguration}: Change instrument composition in $O(N)$ time without re-measurement (Theorem \ref{thm:dynamic_reconfiguration})
+
+    \item \textbf{Minimal overhead}: $\sim 64$ KB memory, microsecond latency, embarrassingly parallel
+
+    \item \textbf{Error reduction}: Ensemble averaging reduces error by $1/\sqrt{N}$ (Remark on error propagation)
+\end{enumerate}
+
+This ensemble architecture—enabled by virtual detectors reading shared categorical states—achieves what is physically impossible: measuring the same molecular sample with multiple mass spectrometers simultaneously, with perfect temporal coherence, at effectively zero marginal cost per additional instrument.
+
+The ensemble is the practical realization of the categorical completion principle (Section 3): multiple independent measurements intersecting to shrink equivalence classes exponentially, converging rapidly to unique molecular identification.
