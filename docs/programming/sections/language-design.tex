@@ -94,8 +94,8 @@ product = p1 * p2
 \begin{proposition}[Point Comparison]
 Points support comparison operators that return probabilistic truth values:
 \begin{verbatim}
-if measurement > threshold:
-    // Executes if P(measurement > threshold | data) > 0.95
+given measurement > threshold:
+    // Executes given P(measurement > threshold | data) > 0.95
 \end{verbatim}
 
 The compiler automatically converts Point comparisons to probabilistic hypothesis tests, maintaining statistical rigor throughout program execution.
@@ -257,14 +257,14 @@ Turbulance provides standard control flow with Point-aware semantics:
 
 \begin{verbatim}
 // Conditional execution based on probabilistic truth
-if measurement.value > threshold.value:
+given measurement.value > threshold.value:
     print("Threshold exceeded")
     // Executes when P(measurement > threshold) > 0.95
 
 // Iteration over categorical possibilities
 considering frame in thought_database:
     distance = calculate_s_distance(current_state, frame)
-    if distance < min_distance:
+    given distance < min_distance:
         min_distance = distance
         selected_frame = frame
 \end{verbatim}
@@ -592,7 +592,7 @@ funxn treat_depression(patient: PatientData) -> TreatmentProtocol:
     )
 
     // ===== INTEGRATION: Construct complete treatment protocol =====
-    if efficacy_result.conclusion:
+    given efficacy_result.conclusion > 0.95:
         protocol = TreatmentProtocol(
             drug: optimal_drug,
             dosage: calculate_optimal_dosage(patient.weight,
@@ -606,7 +606,7 @@ funxn treat_depression(patient: PatientData) -> TreatmentProtocol:
         )
 
         return protocol
-    else:
+    otherwise:
         // Insufficient confidence—recommend alternative approach
         return TreatmentProtocol(
             recommendation: "Consider CBT or combination therapy",

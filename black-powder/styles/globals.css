@@ -1,0 +1,21 @@
+.cavani_tm_home .job .styles_type__2Teeh {
+  font-weight: 600;
+  color: #333;
+}
+.styles_type__2Teeh::after {
+  font-weight: 400;
+  margin-left: 2px;
+}
+.cavani_tm_mainpart .author_image .jquery-ripples {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-image: url(../public/img/about/3.jpg) !important;
+}
+/* .cd-headline.loading-bar .cd-words-wrapper.is-loading_::after {
+  width: 100%;
+  transition: width 3s;
+} */

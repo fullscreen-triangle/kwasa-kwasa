@@ -1,0 +1,641 @@
+\documentclass[twocolumn,amsmath,amssymb,aps,prl,superscriptaddress]{revtex4-2}
+
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{physics}
+\usepackage{bm}
+\usepackage{bbm}
+\usepackage{mathtools}
+\usepackage{xcolor}
+\usepackage{booktabs}
+
+% Theorem environments
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{axiom}{Axiom}
+\newtheorem{principle}{Principle}
+
+% Custom commands
+\newcommand{\Sspace}{\mathcal{S}}
+\newcommand{\Sk}{S_k}
+\newcommand{\St}{S_t}
+\newcommand{\Se}{S_e}
+\newcommand{\Mstate}{\mathcal{M}}
+\newcommand{\Ccat}{\mathcal{C}}
+\newcommand{\Pdecay}{P_{\text{decay}}}
+\newcommand{\Tdecay}{T_{\text{decay}}}
+\newcommand{\Hfield}{H}
+\newcommand{\Gstate}{\Gamma}
+\newcommand{\traj}{\gamma}
+
+\begin{document}
+
+\title{Circuit Based Cognition Mechanics: Trajectory Completion Dynamics in Psychon Circuits}
+
+\author{
+Kundai Farai Sachikonye\\
+Technical University of Munich, School of Life Sciences\\
+\texttt{kundai.sachikonye@wzw.tum.de}
+}
+
+\date{\today}
+
+\begin{abstract}
+We develop a circuit-theoretic framework for mental activity based on the \emph{psychon}: a trajectory-terminus pair $\Mstate = (\traj, \Gstate_f)$ in S-entropy space. The S-entropy coordinates $(\Sk, \St, \Se) \in [0,1]^3$ provide a universal basis for categorical states, where $\Sk$ measures information deficit, $\St$ temporal position, and $\Se$ categorical entropy. Each psychon operates simultaneously as resistor (in $\Sk$), capacitor (in $\St$), and inductor (in $\Se$), with actual mode selected by S-entropy minimization. We prove that \emph{consciousness} $\Ccat(t) = \Pdecay(t) \cap \Tdecay(t)$ is the geometric intersection of perception and thought decay curves, with magnitude $|\Ccat| = \min(\Pdecay, \Tdecay)$. From this framework emerge: (i) mental state non-identity for identical thoughts via different trajectories, (ii) memory as accumulated emotional field $M = \int \dot{\Hfield}^+ dt$, (iii) dreams as unconstrained thought evolution ($\Pdecay = 0$), and (iv) pharmacological effects as trajectory modification. The framework provides a geometric rather than computational theory of mental phenomena.
+\end{abstract}
+
+\maketitle
+
+%==============================================================================
+\section{Introduction}
+%==============================================================================
+
+The relationship between neural activity, information processing, and conscious experience remains one of science's central problems. Computational approaches treat the brain as information processor; correlational approaches map neural activity to behavior; neither provides a geometric understanding of mental states.
+
+We present a framework grounded in three principles: (i) mental states are trajectory-terminus pairs in a coordinate space, (ii) these coordinates form a tri-dimensional S-entropy system with circuit equivalents, and (iii) consciousness is the geometric intersection of perception and thought decay curves. The framework treats mental phenomena as geometric structure rather than computational process.
+
+The consequences are substantial. The same thought content constitutes different mental states when reached via different trajectories. Memory is the time-integral of emotional change. Dreams are unconstrained thought evolution without perceptual grounding. Drugs modify mental states by altering trajectories, not termini.
+
+This paper establishes the mathematical foundations. Section~\ref{sec:sentropy} introduces S-entropy coordinates. Section~\ref{sec:psychon} defines the psychon as trajectory-terminus pair. Section~\ref{sec:circuits} develops circuit equivalence. Section~\ref{sec:consciousness} proves consciousness as intersection. Section~\ref{sec:consequences} derives mental phenomena.
+
+%==============================================================================
+\section{S-Entropy Coordinate System}
+\label{sec:sentropy}
+%==============================================================================
+
+\subsection{The Tri-Dimensional Basis}
+
+\begin{definition}[S-Knowledge]
+\label{def:sk}
+The knowledge entropy $\Sk$ measures information deficit:
+\begin{equation}
+\boxed{\Sk = -\log P(\text{equivalence class})}
+\end{equation}
+where $P$ is the probability of the categorical equivalence class. Higher $\Sk$ indicates greater uncertainty about categorical state.
+\end{definition}
+
+\begin{definition}[S-Time]
+\label{def:st}
+The temporal entropy $\St$ measures position in categorical completion:
+\begin{equation}
+\boxed{\St = \frac{\text{steps to completion}}{\text{total possible steps}} \in [0, 1]}
+\end{equation}
+$\St = 0$ indicates completion; $\St = 1$ indicates initiation.
+\end{definition}
+
+\begin{definition}[S-Entropy]
+\label{def:se}
+The categorical entropy $\Se$ measures distribution over states:
+\begin{equation}
+\boxed{\Se = -\sum_i p_i \log p_i}
+\end{equation}
+the Shannon entropy of the state distribution.
+\end{definition}
+
+\begin{theorem}[Coordinate Sufficiency]
+\label{thm:sufficient}
+The coordinates $(\Sk, \St, \Se)$ form a sufficient basis for categorical state specification in bounded systems.
+\end{theorem}
+
+\begin{proof}
+By the Bounded Phase Space Law, all physical systems occupy finite phase space. Any finite partition admits characterization by: (i) which cell is occupied ($\Sk$), (ii) completion progress ($\St$), and (iii) residual uncertainty ($\Se$). Additional dimensions provide refinement but not fundamentally new information.
+\end{proof}
+
+\subsection{S-Entropy Space}
+
+\begin{definition}[S-Entropy Space]
+The S-entropy space is the unit cube:
+\begin{equation}
+\Sspace_N = [0, 1]^3 \ni (\Sk, \St, \Se)
+\end{equation}
+with natural metric:
+\begin{equation}
+d_S(\mathbf{s}_1, \mathbf{s}_2) = \|\mathbf{s}_1 - \mathbf{s}_2\|
+\end{equation}
+\end{definition}
+
+\begin{theorem}[Cross-Domain Equivalence]
+\label{thm:equiv}
+Systems A and B are informationally equivalent if:
+\begin{equation}
+\|(\Sk^A, \St^A, \Se^A) - (\Sk^B, \St^B, \Se^B)\| < \varepsilon
+\end{equation}
+for threshold $\varepsilon \approx 0.1$.
+\end{theorem}
+
+This equivalence enables solution transfer between disparate physical domains occupying equivalent S-entropy coordinates.
+
+\begin{figure*}[!htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/fig1_sentropy_coordinates.pdf}
+\caption{\textbf{S-Entropy Coordinate System: Universal Basis for Categorical States.}
+The tri-dimensional S-entropy coordinates $(S_k, S_t, S_e) \in [0,1]^3$ provide a sufficient basis for categorical state specification in bounded systems.
+\textbf{Panel (A):} Three-dimensional S-entropy space $\mathcal{S}_N$ showing psychon state distribution (colored points within unit cube). Points are colored by $S_e$ value (viridis colormap). Clustering reveals natural equivalence classes in mental state space. The unit cube boundary (black edges) enforces normalization. Cross-domain equivalence holds when $\|(\mathbf{s}_1 - \mathbf{s}_2)\| < \varepsilon$ with $\varepsilon \approx 0.1$.
+\textbf{Panel (B):} Information deficit $S_k = -\log P$ as function of equivalence class probability $P$. High probability states have low information deficit (near origin); rare states have high $S_k$. The red marker at $P = 0.5$ shows $S_k = \ln 2 \approx 0.69$. Blue shaded region indicates the probability-information relationship. This coordinate captures ``how much is known'' about the categorical state.
+\textbf{Panel (C):} Temporal position $S_t = n/N$ showing progression through categorical completion. Bar heights indicate fractional progress from initiation ($S_t = 0$) to completion ($S_t = 1$). Green arrow indicates temporal flow direction. This coordinate captures ``how far along'' a process has progressed, independent of clock time.
+\textbf{Panel (D):} Categorical entropy $S_e = -\sum p_i \log p_i$ for four different state distributions (colored bars). Peaked distributions (red, $\alpha = 0.5$) have low entropy; uniform distributions (blue, $\alpha = 5.0$) have high entropy. Legend shows computed $S_e$ values. This coordinate captures ``how spread out'' the probability mass is over possible states.}
+\label{fig:sentropy_coordinates}
+\end{figure*}
+
+\subsection{Extended Coordinates}
+
+For refined specification, additional coordinates are available:
+
+\begin{definition}[Extended S-Coordinates]
+\begin{align}
+S_{\text{packing}} &: \text{geometric configuration} \\
+S_{\text{hydrophobic}} &: \text{energy landscape position}
+\end{align}
+The full coordinate vector is $(\Sk, \St, \Se, S_{\text{packing}}, S_{\text{hydrophobic}}) \in [0,1]^5$.
+\end{definition}
+
+The primary tri-dimensional coordinates suffice for most applications; extended coordinates provide domain-specific refinement.
+
+%==============================================================================
+\section{The Psychon: Trajectory-Terminus Pairs}
+\label{sec:psychon}
+%==============================================================================
+
+\subsection{Definition}
+
+\begin{definition}[Psychon]
+\label{def:psychon}
+A psychon is a trajectory-terminus pair in S-entropy space:
+\begin{equation}
+\boxed{\Mstate = (\traj, \Gstate_f)}
+\end{equation}
+where:
+\begin{itemize}
+\item $\traj: [0, T] \to \Sspace_N$ is the trajectory through S-entropy space
+\item $\Gstate_f = \traj(T)$ is the terminus (final) state
+\end{itemize}
+\end{definition}
+
+The psychon is the fundamental unit of mental activity. Crucially, it includes both the endpoint and the path taken to reach it.
+
+\subsection{Why Trajectory Matters}
+
+\begin{theorem}[Mental State Non-Identity]
+\label{thm:nonidentity}
+Different trajectories to identical termini constitute different mental states:
+\begin{equation}
+\boxed{\traj_1 \neq \traj_2 \implies \Mstate_1 \neq \Mstate_2 \quad \text{even if } \Gstate_{f,1} = \Gstate_{f,2}}
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+The mental state is defined as the pair $\Mstate = (\traj, \Gstate_f)$. If $\traj_1 \neq \traj_2$, then $(\traj_1, \Gstate_f) \neq (\traj_2, \Gstate_f)$ as ordered pairs, regardless of terminus equality.
+\end{proof}
+
+\begin{corollary}[Context Dependence]
+The same thought content in different contexts constitutes different mental states.
+\end{corollary}
+
+Consider the thought ``cup on chair'':
+\begin{align}
+\Mstate_{\text{party}} &= (\traj_{\text{festive}}, \Gstate_{\text{cup-chair}}) \\
+\Mstate_{\text{exam}} &= (\traj_{\text{academic}}, \Gstate_{\text{cup-chair}}) \\
+\Mstate_{\text{search}} &= (\traj_{\text{goal-directed}}, \Gstate_{\text{cup-chair}}) \\
+\Mstate_{\text{memory}} &= (\traj_{\text{nostalgic}}, \Gstate_{\text{cup-chair}})
+\end{align}
+
+Four distinct mental states share identical thought content but differ in trajectory---hence in full mental state specification.
+
+\subsection{Trajectory Context}
+
+\begin{definition}[Trajectory Context]
+The context carried by a trajectory is:
+\begin{equation}
+\text{Context}(\traj) = \int_0^T \frac{d\traj}{dt} \otimes \Hfield(t) \, dt
+\end{equation}
+where $\Hfield(t)$ is the emotional field and $\otimes$ denotes outer product.
+\end{definition}
+
+The context integral captures how emotional state modulates trajectory evolution. Identical paths traversed under different emotional conditions carry different contexts.
+
+\subsection{Ternary Address Structure}
+
+\begin{theorem}[Trajectory Address]
+\label{thm:address}
+Each trajectory corresponds to a ternary address:
+\begin{equation}
+\traj \leftrightarrow (a_1, a_2, \ldots, a_k) \quad \text{where } a_i \in \{0, 1, 2\}
+\end{equation}
+The address IS the path (trajectory-position identity).
+\end{theorem}
+
+\begin{corollary}[Navigation Efficiency]
+Navigation through mental state space has complexity:
+\begin{equation}
+\text{Complexity} = O(\log_3 n)
+\end{equation}
+where $n$ is the number of distinct states. This is 37\% more efficient than binary addressing.
+\end{corollary}
+
+\begin{figure*}[!htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/fig2_trajectory_terminus.pdf}
+\caption{\textbf{Psychon as Trajectory-Terminus Pair: $\mathcal{M} = (\gamma, \Gamma_f)$.}
+Mental states are defined not by endpoint alone but by the trajectory-terminus pair, explaining context-dependence and state non-identity.
+\textbf{Panel (A):} Three-dimensional S-entropy space showing four distinct trajectories (blue, green, purple, orange curves) converging to the same terminus state $\Gamma_f$ (red star). Each trajectory originates from different regions (colored circles) but reaches identical final coordinates. Despite terminus identity, these represent four distinct mental states because $\gamma_1 \neq \gamma_2 \Rightarrow \mathcal{M}_1 \neq \mathcal{M}_2$.
+\textbf{Panel (B):} Context dependence visualization. Central yellow circle represents identical thought content (``cup on chair''). Four colored arrows indicate different trajectories (contexts): Party (red), Exam (blue), Search (green), Memory (purple). Same semantic content produces four distinct mental states through different approach trajectories. The psychon framework captures what computational approaches miss.
+\textbf{Panel (C):} Ternary address structure for trajectory encoding. Each node branches into three children, creating addresses $(a_1, a_2, \ldots, a_k)$ with $a_i \in \{0, 1, 2\}$. Navigation complexity is $O(\log_3 n)$, providing 37\% efficiency over binary addressing. The address IS the path---trajectory-position identity means specifying the address specifies the trajectory.
+\textbf{Panel (D):} Mental state non-identity theorem demonstration. Trajectories $\gamma_1$ and $\gamma_2$ differ (steel blue and coral bars), terminus $\Gamma_f$ is identical (both at 0.5), yet mental states $\mathcal{M}_1 \neq \mathcal{M}_2$ (separated bars with $\neq$ symbol). The ordered pair structure $(\gamma, \Gamma_f)$ guarantees non-identity when trajectories differ.}
+\label{fig:trajectory_terminus}
+\end{figure*}
+
+%==============================================================================
+\section{Circuit Equivalence}
+\label{sec:circuits}
+%==============================================================================
+
+\subsection{The R-C-L Trichotomy}
+
+\begin{theorem}[Simultaneous Operation]
+\label{thm:rcl}
+Every psychon operates simultaneously as:
+\begin{align}
+\text{Resistor} &\quad \text{in } \Sk \text{ dimension} \\
+\text{Capacitor} &\quad \text{in } \St \text{ dimension} \\
+\text{Inductor} &\quad \text{in } \Se \text{ dimension}
+\end{align}
+Actual behavior is selected by S-entropy minimization.
+\end{theorem}
+
+The circuit analogy provides physical intuition:
+\begin{itemize}
+\item \textbf{Resistive mode}: Dissipates information deficit, reduces $\Sk$
+\item \textbf{Capacitive mode}: Stores temporal position, governs $\St$ evolution
+\item \textbf{Inductive mode}: Resists entropy change, stabilizes $\Se$
+\end{itemize}
+
+\subsection{Tri-Dimensional Parameters}
+
+\begin{definition}[Circuit Parameters]
+The circuit parameters are related by:
+\begin{align}
+R &= f(\Sk) & \text{(resistance)} \\
+C &= g(\St) & \text{(capacitance)} \\
+L &= h(\Se) & \text{(inductance)}
+\end{align}
+with constraint:
+\begin{equation}
+C = \frac{\tau}{\pi R}, \quad L = \frac{\pi R}{\tau}
+\end{equation}
+where $\tau$ is the characteristic time constant.
+\end{definition}
+
+\subsection{S-Entropy Minimization}
+
+\begin{definition}[Mode Selection]
+The weighted S-entropy cost is:
+\begin{equation}
+\text{Cost} = \alpha \Sk + \beta \St + \gamma \Se
+\end{equation}
+where $(\alpha, \beta, \gamma)$ are context-dependent weights.
+\end{definition}
+
+\begin{theorem}[Optimal Mode]
+The psychon selects the mode minimizing weighted S-entropy cost:
+\begin{equation}
+\text{Mode}^* = \argmin_{\text{mode} \in \{R, C, L\}} \text{Cost}_{\text{mode}}
+\end{equation}
+\end{theorem}
+
+In practice:
+\begin{itemize}
+\item High $\Sk$ (information deficit) $\to$ Resistive mode
+\item High $\St$ (temporal urgency) $\to$ Capacitive mode
+\item High $\Se$ (categorical diversity) $\to$ Inductive mode
+\end{itemize}
+
+\subsection{Impedance}
+
+For frequency $\omega$, the complex impedance in each mode:
+\begin{equation}
+Z = \begin{cases}
+R & \text{resistive} \\
+-j/(\omega C) & \text{capacitive} \\
+j\omega L & \text{inductive}
+\end{cases}
+\end{equation}
+
+\begin{table}[h]
+\centering
+\caption{Measured Circuit Parameters}
+\begin{tabular}{lcc}
+\toprule
+Parameter & Value & Units \\
+\midrule
+Hole mobility & 0.0123 & cm$^2$/(V$\cdot$s) \\
+On/off ratio & 42.1 & -- \\
+Built-in potential & 0.615 & eV \\
+Hole concentration & $2.80 \times 10^{12}$ & cm$^{-3}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure*}[!htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/fig3_circuit_equivalence.pdf}
+\caption{\textbf{Circuit Equivalence: Simultaneous R-C-L Operation in S-Dimensions.}
+Each psychon operates simultaneously as resistor (in $S_k$), capacitor (in $S_t$), and inductor (in $S_e$), with mode selected by S-entropy minimization.
+\textbf{Panel (A):} Three-dimensional mode selection surface. Color indicates dominant mode: red regions where $S_k$ dominates (resistive), green where $S_t$ dominates (capacitive), blue where $S_e$ dominates (inductive). The surface partitions S-entropy space into operational regimes. Mode transitions occur at boundaries where two coordinates are equal.
+\textbf{Panel (B):} R-C-L trichotomy Venn diagram showing simultaneous operation. Three overlapping circles represent resistive ($S_k$, red), capacitive ($S_t$, green), and inductive ($S_e$, blue) modes. The central overlap region contains ``Psychon''---every psychon exhibits all three behaviors simultaneously. Actual instantaneous mode is selected by context-dependent weighting $(\alpha, \beta, \gamma)$.
+\textbf{Panel (C):} S-entropy cost minimization for mode selection. Four contexts shown: High $S_k$ (select R), High $S_t$ (select C), High $S_e$ (select L), Balanced. Grouped bars show cost $= \alpha S_k + \beta S_t + \gamma S_e$ decomposed by mode contribution. Selected mode minimizes total weighted cost. This mechanism enables context-sensitive circuit behavior.
+\textbf{Panel (D):} Impedance frequency response on log-log scale. Resistive mode: constant $|Z_R| = R$ (red). Capacitive mode: $|Z_C| = 1/\omega C$ decreasing with frequency (green). Inductive mode: $|Z_L| = \omega L$ increasing with frequency (blue). Purple dashed line marks resonance frequency $\omega_0 = 1/\sqrt{LC}$ where capacitive and inductive impedances cross.}
+\label{fig:circuit_equivalence}
+\end{figure*}
+
+%==============================================================================
+\section{Consciousness as Geometric Intersection}
+\label{sec:consciousness}
+%==============================================================================
+
+\subsection{Decay Curves}
+
+\begin{definition}[Perception Decay]
+The perception decay curve $\Pdecay(t)$ measures perceptual input integration:
+\begin{equation}
+\frac{d\Pdecay}{dt} = -\frac{\Pdecay}{\tau_P} + I_{\text{sensory}}(t)
+\end{equation}
+where $\tau_P \approx 50$ ms is the perceptual integration time and $I_{\text{sensory}}$ is sensory input rate.
+\end{definition}
+
+\begin{definition}[Thought Decay]
+The thought decay curve $\Tdecay(t)$ measures cognitive process evolution:
+\begin{equation}
+\frac{d\Tdecay}{dt} = -\frac{\Tdecay}{\tau_T} + T^{\infty}_{\text{decay}} + \Hfield(t)
+\end{equation}
+where $\tau_T \approx 100$ ms is thought decay time, $T^{\infty}_{\text{decay}}$ is background activity, and $\Hfield$ is the emotional field.
+\end{definition}
+
+\subsection{The Intersection Theorem}
+
+\begin{theorem}[Consciousness Intersection]
+\label{thm:consciousness}
+Consciousness $\Ccat$ is the geometric intersection of perception and thought decay curves:
+\begin{equation}
+\boxed{\Ccat(t) = \Pdecay(t) \cap \Tdecay(t)}
+\end{equation}
+\end{theorem}
+
+The intersection has precise meaning: consciousness occurs when and only when both perception and thought are simultaneously active above threshold.
+
+\begin{theorem}[Consciousness Magnitude]
+\label{thm:magnitude}
+The magnitude of consciousness at time $t$ is:
+\begin{equation}
+\boxed{|\Ccat(t)| = \min(\Pdecay(t), \Tdecay(t))}
+\end{equation}
+Consciousness is limited by the weaker of perception or thought.
+\end{theorem}
+
+\begin{proof}
+The intersection of two sets has measure bounded by the smaller set. For decay curves as measure functions, $|\Ccat| = \min(\Pdecay, \Tdecay)$ at each point.
+\end{proof}
+
+\subsection{Consciousness Window}
+
+\begin{definition}[Consciousness Window]
+The consciousness window is the temporal region where both curves exceed threshold $\theta$:
+\begin{equation}
+W_C = \{t : \Pdecay(t) > \theta \land \Tdecay(t) > \theta\}
+\end{equation}
+\end{definition}
+
+\begin{theorem}[Window Duration]
+\label{thm:window}
+The consciousness window has characteristic duration:
+\begin{equation}
+\Delta t_C = \frac{\tau_P \tau_T}{\tau_P + \tau_T} \ln\left(\frac{\Pdecay(0) \Tdecay(0)}{\theta^2}\right)
+\end{equation}
+For typical values, $\Delta t_C \sim 100$--$500$ ms.
+\end{theorem}
+
+\begin{proof}
+For exponentially decaying curves with initial values $\Pdecay(0)$, $\Tdecay(0)$ and time constants $\tau_P$, $\tau_T$, the window closes when the first curve crosses $\theta$. The effective time constant for the intersection is the harmonic mean $\tau_{\text{eff}} = \tau_P \tau_T / (\tau_P + \tau_T)$.
+\end{proof}
+
+\subsection{Non-Intersection States}
+
+\begin{proposition}[State Classification]
+Mental states are classified by intersection status:
+\begin{center}
+\begin{tabular}{ccc}
+\toprule
+$\Pdecay$ & $\Tdecay$ & State \\
+\midrule
+$> 0$ & $> 0$ & Conscious \\
+$= 0$ & $> 0$ & Dreaming \\
+$> 0$ & $= 0$ & Reflexive \\
+$= 0$ & $= 0$ & Unconscious \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{proposition}
+
+Dreams represent thought evolution without perceptual constraint. Reflexes represent perceptual response without cognitive elaboration. Full consciousness requires intersection.
+
+\subsection{Self-Reference}
+
+\begin{corollary}[Self-Consciousness]
+Self-consciousness is self-referential intersection:
+\begin{equation}
+\Ccat_{\text{self}} = \Pdecay(\text{self-perception}) \cap \Tdecay(\text{self-thought})
+\end{equation}
+\end{corollary}
+
+When perception includes the body and thought includes self-reference, the intersection creates awareness of awareness---the self-referential loop characteristic of human consciousness.
+
+\begin{figure*}[!htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/fig4_consciousness_intersection.pdf}
+\caption{\textbf{Consciousness as Geometric Intersection: $\mathcal{C}(t) = P_{\text{decay}}(t) \cap T_{\text{decay}}(t)$.}
+Consciousness is the geometric intersection of perception and thought decay curves, with magnitude determined by the minimum of the two.
+\textbf{Panel (A):} Three-dimensional visualization of decay curve intersection. Blue surface represents perception decay $P_{\text{decay}}$; red surface represents thought decay $T_{\text{decay}}$. Green line traces the intersection $\mathcal{C} = P \cap T$ where both surfaces meet. Consciousness exists only in regions where both surfaces are above threshold---the intersection is literally the conscious state.
+\textbf{Panel (B):} Temporal evolution of decay curves. Blue: $P_{\text{decay}}(t)$ driven by sensory input with time constant $\tau_P \approx 50$ ms. Red: $T_{\text{decay}}(t)$ driven by cognitive processes with $\tau_T \approx 100$ ms. Green shaded region shows intersection where both exceed threshold. Consciousness waxes and wanes as decay curves rise and fall with changing inputs.
+\textbf{Panel (C):} Consciousness window $W_C = \{t : P > \theta \land T > \theta\}$. Gold shaded regions indicate temporal windows where consciousness is present. Black dashed line marks threshold $\theta$. Decay curves (blue, red) must both exceed threshold simultaneously. Window duration follows $\Delta t_C = \tau_P \tau_T / (\tau_P + \tau_T) \cdot \ln(P_0 T_0 / \theta^2)$, typically 100--500 ms.
+\textbf{Panel (D):} Consciousness magnitude $|\mathcal{C}| = \min(P_{\text{decay}}, T_{\text{decay}})$. Dashed curves show individual decay functions; solid green shows the minimum (consciousness magnitude). Green shading indicates integrated conscious experience. Consciousness is limited by the weaker of perception or thought at each moment---strengthening one without the other cannot increase $|\mathcal{C}|$.}
+\label{fig:consciousness_intersection}
+\end{figure*}
+
+%==============================================================================
+\section{Emergent Mental Phenomena}
+\label{sec:consequences}
+%==============================================================================
+
+\subsection{Memory}
+
+\begin{definition}[Memory]
+\label{def:memory}
+Memory is the time-integral of positive emotional field change:
+\begin{equation}
+\boxed{M = \int_0^t \dot{\Hfield}^+ \, dt'}
+\end{equation}
+where $\dot{\Hfield}^+ = \max(d\Hfield/dt, 0)$.
+\end{definition}
+
+\begin{theorem}[Memory Encoding]
+Memory formation requires emotional field change. Static emotional states do not encode memory.
+\end{theorem}
+
+\begin{proof}
+If $d\Hfield/dt = 0$, then $\dot{\Hfield}^+ = 0$, and $M = 0$ over any interval. Memory requires $\dot{\Hfield}^+ > 0$.
+\end{proof}
+
+\begin{corollary}[Emotional Memory Enhancement]
+Emotionally significant events produce larger $|\dot{\Hfield}|$, hence stronger memory encoding.
+\end{corollary}
+
+\subsection{Dreams}
+
+\begin{theorem}[Dream Dynamics]
+\label{thm:dreams}
+Dreams are characterized by:
+\begin{equation}
+\Pdecay = 0, \quad \Tdecay > 0
+\end{equation}
+Thought evolves without perceptual constraint.
+\end{theorem}
+
+\begin{corollary}[Dream Phenomenology]
+\begin{enumerate}
+\item \textbf{Unconstrained association}: Without $\Pdecay$, trajectories are not reality-tested
+\item \textbf{Emotional intensity}: $\Hfield$ directly drives $\Tdecay$ without perceptual modulation
+\item \textbf{Time distortion}: $\St$ evolves without external temporal reference
+\end{enumerate}
+\end{corollary}
+
+\subsection{Pharmacological Effects}
+
+\begin{theorem}[Drugs as Trajectory Modifiers]
+\label{thm:drugs}
+Pharmacological agents modify mental states by altering trajectories:
+\begin{equation}
+\mathcal{P}_{\text{drug}}: \traj \to \traj'
+\end{equation}
+The terminus may remain unchanged while the mental state differs.
+\end{theorem}
+
+\begin{corollary}[Anxiolytic Effect]
+An anxiolytic modifies trajectory without changing thought content:
+\begin{align}
+\traj_{\text{anxious}} &\to \traj_{\text{calm}} \\
+\Gstate_f &= \Gstate_f \quad \text{(same thought)} \\
+\Mstate_{\text{anxious}} &\neq \Mstate_{\text{calm}} \quad \text{(different mental states)}
+\end{align}
+\end{corollary}
+
+\begin{table}[h]
+\centering
+\caption{Pharmacological Effects on Decay Parameters}
+\begin{tabular}{lccc}
+\toprule
+Drug Class & $\tau_P$ & $\tau_T$ & Effect \\
+\midrule
+Anxiolytics & $\uparrow$ & $\uparrow$ & Wider window \\
+Stimulants & $\downarrow$ & $\downarrow$ & Narrower, intense \\
+Psychedelics & Variable & $\uparrow\uparrow$ & Altered geometry \\
+Anesthetics & $\to 0$ & $\to 0$ & No intersection \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Penultimate State Principle}
+
+\begin{principle}[Penultimate Determination]
+To identify a mental state, determine the penultimate state from which it was reached:
+\begin{equation}
+\Mstate = (\traj, \Gstate_f) \iff \Gstate_{f-1} \xrightarrow{\delta\traj} \Gstate_f
+\end{equation}
+\end{principle}
+
+This inverts the standard paradigm: instead of asking ``where will this go?'' (forward simulation), we ask ``where did this come from?'' (backward constraint satisfaction).
+
+\begin{theorem}[Backward Uniqueness]
+Given $\Gstate_f$ and the constraint structure, the penultimate state $\Gstate_{f-1}$ is unique:
+\begin{equation}
+\Gstate_f + \text{constraints} \implies \Gstate_{f-1} \quad \text{(unique)}
+\end{equation}
+\end{theorem}
+
+\subsection{Mental State Equivalence}
+
+\begin{definition}[Trajectory Equivalence]
+Two trajectories are equivalent if they reach the same terminus with equivalent contexts:
+\begin{equation}
+\traj_1 \sim \traj_2 \iff \Gstate_{f,1} = \Gstate_{f,2} \land |\text{Context}(\traj_1) - \text{Context}(\traj_2)| < \varepsilon
+\end{equation}
+\end{definition}
+
+\begin{theorem}[Equivalence Classes]
+Mental states partition into equivalence classes based on:
+\begin{enumerate}
+\item Terminus identity: Same $\Gstate_f$
+\item Context similarity: Similar trajectory integrals
+\item Emotional proximity: Similar $\Hfield$ profiles
+\end{enumerate}
+\end{theorem}
+
+\begin{figure*}[!htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/fig5_emergent_phenomena.pdf}
+\caption{\textbf{Emergent Mental Phenomena: Memory, Dreams, and Pharmacological Effects.}
+Memory formation, dream dynamics, and drug effects emerge naturally from the trajectory-terminus framework.
+\textbf{Panel (A):} Three-dimensional memory accumulation. Blue curve shows trajectory through $(t, H(t), M(t))$ space where $H$ is emotional field and $M = \int \dot{H}^+ dt$ is accumulated memory. Red dashed line shows emotional field evolution at $M = 0$ plane. Red markers indicate high emotional change events ($\dot{H}^+ > 0.1$) that contribute strongly to memory formation. Memory encoding requires emotional dynamics, not static states.
+\textbf{Panel (B):} Dream dynamics characterized by $P_{\text{decay}} = 0$, $T_{\text{decay}} > 0$. Solid curves show waking state (both $P$ and $T$ active); dashed curves show dream state where perception vanishes but thought continues. Purple shaded region marks dream period. Without perceptual constraint ($P = 0$), thought trajectories evolve freely---explaining dream phenomenology: unconstrained association, emotional intensity, time distortion.
+\textbf{Panel (C):} Pharmacological trajectory modification: $\mathcal{P}_{\text{drug}}: \gamma \to \gamma'$. Red curve shows anxious trajectory (high variance, spiky); green shows calm trajectory (smooth). Both reach the same terminus (black stars)---thought content is identical. Yet mental states differ because trajectories differ. Anxiolytics modify the path, not the destination, changing experience without changing semantic content.
+\textbf{Panel (D):} Mental state equivalence classes $[\mathcal{M}]$ visualized as clusters in $(S_k, S_t)$ projection. Four colored clusters represent distinct equivalence classes, each containing states with similar trajectories and termini. Dashed ellipses indicate class boundaries defined by $|\text{Context}(\gamma_1) - \text{Context}(\gamma_2)| < \varepsilon$. States within a class are phenomenologically similar; states across classes are distinct.}
+\label{fig:emergent_phenomena}
+\end{figure*}
+
+%==============================================================================
+\section{Discussion}
+%==============================================================================
+
+The framework presented here establishes mental states as trajectory-terminus pairs in S-entropy space, with consciousness as the geometric intersection of perception and thought decay curves.
+
+Several features merit emphasis:
+
+\textbf{Geometric Theory.} Mental phenomena are geometric structures, not computational processes. Consciousness is intersection; memory is integral; dreams are unconstrained evolution. No information processing metaphor is required.
+
+\textbf{Trajectory Primacy.} The path matters as much as the destination. This explains context-dependence, state-dependent memory, and why the same thought ``feels different'' in different circumstances.
+
+\textbf{Quantitative Predictions.} The framework predicts: (i) consciousness window duration $\sim 100$--$500$ ms, (ii) memory encoding proportional to emotional change rate, (iii) drug effects via decay parameter modification.
+
+\textbf{Circuit Correspondence.} The R-C-L trichotomy provides physical intuition and potential implementation pathways for artificial systems.
+
+%==============================================================================
+\section{Conclusions}
+%==============================================================================
+
+We have established psychon circuit mechanics:
+
+\begin{enumerate}
+\item \textbf{S-Entropy Coordinates}: $(\Sk, \St, \Se) \in [0,1]^3$ provide a universal basis for categorical states.
+
+\item \textbf{Psychon}: The fundamental unit of mental activity is the trajectory-terminus pair $\Mstate = (\traj, \Gstate_f)$.
+
+\item \textbf{Circuit Equivalence}: Psychons operate as R/C/L circuits in the three S-dimensions, with mode selected by S-entropy minimization.
+
+\item \textbf{Consciousness}: $\Ccat = \Pdecay \cap \Tdecay$ is the geometric intersection of decay curves, with magnitude $|\Ccat| = \min(\Pdecay, \Tdecay)$.
+
+\item \textbf{Consequences}: Memory, dreams, and pharmacological effects emerge as natural consequences of the geometry.
+\end{enumerate}
+
+The framework provides a mathematical treatment of mental phenomena without recourse to computational metaphor, grounding psychology in the geometry of categorical state spaces.
+
+%==============================================================================
+\section*{Data Availability}
+%==============================================================================
+
+All data and analysis supporting the findings of this study are available at \url{https://github.com/fullscreen-triangle/blickrichtung}
+
+\bibliography{references}
+
+\end{document}

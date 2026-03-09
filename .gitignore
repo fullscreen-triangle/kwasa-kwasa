@@ -30,3 +30,183 @@ Cargo.lock
 # Local configuration
 *.env
 config.local.toml 
+
+# Rust
+/target/
+**/*.rs.bk
+Cargo.lock
+*.pdb
+/inspiration
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Production builds
+/build
+/.next/
+/out/
+/dist/
+
+# Environment variables
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+
+# Data files
+/data/
+/backups/
+*.csv
+*.json.bak
+*.parquet
+
+# Monitoring
+/prometheus_data/
+/grafana_data/
+
+# Testing
+/coverage/
+/nyc_output/
+
+# Misc
+.cache/
+.temp/
+.tmp/
+
+# Docker
+.dockerignore
+
+# macOS
+.DS_Store
+
+# Linux
+*~
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini 
+
+# Dependencies
+node_modules/
+/.pnp
+.pnp.js
+
+# Testing
+/coverage
+
+# Next.js
+/.next/
+/out/
+.next
+out
+next-env.d.ts
+
+# Production
+/build
+dist
+
+# Misc
+.DS_Store
+*.pem
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Local env files
+.env
+.env*.local
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Vercel
+.vercel
+
+# Typescript
+*.tsbuildinfo
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+*.sublime-workspace
+*.sublime-project
+
+# OS Files
+Thumbs.db
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Logs
+logs
+*.log
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Yarn
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# Turbo
+.turbo
+
+# Sentry
+.sentryclirc
+
+# Storybook
+storybook-static
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+

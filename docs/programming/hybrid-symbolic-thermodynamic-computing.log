@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.7.27)  22 NOV 2025 06:49
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.7.27)  25 NOV 2025 07:33
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -760,13 +760,40 @@ Package: algorithmic 2009/08/24 v0.1 Document Style `algorithmic'
 \ALC@tlm=\skip65
 \algorithmicindent=\skip66
 )
+(C:\Users\kundai\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption.sty
+Package: caption 2023/08/05 v3.6o Customizing captions (AR)
+
+(C:\Users\kundai\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption3.sty
+Package: caption3 2023/07/31 v2.4d caption3 kernel (AR)
+\caption@tempdima=\dimen294
+\captionmargin=\dimen295
+\caption@leftmargin=\dimen296
+\caption@rightmargin=\dimen297
+\caption@width=\dimen298
+\caption@indent=\dimen299
+\caption@parindent=\dimen300
+\caption@hangindent=\dimen301
+Package caption Info: Standard document class detected.
+)
+\c@caption@flags=\count326
+\c@continuedfloat=\count327
+Package caption Info: float package is loaded.
+Package caption Info: hyperref package is loaded.
+)
+(C:\Users\kundai\AppData\Local\Programs\MiKTeX\tex/latex/caption\subcaption.sty
+Package: subcaption 2023/07/28 v1.6b Sub-captions (AR)
+Package caption Info: New subtype `subfigure' on input line 238.
+\c@subfigure=\count328
+Package caption Info: New subtype `subtable' on input line 238.
+\c@subtable=\count329
+)
 (C:\Users\kundai\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflib
 raryarrows.meta.code.tex
 File: pgflibraryarrows.meta.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgfarrowinset=\dimen294
-\pgfarrowlength=\dimen295
-\pgfarrowwidth=\dimen296
-\pgfarrowlinewidth=\dimen297
+\pgfarrowinset=\dimen302
+\pgfarrowlength=\dimen303
+\pgfarrowwidth=\dimen304
+\pgfarrowlinewidth=\dimen305
 )
 (C:\Users\kundai\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
 kz/libraries\tikzlibrarypositioning.code.tex
@@ -784,7 +811,7 @@ File: tikzlibraryshapes.geometric.code.tex 2023-01-15 v3.1.10 (3.1.10)
 \pgflibraryshapes.geometric.code.tex
 File: pgflibraryshapes.geometric.code.tex 2023-01-15 v3.1.10 (3.1.10)
 ))
-\c@theorem=\count326
+\c@theorem=\count330
 
 
 ! LaTeX Error: Command \Omega already defined.
@@ -794,7 +821,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.43 \newcommand{\Omega}{\Omega}
+l.53 \newcommand{\Omega}{\Omega}
                                 
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -808,47 +835,54 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.44 \newcommand{\Phi}{\Phi}
+l.54 \newcommand{\Phi}{\Phi}
                             
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
-(hybrid-symbolic-thermodynamic-computing.aux)
+(hybrid-symbolic-thermodynamic-computing.aux
+
+LaTeX Warning: Label `fig:v8_network' multiply defined.
+
+
+LaTeX Warning: Label `fig:v8_network@cref' multiply defined.
+
+)
 \openout1 = `hybrid-symbolic-thermodynamic-computing.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 59.
-LaTeX Font Info:    ... okay on input line 59.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 59.
-LaTeX Font Info:    ... okay on input line 59.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 59.
-LaTeX Font Info:    ... okay on input line 59.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 59.
-LaTeX Font Info:    ... okay on input line 59.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 59.
-LaTeX Font Info:    ... okay on input line 59.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 59.
-LaTeX Font Info:    ... okay on input line 59.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 59.
-LaTeX Font Info:    ... okay on input line 59.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 59.
-LaTeX Font Info:    ... okay on input line 59.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 59.
-LaTeX Font Info:    ... okay on input line 59.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 65.
+LaTeX Font Info:    ... okay on input line 65.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 65.
+LaTeX Font Info:    ... okay on input line 65.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 65.
+LaTeX Font Info:    ... okay on input line 65.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 65.
+LaTeX Font Info:    ... okay on input line 65.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 65.
+LaTeX Font Info:    ... okay on input line 65.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 65.
+LaTeX Font Info:    ... okay on input line 65.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 65.
+LaTeX Font Info:    ... okay on input line 65.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 65.
+LaTeX Font Info:    ... okay on input line 65.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 65.
+LaTeX Font Info:    ... okay on input line 65.
 
 (C:\Users\kundai\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.m
 kii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count327
-\scratchdimen=\dimen298
+\scratchcounter=\count331
+\scratchdimen=\dimen306
 \scratchbox=\box68
-\nofMPsegments=\count328
-\nofMParguments=\count329
+\nofMPsegments=\count332
+\nofMParguments=\count333
 \everyMPshowfont=\toks47
-\MPscratchCnt=\count330
-\MPscratchDim=\dimen299
-\MPnumerator=\count331
-\makeMPintoPDFobject=\count332
+\MPscratchCnt=\count334
+\MPscratchDim=\dimen307
+\MPnumerator=\count335
+\makeMPintoPDFobject=\count336
 \everyMPtoPDFconversion=\toks48
 )
 (C:\Users\kundai\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-
@@ -861,7 +895,7 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 cfg
 File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 ))
-Package hyperref Info: Link coloring OFF on input line 59.
+Package hyperref Info: Link coloring OFF on input line 65.
  (hybrid-symbolic-thermodynamic-computing.out)
 (hybrid-symbolic-thermodynamic-computing.out)
 \@outlinefile=\write4
@@ -902,33 +936,35 @@ Package hyperref Info: Link coloring OFF on input line 59.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-LaTeX Font Info:    Trying to load font information for U+msa on input line 62.
+Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: End \AtBeginDocument code.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 68.
 
 (C:\Users\kundai\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 62.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 68.
 
 
 (C:\Users\kundai\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 6
-2.
+8.
 
 (C:\Users\kundai\AppData\Local\Programs\MiKTeX\tex/latex/base\t1cmtt.fd
 File: t1cmtt.fd 2023/04/13 v2.5m Standard LaTeX font definitions
 )
-[1
-
-{C:/Users/kundai/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}]
-Overfull \hbox (5.41771pt too wide) in paragraph at lines 70--71
+Overfull \hbox (5.41771pt too wide) in paragraph at lines 76--77
 \T1/cmr/m/n/10.95 amygdala cir-cuits in-creased from 0.32 (de-pressed base-line
 ) to 0.77 (post-intervention),
  []
 
-[2] (hybrid-symbolic-thermodynamic-computing.toc [3]
-Overfull \hbox (17.81702pt too wide) in paragraph at lines 58--58
+[1
+
+{C:/Users/kundai/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}] [2]
+(hybrid-symbolic-thermodynamic-computing.toc [3]
+Overfull \hbox (17.81702pt too wide) in paragraph at lines 57--57
  [] [][]\T1/cmr/bx/n/12 Symbolic-Thermodynamic Bridge: Suf-fi-ciency Through In
 -for-ma-tion Catal- 
  []
@@ -978,36 +1014,15 @@ l.36 ...molecules create perturbations in the H⁺
 You may provide a definition with
 \DeclareUnicodeCharacter 
 
-[7] [8]
-
-! LaTeX Error: Unicode character ⁺ (U+207A)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.102 ...the oscillatory computing substrate (H⁺
-                                                   field reality + O₂ cate...
-
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-
-! LaTeX Error: Unicode character ₂ (U+2082)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.102 ...ting substrate (H⁺ field reality + O₂
-                                                   categorical clock + oscil...
-
-You may provide a definition with
-\DeclareUnicodeCharacter 
-
-[9]) (sections/biological-maxwell-demon.tex
+[7]
+<figures/figure_1_theory_implementation.png, id=729, 1004.553pt x 426.393pt>
+File: figures/figure_1_theory_implementation.png Graphic file (type png)
+<use figures/figure_1_theory_implementation.png>
+Package pdftex.def Info: figures/figure_1_theory_implementation.png  used on in
+put line 66.
+(pdftex.def)             Requested size: 452.9679pt x 192.26544pt.
+ [8] [9 <./figures/figure_1_theory_implementation.png>])
+(sections/biological-maxwell-demon.tex
 Overfull \hbox (17.449pt too wide) in paragraph at lines 1--1
 []\T1/cmr/bx/n/17.28 Theoretical Foun-da-tions: Bi-o-log-i-cal Maxwell's Demons
  
@@ -1064,42 +1079,57 @@ g ac-ti-va-tion en-ergy bar-ri-ers, thereby
  []
 
 [10] [11] [12]
+<figures/frame_selection_dynamics.png, id=777, 1075.3776pt x 710.655pt>
+File: figures/frame_selection_dynamics.png Graphic file (type png)
+<use figures/frame_selection_dynamics.png>
+Package pdftex.def Info: figures/frame_selection_dynamics.png  used on input li
+ne 155.
+(pdftex.def)             Requested size: 452.9679pt x 299.34056pt.
+
 
 Package natbib Warning: Citation `Mizraji2021' on page 13 undefined on input li
-ne 155.
+ne 177.
 
-[13] [14] [15]
+[13] [14 <./figures/frame_selection_dynamics.png>] [15] [16]
 
-Package natbib Warning: Citation `Monod1971' on page 16 undefined on input line
- 261.
+Package natbib Warning: Citation `Monod1971' on page 17 undefined on input line
+ 283.
 
 
-Overfull \hbox (6.26712pt too wide) in paragraph at lines 261--262
+Overfull \hbox (6.26712pt too wide) in paragraph at lines 283--284
 \T1/cmr/m/n/12 BMDs ex-hibit ap-par-ent goal-directedness with-out ex-plicit pr
 o-gram-ming, a prop-erty Monod
  []
 
-[16] [17]) (sections/prerequisites-for-computation.tex [18] [19]
+[17] [18]) (sections/prerequisites-for-computation.tex [19] [20]
 Overfull \hbox (2.44542pt too wide) in paragraph at lines 101--102
 []\T1/cmr/bx/n/12 Proposition 3.3 \T1/cmr/m/n/12 (Point Arith-metic with Cer-ta
 inty Prop-a-ga-tion)\T1/cmr/bx/n/12 . []\T1/cmr/m/it/12 Points com-pose through
 
  []
 
-[20] [21] [22] [23]
-Overfull \hbox (22.2391pt too wide) in paragraph at lines 319--320
+[21] [22] [23]
+<figures/figure_6_metacognitive_learning.png, id=913, 1149.093pt x 1004.553pt>
+File: figures/figure_6_metacognitive_learning.png Graphic file (type png)
+<use figures/figure_6_metacognitive_learning.png>
+Package pdftex.def Info: figures/figure_6_metacognitive_learning.png  used on i
+nput line 317.
+(pdftex.def)             Requested size: 452.9679pt x 395.98935pt.
+ [24]
+Overfull \hbox (22.2391pt too wide) in paragraph at lines 345--346
 []\T1/cmr/bx/n/12 Theorem 3.11 \T1/cmr/m/n/12 (Paradigm Con-flict Res-o-lu-tion
  Ne-ces-sity)\T1/cmr/bx/n/12 . []\T1/cmr/m/it/12 The three com-pu-ta-tional par
 adigms
  []
 
-[24]
-Overfull \hbox (3.15129pt too wide) in paragraph at lines 354--355
+
+Overfull \hbox (3.15129pt too wide) in paragraph at lines 380--381
 []\T1/cmr/m/n/12 These are con-tra-dic-tory rec-om-men-da-tions from the same i
 n-put data, pro-cessed through
  []
 
-) (sections/oscillatory-computing.tex
+[25] [26 <./figures/figure_6_metacognitive_learning.png>])
+(sections/oscillatory-computing.tex
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `\mathsurround' on input line 3.
@@ -1112,14 +1142,29 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `superscript' on input line 3.
 
-[25] [26]
-Overfull \hbox (7.122pt too wide) in paragraph at lines 115--116
+<figures/figure_neural_resonance_2_integration.png, id=945, 1172.2194pt x 851.3
+406pt>
+File: figures/figure_neural_resonance_2_integration.png Graphic file (type png)
+
+<use figures/figure_neural_resonance_2_integration.png>
+Package pdftex.def Info: figures/figure_neural_resonance_2_integration.png  use
+d on input line 25.
+(pdftex.def)             Requested size: 452.9679pt x 328.98175pt.
+<figures/figure_reality_substrate.png, id=946, 1149.3339pt x 854.2314pt>
+File: figures/figure_reality_substrate.png Graphic file (type png)
+<use figures/figure_reality_substrate.png>
+Package pdftex.def Info: figures/figure_reality_substrate.png  used on input li
+ne 60.
+(pdftex.def)             Requested size: 452.9679pt x 336.66823pt.
+[27] [28 <./figures/figure_neural_resonance_2_integration.png>] [29 <./figures/
+figure_reality_substrate.png>] [30]
+Overfull \hbox (7.122pt too wide) in paragraph at lines 160--161
 []\T1/cmr/bx/n/12 Proposition 4.6 \T1/cmr/m/n/12 (Oxy-gen Cat-e-gor-i-cal Su-pe
 -ri-or-ity)\T1/cmr/bx/n/12 . []\T1/cmr/m/it/12 No other bi-o-log-i-cally rel-e-
 vant molecule
  []
 
-[27]
+[31]
 
 ! LaTeX Error: Unicode character ≡ (U+2261)
                not set up for use with LaTeX.
@@ -1128,55 +1173,95 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.204 ...orem}[Oscillatory Hole ≡ BMD Operation]
+l.249 ...orem}[Oscillatory Hole ≡ BMD Operation]
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
 
-[28] [29]
-Overfull \hbox (2.50807pt too wide) in paragraph at lines 282--283
+[32]
+<figures/h_plus_oscillatory_hole_mechanism_upper_hallf.png, id=1009, 1185.9507p
+t x 807.2559pt>
+File: figures/h_plus_oscillatory_hole_mechanism_upper_hallf.png Graphic file (t
+ype png)
+<use figures/h_plus_oscillatory_hole_mechanism_upper_hallf.png>
+Package pdftex.def Info: figures/h_plus_oscillatory_hole_mechanism_upper_hallf.
+png  used on input line 280.
+(pdftex.def)             Requested size: 452.9679pt x 308.32478pt.
+ [33] [34 <./figures/h_plus_oscillatory_hole_mechanism_upper_hallf.png>]
+Overfull \hbox (2.50807pt too wide) in paragraph at lines 356--357
 []\T1/cmr/bx/n/12 Theorem 4.11 \T1/cmr/m/n/12 (Manda-tory Hole Com-ple-tion)\T1
 /cmr/bx/n/12 . []\T1/cmr/m/it/12 Os-cil-la-tory holes MUST be filled^^Vcascade
  []
 
-[30] [31]) (sections/symbolic-thermodynamics.tex
+[35]
+<figures/figure_2_v8_network.png, id=1047, 1149.093pt x 860.013pt>
+File: figures/figure_2_v8_network.png Graphic file (type png)
+<use figures/figure_2_v8_network.png>
+Package pdftex.def Info: figures/figure_2_v8_network.png  used on input line 43
+0.
+(pdftex.def)             Requested size: 452.9679pt x 339.01247pt.
+ [36] [37 <./figures/figure_2_v8_network.png>]
+<figures/coherence_fields_regional_overview_upperhalf.png, id=1073, 1188.3597pt
+ x 735.4677pt>
+File: figures/coherence_fields_regional_overview_upperhalf.png Graphic file (ty
+pe png)
+<use figures/coherence_fields_regional_overview_upperhalf.png>
+Package pdftex.def Info: figures/coherence_fields_regional_overview_upperhalf.p
+ng  used on input line 488.
+(pdftex.def)             Requested size: 452.9679pt x 280.33353pt.
+)
+(sections/symbolic-thermodynamics.tex
 Overfull \hbox (20.4695pt too wide) in paragraph at lines 1--1
 []\T1/cmr/bx/n/17.28 Symbolic-Thermodynamic Bridge: Suf-fi-ciency Through
  []
 
-[32] [33]
-Overfull \hbox (2.03632pt too wide) in paragraph at lines 67--68
+[38] [39 <./figures/coherence_fields_regional_overview_upperhalf.png>] [40]
+<figures/figure_3_bayesian_integration.png, id=1105, 1293.633pt x 426.393pt>
+File: figures/figure_3_bayesian_integration.png Graphic file (type png)
+<use figures/figure_3_bayesian_integration.png>
+Package pdftex.def Info: figures/figure_3_bayesian_integration.png  used on inp
+ut line 65.
+(pdftex.def)             Requested size: 452.9679pt x 149.29834pt.
+
+Overfull \hbox (2.03632pt too wide) in paragraph at lines 87--88
 []\T1/cmr/bx/n/12 Theorem 5.2 \T1/cmr/m/n/12 (S-En-tropy Com-pres-sion Prin-ci-
 ple)\T1/cmr/bx/n/12 . []\T1/cmr/m/it/12 S-entropy co-or-di-nates $\OT1/cmr/m/n/
 12 (\OML/cmm/m/it/12 S[]; S[]; S[]\OT1/cmr/m/n/12 )$ \T1/cmr/m/it/12 com-
  []
 
-[34] [35]
-Overfull \hbox (9.61273pt too wide) in paragraph at lines 161--162
+[41 <./figures/figure_3_bayesian_integration.png>] [42]
+Overfull \hbox (9.61273pt too wide) in paragraph at lines 181--182
 []\T1/cmr/bx/n/12 The op-er-a-tor $\OMS/cmsy/m/n/12 R$ \T1/cmr/bx/n/12 is not e
 x-ter-nally im-posed^^Vit's CON-TAINED in $\OT1/cmr/bx/n/12 s\OT1/cmr/m/n/12 (\
 OML/cmm/m/it/12 t[]\OT1/cmr/m/n/12 )$ \T1/cmr/bx/n/12 through
  []
 
-
-Overfull \hbox (7.27486pt too wide) in paragraph at lines 195--196
+[43]
+Overfull \hbox (7.27486pt too wide) in paragraph at lines 215--216
 []\T1/cmr/bx/n/12 BMD res-o-lu-tion\T1/cmr/m/n/12 : Global ther-mo-dy-namic ana
 l-y-sis in-cludes down-stream con-se-quences: 
  []
 
-[36]
-Overfull \hbox (7.05064pt too wide) in paragraph at lines 238--238
+[44]
+Overfull \hbox (7.05064pt too wide) in paragraph at lines 258--258
 []\T1/cmr/bx/n/14.4 Fuzzy-Linear-Logic In-te-gra-tion Through Os-cil-la-tory Su
 b-strate 
  []
 
-[37] [38]
-Overfull \hbox (7.05855pt too wide) in paragraph at lines 352--353
+[45] [46]
+Overfull \hbox (7.05855pt too wide) in paragraph at lines 372--373
 \T1/cmr/m/n/12 The V8 net-work is there-fore com-pu-ta-tion-ally nec-es-sary fo
 r hy-brid symbolic-thermodynamic
  []
 
-[39]) (sections/language-design.tex [40] [41] [42]
+<figures/complexity_validation.png, id=1168, 1002.144pt x 424.9476pt>
+File: figures/complexity_validation.png Graphic file (type png)
+<use figures/complexity_validation.png>
+Package pdftex.def Info: figures/complexity_validation.png  used on input line 
+377.
+(pdftex.def)             Requested size: 452.9679pt x 192.07407pt.
+[47 <./figures/complexity_validation.png>]) (sections/language-design.tex
+[48] [49] [50]
 Overfull \hbox (16.08234pt too wide) in paragraph at lines 137--138
 []\T1/cmr/bx/n/12 Theorem 6.7 \T1/cmr/m/n/12 (Res-o-lu-tion In-fer-ence Se-man-
 tics)\T1/cmr/bx/n/12 . []\T1/cmr/m/it/12 Res-o-lu-tion eval-u-a-tion im-ple-men
@@ -1190,7 +1275,7 @@ Overfull \hbox (21.5879pt too wide) in paragraph at lines 148--149
 ^Vconclusions
  []
 
-[43]
+[51]
 
 ! LaTeX Error: Unicode character ₂ (U+2082)
                not set up for use with LaTeX.
@@ -1204,14 +1289,14 @@ l.217 ...-existing categorical possibilities (O₂
 You may provide a definition with
 \DeclareUnicodeCharacter 
 
-[44] [45] [46] [47]
+[52] [53] [54] [55]
 Overfull \hbox (24.73715pt too wide) in paragraph at lines 396--397
 []\T1/cmr/bx/n/12 Proposition 6.15 \T1/cmr/m/n/12 (Lan-guage-Ag-nos-tic Re-sult
 s)\T1/cmr/bx/n/12 . []\T1/cmr/m/it/12 All poly-glot func-tion calls re-turn Tur
 bulance-
  []
 
-[48]
+[56]
 
 ! LaTeX Error: Unicode character π (U+03C0)
                not set up for use with LaTeX.
@@ -1225,7 +1310,7 @@ l.502 \end{verbatim}
 You may provide a definition with
 \DeclareUnicodeCharacter 
 
-[49] [50] [51] [52]
+[57] [58] [59] [60]
 
 ! LaTeX Error: Unicode character ≥ (U+2265)
                not set up for use with LaTeX.
@@ -1271,7 +1356,15 @@ Overfull \hbox (0.80336pt too wide) in paragraph at lines 1--1
 -
  []
 
-[53] [54] [55] [56] [57] [58] [59] [60]
+[61] [62]
+<figures/figure_5_four_file_system.png, id=1297, 1004.553pt x 1150.2975pt>
+File: figures/figure_5_four_file_system.png Graphic file (type png)
+<use figures/figure_5_four_file_system.png>
+Package pdftex.def Info: figures/figure_5_four_file_system.png  used on input l
+ine 69.
+(pdftex.def)             Requested size: 407.66833pt x 466.81577pt.
+ [63] [64 <./figures/figure_5_four_file_system.png>] [65] [66]
+[67] [68] [69]
 
 ! LaTeX Error: Unicode character ✓ (U+2713)
                not set up for use with LaTeX.
@@ -1280,7 +1373,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.376 \end{verbatim}
+l.397 \end{verbatim}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -1293,7 +1386,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.376 \end{verbatim}
+l.397 \end{verbatim}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -1306,25 +1399,25 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.376 \end{verbatim}
+l.397 \end{verbatim}
                     
 You may provide a definition with
 \DeclareUnicodeCharacter 
 
-[61] [62]
+[70] [71]
 LaTeX Font Info:    Trying to load font information for TS1+cmtt on input line 
-659.
+680.
 
 (C:\Users\kundai\AppData\Local\Programs\MiKTeX\tex/latex/base\ts1cmtt.fd
 File: ts1cmtt.fd 2023/04/13 v2.5m Standard LaTeX font definitions
 )
-[63] [64] [65] [66] [67]
-Overfull \hbox (22.39102pt too wide) in paragraph at lines 960--960
+[72] [73] [74] [75] [76]
+Overfull \hbox (22.39102pt too wide) in paragraph at lines 981--981
 []    \T1/cmtt/m/n/12 required_tables: ["meg_recordings", "eeg_recordings", "pa
 tient_metadata"][] 
  []
 
-[68] [69] [70] [71] [72] [73]
+[77] [78] [79] [80] [81] [82]
 
 ! LaTeX Error: Unicode character ≥ (U+2265)
                not set up for use with LaTeX.
@@ -1333,73 +1426,73 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.1356 \end{verbatim}
+l.1377 \end{verbatim}
                      
 You may provide a definition with
 \DeclareUnicodeCharacter 
 
-[74] [75]
-Overfull \hbox (10.04404pt too wide) in paragraph at lines 1356--1356
+[83] [84]
+Overfull \hbox (10.04404pt too wide) in paragraph at lines 1377--1377
 []    \T1/cmtt/m/n/12 decision: "Delegate numerical computation to consciousnes
 s_analysis.py"[] 
  []
 
-[76] [77]
-Overfull \hbox (3.87054pt too wide) in paragraph at lines 1356--1356
+[85] [86]
+Overfull \hbox (3.87054pt too wide) in paragraph at lines 1377--1377
 []      \T1/cmtt/m/n/12 recommendation: "Acknowledge paradigm shift, update tre
 atment model"[] 
  []
 
-[78]
-Overfull \hbox (16.21753pt too wide) in paragraph at lines 1356--1356
+[87]
+Overfull \hbox (16.21753pt too wide) in paragraph at lines 1377--1377
 []    \T1/cmtt/m/n/12 decision: "Validate that understanding is authentic, not 
 self-deceptive"[] 
  []
 
 
-Overfull \hbox (40.9115pt too wide) in paragraph at lines 1356--1356
+Overfull \hbox (40.9115pt too wide) in paragraph at lines 1377--1377
 []        \T1/cmtt/m/n/12 details: "Predicted confidence matches actual accurac
 y (validation set)"[] 
  []
 
 
-Overfull \hbox (40.9115pt too wide) in paragraph at lines 1356--1356
+Overfull \hbox (40.9115pt too wide) in paragraph at lines 1377--1377
 []      \T1/cmtt/m/n/12 recommendation: "Always activate full network for consc
 iousness protocols"[] 
  []
 
 
-Overfull \hbox (22.39102pt too wide) in paragraph at lines 1356--1356
+Overfull \hbox (22.39102pt too wide) in paragraph at lines 1377--1377
 []      \T1/cmtt/m/n/12 recommendation: "Default to Bayesian integration, not a
 d-hoc weighting"[] 
  []
 
 
-Overfull \hbox (3.87054pt too wide) in paragraph at lines 1356--1356
+Overfull \hbox (3.87054pt too wide) in paragraph at lines 1377--1377
 []      \T1/cmtt/m/n/12 recommendation: "Include dream phase, but filter insigh
 ts carefully"[] 
  []
 
-[79]
-Overfull \hbox (34.738pt too wide) in paragraph at lines 1356--1356
+[88]
+Overfull \hbox (34.738pt too wide) in paragraph at lines 1377--1377
 []      \T1/cmtt/m/n/12 recommendation: "Always validate authenticity before cl
 inical deployment"[] 
  []
 
 
-Overfull \hbox (53.25848pt too wide) in paragraph at lines 1356--1356
+Overfull \hbox (53.25848pt too wide) in paragraph at lines 1377--1377
 []      \T1/cmtt/m/n/12 mitigation: "Consider relaxing threshold or improving m
 easurement precision"[] 
  []
 
-[80]
-Overfull \hbox (10.04404pt too wide) in paragraph at lines 1356--1356
+[89]
+Overfull \hbox (10.04404pt too wide) in paragraph at lines 1377--1377
 []      \T1/cmtt/m/n/12 metrics: ["HAM-D score", "MEG phase coherence", "H+ fie
 ld stability"][] 
  []
 
 
-Overfull \hbox (10.04404pt too wide) in paragraph at lines 1356--1356
+Overfull \hbox (10.04404pt too wide) in paragraph at lines 1377--1377
 []      \T1/cmtt/m/n/12 alert_conditions: ["No improvement by week 2", "Coheren
 ce decreases"][] 
  []
@@ -1412,12 +1505,12 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.1356 \end{verbatim}
+l.1377 \end{verbatim}
                      
 You may provide a definition with
 \DeclareUnicodeCharacter 
 
-[81] [82]
+[90] [91]
 
 ! LaTeX Error: Unicode character ≡ (U+2261)
                not set up for use with LaTeX.
@@ -1426,7 +1519,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.1429 \item .trb ≡
+l.1450 \item .trb ≡
                       Prefrontal cortex (executive planning)
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -1439,7 +1532,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.1430 \item .fs ≡
+l.1451 \item .fs ≡
                      Anterior cingulate (monitoring, error detection)
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -1452,7 +1545,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.1431 \item .ghd ≡
+l.1452 \item .ghd ≡
                       Sensory cortices + motor cortex (environmental interac...
 
 You may provide a definition with
@@ -1466,7 +1559,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.1432 \item .hre ≡
+l.1453 \item .hre ≡
                       Hippocampus (episodic memory, learning)
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -1477,15 +1570,21 @@ Overfull \hbox (20.36957pt too wide) in paragraph at lines 1--1
 gh
  []
 
-[83] [84] [85] [86]
-Overfull \hbox (17.94118pt too wide) in paragraph at lines 176--177
+[92] [93] [94]
+File: figures/figure_2_v8_network.png Graphic file (type png)
+<use figures/figure_2_v8_network.png>
+Package pdftex.def Info: figures/figure_2_v8_network.png  used on input line 14
+7.
+(pdftex.def)             Requested size: 452.9679pt x 339.01247pt.
+ [95] [96]
+Overfull \hbox (17.94118pt too wide) in paragraph at lines 196--197
 []\T1/cmr/m/it/12 Causal model\T1/cmr/m/n/12 : $[] \OMS/cmsy/m/n/12 ! [] ! []$ 
 
  []
 
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
-put line 187.
-[87] [88]
+put line 207.
+[97] [98]
 
 ! LaTeX Error: Unicode character ⁺ (U+207A)
                not set up for use with LaTeX.
@@ -1494,19 +1593,19 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.268 ...ypothesis 2: "Gut microbiome affects H⁺
+l.288 ...ypothesis 2: "Gut microbiome affects H⁺
                                                    field through vagal signa...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
 
 
-Overfull \hbox (3.01639pt too wide) in paragraph at lines 291--292
+Overfull \hbox (3.01639pt too wide) in paragraph at lines 311--312
 \T1/cmr/m/n/12 by iden-ti-fy-ing fail-ure modes, per-tur-ba-tion sen-si-tiv-i-t
 ies, and worst-case sce-nar-ios^^Vensuring
  []
 
-[89]
+[99]
 
 ! LaTeX Error: Unicode character ≈ (U+2248)
                not set up for use with LaTeX.
@@ -1515,24 +1614,24 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.315 ...lysis: Placebo response in depression ≈
+l.335 ...lysis: Placebo response in depression ≈
                                                    35-45\%
 You may provide a definition with
 \DeclareUnicodeCharacter 
 
 
-Overfull \hbox (6.60849pt too wide) in paragraph at lines 337--338
+Overfull \hbox (6.60849pt too wide) in paragraph at lines 357--358
 []\T1/cmr/m/n/12 Recommendation: "Pro-ceed with cau-tion, close mon-i-tor-ing, 
 con-sider subtype-specific
  []
 
 
-Overfull \hbox (4.43379pt too wide) in paragraph at lines 354--355
+Overfull \hbox (4.43379pt too wide) in paragraph at lines 374--375
 []\T1/cmr/bx/n/12 Example 8.19 \T1/cmr/m/n/12 (De-pres-sion Paradigm Shift De-t
 ec-tion)\T1/cmr/bx/n/12 . []Cur-rent paradigm\T1/cmr/m/n/12 : Monoamine
  []
 
-[90] [91] [92] [93]
+[100] [101] [102] [103]
 
 ! LaTeX Error: Unicode character ≠ (U+2260)
                not set up for use with LaTeX.
@@ -1541,12 +1640,12 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.549 ...Premises independent (MEG measurement ≠
+l.569 ...Premises independent (MEG measurement ≠
                                                    causal model)
 You may provide a definition with
 \DeclareUnicodeCharacter 
 
-[94] [95]) (sections/thermodynamic-consequences.tex
+[104] [105]) (sections/thermodynamic-consequences.tex
 
 ! LaTeX Error: Unicode character ≡ (U+2261)
                not set up for use with LaTeX.
@@ -1560,7 +1659,7 @@ l.7 ...em}[Computation ≡ S-Entropy Minimization]
 You may provide a definition with
 \DeclareUnicodeCharacter 
 
-[96] [97]
+[106] [107]
 
 ! LaTeX Error: Unicode character ⁺ (U+207A)
                not set up for use with LaTeX.
@@ -1569,7 +1668,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.137 \textbf{Local impossibility}: Creating H⁺
+l.139 \textbf{Local impossibility}: Creating H⁺
                                                   holes (positive charge reg...
 
 You may provide a definition with
@@ -1583,12 +1682,12 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.146 ...��thermal fluctuations cannot create H⁺
+l.148 ...��thermal fluctuations cannot create H⁺
                                                    holes.
 You may provide a definition with
 \DeclareUnicodeCharacter 
 
-[98]
+[108]
 
 ! LaTeX Error: Unicode character ⁺ (U+207A)
                not set up for use with LaTeX.
@@ -1597,7 +1696,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.150 \textbf{BMD resolution}: Neurons couple H⁺
+l.152 \textbf{BMD resolution}: Neurons couple H⁺
                                                    hole creation to ATP hydr...
 
 You may provide a definition with
@@ -1611,14 +1710,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.155 ...). They make the locally impossible (H⁺
+l.157 ...). They make the locally impossible (H⁺
                                                    holes) globally necessary...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
 
 
-Overfull \hbox (27.6465pt too wide) in paragraph at lines 155--156
+Overfull \hbox (27.6465pt too wide) in paragraph at lines 157--158
 \T1/cmr/m/n/12 make the lo-cally im-pos-si-ble (H holes) glob-ally nec-es-sary 
 (sur-vival), achiev-ing $\OML/cmm/m/it/12 p[]\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 
 H[][]\OT1/cmr/m/n/12 ) \OMS/cmsy/m/n/12 ^^Y
@@ -1632,12 +1731,12 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.162 ...Information Value ≡ Catalytic Efficacy]
+l.164 ...Information Value ≡ Catalytic Efficacy]
                                                   
 You may provide a definition with
 \DeclareUnicodeCharacter 
 
-[99]
+[109]
 
 ! LaTeX Error: Unicode character ₂ (U+2082)
                not set up for use with LaTeX.
@@ -1646,7 +1745,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.237 \item Matter (O₂
+l.239 \item Matter (O₂
                         , CO₂, nutrients, waste)
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -1659,12 +1758,12 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.237 \item Matter (O₂, CO₂
+l.239 \item Matter (O₂, CO₂
                                , nutrients, waste)
 You may provide a definition with
 \DeclareUnicodeCharacter 
 
-[100]
+[110]
 
 ! LaTeX Error: Unicode character ₂ (U+2082)
                not set up for use with LaTeX.
@@ -1673,7 +1772,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.286 \textbf{Atmospheric O₂}
+l.288 \textbf{Atmospheric O₂}
                                : ~10²¹ molecules per breath, each in one o...
 
 You may provide a definition with
@@ -1687,14 +1786,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.293 ...on}: Biological systems select which O₂
+l.295 ...on}: Biological systems select which O₂
                                                    categorical states to met...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
 
 
-Overfull \hbox (2.47493pt too wide) in paragraph at lines 293--294
+Overfull \hbox (2.47493pt too wide) in paragraph at lines 295--296
 []\T1/cmr/bx/n/12 Utilization\T1/cmr/m/n/12 : Bi-o-log-i-cal sys-tems se-lect w
 hich O cat-e-gor-i-cal states to me-tab-o-lize^^VBMD
  []
@@ -1707,13 +1806,13 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.297 ...utes \textit{with} atmosphere, using O₂
+l.299 ...utes \textit{with} atmosphere, using O₂
                                                    categorical states as com...
 
 You may provide a definition with
 \DeclareUnicodeCharacter 
 
-[101] [102] [103]) (sections/clinical-validation.tex
+[111] [112] [113]) (sections/clinical-validation.tex
 
 ! LaTeX Error: Unicode character ≥ (U+2265)
                not set up for use with LaTeX.
@@ -1741,7 +1840,7 @@ l.17 \item Medication-free for ≥
 You may provide a definition with
 \DeclareUnicodeCharacter 
 
-[104]
+[114]
 Overfull \hbox (8.06651pt too wide) in paragraph at lines 40--41
 []\T1/cmr/m/n/12 Clinical Global Impression-Severity (CGI-S): Mean = 4.8 \TS1/c
 mr/m/n/12 � \T1/cmr/m/n/12 0.7 (moderately-markedly
@@ -1813,13 +1912,7 @@ nt:trb\OT1/cmr/m/n/12 `) : 8 \OMS/cmsy/m/n/12 ^^@ \OML/cmm/m/it/12 phaseprotoco
 lorchestratingV\OT1/cmr/m/n/12 8\OML/cmm/m/it/12 intelligencenetwork$ 
  []
 
-[105
-pdfTeX warning (ext4): destination with the same identifier (name{table.1}) has
- been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.84 \item I
-            nitialize V8 network]
+[115]
 
 ! LaTeX Error: Lonely \item--perhaps a missing list environment.
 
@@ -2436,13 +2529,22 @@ l.119 \end{itemize}
                    
 Things are pretty mixed up, but I think the worst is over.
 
-[106]
-Overfull \hbox (21.48535pt too wide) in paragraph at lines 139--140
+<figures/figure_4_consciousness_metrics.png, id=1667, 859.7721pt x 1004.553pt>
+File: figures/figure_4_consciousness_metrics.png Graphic file (type png)
+<use figures/figure_4_consciousness_metrics.png>
+Package pdftex.def Info: figures/figure_4_consciousness_metrics.png  used on in
+put line 124.
+(pdftex.def)             Requested size: 452.9679pt x 529.25294pt.
+
+LaTeX Warning: Float too large for page by 15.54614pt on input line 141.
+
+[116] [117 <./figures/figure_4_consciousness_metrics.png>]
+Overfull \hbox (21.48535pt too wide) in paragraph at lines 160--161
 []\T1/cmr/bx/n/12 Genetic pro-file\T1/cmr/m/n/12 : CYP2D6 nor-mal me-tab-o-lize
 r, HT-TLPR short/short
  []
 
-[107]
+[118]
 
 ! LaTeX Error: Unicode character ≥ (U+2265)
                not set up for use with LaTeX.
@@ -2451,7 +2553,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.184 \item Response (≥
+l.205 \item Response (≥
                          50\% HAM-D reduction): 35/42 patients (83\%)
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -2464,7 +2566,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.185 \item Remission (HAM-D ≤
+l.206 \item Remission (HAM-D ≤
                                  7): 24/42 patients (57\%)
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -2477,7 +2579,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.192 ...ndard SSRI monotherapy: Response rate ≈
+l.213 ...ndard SSRI monotherapy: Response rate ≈
                                                    60-65\%, Remission rate �...
 
 You may provide a definition with
@@ -2491,7 +2593,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.192 ...onse rate ≈ 60-65\%, Remission rate ≈
+l.213 ...onse rate ≈ 60-65\%, Remission rate ≈
                                                    35-40\%
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -2504,7 +2606,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.209 H⁺
+l.230 H⁺
            coherence & 0.45±0.12 & 0.69±0.09 & +0.24 & +53\% & <0.001 \\
 You may provide a definition with
 \DeclareUnicodeCharacter 
@@ -2517,255 +2619,223 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.210 O₂
+l.231 O₂
            completion rate & 1.8±0.4 & 2.4±0.3 & +0.6 Hz & +33\% & <0.001 \\
 You may provide a definition with
 \DeclareUnicodeCharacter 
 
-[108
-pdfTeX warning (ext4): destination with the same identifier (name{table.2}) has
- been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.246 
-      
-pdfTeX warning (ext4): destination with the same identifier (name{table.3}) has
- been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.246 
-      ]
-Overfull \hbox (22.36137pt too wide) in paragraph at lines 249--250
+[119]
+Overfull \hbox (22.36137pt too wide) in paragraph at lines 270--271
 \T1/cmr/m/n/12 na-tion, cor-re-lat-ing with clin-i-cal non-response^^Vsuggestin
 g S-navigation
  []
 
-[109
-pdfTeX warning (ext4): destination with the same identifier (name{table.4}) has
- been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.281 \item M
-             oderate authenticity (0.7-0.9): 6/42 patients (14\%)] [110
-pdfTeX warning (ext4): destination with the same identifier (name{table.5}) has
- been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.331 \item M
-             etacognitive authenticity validation]
-Overfull \hbox (1.54564pt too wide) in paragraph at lines 353--354
+[120] [121]
+Overfull \hbox (1.54564pt too wide) in paragraph at lines 374--375
 []\T1/cmr/m/n/12 Pungwe anal-y-sis: De-tected goal con-fu-sion (au-then-tic-ity
  score
  []
 
-[111]
-Overfull \hbox (31.95493pt too wide) in paragraph at lines 406--407
+[122]
+Overfull \hbox (31.95493pt too wide) in paragraph at lines 427--428
 \T1/cmr/m/n/12 plex-ity^^VO(1) com-plex-ity due to ther-mo-dy-namic com-pu-ta-t
 ion paradigm. 
  []
 
-[112
-pdfTeX warning (ext4): destination with the same identifier (name{table.6}) has
- been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.417 
-      
-pdfTeX warning (ext4): destination with the same identifier (name{table.7}) has
- been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.417 
-      ] [113]
-Overfull \hbox (5.22667pt too wide) in paragraph at lines 450--451
+[123] [124]
+Overfull \hbox (5.22667pt too wide) in paragraph at lines 471--472
 []\T1/cmr/m/n/12 Randomized con-trolled trial com-par-ing Kwasa-Kwasa to stan-
  []
 
 )
-Overfull \hbox (35.51073pt too wide) in paragraph at lines 108--109
+Overfull \hbox (35.51073pt too wide) in paragraph at lines 114--115
 \T1/cmr/m/n/12 un-der-stand-ing emerges from in-for-ma-tion cat-a-lysts ($\OMS/
 cmsy/m/n/12 C \OT1/cmr/m/n/12 = [][] \OMS/cmsy/m/n/12 ^^N [][]$\T1/cmr/m/n/12 )
 
  []
 
 
-Overfull \hbox (17.14067pt too wide) in paragraph at lines 110--111
+Overfull \hbox (17.14067pt too wide) in paragraph at lines 116--117
 []\T1/cmr/m/n/12 The Tur-bu-lance lan-guage re-al-izes this the-ory through thr
 ee paradigms
  []
 
 
-Overfull \hbox (3.4425pt too wide) in paragraph at lines 113--114
+Overfull \hbox (3.4425pt too wide) in paragraph at lines 119--120
 \T1/cmr/m/n/12 sure-ments through ex-plicit cer-tainty rep-re-sen-ta-tion and p
 rop-
  []
 
-[114]
-Overfull \hbox (2.6158pt too wide) in paragraph at lines 115--116
+[125]
+Overfull \hbox (2.6158pt too wide) in paragraph at lines 121--122
 \T1/cmr/m/n/12 and con-tentions (chal-leng-ing ev-i-dence). The res-o-lu-tion m
 ech-
  []
 
 
-Overfull \hbox (12.47032pt too wide) in paragraph at lines 115--116
+Overfull \hbox (12.47032pt too wide) in paragraph at lines 121--122
 \T1/cmr/m/n/12 dence bounds and ac-tion-able rec-om-men-da-tions. This paradigm
 
  []
 
 
-Overfull \hbox (0.37508pt too wide) in paragraph at lines 115--116
+Overfull \hbox (0.37508pt too wide) in paragraph at lines 121--122
 \T1/cmr/m/n/12 for-mal-izes how bi-o-log-i-cal sys-tems achieve ro-bust un-der-
 stand-
  []
 
 
-Overfull \hbox (1.89412pt too wide) in paragraph at lines 117--118
+Overfull \hbox (1.89412pt too wide) in paragraph at lines 123--124
 []\T1/cmr/bx/n/12 BMDs \T1/cmr/m/n/12 pro-vide ex-plicit com-pu-ta-tional prim-
 i-tives for thought
  []
 
 
-Overfull \hbox (16.56801pt too wide) in paragraph at lines 117--118
+Overfull \hbox (16.56801pt too wide) in paragraph at lines 123--124
 \T1/cmr/m/n/12 core bi-o-log-i-cal Maxwell's de-mon op-er-a-tion. The BMD parad
 igm
  []
 
 
-Overfull \hbox (2.931pt too wide) in paragraph at lines 122--123
+Overfull \hbox (2.931pt too wide) in paragraph at lines 128--129
 \T1/cmr/m/n/12 ple spe-cial-ized func-tions. The eight mod-ules^^VMzekezeke, Ze
 ngeza,
  []
 
 
-Overfull \hbox (45.32117pt too wide) in paragraph at lines 122--123
+Overfull \hbox (45.32117pt too wide) in paragraph at lines 128--129
 \T1/cmr/m/n/12 Dig-gi-den, Spec-tac-u-lar, Hatata, Cham-pagne, Nico-tine, Pungw
 e^^Vimplement
  []
 
-[115]
-Overfull \hbox (14.21071pt too wide) in paragraph at lines 127--128
+[126]
+Overfull \hbox (14.21071pt too wide) in paragraph at lines 133--134
 \T1/cmr/m/n/12 terns as se-man-tic con-tent, en-abling sig-nal en-hance-ment th
 rough
  []
 
 
-Overfull \hbox (3.3772pt too wide) in paragraph at lines 131--132
+Overfull \hbox (3.3772pt too wide) in paragraph at lines 137--138
 \T1/cmr/m/n/12 di-nary find-ings that chal-lenge cur-rent the-o-ret-i-cal frame
 -works,
  []
 
 
-Overfull \hbox (2.50104pt too wide) in paragraph at lines 139--140
+Overfull \hbox (2.50104pt too wide) in paragraph at lines 145--146
 []\T1/cmr/bx/n/12 Metacognitive au-then-tic-ity val-i-da-tion \T1/cmr/m/n/12 (P
 ungwe) de-tects
  []
 
 
-Overfull \hbox (29.67072pt too wide) in paragraph at lines 142--143
+Overfull \hbox (29.67072pt too wide) in paragraph at lines 148--149
 \T1/cmr/m/n/12 in-for-ma-tion catal-y-sis func-tions: se-man-tic data un-der-st
 and-ing (Zengeza),
  []
 
 
-Overfull \hbox (9.5354pt too wide) in paragraph at lines 142--143
+Overfull \hbox (9.5354pt too wide) in paragraph at lines 148--149
 \T1/cmr/m/n/12 (Di-adochi), paradigm shift as-sess-ment (Spec-tac-u-lar), con-t
 ext preser-
  []
 
-[116]
-Overfull \hbox (52.79323pt too wide) in paragraph at lines 149--150
+[127]
+Overfull \hbox (52.79323pt too wide) in paragraph at lines 155--156
 \T1/cmr/m/n/12 by travers-ing tri-dimensional S-entropy space $\OT1/cmr/m/n/12 
 (\OML/cmm/m/it/12 S[]; S[]; S[]\OT1/cmr/m/n/12 )$\T1/cmr/m/n/12 ,
  []
 
 
-Overfull \hbox (1.31055pt too wide) in paragraph at lines 149--150
+Overfull \hbox (1.31055pt too wide) in paragraph at lines 155--156
 \T1/cmr/m/n/12 en-tropy nav-i-ga-tion dis-tance. So-lu-tions emerge through ali
 gn-
  []
 
 
-Overfull \hbox (11.79594pt too wide) in paragraph at lines 149--150
+Overfull \hbox (11.79594pt too wide) in paragraph at lines 155--156
 \T1/cmr/m/n/12 nat-u-rally evolve to-ward con-fig-u-ra-tions that min-i-mize S-
 entropy
  []
 
 
-Overfull \hbox (7.74974pt too wide) in paragraph at lines 151--152
+Overfull \hbox (7.74974pt too wide) in paragraph at lines 157--158
 \T1/cmr/m/n/12 ground-ing mech-a-nism cre-ates pos-i-tive charge holes in elect
 ron-
  []
 
 
-Overfull \hbox (4.35612pt too wide) in paragraph at lines 151--152
+Overfull \hbox (4.35612pt too wide) in paragraph at lines 157--158
 \T1/cmr/m/n/12 glob-ally nec-es-sary through tar-geted prob-a-bil-ity en-hance-
 ment. 
  []
 
 
-Overfull \hbox (55.92775pt too wide) in paragraph at lines 153--154
+Overfull \hbox (55.92775pt too wide) in paragraph at lines 159--160
 \T1/cmr/m/n/12 for-mu-la-tion, se-man-tic in-for-ma-tion value $\OML/cmm/m/it/1
 2 V\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 I\OT1/cmr/m/n/12 ) = [][](\OML/cmm/m/it/12
  P[]=P[]\OT1/cmr/m/n/12 )$\T1/cmr/m/n/12 ,
  []
 
 
-Overfull \hbox (5.65176pt too wide) in paragraph at lines 153--154
+Overfull \hbox (5.65176pt too wide) in paragraph at lines 159--160
 \T1/cmr/m/n/12 mea-sure of in-for-ma-tion qual-ity guides BMD op-er-a-tions, wh
 ere
  []
 
-
-Overfull \hbox (2.78983pt too wide) in paragraph at lines 155--156
+[128]
+Overfull \hbox (2.78983pt too wide) in paragraph at lines 161--162
 \T1/cmr/m/n/12 com-pu-ta-tion that ex-tends be-yond or-gan-is-mal bound-aries i
 nto
  []
 
 
-Overfull \hbox (1.44098pt too wide) in paragraph at lines 155--156
+Overfull \hbox (1.44098pt too wide) in paragraph at lines 161--162
 \T1/cmr/m/n/12 en-vi-ron-men-tal in-for-ma-tion pro-cess-ing. This dis-tributed
  com-
  []
 
-[117]
-Overfull \hbox (11.20163pt too wide) in paragraph at lines 164--165
+
+Overfull \hbox (11.20163pt too wide) in paragraph at lines 170--171
 []\T1/cmr/m/n/12 The hy-brid symbolic-thermodynamic com-pu-ta-tional paradigm o
 pens
  []
 
 
-Overfull \hbox (12.05023pt too wide) in paragraph at lines 164--165
+Overfull \hbox (12.05023pt too wide) in paragraph at lines 170--171
 \T1/cmr/m/n/12 four-file ex-e-cu-tion ar-chi-tec-ture, and three core Tur-bu-la
 nce paradigms
  []
 
 
-Overfull \hbox (6.92491pt too wide) in paragraph at lines 164--165
+Overfull \hbox (6.92491pt too wide) in paragraph at lines 170--171
 \T1/cmr/m/n/12 tran-si-tion ma-chines to in-for-ma-tion catal-y-sis net-works, 
 from Boolean
  []
 
-[118] (hybrid-symbolic-thermodynamic-computing.bbl)
+[129] (hybrid-symbolic-thermodynamic-computing.bbl)
 
 Package natbib Warning: There were undefined citations.
 
-[119] (hybrid-symbolic-thermodynamic-computing.aux)
+[130] (hybrid-symbolic-thermodynamic-computing.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-04>
  ***********
+
+
+LaTeX Warning: There were multiply-defined labels.
+
 Package rerunfilecheck Info: File `hybrid-symbolic-thermodynamic-computing.out'
  has not changed.
-(rerunfilecheck)             Checksum: C96D675E97B664AE820ED9F13354475B;36206.
+(rerunfilecheck)             Checksum: 9BEDF2362AD652AE14B37CEF56C98E9F;36003.
  ) 
 Here is how much of TeX's memory you used:
- 26688 strings out of 474486
- 501288 string characters out of 5743283
+ 28224 strings out of 474486
+ 533806 string characters out of 5743283
  1944542 words of memory out of 5000000
- 47769 multiletter control sequences out of 15000+600000
- 587676 words of font info for 108 fonts, out of 8000000 for 9000
+ 49272 multiletter control sequences out of 15000+600000
+ 587638 words of font info for 109 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 84i,18n,93p,1056b,682s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,18n,93p,2137b,684s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <C:\Users\kundai\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tct
 t1200.pk> <C:\Users\kundai\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi
 600\ecit1200.pk> <C:\Users\kundai\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen
@@ -2773,25 +2843,25 @@ t1200.pk> <C:\Users\kundai\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi
 knappen/ec/dpi600\tcti1200.pk> <C:\Users\kundai\AppData\Local\MiKTeX\fonts/pk/l
 jfour/jknappen/ec/dpi600\ecti0600.pk> <C:\Users\kundai\AppData\Local\MiKTeX\fon
 ts/pk/ljfour/jknappen/ec/dpi600\ecbx1000.pk> <C:\Users\kundai\AppData\Local\MiK
-TeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbi1200.pk> <C:\Users\kundai\AppData\Lo
-cal\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx0800.pk> <C:\Users\kundai\App
-Data\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecti0800.pk> <C:\Users\kun
-dai\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm0600.pk> <C:\Us
-ers\kundai\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt1200.pk>
- <C:\Users\kundai\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecti1
+TeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm1095.pk> <C:\Users\kundai\AppData\Lo
+cal\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbi1200.pk> <C:\Users\kundai\App
+Data\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx0800.pk> <C:\Users\kun
+dai\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecti0800.pk> <C:\Us
+ers\kundai\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm0600.pk>
+ <C:\Users\kundai\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt1
 200.pk> <C:\Users\kundai\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi60
-0\ecbx1440.pk> <C:\Users\kundai\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/e
-c/dpi600\tcrm1200.pk> <C:\Users\kundai\AppData\Local\MiKTeX\fonts/pk/ljfour/jkn
-appen/ec/dpi600\ecbx1200.pk> <C:\Users\kundai\AppData\Local\MiKTeX\fonts/pk/ljf
-our/jknappen/ec/dpi600\ecbx1728.pk> <C:\Users\kundai\AppData\Local\MiKTeX\fonts
-/pk/ljfour/jknappen/ec/dpi600\ecrm1200.pk> <C:\Users\kundai\AppData\Local\MiKTe
-X\fonts/pk/ljfour/jknappen/ec/dpi600\ectt1095.pk> <C:\Users\kundai\AppData\Loca
-l\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecti1095.pk> <C:\Users\kundai\AppDa
-ta\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm0800.pk> <C:\Users\kunda
-i\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1095.pk> <C:\User
-s\kundai\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1095.pk> <
-C:\Users\kundai\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecti144
-0.pk> <C:\Users\kundai\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\
+0\ecti1200.pk> <C:\Users\kundai\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/e
+c/dpi600\ecbx1440.pk> <C:\Users\kundai\AppData\Local\MiKTeX\fonts/pk/ljfour/jkn
+appen/ec/dpi600\tcrm1200.pk> <C:\Users\kundai\AppData\Local\MiKTeX\fonts/pk/ljf
+our/jknappen/ec/dpi600\ecbx1200.pk> <C:\Users\kundai\AppData\Local\MiKTeX\fonts
+/pk/ljfour/jknappen/ec/dpi600\ecbx1728.pk> <C:\Users\kundai\AppData\Local\MiKTe
+X\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1200.pk> <C:\Users\kundai\AppData\Loca
+l\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt1095.pk> <C:\Users\kundai\AppDa
+ta\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecti1095.pk> <C:\Users\kunda
+i\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm0800.pk> <C:\User
+s\kundai\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1095.pk> <
+C:\Users\kundai\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx109
+5.pk> <C:\Users\kundai\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\
 ectt1440.pk> <C:\Users\kundai\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/
 dpi600\ecrm1440.pk> <C:\Users\kundai\AppData\Local\MiKTeX\fonts/pk/ljfour/jknap
 pen/ec/dpi600\ecbx2074.pk><C:/Users/kundai/AppData/Local/Programs/MiKTeX/fonts/
@@ -2812,10 +2882,10 @@ ata/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/ku
 ndai/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msam10.p
 fb><C:/Users/kundai/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/s
 ymbols/msbm10.pfb>
-Output written on hybrid-symbolic-thermodynamic-computing.pdf (119 pages, 95597
-3 bytes).
+Output written on hybrid-symbolic-thermodynamic-computing.pdf (130 pages, 79243
+12 bytes).
 PDF statistics:
- 2796 PDF objects out of 2984 (max. 8388607)
- 725 named destinations out of 1000 (max. 500000)
- 1061 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 2913 PDF objects out of 2984 (max. 8388607)
+ 750 named destinations out of 1000 (max. 500000)
+ 1113 words of extra memory for PDF output out of 10000 (max. 10000000)
 

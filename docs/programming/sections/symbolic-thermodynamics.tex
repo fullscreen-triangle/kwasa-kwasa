@@ -60,6 +60,26 @@ Total information: $146 + 20 = 166$ bits, but the symbolic specification needs o
 If thermodynamics can only produce outcomes in this set (no matter which of the $10^6$ trajectories it follows), then $\text{State}_i$ is sufficient. This is guaranteed by BMD equivalence: all $10^6$ trajectories map to the same symbolic state by construction (they're categorically equivalent). $\square$
 \end{proof}
 
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/figure_3_bayesian_integration.png}
+    \caption{\textbf{Bayesian Evidence Integration: From Mathematical Formalism to Clinical 
+    Application.} \textbf{(A)} Mathematical formulation of Bayesian update for major depressive 
+    disorder diagnosis. Prior probability $P(H) = 0.50$ is updated through evidence FOR 
+    (PHQ-9 score = 18 with likelihood ratio 0.90, anhedonia 0.85, sleep disturbance 0.80, 
+    duration > 2 weeks 0.95) and evidence AGAINST (recent bereavement 0.60, thyroid dysfunction 
+    0.40). Likelihood ratios ($LR_{for} = 2.45$, $LR_{against} = 0.68$, $LR_{combined} = 1.67$) 
+    yield posterior $P(H|E) = 0.73$. \textbf{(B)} Turbulance execution output showing real-time 
+    Bayesian computation with explicit certainty propagation and perturbation validation 
+    (robustness score 0.87, high). \textbf{(C)} Clinical application demonstrating diagnostic 
+    confidence (73\%) with robustness analysis: removing duration criterion causes largest 
+    confidence drop ($\Delta = -8\%$), followed by PHQ-9 score ($\Delta = -5\%$), identifying 
+    most critical evidence. System recommends proceeding with treatment protocol based on 
+    high confidence and robust evidence. This validates sufficiency of symbolic specification 
+    for thermodynamically grounded clinical reasoning.}
+    \label{fig:bayesian_integration}
+    \end{figure}
+
 \subsection{S-Entropy Compression: From Infinity to Three Coordinates}
 
 \begin{theorem}[S-Entropy Compression Principle]
@@ -351,6 +371,26 @@ From Theorem \ref{thm:paradigm_conflict}, the three paradigms can produce contra
 
 Without metacognitive oversight, tri-paradigm computation degenerates into noise. The V8 network is therefore computationally necessary for hybrid symbolic-thermodynamic execution. $\square$
 \end{proof}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/complexity_validation.png}
+    \caption{\textbf{Semantic Navigation Complexity: Exhaustive vs. Gravity-Guided Search.} 
+    \textbf{Left:} Exhaustive combinatorial search exhibits factorial complexity $O(n!)$, 
+    becoming intractable beyond $n=10$ (3.6 seconds). Red curve shows exponential time 
+    growth on semi-log scale. \textbf{Right:} Gravity-guided semantic navigation through 
+    S-entropy coordinates exhibits logarithmic complexity $O(\log n)$, scaling efficiently 
+    to $n=10{,}000$ with near-zero execution time ($<0.001$ seconds). Green curve remains 
+    flat across four orders of magnitude in problem size. This demonstrates fundamental 
+    complexity reduction achieved through information catalysis: semantic gravity in 
+    S-entropy space eliminates combinatorial explosion by constraining search to 
+    thermodynamically favorable trajectories. Speedup at $n=10{,}000$: $>10^6\times$ 
+    compared to extrapolated exhaustive search. This validates the theoretical claim that 
+    BMD-mediated semantic navigation transforms intractable combinatorial problems into 
+    tractable optimization through thermodynamic grounding.}
+    \label{fig:complexity_validation}
+    \end{figure}
+    
 
 \subsection{The Complete Bridge: Symbolic → Thermodynamic → Symbolic}
 

@@ -1,0 +1,19 @@
+Depression Data Validation Results
+============================================================
+
+Cases analyzed: 3
+
+case_001:
+  Without demon: major_depressive_episode (0.70)
+  With demon: psychiatric_dsm5_category (0.60)
+  Alternatives: 2
+
+case_002:
+  Without demon: major_depressive_episode (0.70)
+  With demon: psychiatric_dsm5_category (0.60)
+  Alternatives: 2
+
+case_003:
+  Without demon: moderate_depression (0.60)
+  With demon: psychiatric_dsm5_category (0.60)
+  Alternatives: 2

@@ -1,0 +1,447 @@
+/* ===== DARK THEME OVERRIDE ===== */
+
+body {
+	background-color: #0d1117;
+	color: #c9d1d9;
+	scrollbar-color: #484f58 #0d1117;
+}
+
+body:-webkit-scrollbar-track {
+	background: #0d1117;
+}
+
+body::-webkit-scrollbar-thumb {
+	background-color: #484f58;
+	border: 3px solid #0d1117;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	color: #e6edf3;
+}
+
+/* Header */
+.cavani_tm_header {
+	background-color: #161b22;
+	border-bottom: 1px solid #30363d;
+}
+
+.cavani_tm_header .logo .text {
+	color: #e6edf3;
+}
+
+.cavani_tm_header .menu ul li a {
+	color: #c9d1d9;
+}
+
+.cavani_tm_header .menu ul li.mleave.active a {
+	color: #c9d1d9;
+}
+
+.cavani_tm_header .menu ul li.active a {
+	color: #fff;
+}
+
+.cavani_tm_header .menu ul li a:hover {
+	color: #fff;
+}
+
+.cavani_tm_header .menu .ccc {
+	background-color: #2ecc71;
+}
+
+/* Topbar (mobile) */
+.cavani_tm_topbar {
+	background-color: #161b22;
+	border-bottom: 1px solid #30363d;
+}
+
+.cavani_tm_topbar .logo .text {
+	color: #e6edf3;
+}
+
+/* Mobile Menu */
+.cavani_tm_mobile_menu {
+	background-color: #161b22;
+	border-left: 1px solid #30363d;
+}
+
+.cavani_tm_mobile_menu .menu_list ul li a {
+	color: #c9d1d9;
+}
+
+.cavani_tm_mobile_menu .social ul li a {
+	color: #c9d1d9;
+}
+
+.cavani_tm_mobile_menu .copyright p {
+	color: #8b949e;
+}
+
+/* Footer */
+.cavani_tm_footer {
+	background-color: #161b22;
+	border-top: 1px solid #30363d;
+}
+
+.cavani_tm_footer .copyright p {
+	color: #8b949e;
+}
+
+.cavani_tm_footer .social ul li a {
+	color: #c9d1d9;
+}
+
+.cavani_tm_footer .social ul li a:hover {
+	color: #2ecc71;
+}
+
+/* Left/Right borders */
+.cavani_tm_left_border {
+	background-color: #161b22;
+	border-right: 1px solid #30363d;
+}
+
+.cavani_tm_right_border {
+	background-color: #161b22;
+	border-left: 1px solid #30363d;
+}
+
+/* Section inner overlay */
+.cavani_tm_section .section_inner:before {
+	background-color: #0d1117;
+}
+
+/* Home */
+.cavani_tm_home .name {
+	color: #e6edf3;
+}
+
+.cavani_tm_home .line {
+	background-color: #2ecc71;
+}
+
+.cavani_tm_home .job span {
+	color: #8b949e;
+}
+
+.cavani_tm_home .job b {
+	color: #2ecc71;
+}
+
+/* Buttons */
+.cavani_tm_button .a, .cavani_tm_button a {
+	color: #0d1117;
+	background-color: #2ecc71;
+	border: 2px solid #2ecc71;
+}
+
+.cavani_tm_button .a:hover, .cavani_tm_button a:hover {
+	background-color: transparent;
+	color: #2ecc71;
+}
+
+/* Titles */
+.cavani_tm_title span {
+	color: #e6edf3;
+}
+
+.cavani_tm_title span:after {
+	background-color: #30363d;
+}
+
+/* About / Framework */
+.cavani_tm_about .biography .right ul li .first {
+	color: #8b949e;
+}
+
+.cavani_tm_about .biography .right ul li a {
+	color: #c9d1d9;
+}
+
+.cavani_tm_about .biography .right ul li a:hover {
+	color: #2ecc71;
+}
+
+.cavani_tm_about .services .service_list ul li:before {
+	border-color: transparent transparent transparent #2ecc71;
+}
+
+/* Timeline */
+.cavani_tm_about .univ ul:before {
+	background-color: #30363d;
+}
+
+.cavani_tm_about .univ ul li:before {
+	background: #0d1117;
+	border-color: #30363d;
+}
+
+.cavani_tm_about .univ ul li .time span {
+	background-color: rgba(46, 204, 113, 0.15);
+	color: #2ecc71;
+}
+
+/* Progress bars */
+.progress_inner .background {
+	background: rgba(255, 255, 255, .08);
+}
+
+.progress_inner .background .bar_in {
+	background: #2ecc71;
+}
+
+/* Circular progress */
+.CircularProgressbar .CircularProgressbar-path {
+	stroke: #2ecc71 !important;
+}
+
+.CircularProgressbar .CircularProgressbar-trail {
+	stroke: #30363d !important;
+}
+
+.CircularProgressbar .CircularProgressbar-text {
+	fill: #e6edf3 !important;
+}
+
+/* Partners / Data Sources */
+.cavani_tm_about .partners .list {
+	border-color: #30363d;
+}
+
+.cavani_tm_about .partners .list ul li {
+	border-color: #30363d;
+}
+
+/* Testimonials / Key Results */
+.cavani_tm_about .testimonials .list ul li .text {
+	border-color: #30363d;
+	background-color: #161b22;
+}
+
+.cavani_tm_about .testimonials .list ul li .text:before {
+	border-top-color: #30363d;
+}
+
+.cavani_tm_about .testimonials .list ul li .text:after {
+	border-top-color: #161b22;
+}
+
+.cavani_tm_about .testimonials .list ul li .text i {
+	color: #2ecc71;
+}
+
+.cavani_tm_about .testimonials .details .info h3 {
+	color: #e6edf3;
+}
+
+/* Portfolio / Figures */
+.cavani_tm_portfolio .portfolio_filter ul li a {
+	color: #c9d1d9;
+}
+
+.cavani_tm_portfolio .portfolio_filter ul li a:hover,
+.cavani_tm_portfolio .portfolio_filter ul li a.current {
+	color: #2ecc71;
+}
+
+.cavani_tm_portfolio .portfolio_list .filter-container .filter-item .details {
+	background-color: #161b22;
+	box-shadow: 0 0 20px rgba(0, 0, 0, .4);
+	border: 1px solid #30363d;
+}
+
+.cavani_tm_portfolio .portfolio_list .filter-container .filter-item .details h3 {
+	color: #e6edf3;
+}
+
+/* Service / Validation cards */
+.cavani_tm_service .service_list ul li .list_inner {
+	border-color: #30363d;
+	background-color: #161b22;
+}
+
+.cavani_tm_service .service_list ul li .list_inner:hover {
+	background-color: #2ecc71;
+	border-color: #2ecc71;
+}
+
+.cavani_tm_service .service_list ul li .svg {
+	color: #2ecc71;
+}
+
+.cavani_tm_service .service_list ul li .list_inner:hover .svg {
+	color: #0d1117;
+}
+
+.cavani_tm_service .service_list ul li .title {
+	color: #e6edf3;
+}
+
+.cavani_tm_service .service_list ul li .list_inner:hover .title {
+	color: #0d1117;
+}
+
+.cavani_tm_service .service_list ul li .list_inner:hover .text {
+	color: rgba(13, 17, 23, 0.8);
+}
+
+/* News / Publications */
+.cavani_tm_news .news_list>ul>li .list_inner .number {
+	background-color: #2ecc71;
+	color: #0d1117;
+}
+
+.cavani_tm_news .news_list>ul>li .list_inner .details:before {
+	background-color: #30363d;
+}
+
+.cavani_tm_news .news_list>ul>li .extra_metas ul li span {
+	color: #8b949e;
+}
+
+.cavani_tm_news .news_list>ul>li .extra_metas ul li span a {
+	color: #8b949e;
+}
+
+.cavani_tm_news .news_list>ul>li .extra_metas ul li span a:hover {
+	color: #2ecc71;
+}
+
+.cavani_tm_news .news_list>ul>li .post_title h3 a {
+	color: #e6edf3;
+}
+
+.cavani_tm_news .news_list>ul>li .post_title h3 a:hover {
+	color: #2ecc71;
+}
+
+/* Moving box (news hover image) */
+.cavani_fn_moving_box {
+	border-color: #30363d;
+}
+
+/* Contact / Collaborate */
+.cavani_tm_contact .short_info ul li .list_inner {
+	border-color: #30363d;
+	background-color: #161b22;
+}
+
+.cavani_tm_contact .short_info ul li .list_inner i {
+	color: #2ecc71;
+}
+
+.cavani_tm_contact .short_info ul li .list_inner a {
+	color: #c9d1d9;
+}
+
+.cavani_tm_contact .short_info ul li .list_inner a:hover {
+	color: #2ecc71;
+}
+
+.cavani_tm_contact .form .fields ul li input {
+	border-color: #30363d;
+	background-color: #161b22;
+	color: #c9d1d9;
+}
+
+.cavani_tm_contact .form .fields ul li input:focus {
+	border-color: #2ecc71;
+}
+
+.cavani_tm_contact .form .fields .last textarea {
+	border-color: #30363d;
+	background-color: #161b22;
+	color: #c9d1d9;
+}
+
+.cavani_tm_contact .form .fields .last textarea:focus {
+	border-color: #2ecc71;
+}
+
+/* Modal */
+.cavani_tm_modalbox .box_inner {
+	background-color: #161b22;
+	border: 1px solid #30363d;
+}
+
+.cavani_tm_modalbox .description_wrap {
+	scrollbar-color: #484f58 #161b22;
+}
+
+.cavani_tm_modalbox .description_wrap:-webkit-scrollbar-track {
+	background: #161b22;
+}
+
+.cavani_tm_modalbox .description_wrap::-webkit-scrollbar-thumb {
+	background-color: #484f58;
+	border: 3px solid #161b22;
+}
+
+.cavani_tm_modalbox .main_details .detailbox span a {
+	color: #c9d1d9;
+}
+
+.cavani_tm_modalbox .meta ul li span {
+	color: #8b949e;
+}
+
+.cavani_tm_modalbox .meta ul li span a {
+	color: #8b949e;
+}
+
+.cavani_tm_modalbox .meta ul li span a:hover {
+	color: #2ecc71;
+}
+
+.cavani_tm_modalbox .service_popup_informations .details span {
+	color: #2ecc71;
+}
+
+/* Custom cursor */
+.cursor-inner {
+	background-color: #2ecc71;
+}
+
+.cursor-inner.cursor-hover {
+	background-color: #2ecc71;
+}
+
+.cursor-outer {
+	border-color: #2ecc71;
+}
+
+/* Loading bar animation */
+.cd-headline.loading-bar .cd-words-wrapper::after {
+	background: #2ecc71;
+}
+
+/* Placeholder colors */
+::-webkit-input-placeholder { color: #484f58; }
+:-moz-placeholder { color: #484f58; opacity: 1; }
+::-moz-placeholder { color: #484f58; opacity: 1; }
+:-ms-input-placeholder { color: #484f58; }
+::-ms-input-placeholder { color: #484f58; }
+::placeholder { color: #484f58; }
+
+/* Links */
+a {
+	color: #c9d1d9;
+}
+
+/* Hamburger */
+.hamburger-inner,
+.hamburger-inner:after,
+.hamburger-inner:before {
+	background-color: #e6edf3 !important;
+}
+
+/* Selection */
+::selection {
+	background-color: #2ecc71;
+	color: #0d1117;
+}
+
+::-moz-selection {
+	background-color: #2ecc71;
+	color: #0d1117;
+}

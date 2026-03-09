@@ -11,7 +11,7 @@ from typing import Dict, List, Any
 class DepressionTreatmentParser:
     """Parser for Turbulance depression treatment files"""
 
-    def __init__(self, base_path: str = './'):
+    def __init__(self, base_path: str = './public'):
         self.base_path = Path(base_path)
         self.data = {}
 
