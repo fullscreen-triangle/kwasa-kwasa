@@ -1,0 +1,918 @@
+% ============================================================================
+%  Semantic Runtime Specifications
+%  An abstract machine and execution architecture for a declarative,
+%  evidence-bearing, completion-directed language.
+%
+%  Self-contained: the object language is recapitulated from first principles;
+%  only the standard external literature is cited.
+% ============================================================================
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[a4paper,margin=2.4cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{stmaryrd}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage[colorlinks=true,linkcolor=blue!45!black,citecolor=blue!45!black,
+            urlcolor=blue!55!black]{hyperref}
+\usepackage{cleveref}
+
+% ---- theorem environments ----
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{invariant}[theorem]{Invariant}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% ---- operators and notation ----
+\DeclareMathOperator{\dom}{dom}
+\DeclareMathOperator{\cod}{cod}
+\DeclareMathOperator{\emb}{embed}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Unit}{[0,1]}
+\newcommand{\Val}{\mathbb{V}}
+\newcommand{\Conf}{\mathcal{C}}
+\newcommand{\nor}{\oplus}
+\newcommand{\Type}{\tau}
+\newcommand{\env}{\rho}
+\newcommand{\store}{\mu}
+\newcommand{\cont}{\kappa}
+\newcommand{\dbt}{\Delta}
+\newcommand{\sys}{\Psi}
+\newcommand{\mstate}{\varsigma}            % machine state
+\newcommand{\stepm}{\longrightarrow}       % machine step
+\newcommand{\evalto}{\Downarrow}           % big-step
+\newcommand{\sem}[1]{\llbracket #1 \rrbracket}
+\newcommand{\dist}{\mathsf{d}}
+\newcommand{\target}{\Gamma_{\!f}}
+\newcommand{\jspace}{\qquad}
+\newcommand{\catp}{\varkappa}              % catalytic power
+\newcommand{\Res}{\mathsf{R}}              % resolver
+\newcommand{\Prov}{\mathsf{P}}             % provider
+\newcommand{\reg}{\mathsf{Reg}}            % provider registry
+\newcommand{\infrule}[3]{%
+  \ensuremath{\displaystyle\frac{\,#2\,}{\,#3\,}}\;\textsc{(#1)}}
+\newcommand{\rn}[1]{\textsc{#1}}
+
+\title{\textbf{Semantic Runtime Specifications}\\[3pt]
+\large An Abstract Machine and Execution Architecture for a Declarative,\\
+Evidence-Bearing, Completion-Directed Language}
+
+\author{Kundai Farai Sachikonye\\[2pt]
+\small Technical University of Munich\\
+\small \texttt{kundai.sachikonye@wzw.tum.de}}
+
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent
+We specify the runtime of a declarative language whose programs do not script a
+sequence of steps but \emph{declare a completion condition} and accumulate
+graded evidence toward it. Such a language poses runtime requirements that a
+conventional evaluator does not meet: a sub-computation may be resolved by any
+of several substrates (a deterministic primitive, an external tool, an oracle),
+each carrying a confidence; the result a program seeks is specified
+\emph{backward}, as a target rather than a procedure; and every value that
+enters a conclusion must be \emph{grounded} in an observation rather than
+freely generated. We give a complete, self-contained specification in five
+parts. (i) A compact recapitulation of the object language---its values, a
+confidence algebra on the unit interval, points and their resolution,
+propositions and their argumentation semantics, and the iteration
+constructs---so that the document stands alone. (ii) An \emph{abstract machine}
+in the explicit-control--environment--store--continuation style, and a proof
+that it is \emph{adequate}: it computes exactly the language's big-step
+semantics. (iii) A \emph{resolver/provider architecture}: typed interfaces that
+bind underspecified sub-computations to concrete substrates, with a
+\emph{grounding} invariant that no value is committed to a conclusion without a
+matching observation. (iv) A \emph{completion-directed} evaluation mechanism:
+tasks are targets in a refinement hierarchy embedded in a metric space, reached
+by backward navigation through \emph{virtual sub-states}; we prove the
+logarithmic navigation bound and that the speed-up is impossible without virtual
+sub-states. (v) A best-first \emph{scheduler} with a cascade of resolvers whose
+end-to-end accuracy obeys a multiplicative law, together with a content-addressed
+store and an observational decision log and state surface. The metatheory
+establishes adequacy, machine safety, scheduler fairness and termination, the
+cascade-accuracy bound and its saturation criterion, preservation of the
+grounding invariant, and conservation of confidence within the unit interval.
+The specification is precise enough to serve as an implementation blueprint and
+is related throughout to the standard literature on abstract machines,
+operational semantics, search, information geometry, and probabilistic
+computation.
+
+\medskip
+\noindent\textbf{Keywords:} abstract machine, operational semantics, adequacy,
+completion-directed evaluation, backward navigation, virtual sub-states,
+resolver, scheduler, cascade, content-addressed store, grounding.
+\end{abstract}
+
+\tableofcontents
+\bigskip\hrule
+
+% ===========================================================================
+\section{Introduction}
+\label{sec:intro}
+% ===========================================================================
+
+\subsection{What an evidence-bearing, completion-directed runtime must provide}
+
+A runtime is a precise account of how a program is executed: a machine that
+turns syntax into results, together with the services---memory, scheduling,
+dispatch---that the machine needs. For a conventional language the account is
+well understood: an abstract machine in the tradition of \citet{landin1964,
+felleisen1992} realises the language's operational semantics
+\citep{plotkin1981,kahn1987,winskel1993}, and adequacy theorems
+\citep{ager2003,reynolds1972} certify that the machine computes what the
+semantics prescribes. The language whose runtime we specify here is not
+conventional in three respects, each of which imposes a requirement that the
+classical account does not address.
+
+\begin{enumerate}[leftmargin=1.5em]
+\item \textbf{Plural substrates with confidence.} A sub-computation---resolving
+an ambiguous datum, scoring a hypothesis, answering a sub-query---may be
+discharged by any of several \emph{substrates}: a deterministic primitive, an
+external tool, or an oracle whose answer is uncertain. Each returns not just a
+value but a \emph{confidence}. The runtime must dispatch uniformly to these
+substrates and carry the confidence through.
+
+\item \textbf{Backward specification.} A program declares \emph{what completion
+looks like}---a target condition---rather than the steps to reach it. The
+runtime must compute the trajectory to the target, and do so efficiently. We
+show this is possible in logarithmic rather than linear work, but only through a
+device, the \emph{virtual sub-state}, that the runtime must support.
+
+\item \textbf{Grounding.} A conclusion must rest on observation. A value
+produced by an oracle and never checked against the world is \emph{ungrounded};
+the runtime must forbid such values from entering a committed result. This is a
+liveness/safety requirement on the scheduler, not on the semantics.
+\end{enumerate}
+
+\subsection{Contributions}
+
+We specify a runtime meeting these requirements and prove its guarantees.
+
+\begin{itemize}[leftmargin=1.5em]
+\item A self-contained recapitulation of the object language
+(\cref{sec:language}), so the document needs no companion.
+\item An abstract machine (\cref{sec:machine}) and an \emph{adequacy} theorem:
+the machine's reflexive-transitive step relation computes exactly the big-step
+semantics (\cref{thm:adequacy}).
+\item A resolver/provider architecture (\cref{sec:resolvers}) with typed
+interfaces and a \emph{grounding} invariant (\cref{inv:grounding}).
+\item Completion-directed evaluation by backward navigation through virtual
+sub-states (\cref{sec:completion}), with the logarithmic-navigation theorem
+(\cref{thm:lognav}) and the \emph{necessity} of virtual sub-states
+(\cref{thm:necessity}).
+\item A best-first scheduler with a resolver cascade (\cref{sec:scheduler}),
+the multiplicative accuracy law (\cref{thm:cascade}), and a content-addressed
+store and observational project state (\cref{sec:store}).
+\item The metatheory (\cref{sec:meta}): adequacy, machine safety, fairness and
+termination, cascade accuracy and saturation, grounding preservation, and
+confidence conservation.
+\end{itemize}
+
+\Cref{sec:trace} gives a worked execution; \cref{sec:related} situates the
+design; \cref{sec:conclusion} concludes.
+
+% ===========================================================================
+\section{The Object Language, Recapitulated}
+\label{sec:language}
+% ===========================================================================
+
+We fix a core calculus---the fragment the runtime must execute---together with
+its semantic domains and big-step semantics. The presentation is compact but
+complete: nothing below depends on external material beyond the cited standard
+results.
+
+\subsection{Core syntax}
+
+\begin{definition}[Core terms]
+\label{def:core}
+Expressions $e$ and statements $s$ are
+\begin{align*}
+e &::= n \mid str \mid b \mid x \mid e\mathbin{op}e \mid e(\overline e)
+       \mid e[e] \mid \mathsf{point}\{\overline{\ell:e}\}
+       \mid \mathsf{resolve}(e,\varsigma)\\
+s &::= \mathsf{item}\ x=e \mid x:=e \mid \mathsf{seq}(\overline s)
+       \mid \mathsf{given}(e,s,s) \mid \mathsf{foreach}(x,e,s)
+       \mid \mathsf{return}(e) \mid \mathsf{ensure}(e)\\
+  &\quad\mid \mathsf{fun}(f,\overline x,s)
+       \mid \mathsf{prop}(P,\overline M,s) \mid \mathsf{support}(M,e)
+       \mid \mathsf{contradict}(M,e)\\
+  &\quad\mid \mathsf{cycle}(x,e,s) \mid \mathsf{drift}(x,e,s)
+       \mid \mathsf{roll}(s),
+\end{align*}
+with $op$ ranging over the arithmetic, comparison, and logical operators,
+$\varsigma$ over resolution strategies (\cref{def:strategy}), and
+$x,f,P,M,\ell$ over identifiers and labels. This is the fragment exercised by
+the runtime; the remaining surface constructs reduce to it.
+\end{definition}
+
+\subsection{Semantic domains}
+
+\begin{definition}[Values]
+\label{def:values}
+The value set $\Val$ is generated by
+$v ::= \mathsf{num}(r)\mid\mathsf{str}(s)\mid\mathsf{bool}(b)\mid\mathsf{none}
+\mid\mathsf{list}(\overline v)\mid\mathsf{clo}(\overline x,s,\env)
+\mid\mathsf{pt}(p)\mid\mathsf{ent}(p)\mid\mathsf{floor}(F)
+\mid\mathsf{corpus}(s)$,
+where a \emph{point} $p=(\mathit{content},\mathit{conf}\in\Unit,
+\overline{(m_i,p_i)})$ carries content, a confidence, and a sub-stochastic
+list of interpretations ($\sum_i p_i\le1$); an \emph{entity} is a resolved
+point; a \emph{floor} $F$ is a finite map from keys to weighted points; a
+\emph{corpus} wraps a body of text.
+\end{definition}
+
+\begin{definition}[Confidence algebra]
+\label{def:confalg}
+Confidences combine by the \emph{noisy-or} on $\Unit$,
+\[
+c\nor d\;=\;1-(1-c)(1-d),
+\]
+which is associative, commutative, monotone, has unit $0$, and is bounded above
+by $1$ (with $1$ absorbing). It is the probability that at least one of two
+independent sources of confidence $c,d$ succeeds.
+\end{definition}
+
+\begin{definition}[Resolution strategy]
+\label{def:strategy}
+A \emph{resolution strategy} $\varsigma$ maps a point $p$ with normalised
+interpretations $\overline{(m_i,\hat p_i)}$ to a determinate outcome: the
+maximum-likelihood strategy returns the dominant interpretation when it clears
+an acceptance threshold $\theta$ and otherwise an uncertain outcome carrying the
+distribution and residual ambiguity $1-A(p)$, where $A(p)=H(p)/\log_2 k$ is the
+normalised interpretation entropy; other strategies (Bayesian, conservative,
+exploratory, full) re-weight or re-select accordingly. Resolving collapses
+$\mathsf{pt}(p)$ to $\mathsf{ent}(\hat p)$.
+\end{definition}
+
+\begin{definition}[Environment, store, debate, system state]
+\label{def:state}
+An \emph{environment} $\env\colon\mathit{Var}\rightharpoonup\mathit{Loc}$ maps
+variables to locations; a \emph{store} $\store\colon\mathit{Loc}\rightharpoonup
+\Val$ maps locations to values (mutation updates $\store$). A \emph{debate
+state} $\dbt\colon\mathit{Motion}\rightharpoonup(\mathcal{A}\times\mathcal{C})$
+maps each motion to multisets of weighted affirmations and contentions. A
+\emph{system state} $\sys=(\mathcal{H},\mathcal{F})$ pairs an append-only
+\emph{decision log} $\mathcal{H}$ with a \emph{state surface} $\mathcal{F}$.
+\end{definition}
+
+\subsection{Big-step semantics (the specification to be realised)}
+
+The semantics has expression judgements $\langle e,\env,\store\rangle\evalto
+\langle v,\store'\rangle$ and statement judgements $\langle s,\env,\store,\dbt
+\rangle\evalto\langle\chi,\store',\dbt'\rangle$ with completion $\chi\in\{\mathsf
+{nrm}\}\cup\{\mathsf{ret}\,v\}$. We list the rules the runtime must honour; they
+are standard call-by-value \citep{winskel1993,pierce2002} except for the three
+distinctive forms.
+
+\begin{gather*}
+\infrule{B-Resolve}{\langle e,\env,\store\rangle\evalto\langle\mathsf{pt}(p),
+  \store'\rangle\quad \hat p=\varsigma(p)}
+  {\langle\mathsf{resolve}(e,\varsigma),\env,\store\rangle\evalto\langle
+  \mathsf{ent}(\hat p),\store'\rangle}\\[8pt]
+\infrule{B-Prop}{\dbt_0=[\overline{M\mapsto(\varnothing,\varnothing)}]\quad
+  \langle s,\env,\store,\dbt_0\rangle\evalto\langle\_,\store',\dbt_1\rangle}
+  {\langle\mathsf{prop}(P,\overline M,s),\env,\store,\dbt\rangle\evalto\langle
+  \mathsf{nrm},\store'[P\mapsto\mathrm{verdict}_\varsigma(\dbt_1)],\dbt\rangle}\\
+  [8pt]
+\infrule{B-Support}{\langle e,\env,\store\rangle\evalto\langle\mathsf{num}(c),
+  \store'\rangle\quad c'=\mathrm{clip}_\Unit(c)}
+  {\langle\mathsf{support}(M,e),\env,\store,\dbt\rangle\evalto\langle\mathsf{nrm}
+  ,\store',\dbt[M\,{+}{=}_{\mathcal A}(c',c',1)]\rangle}
+\end{gather*}
+where $\mathrm{verdict}_\varsigma$ scores each motion (an affirmations-minus-
+contentions aggregate under strategy $\varsigma$, clipped to $\Unit$) and labels
+it Supported/Contradicted/Inconclusive by thresholds. The iteration forms
+$\mathsf{cycle}/\mathsf{drift}/\mathsf{roll}$ run their body once per floor
+entry, per sampled corpus fragment, and until a convergence predicate fires,
+respectively. We take this semantics as given and specify a machine that
+realises it.
+
+% ===========================================================================
+\section{The Abstract Machine}
+\label{sec:machine}
+% ===========================================================================
+
+We give a small-step abstract machine in the control--environment--store--
+continuation style \citep{felleisen1992,ager2003}. The machine makes evaluation
+order, the store, and the pending context explicit, and exposes exactly the
+points at which the runtime dispatches to resolvers and providers
+(\cref{sec:resolvers}).
+
+\subsection{Configurations}
+
+\begin{definition}[Machine state]
+\label{def:mstate}
+A \emph{machine state} is a tuple
+\[
+\mstate\;=\;\langle\,c,\ \env,\ \store,\ \cont,\ \dbt,\ \sys\,\rangle,
+\]
+where $c$ is the \emph{control} (a term being evaluated, or a value being
+returned to a continuation), $\env$ the environment, $\store$ the store,
+$\cont$ the \emph{continuation} (the pending context), $\dbt$ the debate state,
+and $\sys$ the system state. Continuations are
+\[
+\cont ::= \mathsf{halt}\mid \mathsf{arg}(\overline e,\env,\cont)
+\mid \mathsf{op}(op,v,\cont)\mid \mathsf{seq}(s,\env,\cont)
+\mid \mathsf{bind}(x,\cont)\mid \mathsf{res}(\varsigma,\cont)\mid\cdots
+\]
+each frame recording one suspended elimination form. A state is \emph{final}
+when $c$ is a value $v$ and $\cont=\mathsf{halt}$.
+\end{definition}
+
+\subsection{Transitions}
+
+The step relation $\mstate\stepm\mstate'$ decomposes evaluation into atomic
+steps. We give the representative rules; the rest follow the same discipline.
+
+\begin{align*}
+\langle e_1\mathbin{op}e_2,\env,\store,\cont,\dbt,\sys\rangle
+  &\stepm \langle e_1,\env,\store,\mathsf{op}_1(op,e_2,\env,\cont),\dbt,\sys
+  \rangle\\
+\langle v_1,\env',\store,\mathsf{op}_1(op,e_2,\env,\cont),\dbt,\sys\rangle
+  &\stepm \langle e_2,\env,\store,\mathsf{op}_2(op,v_1,\cont),\dbt,\sys\rangle\\
+\langle v_2,\env,\store,\mathsf{op}_2(op,v_1,\cont),\dbt,\sys\rangle
+  &\stepm \langle\sem{op}(v_1,v_2),\env,\store,\cont,\dbt,\sys\rangle\\[4pt]
+\langle x,\env,\store,\cont,\dbt,\sys\rangle
+  &\stepm \langle\store(\env(x)),\env,\store,\cont,\dbt,\sys\rangle\\[4pt]
+\langle e(\overline e),\env,\store,\cont,\dbt,\sys\rangle
+  &\stepm \langle e,\env,\store,\mathsf{arg}(\overline e,\env,\cont),\dbt,\sys
+  \rangle\\
+\langle\mathsf{clo}(\overline x,s,\env_0),\ldots,\mathsf{arg}(\overline v,
+  \_,\cont),\ldots\rangle
+  &\stepm \langle s,\ \env_0[\overline{x\mapsto\ell}],\ \store[\overline{\ell
+  \mapsto v}],\ \cont,\ \dbt,\sys\rangle
+\end{align*}
+For the distinctive forms, the machine \emph{suspends to a resolver}: evaluating
+$\mathsf{resolve}(e,\varsigma)$ pushes $\mathsf{res}(\varsigma,\cont)$, and when
+the operand reduces to a point the machine emits a \emph{resolution request}
+(\cref{sec:resolvers}) whose answer re-enters as the entity value; evaluating
+$\mathsf{support}(M,e)$ updates $\dbt$ once $e$ is a number; evaluating
+$\mathsf{prop}$ installs a fresh inner $\dbt_0$, runs the body, and writes the
+verdict to the store and an entry to $\sys.\mathcal H$.
+
+\begin{definition}[Evaluation by the machine]
+\label{def:macheval}
+Let $\stepm^{*}$ be the reflexive-transitive closure of $\stepm$. The machine
+\emph{evaluates} a closed term $t$ to $v$ if
+$\langle t,\varnothing,\store_0,\mathsf{halt},\dbt_0,\sys_0\rangle\stepm^{*}
+\langle v,\_,\store',\mathsf{halt},\dbt',\sys'\rangle$.
+\end{definition}
+
+\subsection{Adequacy}
+
+\begin{theorem}[Adequacy]
+\label{thm:adequacy}
+For every closed expression $e$ and store $\store$: the machine evaluates $e$ to
+$v$ with final store $\store'$ \emph{iff} $\langle e,\varnothing,\store\rangle
+\evalto\langle v,\store'\rangle$ in the big-step semantics; and likewise for
+statements, with the machine reaching a final state carrying completion $\chi$,
+store $\store'$, and debate $\dbt'$ iff $\langle s,\varnothing,\store,\dbt
+\rangle\evalto\langle\chi,\store',\dbt'\rangle$. The machine is therefore a
+correct and complete realisation of the semantics.
+\end{theorem}
+\begin{proof}[Proof sketch]
+This is the standard correspondence between a big-step semantics and a
+CEK/CESK machine \citep{ager2003,reynolds1972,felleisen1992}. ($\Leftarrow$,
+soundness of the machine) By induction on the big-step derivation, exhibiting
+for each rule a finite block of machine steps that pushes the appropriate
+continuation frames, evaluates sub-terms (using the IH), and pops the frame with
+the combined value; the store and debate threads are passed unchanged where the
+rule does not touch them and updated exactly where it does (e.g.\ \rn{B-Support}
+updates $\dbt$, \rn{B-Prop} installs and discharges $\dbt_0$). ($\Rightarrow$,
+completeness) By induction on the length of $\stepm^{*}$, using a
+\emph{decomposition lemma}: every non-final state uniquely decomposes into a
+redex in an evaluation context (the continuation), so each maximal run
+corresponds to a unique big-step derivation; the resolution-request steps
+correspond to the premises of \rn{B-Resolve} with the resolver supplying the
+$\varsigma(p)$ side condition. Determinacy of $\stepm$ (each state has at most
+one successor) makes the correspondence a bijection on terminating runs.
+\end{proof}
+
+\begin{corollary}[Machine safety]
+\label{cor:machinesafety}
+On the statically typed fragment (no dynamic type), a well-typed initial state
+never reaches a stuck non-final configuration: every non-final state has a
+successor, except a deliberate abort from a failed $\mathsf{ensure}$ (a defined
+outcome in the sense of \citet{hoare1969}) or a state awaiting a resolver
+answer.
+\end{corollary}
+\begin{proof}
+By adequacy (\cref{thm:adequacy}) the machine's reachable states are exactly the
+sub-derivations of a big-step evaluation, and progress for the big-step
+semantics on the static fragment \citep{wright1994,pierce2002} transfers: each
+non-value control has a redex with a defined transition, the only non-progressing
+outcomes being the defined abort and the resolver wait.
+\end{proof}
+
+% ===========================================================================
+\section{Resolvers and Providers}
+\label{sec:resolvers}
+% ===========================================================================
+
+The machine reduces a program to a sequence of \emph{requests}: primitive
+operations to be computed, and underspecified sub-computations to be resolved.
+We give the two interfaces that service them and the invariant that disciplines
+their use.
+
+\begin{definition}[Provider]
+\label{def:provider}
+A \emph{provider} for an operation name $op$ with signature
+$\overline{\tau}\to\tau'$ is a (partial) function
+$\Prov_{op}\colon\Val^{*}\rightharpoonup\Val$ that computes $op$ deterministically
+on values of the declared types. A \emph{registry} $\reg$ is a finite map from
+operation names to providers. The machine's $\mathsf{op}$ step consults $\reg$:
+$\sem{op}=\reg(op)$.
+\end{definition}
+
+\begin{definition}[Resolver]
+\label{def:resolver}
+A \emph{resolver} is a map
+\[
+\Res\colon \mathit{Request}\times\mathit{Context}\longrightarrow
+\Val\times\Unit,
+\]
+that answers an underspecified request (resolve a point, score a motion, satisfy
+a sub-target) with a value and a confidence, given a context (the ambient store,
+relevant evidence, and the active strategy). A resolver is classified by its
+substrate: \emph{deterministic} (a pure function, e.g.\ applying a strategy to a
+point's interpretation distribution), \emph{tool} (an external computation that
+reads the world), or \emph{oracle} (a substrate whose answer is uncertain). Each
+resolver carries a \emph{catalytic power} $\catp(\Res)\in\Unit$
+(\cref{sec:scheduler}).
+\end{definition}
+
+\begin{definition}[Requests and observations]
+\label{def:request}
+A \emph{request} is \emph{generative} if it proposes a value (an oracle answer,
+a candidate completion) and \emph{observational} if it reads the world (a tool
+call, a measurement, a database lookup). A value $v$ produced by a generative
+request is \emph{grounded} once an observational request has confirmed it within
+tolerance; otherwise it is \emph{ungrounded}.
+\end{definition}
+
+\begin{invariant}[Grounding]
+\label{inv:grounding}
+No ungrounded value is committed to a conclusion. Operationally: a generative
+resolution that contributes to a proposition verdict, a returned result, or a
+published state must be matched, before commitment, by an observational
+resolution that confirms it; the scheduler (\cref{sec:scheduler}) holds the
+generative value in a pending state until the matching observation completes,
+and discards it on failure.
+\end{invariant}
+
+\begin{remark}[Closure: action requires return]
+\cref{inv:grounding} is the runtime's closure discipline: every outbound
+(generative) step must be closed by an inbound (observational) step before its
+effect is allowed to stand. Ungrounded generation---an oracle answer that never
+faces the world---is precisely what the invariant forbids, and it is the
+structural account of, and guard against, unfounded conclusions. The invariant
+constrains the \emph{scheduler}, not the semantics: a program's meaning is
+unchanged, but the runtime refuses to realise meanings built on uncorroborated
+values.
+\end{remark}
+
+% ===========================================================================
+\section{Completion-Directed Evaluation}
+\label{sec:completion}
+% ===========================================================================
+
+A task declares a \emph{completion condition}---a target $\target$---rather than
+a procedure. The runtime computes a trajectory that reaches $\target$. We show
+this is done in logarithmic work by \emph{backward} navigation through a
+refinement hierarchy embedded in a metric space, and that the speed-up depends
+essentially on \emph{virtual sub-states}.
+
+\subsection{The refinement hierarchy and its embedding}
+
+\begin{definition}[Ternary refinement hierarchy]
+\label{def:hierarchy}
+A \emph{ternary refinement hierarchy} of depth $k$ is a sequence of partitions
+$P_0,\dots,P_k$ of a target space with $|P_0|=1$, each block of $P_j$ refining
+into exactly three children of $P_{j+1}$; the leaves $P_k$ number $N=3^{k}$. A
+\emph{target} is a leaf; a \emph{trajectory} is a root-to-leaf path.
+\end{definition}
+
+\begin{definition}[Metric embedding]
+\label{def:embedding}
+An \emph{embedding} $\emb$ maps each node to a point of the cube $\Unit^{3}$ by
+the base-3 expansion of its address along three coordinates, and equips
+$\Unit^{3}$ with a product Fisher--Rao metric $\dist$
+\citep{amari2016,cencov1982}. Under $\emb$, the parent of a node is obtained by
+deleting the last base-3 digit of its coordinate---an $O(1)$ operation---and the
+ball of radius $r$ about a leaf contains $O(r^{3}3^{k})$ leaves.
+\end{definition}
+
+\subsection{Virtual sub-states and backward navigation}
+
+\begin{definition}[Virtual sub-state]
+\label{def:virtual}
+A \emph{sub-state decomposition} of a coordinate $s\in\Unit$ is a triple
+$(s_1,s_2,s_3)\in\R^{3}$ with mean $\tfrac13(s_1+s_2+s_3)=s$. It is
+\emph{virtual} if some $s_i\notin\Unit$ (a locally infeasible component whose
+aggregate is feasible), and \emph{physical} otherwise.
+\end{definition}
+
+\begin{definition}[Backward navigation]
+\label{def:backnav}
+Given a target leaf $\target$, backward navigation returns the trajectory
+$\target=p_k,p_{k-1},\dots,p_0$ by iterating the $O(1)$ parent map of
+\cref{def:embedding}, each step admitting a (possibly virtual) sub-state
+decomposition of the coordinate.
+\end{definition}
+
+\begin{theorem}[Logarithmic navigation]
+\label{thm:lognav}
+Backward navigation from any target leaf to the root of a depth-$k$ ternary
+refinement hierarchy visits exactly $k=\log_3 N$ nodes, each in $O(1)$ work
+under the embedding; total cost $O(\log_3 N)$.
+\end{theorem}
+\begin{proof}
+Each step deletes one base-3 digit (the $O(1)$ parent map, \cref{def:embedding}),
+moving up one level; from depth $k$ to $0$ takes $k$ steps; $k=\log_3 N$.
+\end{proof}
+
+\begin{theorem}[Necessity of virtual sub-states]
+\label{thm:necessity}
+Backward navigation restricted to \emph{physical} sub-state decompositions has
+worst-case cost $\Theta(N)$---no better than forward enumeration. The
+logarithmic bound of \cref{thm:lognav} requires virtual sub-states.
+\end{theorem}
+\begin{proof}[Proof sketch]
+The geodesic short-cut in the continuous embedding requires evaluating the
+metric at a resolution finer than the cell width of the next level, which is
+attainable only through decompositions ranging over $\R^{3}$ rather than the
+unit cube. Confined to physical decompositions, the navigator must instead
+distinguish a node's child among the candidates at each level by direct
+comparison; summing the candidate counts $\sum_{j=0}^{k}3^{j}=\Theta(N)$. Thus
+the freedom to pass through locally infeasible (virtual) intermediate
+coordinates is exactly what buys the exponential reduction; a forward
+construction, which must realise each intermediate as a physical block, cannot
+use it.
+\end{proof}
+
+\begin{corollary}[Observational forward, analytical backward]
+\label{cor:asymmetry}
+Forward construction realises each step physically and is $\Theta(N)$; backward
+completion computes intermediates analytically and is $O(\log_3 N)$. A task is
+therefore best executed by declaring its target and navigating backward, which
+is the runtime's default for goal-resolution requests.
+\end{corollary}
+
+\subsection{Grounding meets completion}
+
+Backward navigation produces a \emph{candidate} trajectory; by
+\cref{inv:grounding} the leaf value it proposes is generative and must be observed before
+commitment. Completion-directed evaluation thus interleaves an analytical
+backward pass (cheap, generative) with an observational forward check
+(grounding), and commits only when both agree within tolerance.
+
+% ===========================================================================
+\section{Scheduling, Cascades, and Determinism}
+\label{sec:scheduler}
+% ===========================================================================
+
+The machine emits requests; the scheduler decides their order, dispatches them
+to resolvers/providers, composes resolvers into cascades, and enforces grounding.
+
+\subsection{Best-first scheduling}
+
+\begin{definition}[Work item and priority]
+\label{def:workitem}
+A \emph{work item} is a pending request together with its current state
+(coordinate) $s$ and its target $\target$. Its \emph{priority} is
+$\pi=-\dist(s,\target)$: items closer to their target are scheduled first. The
+scheduler maintains a priority queue of enabled items and repeatedly dispatches
+the highest-priority one---best-first search in the sense of \citet{dijkstra1959,
+hart1968}.
+\end{definition}
+
+\begin{definition}[Fair policy]
+\label{def:fair}
+A scheduling policy is \emph{fair} if every continuously enabled work item is
+eventually dispatched. We require the scheduler to be fair, e.g.\ by ageing
+priorities so that no enabled item is starved \citep{dijkstra1968}.
+\end{definition}
+
+\begin{theorem}[Liveness under fairness]
+\label{thm:liveness}
+Under a fair policy, every enabled resolution is eventually performed; hence if
+a computation's request DAG is finite and acyclic, the computation terminates,
+and if every leaf request has a resolver, it terminates with all requests
+discharged.
+\end{theorem}
+\begin{proof}
+Fairness gives that no enabled item waits forever (\cref{def:fair}); on a finite
+acyclic DAG the dependency order is a well-founded partial order, so by
+induction over it every item becomes enabled and is then, by fairness,
+eventually dispatched; the process drains the DAG in finite time. The qualifier
+on leaf resolvers ensures no item blocks for want of a substrate.
+\end{proof}
+
+\subsection{Resolver cascades and the accuracy law}
+
+A request is often discharged by a \emph{cascade}: a sequence of resolvers each
+refining the previous answer. We characterise the end-to-end accuracy.
+
+\begin{definition}[Catalytic power and cascade]
+\label{def:cascade}
+The \emph{catalytic power} $\catp(\Res)\in\Unit$ of a resolver is the fraction
+by which it reduces the residual distance of an answer to the truth: applying
+$\Res$ to an answer at residual $\delta$ leaves residual $(1-\catp)\delta$. A
+\emph{cascade} $\Gamma=\Res_1\diamond\cdots\diamond\Res_n$ applies the resolvers
+in sequence.
+\end{definition}
+
+\begin{theorem}[Multiplicative accuracy law]
+\label{thm:cascade}
+The catalytic power of a cascade is
+\[
+\catp(\Res_1\diamond\cdots\diamond\Res_n)\;=\;1-\prod_{i=1}^{n}\big(1-
+\catp(\Res_i)\big),
+\]
+the noisy-or aggregate (\cref{def:confalg}) of the stage powers; equivalently the
+residual multiplies, $\delta_n=\delta_0\prod_i(1-\catp_i)$.
+\end{theorem}
+\begin{proof}
+By induction on $n$. One stage: residual $\delta_0\mapsto(1-\catp_1)\delta_0$.
+If after $n-1$ stages the residual is $\delta_0\prod_{i<n}(1-\catp_i)$, the
+$n$-th leaves $\delta_0\prod_{i\le n}(1-\catp_i)$; the cascade power is
+$1-\delta_n/\delta_0=1-\prod_i(1-\catp_i)$, which is the $\nor$-fold of the
+$\catp_i$.
+\end{proof}
+
+\begin{corollary}[Saturation]
+\label{cor:saturation}
+A cascade drives the residual to $0$ (power to $1$) iff $\sum_i\catp(\Res_i)=
+\infty$. A cascade of fixed per-stage power $\catp>0$ saturates geometrically;
+one with $\catp_i=2^{-i}$ does not.
+\end{corollary}
+\begin{proof}
+$\log\prod_i(1-\catp_i)=\sum_i\log(1-\catp_i)$ diverges to $-\infty$ iff
+$\sum_i\catp_i=\infty$ (since $\log(1-x)\sim-x$), i.e.\ residual $\to0$; this is
+the Borel--Cantelli dichotomy.
+\end{proof}
+
+\subsection{Concurrency and determinism}
+
+\begin{proposition}[Determinism relative to the oracle assignment]
+\label{prop:determinism}
+Fix an assignment $\mathcal{O}$ of answers to every oracle request. Then the
+runtime is deterministic: the machine step relation is a partial function
+(\cref{thm:adequacy}), provider answers are functions of their arguments
+(\cref{def:provider}), and oracle answers are fixed by $\mathcal{O}$. Two
+independent work items (neither's target nor inputs depending on the other's
+output) may be dispatched concurrently without affecting the result, because
+their effects on disjoint store locations and distinct log entries commute.
+\end{proposition}
+\begin{proof}
+Determinism: each source of choice is resolved---transitions by determinacy of
+$\stepm$, providers by functionality, oracles by $\mathcal{O}$. Commutation:
+independent items touch disjoint store locations (no read-write or write-write
+hazard) and append to the log, an operation that is conflict-free up to the
+recorded order \citep{lamport1978}; hence their two interleavings yield the same
+final store and the same multiset of log entries.
+\end{proof}
+
+% ===========================================================================
+\section{The Store and the Project State}
+\label{sec:store}
+% ===========================================================================
+
+\subsection{Content-addressed store}
+
+\begin{definition}[Content-addressed store]
+\label{def:castore}
+The runtime's long-term store is \emph{content-addressed}: the location of a
+value is computed from the value, $\ell=\emb(\mathit{content})$, rather than
+assigned independently. Retrieval is by coordinate proximity---the nearest
+stored coordinate under $\dist$---and storage and retrieval share one operation.
+There is no separate key space: an address is never supplied, only derived.
+\end{definition}
+
+\begin{proposition}[Storage--retrieval coincidence]
+\label{prop:storeretrieve}
+Under content addressing, $\mathrm{retrieve}(\emb(x))=x$ for any stored $x$
+whose nearest neighbour is itself; storing $x$ and later retrieving by its
+content recover $x$ exactly, and approximate content retrieves the nearest
+stored item.
+\end{proposition}
+\begin{proof}
+$\emb$ places $x$ at $\emb(x)$; retrieval returns $\argmin_{y}\dist(\emb(x),
+\emb(y))$, which is $x$ when $x$ is stored and otherwise the nearest stored
+coordinate. The embedding's injectivity on stored contents makes exact recovery
+exact.
+\end{proof}
+
+\subsection{Decision log and state surface are observational}
+
+\begin{definition}[Project threading]
+\label{def:threading}
+Two effects accompany evaluation beyond the store: a proposition verdict or a
+resolution \emph{appends} a record to the decision log $\sys.\mathcal H$, and a
+publish \emph{updates} the state surface $\sys.\mathcal F$. Both are write-only
+with respect to the core: no machine transition reads $\mathcal H$ or
+$\mathcal F$.
+\end{definition}
+
+\begin{theorem}[Observational separation]
+\label{thm:observational}
+Erasing $\mathcal H$ and $\mathcal F$ from every machine state yields exactly the
+runtime over the bare core (store and debate only): the projection that drops
+$\sys$ commutes with $\stepm$. Hence the log and surface record the computation
+but do not steer it; the result is independent of them.
+\end{theorem}
+\begin{proof}
+The only transitions touching $\sys$ append to $\mathcal H$ or update
+$\mathcal F$ (\cref{def:threading}); none reads $\sys$. Therefore the projection
+$\langle c,\env,\store,\cont,\dbt,\sys\rangle\mapsto\langle c,\env,\store,\cont,
+\dbt\rangle$ maps each transition to the corresponding core transition and is a
+simulation in both directions; the diagram commutes, and the final control,
+store, and debate are unchanged by erasure.
+\end{proof}
+
+% ===========================================================================
+\section{Metatheory}
+\label{sec:meta}
+% ===========================================================================
+
+We collect the runtime's guarantees; several restate results proved above, here
+assembled as the runtime's contract.
+
+\begin{theorem}[Runtime contract]
+\label{thm:contract}
+The runtime satisfies:
+\begin{enumerate}[label=(\roman*),leftmargin=1.9em,nosep]
+\item \textbf{Adequacy} (\cref{thm:adequacy}): it computes exactly the object
+language's big-step semantics.
+\item \textbf{Safety} (\cref{cor:machinesafety}): on the static fragment no run
+gets stuck except at a defined abort or a resolver wait.
+\item \textbf{Liveness} (\cref{thm:liveness}): under fair scheduling every
+enabled resolution is performed; finite acyclic request DAGs terminate.
+\item \textbf{Efficiency} (\cref{thm:lognav}): goal resolution by backward
+navigation is $O(\log_3 N)$, optimal up to the necessity of virtual sub-states
+(\cref{thm:necessity}).
+\item \textbf{Accuracy} (\cref{thm:cascade}, \cref{cor:saturation}): a resolver
+cascade has end-to-end power $1-\prod_i(1-\catp_i)$ and saturates iff
+$\sum_i\catp_i=\infty$.
+\item \textbf{Grounding} (\cref{inv:grounding}): no ungrounded value is
+committed to a conclusion.
+\item \textbf{Confidence conservation}: every confidence the runtime computes
+lies in $\Unit$.
+\item \textbf{Observational state} (\cref{thm:observational}): the decision log
+and state surface record but do not alter the computation.
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+(i)--(vi), (viii) are the cited theorems. (vii): confidences arise from resolver
+answers (in $\Unit$ by \cref{def:resolver}), from clipping in \rn{B-Support},
+from strategy outputs (in $\Unit$ by \cref{def:strategy}), and from cascade
+aggregation by $\nor$, which is bounded above by $1$ and below by $0$
+(\cref{def:confalg}); all constructors preserve $\Unit$, so by induction over
+the evaluation every computed confidence is in $\Unit$.
+\end{proof}
+
+\begin{theorem}[Grounding preservation]
+\label{thm:groundpres}
+If the scheduler holds every generative value pending until a matching
+observational resolution succeeds, then \cref{inv:grounding} holds of every
+reachable state: no reachable committed conclusion depends on an ungrounded
+value.
+\end{theorem}
+\begin{proof}
+By induction on the run. Initially no value is committed. The only steps that
+commit a value to a conclusion are: writing a proposition verdict (\rn{B-Prop}),
+returning a result, and publishing state. By hypothesis the scheduler does not
+enable these on a value still pending grounding; thus at each such step the
+contributing value has a completed matching observation, preserving the
+invariant. Generative values whose observation fails are discarded and never
+reach a committing step.
+\end{proof}
+
+\begin{remark}[Termination is conditional]
+As for any language with general recursion and unbounded iteration
+\citep{hopcroft2006}, termination of $\mathsf{while}$/$\mathsf{roll}$ is
+undecidable; \cref{thm:liveness} gives termination for finite acyclic request
+DAGs and bounded iteration. The runtime therefore guarantees progress and
+fairness unconditionally and termination under the stated finiteness condition,
+exactly as the object language guarantees termination only for its bounded
+constructs.
+\end{remark}
+
+% ===========================================================================
+\section{A Worked Execution}
+\label{sec:trace}
+% ===========================================================================
+
+Consider resolving an ambiguous datum inside a proposition, with a two-stage
+resolver cascade and the grounding check.
+
+\begin{enumerate}[leftmargin=1.5em]
+\item The machine evaluates $\mathsf{prop}(P,\overline M,s)$ (\rn{B-Prop}):
+installs $\dbt_0$, runs the body.
+\item The body reaches $\mathsf{item}\ d=\mathsf{resolve}(\mathsf{point}\{
+\dots\},\varsigma)$. The machine builds $\mathsf{pt}(p)$ and pushes
+$\mathsf{res}(\varsigma,\cont)$, emitting a \emph{resolution request} for $p$.
+\item The scheduler dispatches the request to a cascade $\Res_1\diamond\Res_2$:
+$\Res_1$ a deterministic strategy resolver ($\catp_1=0.6$) producing a candidate
+entity; $\Res_2$ an oracle ($\catp_2=0.5$) refining it. By \cref{thm:cascade}
+the cascade power is $1-(0.4)(0.5)=0.8$.
+\item The oracle answer is \emph{generative}; by \cref{inv:grounding} it is held
+pending. The scheduler issues an \emph{observational} request (a tool lookup);
+on agreement within tolerance the entity is grounded and committed as $d$, with
+confidence the cascade aggregate; on disagreement it is discarded and the next
+candidate sought.
+\item Back in the proposition body, $\mathsf{given}\ \phi:\ \mathsf{support}(M,
+d.\mathit{conf})$ updates $\dbt_0$ (\rn{B-Support}). After the body,
+$\mathrm{verdict}_\varsigma(\dbt_1)$ is written to the store and appended to the
+decision log $\sys.\mathcal H$ (\cref{def:threading}).
+\end{enumerate}
+By \cref{thm:adequacy} the value computed equals the big-step result; by
+\cref{thm:observational} the log entry does not change it; by
+\cref{thm:groundpres} the committed verdict rests only on grounded values.
+
+% ===========================================================================
+\section{Related Work}
+\label{sec:related}
+% ===========================================================================
+
+\paragraph{Abstract machines and adequacy.} The machine is in the SECD/CEK/CESK
+lineage \citep{landin1964,felleisen1992}; the adequacy proof follows the
+functional correspondence between evaluators and machines
+\citep{ager2003,reynolds1972} and the standard relationship to big-step and
+structural operational semantics \citep{kahn1987,plotkin1981,winskel1993}. Type
+safety transfers by the syntactic method \citep{wright1994,pierce2002}.
+
+\paragraph{Dispatch and effects.} The resolver/provider split is a typed
+dispatch interface in the spirit of effect handlers and the monadic account of
+computational effects \citep{moggi1991,wadler1992}; the registry is a small
+module system \citep{cardelli1985}.
+
+\paragraph{Search and navigation.} Best-first scheduling by distance-to-target
+is Dijkstra/A* search \citep{dijkstra1959,hart1968}; the backward-navigation
+bound and the metric embedding draw on information geometry
+\citep{amari2016,cencov1982} and a fixed-point view of convergent refinement
+\citep{banach1922}. The content-addressed store realises storage and retrieval
+as one coordinate operation.
+
+\paragraph{Uncertainty.} Confidences and their noisy-or aggregation place the
+runtime in the probabilistic-computation tradition \citep{kozen1981,mciver2005}
+and the theory of evidence \citep{shafer1976}; proposition verdicts realise a
+quantitative argumentation \citep{dung1995}.
+
+\paragraph{Concurrency.} Fairness and the conflict-free composition of
+independent work items follow classical concurrency \citep{dijkstra1968,
+lamport1978}.
+
+The novelty is the assembly: an adequate machine whose request stream is
+serviced by substrate-agnostic resolvers under a grounding invariant, with goal
+resolution by backward navigation through virtual sub-states, a cascade-accuracy
+law, and an observational project state---a runtime tailored to a language that
+declares targets and reasons under evidence.
+
+% ===========================================================================
+\section{Conclusion}
+\label{sec:conclusion}
+% ===========================================================================
+
+We have specified the runtime of a declarative, evidence-bearing,
+completion-directed language and proved its contract. An abstract machine
+realises the language's semantics adequately and safely; a resolver/provider
+architecture binds underspecified sub-computations to deterministic, tool, and
+oracle substrates while a grounding invariant forbids any ungrounded value from
+entering a conclusion; goal resolution proceeds by backward navigation through a
+metric-embedded refinement hierarchy in logarithmic work, provably impossible
+without virtual sub-states; a fair best-first scheduler composes resolvers into
+cascades whose accuracy follows a multiplicative law with a sharp saturation
+criterion; and a content-addressed store with an observational decision log and
+state surface completes the picture. The specification is self-contained and
+constructive: the machine fixes the evaluator, the interfaces fix the dispatch,
+the navigation fixes goal resolution, and the scheduler fixes the order and the
+grounding---each with a stated and proved guarantee, so that an implementation
+has both a blueprint and a contract to meet.
+
+% ===========================================================================
+\bibliographystyle{plainnat}
+\bibliography{references}
+% ===========================================================================
+\end{document}

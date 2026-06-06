@@ -1,0 +1,863 @@
+% ============================================================================
+%  A Field Theory of Sentiment
+%  Affect as a circulating, interoceptive resource-allocation field that
+%  modulates variance-minimizing computation.
+%
+%  Self-contained: developed from first principles; cites only the standard
+%  external literature.
+% ============================================================================
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[a4paper,margin=2.4cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage[colorlinks=true,linkcolor=blue!45!black,citecolor=blue!45!black,
+            urlcolor=blue!55!black]{hyperref}
+\usepackage{cleveref}
+
+% ---- theorem environments ----
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{principle}[theorem]{Principle}
+
+% ---- operators and notation ----
+\DeclareMathOperator{\dom}{dom}
+\DeclareMathOperator{\supp}{supp}
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\Dg}{Dg}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Rp}{\mathbb{R}_{\ge 0}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Unit}{[0,1]}
+\newcommand{\simplex}{\Delta}                 % probability simplex
+\newcommand{\field}{\mathbf{S}}               % sentiment field (vector)
+\newcommand{\alloc}{\mathbf{a}}               % allocation
+\newcommand{\feat}{\mathbf{g}}                % feature/affordance map
+\newcommand{\Pot}{\Phi}                       % modulated potential
+\newcommand{\Free}{\mathcal{F}}               % free energy
+\newcommand{\coh}{R}                           % coherence order parameter
+\newcommand{\KL}{D_{\mathrm{KL}}}
+\newcommand{\inner}[2]{\langle #1,\,#2\rangle}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\dd}{\,\mathrm{d}}
+\newcommand{\setpt}{\field^{\!\star}}
+
+\title{\textbf{A Field Theory of Sentiment}\\[3pt]
+\large Affect as a Circulating, Interoceptive Resource-Allocation Field\\
+that Modulates Variance-Minimizing Computation}
+
+\author{Kundai Farai Sachikonye\\[2pt]
+\small Technical University of Munich\\
+\small \texttt{kundai.sachikonye@wzw.tum.de}}
+
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent
+An autonomous computational system that pursues an open-ended goal must, at
+every instant, allocate finite resources among many candidate sub-computations,
+none of which individually apprehends the whole goal. We propose that the
+control variable governing this allocation is best modelled not as a scalar
+priority but as a \emph{field}: a circulating, self-sensing quantity that
+modulates which candidate computations become stable and therefore proceed. We
+call this quantity \emph{sentiment}, by analogy with the role that affect plays
+in biological cognition, where it is increasingly understood as an
+\emph{interoceptive} read-out of the organism's internal economy rather than an
+overlay on neutral thought. We give a complete, self-contained mathematical
+theory of such a field. The theory has four interlocking components. (i) A
+\emph{modulation} principle: candidate computations are local minima of a
+potential $\Pot_\field(x)=V(x)-\inner{\field}{\feat(x)}$ in which the field
+$\field$ tilts an intrinsic cost (a ``variance'') by the affordances $\feat$ of
+each candidate; the set of stable candidates therefore moves smoothly with the
+field except at bifurcations, which we identify with affective regime change.
+(ii) A \emph{circulation} law: a conserved resource is transported across the
+candidate population and periodically re-injected by a pump, so that allocation
+is the flow of a conserved budget rather than an unconstrained gain. (iii) An
+\emph{interoception} law: the field is driven by the system's own observed
+coherence and residual error through a homeostatic feedback, so that the field
+reports the internal state it also governs. (iv) An \emph{economy}: given the
+field, the budget is allocated by a maximum-entropy (Gibbs) rule that is the
+unique minimizer of a free energy, equivalently the stationary distribution of
+an entropy-regularised replicator dynamics, with the field acting as the price
+(Lagrange multiplier) of the budget constraint. We prove the theory's basic
+guarantees: budget conservation, boundedness, smooth modulation, convergence of
+the allocation to the Gibbs minimizer, a coherence phase transition at a
+critical coupling, and stability of the coupled slow-field/fast-allocation
+system under a timescale-separation condition. We show that \emph{memory} is the
+path integral of the field, $M(t)=\field(t)-\field(0)$, making field and memory
+a derivative--integral pair. Finally we isolate the theory's interface to a
+host runtime: the sentiment field induces a map from system state to an
+allocation over candidate computations---a scheduler priority that is
+self-tuning, conservative, and accountable. Throughout, the construction is
+related to the standard literature on dynamical systems, feedback control,
+evolutionary dynamics, convex optimization, synchronization, and the
+interoceptive theory of affect.
+
+\medskip
+\noindent\textbf{Keywords:} sentiment field, resource allocation, replicator
+dynamics, maximum entropy, homeostasis, interoception, synchronization,
+variational principle, gradient flow, attention economy.
+\end{abstract}
+
+\tableofcontents
+\bigskip\hrule
+
+% ===========================================================================
+\section{Introduction}
+\label{sec:intro}
+% ===========================================================================
+
+\subsection{The allocation problem of open-ended computation}
+
+Consider a system charged with an open-ended task: to investigate a phenomenon,
+to design an artefact, to reach a goal whose full structure is not known in
+advance. Such a system does not execute a fixed plan. Instead it maintains, at
+each moment, a \emph{population} of candidate sub-computations---partial
+hypotheses, tentative subgoals, lines of inquiry---and it must decide which of
+them to pursue with its finite resources of time, memory, and computation. The
+defining difficulty is that no single candidate apprehends the whole task: each
+is local, partial, and uncertain. The system's competence lies not in any one
+candidate but in how it \emph{allocates} effort across them and reallocates as
+the situation changes.
+
+The naive control variable for such allocation is a scalar priority assigned to
+each candidate. We argue that this is inadequate in three respects, each of
+which a richer construct must supply. First, priority must be \emph{coupled}:
+the value of pursuing one candidate depends on the state of the others and on
+the global situation, so the control variable should be a field over the task
+space, not a list of independent numbers. Second, priority must be
+\emph{conserved}: resources are finite, so raising the priority of one candidate
+must lower that of another; allocation is the redistribution of a conserved
+budget, not an unconstrained gain. Third, priority must be \emph{self-sensing}:
+the appropriate allocation depends on how the computation is itself faring---on
+whether it is coherent or thrashing, near its goal or far---so the control
+variable must read the system's own internal state, which it also governs.
+
+\subsection{Sentiment as an interoceptive field}
+
+We name the control variable that meets these three requirements
+\emph{sentiment}. The name is chosen deliberately. In biological cognition,
+affect was long modelled as an overlay---a colouring of otherwise neutral
+representations. The modern view is the reverse: affect is an
+\emph{interoceptive} signal, a read-out of the body's internal economy
+(metabolic, autonomic, immune), that the brain uses to allocate its own
+resources and to bias which thoughts become salient and stable
+\citep{craig2002,damasio1994,barrett2017}. Emotion is, on this view, not
+decoration but the very field that determines which lines of processing
+stabilise under the current internal conditions. Our theory abstracts exactly
+this role. We do not claim to model biological affect; we claim that the
+\emph{computational} role affect is now understood to play---a circulating,
+self-sensing field that modulates resource allocation across competing
+sub-computations---is a precise and useful control architecture, and we give it
+a precise mathematics.
+
+The construction rests on a circulation metaphor made literal. A conserved
+resource---call it the \emph{budget}---is pumped through the population of
+candidates, delivering both sustenance (the computational effort a candidate
+needs to remain viable) and information (the field value that biases it). This
+is the same dual role that a circulatory medium plays in a living system, where
+the blood simultaneously sustains tissue and reports its condition. The pump
+imposes a rhythm; the flow obeys a conservation law; the field that the flow
+carries is set by the system's interoceptive sensing of its own coherence.
+
+\subsection{The four laws}
+
+The theory is organised around four laws, each a section of this paper.
+
+\begin{enumerate}[leftmargin=1.5em]
+\item \textbf{Modulation} (\cref{sec:modulation}). Candidate computations are
+the stable equilibria---local minima---of a potential
+$\Pot_\field(x)=V(x)-\inner{\field}{\feat(x)}$ in which an intrinsic cost $V$
+(the ``variance'' a candidate seeks to minimise) is tilted by the field
+$\field$ along the candidate's affordances $\feat(x)$. The stable set moves
+smoothly with $\field$ except at bifurcations, which are the formal signature of
+a change of affective regime.
+
+\item \textbf{Circulation} (\cref{sec:circulation}). The budget is a conserved
+density transported across candidates and re-injected by a pump; allocation is
+its flow, and total budget is invariant.
+
+\item \textbf{Interoception} (\cref{sec:interoception}). The field is driven by
+the system's own coherence and residual error through homeostatic feedback; it
+reports the state it governs, closing the loop.
+
+\item \textbf{Economy} (\cref{sec:economy}). Given the field, the budget is
+allocated by a maximum-entropy rule that uniquely minimises a free energy and is
+the stationary point of an entropy-regularised replicator dynamics; the field is
+the price of the budget constraint.
+\end{enumerate}
+
+\Cref{sec:memory} identifies memory with the path integral of the field;
+\cref{sec:metatheory} collects the metatheory (conservation, boundedness,
+convergence, the phase transition, slow--fast stability); \cref{sec:interface}
+states the interface to a host runtime; \cref{sec:example} gives a worked
+example; \cref{sec:related} situates the theory; \cref{sec:conclusion}
+concludes.
+
+\subsection{Notation}
+$\R,\Rp,\N$ are the reals, nonnegative reals, naturals; $\Unit$ the unit
+interval. $\simplex^{N-1}=\{\alloc\in\Rp^N:\sum_i a_i=1\}$ is the probability
+simplex and $\mathrm{int}\,\simplex^{N-1}$ its interior. $\inner{\cdot}{\cdot}$
+is the Euclidean inner product, $\norm{\cdot}$ its norm. For a smooth
+$h\colon\R^n\to\R$, $\nabla h$ and $\nabla^2 h$ are gradient and Hessian; for
+$\feat\colon\R^n\to\R^d$, $D\feat$ is the Jacobian. $H(\alloc)=-\sum_i a_i\ln
+a_i$ is the Shannon entropy \citep{shannon1948} and $\KL(\alloc\,\|\,\alloc')=
+\sum_i a_i\ln(a_i/a'_i)$ the Kullback--Leibler divergence \citep{cover2006}.
+
+% ===========================================================================
+\section{The Modulation Law}
+\label{sec:modulation}
+% ===========================================================================
+
+\subsection{Candidate computations and the intrinsic cost}
+
+\begin{definition}[Candidate population]
+\label{def:population}
+A \emph{candidate population} at an instant is a finite set
+$C=\{x_1,\dots,x_N\}\subset\mathcal{X}$ of points in a base space
+$\mathcal{X}\subseteq\R^n$, the \emph{task space}. Each $x_i$ is a candidate
+sub-computation, identified with its location in feature coordinates. Two maps
+are given on $\mathcal{X}$: an \emph{intrinsic cost} $V\colon\mathcal{X}\to\Rp$,
+smooth and bounded below, which each candidate locally seeks to decrease (its
+``variance''); and an \emph{affordance map} $\feat\colon\mathcal{X}\to\R^d$,
+smooth, whose components $g_k(x)$ measure the extent to which $x$ exhibits the
+$k$-th salient feature.
+\end{definition}
+
+The intrinsic cost is the language-agnostic stand-in for whatever local
+objective a candidate minimises---residual uncertainty, prediction error,
+distance to a subgoal. The theory does not depend on its identity, only on its
+smoothness and lower-boundedness.
+
+\subsection{The sentiment field and the modulated potential}
+
+\begin{definition}[Sentiment field]
+\label{def:field}
+A \emph{sentiment field} is a (time-dependent) vector $\field\in\R^d$, the value
+of the affective field at the population's current locus. (Globally $\field$ is
+a field $\mathcal{X}\to\R^d$; throughout we work with its value on the active
+region and write $\field$ for $\field(\bar x)$ at the population centroid
+$\bar x$.) The field acts on candidates through the \emph{modulated potential}
+\begin{equation}
+\Pot_\field(x)\;=\;V(x)\;-\;\inner{\field}{\feat(x)}.
+\label{eq:potential}
+\end{equation}
+\end{definition}
+
+\begin{principle}[Modulation]
+\label{prin:modulation}
+A candidate $x$ is \emph{stable under the field $\field$} iff it is a local
+minimum of $\Pot_\field$. The field does not select candidates by fiat; it
+reshapes the landscape on which candidates settle. Raising $S_k$ rewards
+affordance $g_k$, lowering the modulated cost of candidates rich in feature $k$
+and so making them stable; lowering $S_k$ suppresses them.
+\end{principle}
+
+This is the formal content of the slogan that sentiment determines \emph{which
+thoughts can stabilise}: it is the field that, by tilting the variance
+landscape, decides which local minima exist and where they sit.
+
+\subsection{Smooth modulation and regime change}
+
+\begin{theorem}[Smooth modulation]
+\label{thm:modulation}
+Let $x^\ast$ be a nondegenerate local minimum of $\Pot_{\field_0}$, i.e.\
+$\nabla\Pot_{\field_0}(x^\ast)=0$ and the Hessian
+\[
+H(x^\ast,\field_0)\;=\;\nabla^2 V(x^\ast)-\sum_{k=1}^{d}(\field_0)_k
+\nabla^2 g_k(x^\ast)\;\succ\;0 .
+\]
+Then there is a neighbourhood $U\ni\field_0$ and a unique smooth branch
+$x^\ast\colon U\to\mathcal{X}$ with $x^\ast(\field_0)=x^\ast$, each
+$x^\ast(\field)$ a nondegenerate minimum of $\Pot_\field$, and
+\begin{equation}
+\frac{\partial x^\ast}{\partial\field}\;=\;H(x^\ast,\field)^{-1}\,
+D\feat\big(x^\ast\big)^{\!\top}.
+\label{eq:sensitivity}
+\end{equation}
+\end{theorem}
+\begin{proof}
+Apply the implicit function theorem to $F(x,\field)=\nabla\Pot_\field(x)=
+\nabla V(x)-D\feat(x)^{\top}\field$. We have $F(x^\ast,\field_0)=0$ and
+$\partial_x F(x^\ast,\field_0)=H(x^\ast,\field_0)$, which is invertible by
+nondegeneracy. Hence a unique smooth $x^\ast(\field)$ solves $F=0$ near
+$\field_0$, and positive-definiteness persists on a neighbourhood by continuity
+of eigenvalues, so each $x^\ast(\field)$ is a minimum. Differentiating
+$F(x^\ast(\field),\field)=0$ gives $H\,\partial_\field x^\ast - D\feat^{\top}=0$,
+which is \cref{eq:sensitivity}.
+\end{proof}
+
+\begin{definition}[Affective regime change]
+\label{def:bifurcation}
+An \emph{affective regime change} is a value $\field_c$ at which
+$H(x^\ast,\field_c)$ becomes singular: a stable candidate is created or
+destroyed, or two merge. By \cref{thm:modulation} this is exactly where the
+smooth branch fails; it is a bifurcation of $\Pot_\field$
+\citep{strogatz2015,hirsch2013}.
+\end{definition}
+
+\begin{remark}[Why the stable set is the right object]
+Modulation makes precise that the field's effect is \emph{structural}: between
+regime changes the stable candidates track the field smoothly
+(\cref{eq:sensitivity}); at regime changes the very inventory of viable
+candidates changes. A controller that manipulates $\field$ therefore exercises
+two qualitatively different kinds of influence---continuous steering within a
+regime, and discontinuous reconfiguration across regimes---without ever
+selecting a candidate directly.
+\end{remark}
+
+% ===========================================================================
+\section{The Circulation Law}
+\label{sec:circulation}
+% ===========================================================================
+
+Allocation is the distribution of a conserved budget across the population. We
+make the conservation explicit and give the budget a transport dynamics with a
+pump, so that the field's modulation acts on a flow rather than on free gains.
+
+\begin{definition}[Budget and allocation]
+\label{def:budget}
+The \emph{budget} is a fixed total $B>0$ of an abstract resource (effort,
+compute, attention). An \emph{allocation} is $\alloc\in\simplex^{N-1}$, where
+$a_i$ is the fraction of $B$ delivered to candidate $x_i$; the resource
+delivered is $B\alloc$. We model $\alloc$ as a density that evolves in time.
+\end{definition}
+
+\begin{definition}[Transport with a pump]
+\label{def:transport}
+Let $\mu_i$ be the \emph{marginal value} of resource at candidate $i$
+(\cref{sec:economy} fixes $\mu_i=f_i$). The allocation obeys a discrete
+continuity equation with a conservative flux and a pump source:
+\begin{equation}
+\dot a_i \;=\; \underbrace{\sum_{j\sim i}J_{j\to i}}_{\text{conservative flux}}
+\;+\; \underbrace{\sigma_i(t)}_{\text{pump}},
+\qquad J_{j\to i}=-J_{i\to j},\qquad \sum_i\sigma_i(t)=0,
+\label{eq:continuity}
+\end{equation}
+where $j\sim i$ ranges over a coupling graph on the population, the flux is
+antisymmetric (resource leaving $j$ arrives at $i$), and the pump $\sigma$
+redistributes without creating or destroying budget (e.g.\ a periodic
+re-seeding that injects exploration while drawing equally from the incumbents).
+\end{definition}
+
+\begin{theorem}[Budget conservation]
+\label{thm:conservation}
+Under \cref{eq:continuity}, $\sum_i a_i$ is invariant; if $\alloc(0)\in
+\simplex^{N-1}$ then $\alloc(t)\in\simplex^{N-1}$ for all $t$, and the delivered
+resource $B\sum_i a_i=B$ is conserved.
+\end{theorem}
+\begin{proof}
+$\frac{\dd}{\dd t}\sum_i a_i=\sum_i\sum_{j\sim i}J_{j\to i}+\sum_i\sigma_i$. The
+first term is $\sum_{\{i,j\}}(J_{j\to i}+J_{i\to j})=0$ by antisymmetry; the
+second is $0$ by the pump constraint. Hence $\sum_i a_i$ is constant; with
+initial sum $1$ it stays $1$. Nonnegativity is preserved provided the flux and
+pump vanish at the boundary $a_i=0$ (no outflow from an empty candidate), which
+we assume of $J,\sigma$.
+\end{proof}
+
+\begin{remark}[The pump as rhythm and exploration]
+The pump $\sigma$ is the theory's ``heart''. A natural choice is a slow
+oscillation $\sigma_i(t)=\epsilon\,\omega(t)\,(\pi_i-a_i)$ with
+$\sum_i\pi_i=1$ a re-seeding distribution and $\omega$ periodic: it gently and
+periodically pulls the allocation toward $\pi$ (exploration) without violating
+conservation, since $\sum_i\sigma_i=\epsilon\omega(\sum_i\pi_i-\sum_i a_i)=0$ on
+the simplex. The oscillation prevents the allocation from collapsing onto a
+single incumbent and is the mechanism by which a system keeps ``circulating''
+rather than fixating.
+\end{remark}
+
+% ===========================================================================
+\section{The Interoception Law}
+\label{sec:interoception}
+% ===========================================================================
+
+The field is not exogenous: it is set by the system's reading of its own state.
+We give two interoceptive signals---a \emph{coherence} and a \emph{residual
+error}---and a homeostatic law driving the field toward a setpoint determined by
+them \citep{cannon1929,ashby1960,astrom2008}.
+
+\begin{definition}[Coherence and residual error]
+\label{def:coherence}
+Assign to each candidate a \emph{phase} $u(x_i)\in\mathbb{S}^{m-1}$ (a unit
+vector encoding the direction the candidate ``points'', e.g.\ its dominant
+feature). The \emph{coherence} of an allocation is the order parameter
+\begin{equation}
+\coh(\alloc)\;=\;\Big\lVert\,\sum_i a_i\,u(x_i)\,\Big\rVert\;\in\;\Unit,
+\label{eq:coherence}
+\end{equation}
+which is near $1$ when the allocated mass points one way (the population agrees)
+and near $0$ when it is dispersed \citep{kuramoto1984,strogatz2000,winfree1980}.
+The \emph{residual error} is the expected intrinsic cost
+$\varepsilon(\alloc)=\sum_i a_i V(x_i)$.
+\end{definition}
+
+\begin{definition}[Interoceptive homeostasis]
+\label{def:homeostasis}
+The field relaxes toward a setpoint $\setpt(\coh,\varepsilon)$ that depends on
+the interoceptive signals:
+\begin{equation}
+\dot\field\;=\;-\gamma\big(\field-\setpt(\coh(\alloc),\varepsilon(\alloc))\big),
+\qquad \gamma>0.
+\label{eq:homeostasis}
+\end{equation}
+The map $\setpt$ encodes the system's affective ``policy'': for instance,
+$\setpt$ may raise the weight on exploratory affordances when coherence is high
+and error is not improving (escape a confident dead end), and raise the weight
+on consolidating affordances when coherence is low (gather the dispersed
+population).
+\end{definition}
+
+\begin{proposition}[Homeostatic stability]
+\label{prop:homeostasis}
+For fixed interoceptive signals (hence fixed setpoint $\setpt$), the field
+dynamics \cref{eq:homeostasis} is globally exponentially stable with rate
+$\gamma$: $\norm{\field(t)-\setpt}\le e^{-\gamma t}\norm{\field(0)-\setpt}$.
+\end{proposition}
+\begin{proof}
+$\frac{\dd}{\dd t}\tfrac12\norm{\field-\setpt}^2=\inner{\field-\setpt}
+{\dot\field}=-\gamma\norm{\field-\setpt}^2$, so $\norm{\field-\setpt}^2$ decays
+as $e^{-2\gamma t}$ by Grönwall; take square roots \citep{khalil2002}.
+\end{proof}
+
+\begin{remark}[Interoception in one line]
+Equations \cref{eq:coherence}--\cref{eq:homeostasis} are the formal content of
+``sentiment is interoception'': the field is a function of the system's own
+coherence and error, i.e.\ of how the computation is going, and it feeds back to
+reshape (via \cref{eq:potential}) which candidates are stable. The field thus
+both \emph{reports} and \emph{regulates} the internal state, exactly as affect
+is held to do \citep{craig2002,barrett2017}.
+\end{remark}
+
+% ===========================================================================
+\section{The Economy}
+\label{sec:economy}
+% ===========================================================================
+
+We now fix how, given the field, the budget is allocated. The principle is
+\emph{maximum entropy under an expected-fitness constraint}: among all
+allocations achieving a given expected modulated benefit, choose the least
+committal \citep{jaynes1957}. This yields the Gibbs rule, which we show is the
+unique minimiser of a free energy and the stationary point of an
+entropy-regularised replicator dynamics, with the field appearing as the price
+of the budget.
+
+\begin{definition}[Fitness]
+\label{def:fitness}
+The \emph{fitness} of a candidate under field $\field$ is the negative modulated
+cost evaluated at its stable location:
+$f_i(\field)=-\Pot_\field(x_i)=-V(x_i)+\inner{\field}{\feat(x_i)}$. Higher
+fitness means lower modulated cost, hence greater claim on the budget.
+\end{definition}
+
+\begin{definition}[Free energy and the Gibbs allocation]
+\label{def:gibbs}
+For inverse temperature $\beta>0$ define the \emph{free energy}
+\begin{equation}
+\Free_\beta(\alloc)\;=\;-\sum_i a_i f_i \;-\;\tfrac{1}{\beta}H(\alloc)
+\;=\;-\inner{\alloc}{f}-\tfrac1\beta H(\alloc),\qquad \alloc\in\simplex^{N-1},
+\label{eq:freeenergy}
+\end{equation}
+and the \emph{Gibbs allocation} $\alloc^\beta$ with
+$a^\beta_i=\dfrac{e^{\beta f_i}}{\sum_j e^{\beta f_j}}$.
+\end{definition}
+
+\begin{theorem}[The Gibbs allocation is the unique free-energy minimiser]
+\label{thm:gibbs}
+$\Free_\beta$ is strictly convex on $\simplex^{N-1}$ and attains its unique
+minimum at $\alloc^\beta$. Equivalently, $\alloc^\beta$ is the maximum-entropy
+allocation subject to a fixed expected fitness $\inner{\alloc}{f}$, and the
+field-induced terms $\inner{\field}{\feat(x_i)}$ enter $f_i$ linearly, so the
+field acts as a vector of \emph{prices} on the affordances.
+\end{theorem}
+\begin{proof}
+On $\simplex^{N-1}$, $-H$ is strictly convex (its Hessian is $\mathrm{diag}
+(1/a_i)\succ0$) and $-\inner{\alloc}{f}$ is linear, so $\Free_\beta$ is strictly
+convex and has a unique minimiser \citep{boyd2004}. Forming the Lagrangian
+$L=\Free_\beta(\alloc)+\lambda(\sum_i a_i-1)$ and setting
+$\partial L/\partial a_i=-f_i+\tfrac1\beta(\ln a_i+1)+\lambda=0$ gives
+$a_i\propto e^{\beta f_i}$; normalisation yields $\alloc^\beta$. The
+max-entropy characterisation is the standard duality: maximising $H(\alloc)$
+subject to $\inner{\alloc}{f}=c$ and $\sum a_i=1$ has stationarity condition
+$\ln a_i=\beta f_i+\text{const}$ with $\beta$ the multiplier on the fitness
+constraint \citep{jaynes1957}. The affordance prices are the components of
+$\field$ because $f_i=-V(x_i)+\sum_k S_k g_k(x_i)$.
+\end{proof}
+
+\begin{definition}[Entropy-regularised replicator dynamics]
+\label{def:replicator}
+The allocation evolves by the \emph{logit/replicator} flow
+\begin{equation}
+\dot a_i\;=\;a_i\big(f_i-\bar f\big)\;-\;\tfrac1\beta\,a_i\big(\ln a_i-
+\overline{\ln a}\big),\qquad \bar f=\inner{\alloc}{f},\ \
+\overline{\ln a}=\inner{\alloc}{\ln\alloc},
+\label{eq:replicator}
+\end{equation}
+the replicator dynamics \citep{taylor1978,hofbauer1998,maynardsmith1982} with an
+entropy-regularising drift. The unregularised flow ($\beta\to\infty$) is the
+classical replicator equation; the drift keeps the allocation in the interior.
+\end{definition}
+
+\begin{theorem}[Convergence of the allocation]
+\label{thm:repconv}
+For fixed fitness $f$, the free energy $\Free_\beta$ is a strict Lyapunov
+function for \cref{eq:replicator} on $\mathrm{int}\,\simplex^{N-1}$:
+$\dot{\Free}_\beta\le0$ with equality only at $\alloc^\beta$. Hence every
+interior trajectory converges to the Gibbs allocation $\alloc^\beta$, which is
+globally asymptotically stable.
+\end{theorem}
+\begin{proof}
+Write $f^{\mathrm{eff}}_i=f_i-\tfrac1\beta\ln a_i$, so \cref{eq:replicator} is
+$\dot a_i=a_i(f^{\mathrm{eff}}_i-\overline{f^{\mathrm{eff}}})$ with
+$\overline{f^{\mathrm{eff}}}=\inner{\alloc}{f^{\mathrm{eff}}}$, a replicator
+flow in the effective fitness. Note $f^{\mathrm{eff}}_i=-\partial\Free_\beta/
+\partial a_i+\text{const}$. A standard computation gives
+$\dot{\Free}_\beta=\sum_i\frac{\partial\Free_\beta}{\partial a_i}\dot a_i
+=-\big(\overline{(f^{\mathrm{eff}})^2}-(\overline{f^{\mathrm{eff}}})^2\big)
+=-\mathrm{Var}_{\alloc}(f^{\mathrm{eff}})\le0$, the replicator analogue of
+Fisher's fundamental theorem \citep{hofbauer1998}. Equality holds iff
+$f^{\mathrm{eff}}$ is constant across the support, i.e.\ $\ln a_i=\beta f_i
++\text{const}$, i.e.\ $\alloc=\alloc^\beta$. Strict convexity of
+$\Free_\beta$ (\cref{thm:gibbs}) makes $\alloc^\beta$ the unique minimum, so by
+LaSalle's invariance principle \citep{khalil2002} every interior trajectory
+converges to it.
+\end{proof}
+
+\begin{corollary}[Temperature controls commitment]
+\label{cor:temperature}
+As $\beta\to\infty$ the Gibbs allocation concentrates on
+$\argmax_i f_i$ (full commitment to the fittest candidate); as $\beta\to0$ it
+tends to the uniform allocation (maximal exploration). The inverse temperature
+$\beta$ is the system's exploitation--exploration dial.
+\end{corollary}
+\begin{proof}
+Immediate from $a^\beta_i\propto e^{\beta f_i}$: the softmax tends to the
+indicator of the maximiser as $\beta\to\infty$ and to uniform as $\beta\to0$
+\citep{cover2006}.
+\end{proof}
+
+% ===========================================================================
+\section{Memory as the Field's Path Integral}
+\label{sec:memory}
+% ===========================================================================
+
+The field carries its own history. We define memory as the accumulated change
+of the field along the computation's trajectory and record its elementary
+properties.
+
+\begin{definition}[Affective memory]
+\label{def:memory}
+The \emph{affective memory} accumulated up to time $t$ is the path integral of
+the field's rate of change,
+\begin{equation}
+M(t)\;=\;\int_0^t\dot\field(\tau)\,\dd\tau\;=\;\field(t)-\field(0).
+\label{eq:memory}
+\end{equation}
+More finely, the \emph{traversed memory} $\widetilde M(t)=\int_0^t
+\norm{\dot\field(\tau)}\,\dd\tau$ records the total variation of the field along
+the path, distinguishing trajectories that reach the same field value by
+different routes.
+\end{definition}
+
+\begin{proposition}[Field--memory duality and path dependence]
+\label{prop:memory}
+$M$ and $\field$ are a derivative--integral pair: $\dot M=\dot\field$ and
+$M(t)=\field(t)-\field(0)$. The reduced memory $M$ depends only on the
+endpoints, but the traversed memory $\widetilde M$ is path-dependent:
+$\widetilde M(t)\ge\norm{M(t)}$, with equality iff the field moves
+monotonically along a ray. Consequently two computations reaching the same field
+state through different affective histories are distinguished by $\widetilde M$.
+\end{proposition}
+\begin{proof}
+$\dot M=\dot\field$ and the endpoint formula are the fundamental theorem of
+calculus. The inequality is the triangle inequality for the path-length
+functional: $\widetilde M=\int_0^t\norm{\dot\field}\ge\norm{\int_0^t\dot\field}
+=\norm{M}$, with equality iff $\dot\field$ keeps a fixed direction.
+\end{proof}
+
+\begin{remark}
+Definition~\ref{def:memory} makes ``memory is the trajectory, not the state''
+precise at the level of the field: what is remembered is \emph{how the affect
+got here}, encoded as the integral of its motion, and the finer $\widetilde M$
+separates histories that the coarse endpoint $M$ conflates.
+\end{remark}
+
+% ===========================================================================
+\section{Metatheory of the Coupled System}
+\label{sec:metatheory}
+% ===========================================================================
+
+The full system couples a fast allocation (\cref{eq:replicator}) to a slow field
+(\cref{eq:homeostasis}), with the field entering the allocation through the
+fitness $f_i(\field)$ and the allocation entering the field through the
+interoceptive signals $\coh(\alloc),\varepsilon(\alloc)$. We record its
+guarantees.
+
+\subsection{Boundedness}
+
+\begin{proposition}[Boundedness]
+\label{prop:bounded}
+If $\setpt$ is bounded on $\Unit\times\Rp$ and $V$ is bounded on the (compact)
+region containing the population, then along any trajectory the allocation stays
+in $\simplex^{N-1}$ (\cref{thm:conservation}) and the field stays in a compact
+ball: $\limsup_{t}\norm{\field(t)}\le\sup\norm{\setpt}$.
+\end{proposition}
+\begin{proof}
+The simplex is forward-invariant by \cref{thm:conservation}. For the field, with
+$B^\ast=\sup\norm{\setpt}$, outside the ball $\norm{\field}\le B^\ast+\delta$ we
+have $\frac{\dd}{\dd t}\tfrac12\norm{\field}^2=\inner{\field}{-\gamma(\field-
+\setpt)}\le-\gamma\norm{\field}^2+\gamma\norm{\field}B^\ast<0$, so the ball is
+attracting; hence $\limsup\norm{\field}\le B^\ast$ \citep{khalil2002}.
+\end{proof}
+
+\subsection{The coherence phase transition}
+
+A central qualitative prediction is that the population's coherence undergoes a
+sharp transition as the mutual coupling among candidates increases---the same
+mean-field transition that organises synchronization
+\citep{kuramoto1984,strogatz2000}. We give a mean-field version.
+
+\begin{assumption}[Mean-field coupling]
+\label{ass:meanfield}
+Suppose the field setpoint reinforces alignment: candidates are rewarded for
+agreeing with the population's mean phase, so that the effective fitness
+contains a term $K\,\coh(\alloc)\cos(\theta_i-\psi)$ with coupling $K\ge0$,
+where $\theta_i$ is candidate $i$'s phase angle, $\psi$ the mean-phase angle,
+and the candidates' intrinsic phases are drawn from a symmetric, unimodal
+density $\rho(\omega)$ with spread $\sigma_\omega$.
+\end{assumption}
+
+\begin{theorem}[Coherence transition]
+\label{thm:transition}
+Under \cref{ass:meanfield} the fully incoherent allocation
+($\coh=0$) is the only stationary coherence for $K<K_c$ and becomes unstable for
+$K>K_c$, where the critical coupling is
+\begin{equation}
+K_c\;=\;\frac{2}{\pi\,\rho(0)}\quad(\text{equivalently } K_c=c\,\sigma_\omega
+\text{ for a fixed shape constant }c).
+\label{eq:Kc}
+\end{equation}
+For $K>K_c$ a coherent branch $\coh(K)>0$ emerges continuously,
+$\coh(K)\sim\sqrt{K-K_c}$ near onset. Thus the population exhibits a
+\emph{turbulent} regime ($\coh\approx0$) below $K_c$ and a \emph{coherent}
+regime ($\coh>0$) above it.
+\end{theorem}
+\begin{proof}[Proof sketch]
+This is the mean-field synchronization transition. Writing the self-consistency
+condition $\coh=K\coh\int_{-\pi/2}^{\pi/2}\cos^2\theta\,\rho(K\coh\sin\theta)\,
+\dd\theta$ and expanding for small $\coh$ gives $1=K\,\tfrac{\pi}{2}\rho(0)+
+O(\coh^2)$, whence the onset $K_c=2/(\pi\rho(0))$ and the square-root branch by
+the next order \citep{strogatz2000,kuramoto1984}. Below $K_c$ the only solution
+is $\coh=0$; above it the incoherent solution is linearly unstable and the
+coherent branch is stable.
+\end{proof}
+
+\begin{remark}[Regimes as affective states]
+\cref{thm:transition} identifies the two coarse affective regimes with the two
+phases of a synchronization transition: dispersed/turbulent processing below the
+critical coupling, aligned/coherent processing above it. Because the coupling
+$K$ is itself set by the field's setpoint (\cref{ass:meanfield}), the system can
+drive itself across the transition by interoceptive feedback---deliberately
+de-cohering to explore, or cohering to commit.
+\end{remark}
+
+\subsection{Stability of the coupled slow--fast system}
+
+\begin{theorem}[Slow--fast stability]
+\label{thm:slowfast}
+Suppose the allocation is fast and the field slow: in \cref{eq:replicator}
+replace time by $t$ and in \cref{eq:homeostasis} by $\eta t$ with
+$0<\eta\ll1$. Assume (i) for each fixed $\field$ the fast subsystem
+\cref{eq:replicator} has the globally asymptotically stable equilibrium
+$\alloc^\beta(\field)$ (\cref{thm:repconv}), depending smoothly on $\field$
+(\cref{thm:gibbs}); and (ii) the reduced slow dynamics
+$\dot\field=-\gamma(\field-\setpt(\coh(\alloc^\beta(\field)),
+\varepsilon(\alloc^\beta(\field))))$ has a locally exponentially stable
+equilibrium $\field^\infty$. Then for $\eta$ small enough the full coupled
+system has a locally exponentially stable equilibrium near
+$(\alloc^\beta(\field^\infty),\field^\infty)$.
+\end{theorem}
+\begin{proof}[Proof sketch]
+This is Tikhonov's theorem for singularly perturbed systems
+\citep{kokotovic1986,khalil2002}. The fast allocation relaxes to the slow
+manifold $\alloc=\alloc^\beta(\field)$ (an isolated, exponentially stable root
+of the fast equation by (i)); on that manifold the field evolves by the reduced
+dynamics, exponentially stable by (ii). The geometric singular-perturbation
+theorem then gives, for sufficiently small $\eta$, a persistent attracting
+invariant manifold $O(\eta)$-close to the slow manifold and an equilibrium
+inheriting exponential stability from the reduced and boundary-layer systems.
+\end{proof}
+
+\begin{corollary}[The field as a slowly varying controller]
+\label{cor:timescale}
+Under \cref{thm:slowfast} the allocation always tracks the current Gibbs
+allocation for the prevailing field, and the field migrates slowly toward the
+interoceptive setpoint. The system is therefore well-described, on the slow
+timescale, as a field-controlled allocator whose allocation is, at each instant,
+the optimal (free-energy-minimising) response to the field.
+\end{corollary}
+
+% ===========================================================================
+\section{Interface to a Host Runtime}
+\label{sec:interface}
+% ===========================================================================
+
+The theory is designed to plug into a computational runtime as the component
+that biases which candidate computations proceed. We isolate the interface
+abstractly, so that the theory is independent of any particular host.
+
+\begin{definition}[Sentiment interface]
+\label{def:interface}
+A \emph{host} supplies, at each instant: the candidate population $C$, the
+intrinsic costs $V(x_i)$, the affordances $\feat(x_i)$, and the interoceptive
+signals it can measure (or the data from which $\coh,\varepsilon$ are computed).
+The \emph{sentiment module} returns: (i) the field $\field$ (and its memory
+$M$); and (ii) the allocation $\alloc=\alloc^\beta(\field)\in\simplex^{N-1}$, a
+priority distribution over candidates. The host uses $\alloc$ to schedule
+effort and consults $M$ for the affective history.
+\end{definition}
+
+\begin{principle}[Sufficiency of the pair $(\alloc,M)$]
+\label{prin:sufficiency}
+For the purpose of deciding which computations proceed and with what priority,
+the pair $(\alloc,M)$ is a sufficient statistic of the field: the host need not
+see $\field$ itself, only the allocation it induces and the memory it has
+accumulated. This decouples the sentiment module from the host's internal
+representation and makes the module replaceable.
+\end{principle}
+
+\begin{remark}[Relation to a scheduler]
+A host scheduler that draws the next unit of work according to $\alloc$ is,
+by \cref{thm:repconv,cor:timescale}, sampling from the free-energy-minimising
+distribution for the current field; raising $\beta$ sharpens it toward the
+fittest candidate (exploitation), lowering it flattens toward exploration
+(\cref{cor:temperature}). The field thus furnishes a principled,
+self-tuning, conserved priority that a host can consume without further
+modelling of affect.
+\end{remark}
+
+% ===========================================================================
+\section{A Worked Example}
+\label{sec:example}
+% ===========================================================================
+
+Consider three candidate lines of inquiry $x_1,x_2,x_3$ with intrinsic costs
+$V=(0.6,0.4,0.5)$ and two affordances, ``novelty'' $g_1$ and ``consolidation''
+$g_2$, with $\feat(x_1)=(0.9,0.1)$, $\feat(x_2)=(0.2,0.8)$,
+$\feat(x_3)=(0.5,0.5)$. Take inverse temperature $\beta=4$.
+
+\paragraph{A consolidating field.} With $\field=(0.2,1.0)$ (low novelty price,
+high consolidation price) the fitnesses are
+$f_i=-V_i+\inner{\field}{\feat(x_i)}$: $f_1=-0.6+(0.18+0.10)=-0.32$,
+$f_2=-0.4+(0.04+0.80)=0.44$, $f_3=-0.5+(0.10+0.50)=0.10$. The Gibbs allocation
+$a_i\propto e^{4f_i}$ is $\alloc\approx(0.06,0.69,0.25)$: the consolidating
+candidate $x_2$ dominates.
+
+\paragraph{Interoceptive regime change.} Suppose coherence is high
+($\coh\approx0.9$) but error has stopped improving. The setpoint $\setpt$
+responds by raising the novelty price and lowering the consolidation price, say
+$\field\to(1.0,0.2)$. Now $f_1=-0.6+(0.90+0.02)=0.32$,
+$f_2=-0.4+(0.20+0.16)=-0.04$, $f_3=-0.5+(0.50+0.10)=0.10$, and
+$\alloc\approx(0.55,0.16,0.29)$: the field has reallocated effort to the
+exploratory candidate $x_1$ \emph{without any candidate being selected by
+fiat}---only the prices changed (\cref{prin:modulation}), the allocation tracked
+the new Gibbs minimiser (\cref{thm:repconv}), and the budget was conserved
+throughout (\cref{thm:conservation}). The memory $M=\field_{\text{after}}-
+\field_{\text{before}}=(0.8,-0.8)$ records the shift.
+
+% ===========================================================================
+\section{Related Work}
+\label{sec:related}
+% ===========================================================================
+
+The components of the theory each have a substantial pedigree, and locating them
+precisely clarifies the contribution.
+
+\paragraph{Dynamical systems and bifurcation.} The modulation law and its regime
+changes are standard equilibrium and bifurcation theory
+\citep{strogatz2015,hirsch2013}; the stability arguments use Lyapunov methods and
+LaSalle invariance \citep{khalil2002}.
+
+\paragraph{Feedback and homeostasis.} The interoception law is a homeostatic
+feedback in the cybernetic tradition \citep{wiener1948,cannon1929,ashby1960,
+astrom2008}, with the coherence and error as the measured signals an observer
+would track \citep{kalman1960}.
+
+\paragraph{Evolutionary dynamics and allocation.} The economy is replicator
+dynamics with entropy regularisation \citep{taylor1978,hofbauer1998,
+maynardsmith1982}; its fixed point is the Gibbs/softmax allocation, the
+maximum-entropy distribution \citep{jaynes1957,cover2006} and the unique
+minimiser of a convex free energy \citep{boyd2004}. The reading of the field as
+a price on affordances is the Lagrangian-duality view of allocation
+\citep{boyd2004,kelly1998,arrow1954}, and the whole apparatus is an instance of
+the ``attention economy'' for a resource-bounded processor \citep{simon1971}.
+
+\paragraph{Synchronization.} The coherence order parameter and its phase
+transition are the mean-field theory of coupled oscillators
+\citep{kuramoto1984,strogatz2000,winfree1980}.
+
+\paragraph{Comparators.} The free-energy formulation is formally adjacent to the
+free-energy principle for adaptive systems \citep{friston2010} and to the
+entropy-regularised objectives of reinforcement learning \citep{sutton2018},
+but our free energy is over an \emph{allocation} across candidate computations,
+not over actions or beliefs, and the controlling field is interoceptive. The
+interpretation of the field as affect follows the interoceptive theory of
+emotion \citep{craig2002,damasio1994,barrett2017}.
+
+The novelty is the synthesis: a single field that (a) modulates a variance
+landscape, (b) flows under a conservation law with a pump, (c) is driven by the
+system's own coherence and error, and (d) clears a budget by a maximum-entropy
+economy---together with the theorems that make this a well-posed, convergent,
+conservative controller with a memory and a clean host interface.
+
+% ===========================================================================
+\section{Conclusion}
+\label{sec:conclusion}
+% ===========================================================================
+
+We have given a self-contained mathematical theory of a sentiment field: a
+circulating, interoceptive, resource-allocating quantity that modulates which
+candidate computations stabilise and proceed. The four laws---modulation,
+circulation, interoception, economy---fit together into a coupled slow--fast
+dynamical system whose guarantees we proved: candidates are the minima of a
+field-tilted variance landscape and move smoothly with the field except at
+affective regime changes; the budget is conserved under transport with a pump;
+the field is driven homeostatically by the system's own coherence and error;
+the allocation is the unique free-energy-minimising Gibbs distribution and is
+reached by an entropy-regularised replicator flow, with the field as the price
+of the budget; coherence undergoes a sharp transition between turbulent and
+coherent regimes at a critical coupling; the coupled system is stable under
+timescale separation; and memory is the path integral of the field. The theory
+exposes a minimal interface---an allocation and a memory---through which a host
+runtime can consume sentiment as a self-tuning, conserved, accountable priority
+without modelling affect itself. It is intended both as a specification of the
+sentiment component of such a runtime and as a stand-alone account of why a
+field, rather than a scalar, is the right control variable for allocating the
+effort of an open-ended computation.
+
+% ===========================================================================
+\bibliographystyle{plainnat}
+\bibliography{references}
+% ===========================================================================
+\end{document}
