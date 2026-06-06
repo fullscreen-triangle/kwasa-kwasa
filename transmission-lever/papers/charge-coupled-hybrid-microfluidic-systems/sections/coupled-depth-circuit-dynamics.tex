@@ -1,0 +1,279 @@
+\section{Coupled High-Depth and Low-Depth Circuit Dynamics}
+\label{sec:coupled_depth}
+
+We analyze charge redistribution in coupled circuits with distinct hierarchical depths: high-depth processing subsystems and low-depth actuation subsystems.
+
+\subsection{Hierarchical Depth Definition}
+
+\begin{definition}[Hierarchical Depth]
+\label{def:hierarchical_depth}
+The hierarchical depth $D \in [0,1]$ of a circuit quantifies multi-scale coupling:
+\begin{equation}
+D = \frac{1}{n} \sum_{i=1}^{n} \mathbb{1}[F_i > F_{\text{threshold}}]
+\end{equation}
+where $F_i$ is the flux at scale $i$, and $\mathbb{1}[\cdot]$ is the indicator function.
+\end{definition}
+
+Systems with $D \approx 1$ have active dynamics at all scales (full hierarchy). Systems with $D < 0.4$ have collapsed hierarchy (only few scales active).
+
+\begin{definition}[High-Depth Circuit]
+\label{def:high_depth}
+A \emph{high-depth circuit} $\mathcal{C}_H$ has hierarchical depth $D_H \geq 0.8$, indicating sustained multi-scale coupling across all hierarchical levels.
+\end{definition}
+
+\begin{definition}[Low-Depth Circuit]
+\label{def:low_depth}
+A \emph{low-depth circuit} $\mathcal{C}_L$ has hierarchical depth $D_L < 0.5$, indicating dynamics concentrated at few scales.
+\end{definition}
+
+\subsection{Coupled Circuit Architecture}
+
+Consider a coupled system:
+\begin{equation}
+\mathcal{S} = \mathcal{C}_H \cup \mathcal{C}_L
+\end{equation}
+where $\mathcal{C}_H$ is the high-depth processing subsystem and $\mathcal{C}_L$ is the low-depth actuation subsystem.
+
+The total charge distribution is:
+\begin{equation}
+\rho_{\text{total}}(\mathbf{r}, t) = \rho_H(\mathbf{r}, t) + \rho_L(\mathbf{r}, t)
+\end{equation}
+with charge conservation:
+\begin{equation}
+Q_{\text{total}} = Q_H + Q_L = \text{const}
+\end{equation}
+
+\subsection{Internal Configuration Dynamics}
+
+\begin{definition}[Internal Configuration Dynamics]
+\label{def:internal_dynamics}
+The \emph{internal configuration dynamics} of high-depth circuit $\mathcal{C}_H$ are variance-minimized trajectories in high-dimensional state space:
+\begin{equation}
+\frac{\partial \rho_H}{\partial t} = \nabla \cdot \left( \sigma_H \nabla \frac{\delta F_H}{\delta \rho_H} \right)
+\end{equation}
+where $F_H[\rho_H]$ is the free energy functional of the high-depth circuit.
+\end{definition}
+
+These dynamics create local charge imbalances within $\mathcal{C}_H$:
+\begin{equation}
+\Delta \rho_H(\mathbf{r}, t) = \rho_H(\mathbf{r}, t) - \langle \rho_H \rangle
+\end{equation}
+
+\subsection{Charge Redistribution Coupling}
+
+\begin{theorem}[High-to-Low Charge Redistribution]
+\label{thm:high_to_low}
+Internal dynamics in $\mathcal{C}_H$ create charge imbalance that triggers compensatory redistribution to $\mathcal{C}_L$. The coupling flux is:
+\begin{equation}
+\mathbf{J}_{H \to L} = -\sigma_{HL} \nabla \phi_{HL}
+\end{equation}
+where $\phi_{HL}$ is the potential difference between circuits.
+\end{theorem}
+
+\begin{proof}
+Internal dynamics in $\mathcal{C}_H$ create local charge accumulation:
+\begin{equation}
+\frac{\partial Q_H}{\partial t} = \int_{\mathcal{C}_H} \frac{\partial \rho_H}{\partial t} d^3r
+\end{equation}
+
+By charge conservation in the closed system $\mathcal{S} = \mathcal{C}_H \cup \mathcal{C}_L$:
+\begin{equation}
+\frac{\partial Q_H}{\partial t} + \frac{\partial Q_L}{\partial t} = 0
+\end{equation}
+
+Therefore:
+\begin{equation}
+\frac{\partial Q_L}{\partial t} = -\frac{\partial Q_H}{\partial t}
+\end{equation}
+
+This charge transfer occurs through interface flux:
+\begin{equation}
+\frac{\partial Q_L}{\partial t} = \int_{\partial \mathcal{C}_L} \mathbf{J}_{H \to L} \cdot d\mathbf{A}
+\end{equation}
+
+The flux is driven by potential difference:
+\begin{equation}
+\mathbf{J}_{H \to L} = -\sigma_{HL} \nabla \phi_{HL}
+\end{equation}
+where $\phi_{HL} = \phi_H - \phi_L$ is the potential difference between circuits.
+\end{proof}
+
+\subsection{External Flux Dynamics}
+
+\begin{definition}[External Flux Dynamics]
+\label{def:external_dynamics}
+The \emph{external flux dynamics} of low-depth circuit $\mathcal{C}_L$ are the response to charge influx from $\mathcal{C}_H$:
+\begin{equation}
+\frac{\partial \rho_L}{\partial t} = -\nabla \cdot \mathbf{J}_{H \to L} + \nabla \cdot \left( \sigma_L \nabla \frac{\delta F_L}{\delta \rho_L} \right)
+\end{equation}
+\end{definition}
+
+The first term represents charge influx from high-depth circuit. The second term represents internal redistribution within low-depth circuit.
+
+\subsection{Unified Process}
+
+\begin{theorem}[Charge Redistribution as Unified Process]
+\label{thm:unified_process}
+The distinction between "internal dynamics" (in $\mathcal{C}_H$) and "external dynamics" (in $\mathcal{C}_L$) is observer-dependent geometric partitioning, not physical separation. The physical reality is continuous charge redistribution:
+\begin{equation}
+\frac{\partial \rho_{\text{total}}}{\partial t} = \nabla \cdot \left( \sigma_{\text{eff}} \nabla \frac{\delta F_{\text{total}}}{\delta \rho_{\text{total}}} \right)
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+The total system $\mathcal{S} = \mathcal{C}_H \cup \mathcal{C}_L$ has unified charge distribution $\rho_{\text{total}}(\mathbf{r}, t)$ and unified free energy $F_{\text{total}}[\rho_{\text{total}}]$.
+
+The charge dynamics are:
+\begin{equation}
+\frac{\partial \rho_{\text{total}}}{\partial t} = \nabla \cdot \left( \sigma_{\text{eff}}(\mathbf{r}) \nabla \frac{\delta F_{\text{total}}}{\delta \rho_{\text{total}}} \right)
+\end{equation}
+where $\sigma_{\text{eff}}(\mathbf{r})$ is the position-dependent effective conductivity:
+\begin{equation}
+\sigma_{\text{eff}}(\mathbf{r}) = \begin{cases}
+\sigma_H & \mathbf{r} \in \mathcal{C}_H \\
+\sigma_L & \mathbf{r} \in \mathcal{C}_L \\
+\sigma_{HL} & \mathbf{r} \in \partial \mathcal{C}_H \cap \partial \mathcal{C}_L
+\end{cases}
+\end{equation}
+
+The partition into $\mathcal{C}_H$ and $\mathcal{C}_L$ is a geometric decomposition imposed by the observer. The charge redistribution is a single continuous process across the entire system.
+
+The labels "internal" and "external" refer to the geometric regions, not to separate physical processes. Charge flows continuously from high-density regions (typically in $\mathcal{C}_H$ due to internal dynamics) to low-density regions (typically in $\mathcal{C}_L$) through thermodynamic necessity (variance minimization).
+\end{proof}
+
+\subsection{Variance Minimization Across Coupled Circuits}
+
+\begin{theorem}[Coupled Variance Minimization]
+\label{thm:coupled_variance}
+The coupled system minimizes total variance:
+\begin{equation}
+\sigma^2_{\text{total}} = \sigma^2_H + \sigma^2_L + 2 \text{Cov}(\rho_H, \rho_L)
+\end{equation}
+where $\text{Cov}(\rho_H, \rho_L)$ is the covariance between charge distributions in the two circuits.
+\end{theorem}
+
+\begin{proof}
+The total charge distribution is $\rho_{\text{total}} = \rho_H + \rho_L$. The variance is:
+\begin{align}
+\sigma^2_{\text{total}} &= \langle (\rho_{\text{total}} - \langle \rho_{\text{total}} \rangle)^2 \rangle \\
+&= \langle ((\rho_H - \langle \rho_H \rangle) + (\rho_L - \langle \rho_L \rangle))^2 \rangle \\
+&= \langle (\rho_H - \langle \rho_H \rangle)^2 \rangle + \langle (\rho_L - \langle \rho_L \rangle)^2 \rangle \\
+&\quad + 2 \langle (\rho_H - \langle \rho_H \rangle)(\rho_L - \langle \rho_L \rangle) \rangle \\
+&= \sigma^2_H + \sigma^2_L + 2 \text{Cov}(\rho_H, \rho_L)
+\end{align}
+
+Variance minimization requires minimizing all three terms. The covariance term couples the two circuits: charge redistribution in $\mathcal{C}_H$ affects variance in $\mathcal{C}_L$ and vice versa.
+\end{proof}
+
+\subsection{Unidirectional Coupling}
+
+\begin{corollary}[Asymmetric Coupling]
+\label{cor:asymmetric}
+The coupling is asymmetric: high-depth imbalances drive low-depth redistribution, but low-depth imbalances have minimal effect on high-depth dynamics.
+\end{corollary}
+
+\begin{proof}
+The coupling strength is proportional to hierarchical depth. High-depth circuits ($D_H \approx 1$) have large variance:
+\begin{equation}
+\sigma^2_H \propto D_H \approx 1
+\end{equation}
+
+Low-depth circuits ($D_L < 0.5$) have small variance:
+\begin{equation}
+\sigma^2_L \propto D_L < 0.5
+\end{equation}
+
+The covariance term $2 \text{Cov}(\rho_H, \rho_L)$ is dominated by $\sigma^2_H$ when $\sigma^2_H \gg \sigma^2_L$.
+
+Therefore, variance minimization primarily responds to imbalances in $\mathcal{C}_H$, driving redistribution to $\mathcal{C}_L$. Imbalances in $\mathcal{C}_L$ have minimal effect on total variance and thus minimal effect on $\mathcal{C}_H$ dynamics.
+\end{proof}
+
+\subsection{Timescale Separation}
+
+\begin{theorem}[Timescale Hierarchy]
+\label{thm:timescale_hierarchy}
+High-depth and low-depth circuits operate on different timescales:
+\begin{equation}
+\tau_H \ll \tau_L
+\end{equation}
+where $\tau_H$ is the internal dynamics timescale of $\mathcal{C}_H$ and $\tau_L$ is the response timescale of $\mathcal{C}_L$.
+\end{theorem}
+
+\begin{proof}
+The internal dynamics timescale is:
+\begin{equation}
+\tau_H = \frac{L_H^2}{\sigma_H / \epsilon_H}
+\end{equation}
+
+The coupling timescale is:
+\begin{equation}
+\tau_{HL} = \frac{L_{HL}^2}{\sigma_{HL} / \epsilon_{HL}}
+\end{equation}
+
+The external response timescale is:
+\begin{equation}
+\tau_L = \frac{L_L^2}{\sigma_L / \epsilon_L}
+\end{equation}
+
+For typical coupled circuits:
+\begin{itemize}
+\item High-depth circuits have small length scales $L_H \sim 10^{-4}$ m and high conductivity $\sigma_H \sim 10^{-1}$ S/m, giving $\tau_H \sim 10^{-12}$ s (picosecond)
+\item Low-depth circuits have large length scales $L_L \sim 10^{-3}$ m and low conductivity $\sigma_L \sim 10^{-3}$ S/m, giving $\tau_L \sim 10^{-9}$ s (nanosecond)
+\end{itemize}
+
+Therefore $\tau_H \ll \tau_L$, establishing timescale separation.
+
+This separation enables adiabatic approximation: $\mathcal{C}_H$ dynamics occur on fast timescale, creating quasi-static charge imbalances that drive slow $\mathcal{C}_L$ response.
+\end{proof}
+
+\subsection{Phase Coherence in Coupled Circuits}
+
+\begin{definition}[Phase Coherence]
+\label{def:phase_coherence}
+The phase coherence between coupled circuits is:
+\begin{equation}
+R_{HL} = \left| \langle e^{i(\phi_H - \phi_L)} \rangle \right|
+\end{equation}
+where $\phi_H$ and $\phi_L$ are the phases of oscillations in $\mathcal{C}_H$ and $\mathcal{C}_L$.
+\end{definition}
+
+\begin{theorem}[Coupling Maintains Coherence]
+\label{thm:coupling_coherence}
+Charge redistribution coupling maintains phase coherence $R_{HL} > 0.8$ when coupling strength exceeds thermal fluctuations:
+\begin{equation}
+\sigma_{HL} |\nabla \phi_{HL}| > k_B T / L_{HL}
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Phase coherence is maintained when the coupling energy exceeds thermal energy:
+\begin{equation}
+E_{\text{coupling}} = \int \sigma_{HL} |\nabla \phi_{HL}|^2 d^3r > k_B T
+\end{equation}
+
+For characteristic length $L_{HL}$ and potential difference $\Delta \phi_{HL}$:
+\begin{equation}
+E_{\text{coupling}} \sim \sigma_{HL} \frac{(\Delta \phi_{HL})^2}{L_{HL}^2} \cdot L_{HL}^3 = \sigma_{HL} (\Delta \phi_{HL})^2 L_{HL}
+\end{equation}
+
+The condition $E_{\text{coupling}} > k_B T$ gives:
+\begin{equation}
+\sigma_{HL} |\nabla \phi_{HL}| > \frac{k_B T}{L_{HL}}
+\end{equation}
+
+When this condition is satisfied, coupling energy dominates thermal fluctuations, maintaining phase coherence $R_{HL} > 0.8$.
+\end{proof}
+
+\subsection{Experimental Signatures}
+
+Coupled high-depth/low-depth circuits exhibit characteristic signatures:
+
+\begin{enumerate}
+\item \textbf{Timescale separation:} Fast oscillations ($\sim$ ps) in high-depth circuit drive slow response ($\sim$ ns) in low-depth circuit.
+
+\item \textbf{Unidirectional coupling:} Perturbations in $\mathcal{C}_H$ strongly affect $\mathcal{C}_L$, but perturbations in $\mathcal{C}_L$ weakly affect $\mathcal{C}_H$.
+
+\item \textbf{Phase coherence:} Oscillations in $\mathcal{C}_H$ and $\mathcal{C}_L$ maintain phase coherence $R_{HL} > 0.8$ despite timescale separation.
+
+\item \textbf{Variance distribution:} Most variance resides in $\mathcal{C}_H$ ($\sigma^2_H \gg \sigma^2_L$), with $\mathcal{C}_L$ serving as variance sink.
+\end{enumerate}

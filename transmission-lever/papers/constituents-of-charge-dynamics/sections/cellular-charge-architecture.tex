@@ -1,0 +1,524 @@
+\section{Charge Redistribution and Cellular Architecture}
+\label{sec:cellular-architecture}
+
+%=============================================================================
+\subsection{Membrane Deformation and Microreactor Arrays}
+\label{subsec:membrane-reactors}
+
+The cell membrane is not a passive boundary. It actively deforms to create high-local-concentration ``microreactors''—confined geometries where substrates and enzymes are concentrated and locked in place.
+
+\begin{principle}[Membrane as Reactor-Generating Structure]
+\label{prin:membrane-reactors}
+The lipid bilayer's plasticity enables formation of:
+\begin{itemize}[noitemsep]
+\item \textbf{Membrane invaginations} (in muscle: T-tubules, specialization factor $\sim 100\times$ surface area increase)
+\item \textbf{Membrane projections} (synaptic spines, vesicular buds)
+\item \textbf{Lipid raft clustering} (nanoscale domains where signaling proteins concentrate)
+\end{itemize}
+
+Each microreactor confines material at high local concentration. The membrane acts as both a boundary (preventing dilution into bulk cytoplasm) and an information-processing surface (enzymes and channels embedded in the membrane sense and respond to reactor state).
+\end{principle}
+
+\begin{definition}[Microreactor]
+\label{def:microreactor}
+A microreactor is a membrane-bounded region where:
+\begin{enumerate}[label=(\roman*), noitemsep]
+\item Substrate and enzyme concentrations are orders of magnitude higher than in bulk cytoplasm.
+\item The volume is small enough ($\sim 1$--$100$ femtoliters) that single-molecule events (enzyme-substrate binding, ion channel opening) have macroscopic effects.
+\item The microreactor is topologically closed (enclosed by membrane), but informationally open (reactive signals propagate to/from the bulk).
+\end{enumerate}
+\end{definition}
+
+\begin{example}[Muscle Dyad: Contractile Microreactor]
+\label{ex:muscle-dyad}
+In skeletal muscle, a T-tubule invagination brings the plasma membrane within $\sim 10$ nm of the sarcoplasmic reticulum (SR) membrane, forming a dyadic cleft. This microreactor is the locus of excitation-contraction coupling:
+\begin{itemize}[noitemsep]
+\item Voltage sensor (dihydropyridine receptor, DHPR) in the T-tubule membrane
+\item Calcium release channel (ryanodine receptor, RyR) in the SR membrane
+\item $\sim 10$ nm cleft containing $[\text{Ca}^{2+}]$ that can transiently reach $\sim 10$ $\mu$M (vs. $\sim 100$ nM in bulk cytoplasm)
+\item This high-concentration calcium then diffuses into bulk to trigger contraction
+\end{itemize}
+\end{example}
+
+%=============================================================================
+\subsection{Compartmentalization as Partition Refinement}
+\label{subsec:compartmentalization}
+
+Biological cells are not homogeneous charge-bearing systems. They are partitioned into discrete compartments (nucleus, mitochondria, endoplasmic reticulum, cytoplasm, plasma membrane) separated by lipid bilayers that selectively gate charge flow. Membranes actively deform to create microreactors.
+
+\begin{definition}[Cellular Compartments as Partition Elements]
+\label{def:cellular-partitions}
+A cell is a hierarchical system where:
+\begin{itemize}[noitemsep]
+\item Each membrane-bounded compartment (nucleus, mitochondrion, ER lumen, cytoplasm) corresponds to a partition element in the phase-space decomposition of Theorem~\ref{thm:partition-structure}.
+\item Membranes deform to create smaller microreactors within compartments, refining the partition hierarchy (partition-of-partitions).
+\item The boundaries between compartments (membranes) enforce energy barriers (potential differences) that gate charge transitions.
+\item Mobile charges (ions, charged metabolites, signaling molecules) flow between compartments through channels, transporters, and junctions.
+\end{itemize}
+\end{definition}
+
+\begin{theorem}[Three-Layer Charge Architecture]
+\label{thm:three-layer-architecture}
+Any bounded biological cell obeying Kirchhoff's laws and thermodynamic consistency admits a minimal three-layer charge structure:
+
+\begin{enumerate}[label=(\Roman*), noitemsep]
+\item \textbf{Cytoplasmic Layer} ($\mathcal{C}_{\text{cyt}}$): The main reaction compartment, containing metabolites, enzymes, and the bulk of active charge circulation. Potential range: $\phi_{\text{cyt}} \in [\phi_{\min}, \phi_{\max}]$.
+
+\item \textbf{Membrane Layer} ($\mathcal{C}_{\text{mem}}$): The lipid bilayer and associated channels/transporters. Acts as a resistive barrier with capacitive properties. Potential gradient: $\Delta\phi_{\text{mem}} = \phi_{\text{in}} - \phi_{\text{out}}$ across the membrane (the \emph{membrane potential}).
+
+\item \textbf{External Layer} ($\mathcal{C}_{\text{ext}}$): The extracellular environment or intracellular organelle lumen, buffering the cytoplasm's charge changes. Potential range: $\phi_{\text{ext}} \approx \text{const}$ (clamped by bulk environmental charge).
+\end{enumerate}
+
+The total charge $Q_{\text{tot}}$ is conserved: $Q_{\text{cyt}} + Q_{\text{mem}} + Q_{\text{ext}} = Q_0$ (constant). Charge redistributes among the three layers via transmembrane currents.
+\end{theorem}
+
+\begin{proof}
+By Theorem~\ref{thm:partition-structure}, a bounded system partitions into M distinguishable categorical regions. In a cell with selective barriers (membranes), the coarsest stable partition has exactly three elements: inside the membrane (cyt), the membrane itself, and outside (ext). Finer partitions (e.g., separating nucleus, mitochondria) are sub-partitions of the cytoplasmic layer, because these compartments are coupled to the cytoplasm via nuclear pores and mitochondrial membranes.
+
+Charge conservation follows from KCL applied to the entire cell boundary: the rate of charge entering the cytoplasm equals the rate of charge in the membrane plus charge entering the external layer.
+
+The potential $\phi_{\text{ext}}$ is approximately constant because the extracellular volume (blood, tissue fluid, or bath) is much larger than the cell, providing infinite buffering capacity. More formally, $\frac{\dd \phi_{\text{ext}}}{\dd t} \propto I_{\text{in}}/C_{\text{ext}} \to 0$ as $C_{\text{ext}} \to \infty$. $\square$
+\end{proof}
+
+\begin{definition}[Transmembrane Conductance]
+\label{def:transmembrane-conductance}
+Charge flows from cytoplasm to external environment through transmembrane conductances:
+\begin{equation}
+  I_{\text{mem}} = G_{\text{mem}}(\phi_{\text{cyt}} - \phi_{\text{ext}} - E_{\text{rev}}),
+\end{equation}
+where:
+\begin{itemize}[noitemsep]
+\item $G_{\text{mem}}$ is the total membrane conductance (sum of all channel and transporter conductances).
+\item $E_{\text{rev}}$ is the reversal potential, the voltage at which net current is zero, determined by ion concentration gradients (Nernst equilibrium~\cite{NernstEquation1888}).
+\item The driving force is $V_{\text{m}} := \phi_{\text{cyt}} - \phi_{\text{ext}} - E_{\text{rev}}$ (the membrane potential minus the equilibrium potential).
+\end{itemize}
+\end{definition}
+
+\begin{proposition}[Membrane Potential Dynamics]
+\label{prop:membrane-potential}
+The time evolution of the membrane potential $V_{\text{m}}(t) := \phi_{\text{cyt}}(t) - \phi_{\text{ext}}$ is:
+\begin{equation}
+  C_{\text{mem}} \frac{\dd V_{\text{m}}}{\dd t} = I_{\text{in}} - I_{\text{mem}},
+\end{equation}
+where:
+\begin{itemize}[noitemsep]
+\item $C_{\text{mem}} \approx 1$ $\mu$F/cm$^2$ is the membrane capacitance (lipid bilayer ~80 Debye length, Debye~\cite{Debye1923,GouyChapman1910}).
+\item $I_{\text{in}}$ is the inbound cytoplasmic current (metabolic and enzymatic sources).
+\item $I_{\text{mem}}$ is the outbound transmembrane current (leakage and active transport).
+\end{itemize}
+\end{proposition}
+
+%=============================================================================
+\subsection{Intracellular Charge Circulation and Action-Cells}
+\label{subsec:intracellular-circulation}
+
+Within the cytoplasm, charge circulates among metabolic pathways, signaling nodes, and structural elements. These circulation patterns generate distinct \emph{action-cells}: regions of state space where a specific cellular function (contraction, secretion, division) is executable.
+
+\begin{definition}[Action-Cell in Cellular State Space]
+\label{def:cellular-action-cell}
+An \emph{action-cell} is a connected region $\mathcal{A} \subset \mathcal{C}_{\text{cyt}}$ of state space such that:
+\begin{enumerate}[label=(\roman*), noitemsep]
+\item All states in $\mathcal{A}$ have identical (or asymptotically equivalent) metabolic signatures: ATP, GTP, calcium, pH, redox state are within canonical ranges.
+\item Trajectories starting inside $\mathcal{A}$ remain inside for biologically relevant timescales (seconds to minutes), implementing stable action.
+\item The action-cell is reachable from initial conditions via sufficiently constrained cytoplasmic charge flows (Theorem~\ref{thm:sufficiency}, later).
+\end{enumerate}
+\end{definition}
+
+\begin{example}[Action-Cells in Muscle Cells]
+\label{ex:muscle-action-cells}
+A skeletal muscle fiber contains action-cells for:
+\begin{itemize}[noitemsep]
+\item \textbf{Contraction}: $\mathcal{A}_{\text{contract}} = \{[\text{Ca}^{2+}] > 100\text{ nM}, [\text{ATP}]>2\text{ mM}, [\text{Pi}]<5\text{ mM}\}$. This region of state space permits myosin-actin binding and power-stroke execution.
+\item \textbf{Relaxation}: $\mathcal{A}_{\text{relax}} = \{[\text{Ca}^{2+}] < 100\text{ nM}, [\text{ATP}]>1\text{ mM}, \text{SERCA active}\}$. Calcium is sequestered into the sarcoplasmic reticulum, myosin detaches.
+\item \textbf{Recovery}: $\mathcal{A}_{\text{recover}} = \{\text{ATP flux}>0, \text{glycolysis or oxidative phosphorylation active}\}$. Energy is replenished for subsequent contractions.
+\end{itemize}
+\end{example}
+
+\begin{theorem}[Navigation Among Action-Cells via Charge Routing]
+\label{thm:action-cell-routing}
+Consider a cytoplasm with $K$ action-cells $\mathcal{A}_1, \ldots, \mathcal{A}_K$ (e.g., contraction, relaxation, secretion). Transitions between action-cells are mediated by changes in the direction and magnitude of charge circulation (metabolic routing). Specifically:
+
+A pathway from $\mathcal{A}_i$ to $\mathcal{A}_j$ exists if and only if there is a sequence of enzymatic up-regulations and down-regulations (changes in conductances $G_e$) that continuously deforms the charge-circulation pattern from $i$'s steady state to $j$'s steady state while maintaining:
+\begin{enumerate}[label=(\roman*), noitemsep]
+\item Kirchhoff Current Law at all nodes (mass conservation).
+\item Thermodynamic KVL consistency (no energy-generating cycles).
+\item Bounded energy dissipation (the cell remains viable).
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+By continuity of the steady-state solution to the circuit equations (Theorem 2.1 in reference~\cite{BohachevskySahni1974}), a continuous path in parameter space (the conductances) generates a continuous path in state space. As long as KCL and KVL are satisfied, the trajectory connecting the two states is feasible. The viability constraint follows from the bounded phase space assumption: the state space is compact, so any continuous deformation stays bounded. $\square$
+\end{proof}
+
+%=============================================================================
+\subsection{The Neuromuscular Graph: Receiver-Action Pairing}
+\label{subsec:neuromuscular-graph}
+
+Muscle contraction is controlled by motor neurons. The connection between motor neuron (sender) and muscle fiber (receiver/actor) is formalized as a directed graph.
+
+\begin{definition}[Neuromuscular Graph]
+\label{def:neuromuscular-graph}
+The neuromuscular system is a bipartite directed graph $\mathcal{G}_{\text{NM}} = (N \cup M, E)$ where:
+\begin{itemize}[noitemsep]
+\item $N$ is the set of motor neuron cell bodies (or motor nuclei).
+\item $M$ is the set of muscle fibers.
+\item $E \subseteq N \times M$ is the set of directed edges, representing synaptic connections (neuromuscular junctions).
+\item Each edge $(n,m) \in E$ represents one neuron $n$ innervating one muscle $m$ (or one neuron innervating multiple muscle fibers via terminal branches).
+\end{itemize}
+\end{definition}
+
+\begin{definition}[Motor Unit]
+\label{def:motor-unit}
+A \emph{motor unit} is a single motor neuron together with all muscle fibers it innervates:
+\begin{equation}
+  \text{MU}_i := (n_i, \{m_j : (n_i, m_j) \in E\}).
+\end{equation}
+\end{definition}
+
+\begin{definition}[Neuromuscular Conductance and Transmission]
+\label{def:nm-conductance}
+At each neuromuscular junction (NMJ), the motor neuron axon terminal forms a synapse on the muscle fiber membrane. The NMJ is characterized by:
+\begin{itemize}[noitemsep]
+\item \textbf{Presynaptic conductance}: The axon terminal's conductance to the synaptic cleft: $G_{\text{pre}} = \sum_k g_k$, where $k$ indexes open acetylcholine (ACh) release channels. Each action potential in the motor neuron opens channels, releasing ACh quanta.
+
+\item \textbf{Synaptic cleft}: A narrow extracellular space ($\sim 50$ nm) where ACh concentration rapidly rises after release.
+
+\item \textbf{Postsynaptic conductance}: The muscle fiber's conductance to ACh. Acetylcholine receptors (AChRs) at the motor endplate open when ACh binds:
+\begin{equation}
+  I_{\text{AChR}} = G_{\text{AChR}}([\text{ACh}]) \cdot (V_{\text{m}} - E_{\text{AChR}}),
+\end{equation}
+where $E_{\text{AChR}} \approx 0$ mV (reversal potential of the non-selective cation channel).
+
+\item \textbf{Transmission fidelity}: The probability that a presynaptic action potential reliably evokes a postsynaptic response. At the NMJ, this is exceptionally high (>99\%), owing to safety factor: each neuron releases $\sim 100$ ACh quanta, but only $\sim 1$-2 are needed to reach threshold~\cite{KatzFussian1957,DelcastilloKatz1954}.
+\end{itemize}
+\end{definition}
+
+\begin{theorem}[Motor Neuron Command as Categorical Signal on the Neuromuscular Graph]
+\label{thm:mn-command}
+A motor neuron encodes a command signal as a temporal sequence of action potentials (spikes). Each spike is a categorical transition:
+\begin{equation}
+  \text{Spike}_i: V_{\text{m,neuron}}(t) \in [-70\text{ mV}] \to V_{\text{m,neuron}}(t) \in [+30\text{ mV}],
+\end{equation}
+a discrete jump from resting to peak potential (the spike). This categorical transition is transmitted across the NMJ via the charge-mediated synaptic current:
+\begin{equation}
+  \text{Action Potential (neuron)} \to \text{ACh Release} \to \text{AChR Opening} \to \text{Depolarization (muscle)} \to \text{Calcium Release} \to \text{Action-Cell}_{\text{contract}}.
+\end{equation}
+
+The muscle fiber enters the contraction action-cell $\mathcal{A}_{\text{contract}}$ if the postsynaptic depolarization (EPSC: excitatory postsynaptic current) exceeds the threshold for voltage-gated calcium-channel opening.
+\end{theorem}
+
+\begin{proof}
+By Definition~\ref{def:categorical-signal} (categorical signals are discrete jumps in partition elements), the spike is a transition between the resting partition (hyperpolarized) and the active partition (depolarized). This is transmitted across the synapse by ACh-mediated charge flow through AChRs. The muscle fiber's action potential propagates along the fiber membrane (T-tubule system) to trigger calcium release from the sarcoplasmic reticulum (SR). Once $[\text{Ca}^{2+}]_{\text{cytoplasm}} > 100$ nM, the fiber is in $\mathcal{A}_{\text{contract}}$ and myosin-actin interactions proceed. See Huxley~\cite{HuxleyRodriguez1955} for detailed mechanism. $\square$
+\end{proof}
+
+%=============================================================================
+\subsection{Hierarchical Charge Circulation in Motor Control}
+\label{subsec:hierarchical-circulation}
+
+Motor control involves multiple nested loops of charge circulation, from the spinal cord through the motor neuron to the muscle.
+
+\begin{definition}[Multi-Level Control Hierarchy]
+\label{def:control-hierarchy}
+Motor control is organized in nested loops:
+
+\begin{enumerate}[label=(\Roman*), noitemsep]
+
+\item \textbf{Spinal Level}: Interneurons (INs) in the spinal cord integrate sensory feedback (muscle stretch, tension, proprioception) and descending commands from the brain. They form circuits with motor neurons via monosynaptic and polysynaptic pathways.
+
+\item \textbf{Motor Neuron Level}: Motor neurons integrate inputs from INs and descending pathways. Their firing rate encodes a continuous command signal (recruitment and rate coding).
+
+\item \textbf{Neuromuscular Level}: Each motor neuron drives a motor unit. The muscle fiber's contraction force scales with the number of motor units recruited and their firing rates.
+
+\item \textbf{Muscle Level}: Individual muscle fibers receive the motor neuron's command and generate force via myosin-actin interaction in the contraction action-cell $\mathcal{A}_{\text{contract}}$.
+
+\item \textbf{Proprioceptive Loop}: Muscle spindles and Golgi tendon organs sense muscle length and tension, sending feedback to spinal INs and motor neurons. This closes the loop.
+
+\end{enumerate}
+\end{definition}
+
+\begin{theorem}[Hierarchical Sufficiency: Multiple Pathways Converge to Action]
+\label{thm:hierarchical-sufficiency}
+Despite the complexity of the motor control hierarchy, all pathways (monosynaptic reflex, polysynaptic circuitry, descending corticomotor commands, cerebellar modulation) converge to a single outcome: motor neuron activation and muscle contraction.
+
+This is true even when the internal pathways differ dramatically:
+\begin{itemize}[noitemsep]
+\item Spinal reflex: sensory input $\to$ IN $\to$ motor neuron $\to$ muscle (2 synapses).
+\item Corticomotor pathway: cortex $\to$ brainstem $\to$ spinal IN $\to$ motor neuron $\to$ muscle (multiple synapses, modulatable).
+\end{itemize}
+
+Both pathways reach the same behavioral output (muscle contraction) despite radically different trajectory structures, because they all satisfy the sufficiency principle: as long as the motor neuron's firing rate remains within the recruitment threshold range (roughly 5-100 Hz for most motor units), the muscle contracts with graded force.
+\end{theorem}
+
+\begin{proof}
+This is a special case of Theorem~\ref{thm:sufficiency} (to be stated in Section~\ref{sec:sufficiency}, concerning the global S-functional). The key insight is that all pathways ultimately control a single variable: the motor neuron's membrane potential $V_{\text{m,MN}}$. Multiple inputs (sensory, cortical, cerebellar) sum at the neuron's soma via spatial and temporal summation. If the sum drives $V_{\text{m,MN}}$ above threshold, the neuron fires. The internal pathway (which synaptic inputs contributed) is irrelevant to the output.
+
+Formally, the motor neuron implements a threshold nonlinearity: $\text{Output} = \Theta(V_{\text{m,MN}} - V_{\text{thresh}})$, where $\Theta$ is the Heaviside step function. As long as the sufficiency condition (Theorem~\ref{thm:sufficiency}) is met (the integrated input exceeds the threshold), the output is invariant to the detailed trajectory of $V_{\text{m,MN}}$ (whether it rose rapidly or slowly, monotonically or with oscillations). $\square$
+\end{proof}
+
+\begin{corollary}[Redundancy in Motor Control]
+\label{cor:motor-redundancy}
+The motor system exhibits redundancy at multiple levels:
+\begin{enumerate}[label=(\roman*), noitemsep]
+\item Multiple spinal pathways converge to the same motor neuron.
+\item Multiple motor neurons can be recruited to move the same joint.
+\item Multiple joints can be coordinated to achieve the same hand/foot endpoint position (the degrees-of-freedom problem~\cite{Bernstein1967}).
+\end{enumerate}
+All this redundancy is consistent with sufficiency: many internal solutions exist, but they all converge to the same behavioral outcome.
+\end{corollary}
+
+%=============================================================================
+\subsection{Charge Distribution in Resting and Active States}
+\label{subsec:charge-states}
+
+We now quantify how charge redistributes between the three cellular layers (cytoplasm, membrane, external) during rest and during action.
+
+\begin{definition}[Resting Steady-State Distribution]
+\label{def:resting-state}
+At rest (no action potential), the cell is in a stable partition characterized by:
+\begin{equation}
+\begin{aligned}
+  V_{\text{m}} &\approx -70 \text{ mV (resting potential)},\\
+  [\text{K}^+]_{\text{cyt}} &\approx 140 \text{ mM (high)},\\
+  [\text{K}^+]_{\text{ext}} &\approx 5 \text{ mM (low)},\\
+  [\text{Na}^+]_{\text{cyt}} &\approx 10 \text{ mM (low)},\\
+  [\text{Na}^+]_{\text{ext}} &\approx 145 \text{ mM (high)},\\
+  I_{\text{Na-K-ATPase}} &\approx I_{\text{passive leak}}.
+\end{aligned}
+\end{equation}
+
+The Na-K-ATPase (sodium-potassium pump) actively extrudes Na$^+$ and imports K$^+$, consuming ATP at a rate $\sim 0.5$ ATP per cycle. Passive leak currents (through channels and exchangers) allow Na$^+$ influx and K$^+$ efflux. At steady-state, these balance.
+\end{definition}
+
+\begin{definition}[Action Potential Distribution]
+\label{def:action-potential-state}
+During an action potential (a spike in a neuron or excitation in a muscle), charge rapidly redistributes:
+\begin{equation}
+\begin{aligned}
+  V_{\text{m}} &: -70 \text{ mV} \to +30 \text{ mV} \quad (\text{depolarization phase}),\\
+  I_{\text{Na}} &: \text{minimal} \to \text{peak (inward)},\\
+  I_{\text{K}} &: \text{small} \to \text{outward},\\
+  [\text{Na}^+]_{\text{cyt}} &: \text{slight increase},\\
+  [\text{K}^+]_{\text{cyt}} &: \text{slight decrease}.
+\end{aligned}
+\end{equation}
+
+The sodium influx is massive but brief ($\sim 1$ ms). Voltage-gated sodium channels open rapidly (activation) and then inactivate, stopping the sodium current. Voltage-gated potassium channels open more slowly, allowing potassium efflux to repolarize the membrane.
+\end{definition}
+
+\begin{theorem}[Charge Movement During Action Potential]
+\label{thm:charge-movement}
+The net charge that flows across the membrane during a single action potential is:
+\begin{equation}
+  \Delta Q = \int_0^{T_{\text{spike}}} I_{\text{net}}(t) \, \dd t,
+\end{equation}
+where $T_{\text{spike}} \approx 2$ ms is the duration of the spike (in neurons; longer in muscle, $\sim 5$ ms). The peak inward sodium current is $I_{\text{Na,peak}} \sim 1$ nanoamp per cell, and the peak outward potassium current is $I_{\text{K,peak}} \sim 1$ nanoamp. Numerically, $\Delta Q \sim 1$--$2$ picocoulombs per spike.
+
+For a neuron with $\sim 100$ billion synapses, the cumulative charge redistribution across all synapses can be orders of magnitude larger, consuming significant ATP for restoration via the Na-K-ATPase.
+\end{theorem}
+
+\begin{proof}
+The integral of current over time is charge moved. Peak currents and durations are well-established from voltage-clamp electrophysiology~\cite{HodgkinHuxley1952}. The ATP cost is roughly 1 ATP per 3 Na$^+$ ions extruded (the stoichiometry of the Na-K-ATPase~\cite{YvesMartin1987}), and each spike admits $\sim 10^{6}$ Na$^+$ ions, so $\sim 3 \times 10^{5}$ ATP molecules are consumed to restore the ion gradient after a spike. Over millions of spikes per second in active neural tissue, this dominates the brain's energy budget (~20\% of whole-body metabolic rate~\cite{SalmonAnderson2013}). $\square$
+\end{proof}
+
+%=============================================================================
+\subsection{Oxygen as the Temporal Timekeeper}
+\label{subsec:oxygen-timekeeper}
+
+The fundamental constraint on cell function is not charge availability, but \emph{oxygen availability}. Oxygen controls the rate at which the cell can operate.
+
+\begin{principle}[Oxygen Diffusion as the Master Clock]
+\label{prin:oxygen-clock}
+Intracellular oxygen diffuses from blood capillaries through tissue and into the cell, creating spatial gradients. The oxygen concentration $[\text{O}_2](x,t)$ at location $x$ and time $t$ determines:
+\begin{enumerate}[label=(\roman*), noitemsep]
+\item The rate of oxidative phosphorylation in mitochondria (the rate of ATP production)
+\item The rates of oxygen-dependent enzymes (cytochrome oxidase, peroxidases, prolyl hydroxylases)
+\item The redox state (NADH/NAD$^+$, FADH$_2$/FAD$^+$ ratios), which gates metabolic pathway direction
+\end{enumerate}
+
+Enzymes downstream of a low-$[\text{O}_2]$ region operate slowly; those downstream of high-$[\text{O}_2]$ operate fast. Oxygen diffusion is the global timekeeper.
+\end{principle}
+
+\begin{theorem}[Hierarchical Enzyme Kinetics from Oxygen Gradients]
+\label{thm:oxygen-hierarchy}
+Consider a region of muscle with an oxygen gradient flowing from the capillary inward. Enzymes in the pathway from ATP synthesis to contractile machinery operate at rates determined by their local oxygen supply:
+
+\begin{equation}
+  v_i = V_{\max,i} \cdot \frac{[\text{O}_2]_i}{K_{m,\text{O}_2,i} + [\text{O}_2]_i}
+\end{equation}
+
+where $v_i$ is the reaction rate at location $i$, $[\text{O}_2]_i$ is the local oxygen concentration, and $K_{m,\text{O}_2,i}$ is the oxygen Michaelis constant for enzyme $i$.
+
+This creates a temporal hierarchy:
+\begin{itemize}[noitemsep]
+\item \textbf{Fast timescale} (near capillary, $[\text{O}_2]\sim 100$ $\mu$M): Oxidative phosphorylation, ATP synthesis at maximal rate. $v \sim V_{\max}$.
+\item \textbf{Medium timescale} (intermediate, $[\text{O}_2]\sim 1$--$10$ $\mu$M): ATP-consuming reactions (contractile machinery, ion pumping). $v \sim V_{\max}/2$.
+\item \textbf{Slow timescale} (deep in fiber, $[\text{O}_2]\sim 0.1$ $\mu$M): Anaerobic pathways, lactate accumulation. $v \sim V_{\max}/10$ or anoxic rate.
+\end{itemize}
+
+The result is that the cell does not operate uniformly; it is stratified by oxygen. Deep regions are slow and hypoxic; near-surface regions are fast and oxidative. The cell is not one reactor, but many reactors at different temporal rates.
+\end{theorem}
+
+\begin{proof}
+Michaelis-Menten kinetics with oxygen as a substrate. The oxygen concentration varies spatially due to diffusion: $\partial [\text{O}_2]/\partial t = D_{\text{O}_2} \nabla^2 [\text{O}_2] - \sum_i k_{i,\text{use}} v_i[\text{O}_2]$, where the sum is over oxygen-consuming reactions. At steady-state (or quasi-steady-state over timescales much longer than diffusion), this creates a concentration profile $[\text{O}_2](x)$ that is highest at the capillary boundary and drops exponentially into the tissue. Enzymes sense this gradient and operate according to their Michaelis constant~\cite{CromerAnderson2006,TuttleWeinberg2017}. $\square$
+\end{proof}
+
+\begin{corollary}[Oxygen Mixing and Membrane Locking]
+\label{cor:oxygen-membrane}
+Oxygen diffusion mixes metabolic substrates and products throughout the cell (or compartment). The membrane's microreactors then \emph{lock} the mixed materials in place, confining them to a small volume where reactions proceed at oxygen-determined rates. This combination—mixing by diffusion, confinement by membrane—creates the temporal hierarchy.
+
+Without membrane confinement, oxygen gradients would blur, and the cell would operate at uniform (averaged) rates. With it, the cell can simultaneously maintain multiple different metabolic states at different depths, enabling both aerobic and anaerobic function.
+\end{corollary>
+
+%=============================================================================
+\subsection{Transmembrane Transport as Relay Networks}
+\label{subsec:relay-networks}
+
+Charge flow across membranes does not occur via simple particle transport. Instead, it occurs via \emph{relay networks}—cascades of charge displacements analogous to Newton's cradle.
+
+\begin{principle}[Newton's Cradle Model of Ion Transport]
+\label{prin:newtons-cradle}
+When an ion (e.g., H$^+$, Na$^+$, Ca$^{2+}$) enters an ion channel, it does not physically traverse the membrane. Instead:
+\begin{enumerate}[label=(\roman*), noitemsep]
+\item The ion enters and forms hydrogen bonds (or coordination bonds) with relay network molecules in the channel.
+\item The ion transfers its charge to the next particle in the relay chain.
+\item That particle propagates the charge to the next, and so on.
+\item The original ion may never have crossed the membrane; only its charge (categorical effect) crossed.
+\end{enumerate}
+
+This is analogous to Newton's cradle: ball 1 swings in, hits the stationary balls at rest, and ball 5 swings out. Ball 1 does not physically traverse the barrier; the momentum (or charge) does.
+\end{principle}
+
+\begin{theorem}[Incomplete Reuptake as Evidence of Relay Mechanism]
+\label{thm:reuptake-incomplete}
+At synapses, neurotransmitter (NT) is released into the synaptic cleft and then partially reuptaken by transporters. Experimentally, reuptake is incomplete: typically 80-90\% of NT is recovered, with 10-20\% remaining or degraded.
+
+If NT transport were simple particle flux, reuptake efficiency should approach 100\% given sufficient time (mass action, equilibrium). The fact that it is incomplete is diagnostic of a relay mechanism:
+
+\begin{enumerate}[label=(\roman*), noitemsep]
+\item NT enters the reuptake transporter channel and joins the relay cascade.
+\item The relay can break at any step: NT falls out of the hydrogen-bonded chain and diffuses away.
+\item Enzymatic degradation (e.g., acetylcholinesterase for ACh) captures escaped NT.
+\item The remaining NT concentration in the cleft is the \emph{steady-state result of relay breakage}.
+\end{enumerate}
+
+This remaining NT serves three functions:
+\begin{enumerate}[label=(\arabic*), noitemsep]
+\item \textbf{Primer for the next relay}: Residual NT provides pre-formed bonds for the next synaptic event, reducing energetic cost.
+\item \textbf{Classification memory}: The residual concentration encodes "what just happened," creating synaptic history.
+\item \textbf{Reality anchor}: The residual constrains the neuromuscular state, preventing impossible action sequences.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+The relay mechanism predicts that reuptake cannot be 100\% complete because the relay can break. A broken relay releases NT back into the cleft or allows it to fall into the synaptic matrix where degradative enzymes encounter it. Acetylcholinesterase, for example, is localized in the synaptic cleft and degrades escaped ACh at rates $\sim 50$ $\mu$s per molecule~\cite{Taylor1991}. The steady-state fraction of degraded/escaped NT is $f_{\text{escape}} = k_{\text{escape}}/k_{\text{reuptake}}$, which is typically 0.1--0.2 (i.e., 10-20\% escape/degrade). This directly follows from relay network kinetics: the probability of completing the relay increases with driving force (postsynaptic potential) but is never 1. $\square$
+\end{proof>
+
+%=============================================================================
+\subsection{Synaptic Residue as Constraint and Reality Anchor}
+\label{subsec:residue-anchor}
+
+The incomplete reuptake of neurotransmitter creates a synaptic residue. This residue is not a failure; it is the system's mechanism for grounding thought in embodied reality.
+
+\begin{definition}[Synaptic Residue]
+\label{def:synaptic-residue}
+The synaptic residue is the neurotransmitter concentration remaining in the synaptic cleft after reuptake is nominally complete:
+\begin{equation}
+  [\text{NT}]_{\text{residue}} = [\text{NT}]_{\text{released}} - [\text{NT}]_{\text{reuptaken}} \approx 0.1 \text{--} 0.2 \times [\text{NT}]_{\text{released}}.
+\end{equation}
+\end{definition}
+
+\begin{theorem}[Residue Prevents Impossible Action Sequences]
+\label{thm:residue-prevention}
+The prefrontal cortex can conceive of any action: flying, teleporting, breathing underwater. Without constraint, the motor system could attempt to execute any thought.
+
+However, the neuromuscular system is governed by \emph{synaptic state history}. Each synapse that has fired recently contains residual NT. This residue constrains what can fire next:
+
+\begin{enumerate}[label=(\roman*), noitemsep]
+\item A synapse with high residue cannot fire again until the residue clears (reuptake and/or degradation consume time).
+\item The minimum inter-spike interval is determined by the relay cascade's dissociation-reassociation kinetics, not by central command.
+\item Therefore, motor commands cannot be executed faster than the synaptic relay system allows.
+\end{enumerate}
+
+This creates a mismatch: the cortex thinks "fly," but the neuromuscular state says "you can only fire at 20 Hz (max), which means you can only recruit $N$ motor units, which means you generate force $F$." The residue is the system saying: *here is what you can actually do, given your current state*.
+\end{theorem}
+
+\begin{proof}
+The inter-spike interval of a synapse is determined by $T_{\text{min}} \sim \tau_{\text{relay}} = 1/k_{\text{off}}$, where $k_{\text{off}}$ is the dissociation rate of NT from the relay network ($\sim 10$--$100$ ms$^{-1}$ for different NT types). This is a physical timescale, not a central command. If the cortex commands firing at 100 Hz but the relay clears at 50 Hz, the synapse will fail to follow (synaptic depression, release probability collapse). The neuromuscular state enforces a frequency ceiling.
+
+Residue also creates a graded coupling: the probability of next firing depends on current residue:
+\begin{equation}
+  P(\text{next spike}|[\text{NT}]_{\text{residue}}) = \Phi([\text{NT}]_{\text{residue}} - \Theta_{\text{depletion}}),
+\end{equation}
+where $\Phi$ is a sigmoid and $\Theta_{\text{depletion}}$ is the threshold at which the synapse is considered "depleted." High residue facilitates the next spike (short-term facilitation); complete depletion blocks firing (short-term depression). $\square$
+\end{proof}
+
+\begin{principle}[Consciousness as Reality Alignment]
+\label{prin:consciousness-reality}
+The system transitions from dreaming (thoughts unconstrained by synaptic state) to waking (thoughts constrained by synaptic residue and feedback) when the peripheral system begins to enforce state-history constraints.
+
+In dreams: motor commands fire in impossible sequences, free from synaptic state constraints. The system has access to proprioceptive/vestibular feedback that it interprets (falsely) as matching cortical commands.
+
+In waking: each action leaves a synaptic residue that constrains the next action. The system must verify (via sensory feedback) that actions actually produced expected outcomes. If reality contradicts expectation, the system corrects.
+
+The defining feature of consciousness is **alignment between thought and verifiable outcome**, enforced by synaptic state history and sensory feedback loops.
+\end{principle}
+
+%=============================================================================
+\subsection{Metabolic Constraints on Charge Circulation}
+\label{subsec:metabolic-constraints}
+
+Charge circulation is not free; it is constrained by the availability of ATP and the capacity of oxidative metabolism, which is ultimately constrained by oxygen diffusion.
+
+\begin{principle}[Oxygen-ATP-Charge Hierarchy]
+\label{prin:oxygen-atp-charge}
+The causal chain is:
+\begin{enumerate}[label=(\arabic*), noitemsep]
+\item Oxygen diffuses through tissue (spatial gradient, diffusion-limited).
+\item Oxygen drives ATP synthesis in mitochondria (fast regions, slow regions).
+\item ATP availability gates ion pump rates (Na-K-ATPase, Ca-ATPase).
+\item Ion pump rates determine how fast charge can be redistributed.
+\item Charge redistribution rate determines the frequency of action potentials and synaptic transmission.
+\item Synaptic transmission rate determines motor neuron firing rate and motor command bandwidth.
+\end{enumerate}
+
+The ultimate bottleneck is oxygen transport. Muscle fatigue, neural fatigue, and cognitive fatigue all trace to oxygen limitation in critical regions (muscle fiber interiors, active brain regions, synaptic terminals).
+\end{principle}
+
+\begin{example}[Energy Cost of Running]
+\label{ex:running-cost}
+A 70 kg human running at 4 m/s (9 min/mile pace) requires $\sim 60$ watts of metabolic power. Most of this goes to:
+\begin{itemize}[noitemsep]
+\item Muscle contraction force production: $\sim 20$ watts (mechanical work, force $\times$ velocity).
+\item ATP restoration in active muscle: $\sim 25$ watts (heat dissipation, ion pumping).
+\item Central nervous system and sensorimotor processing: $\sim 15$ watts.
+\end{itemize}
+
+The ATP restoration cost scales with the firing rate of motor neurons and the frequency of action potentials in muscle. Sustained high-frequency firing depletes ATP faster than oxidative metabolism can replenish it, causing fatigue.
+\end{example}
+
+%=============================================================================
+\subsection{Summary: Cellular Charge Architecture and Oxygen Governance}
+\label{subsec:cellular-summary}
+
+\begin{principle}[Oxygen-Driven Charge Hierarchies in Confined Microreactors]
+Charge circulation in a cell is governed by a hierarchical structure:
+
+\textbf{Spatial Layer} (Oxygen Gradients): Oxygen diffuses from blood capillaries, creating concentration gradients. Local $[\text{O}_2]$ determines the rates of oxidative metabolism and enzyme operation, establishing a temporal hierarchy: fast (near capillary), medium (intermediate), slow (deep in fiber).
+
+\textbf{Reactor Layer} (Membrane Confinement): Membranes deform to create microreactors where substrates and enzymes are concentrated and locked in place. Within each microreactor, material mixes and reacts at oxygen-determined rates. The cell is not a single reactor, but an array of coupled microreactors at different metabolic timescales.
+
+\textbf{Charge Layer} (Partition Navigation): Navigation to action-cells (functional states like contraction, secretion, division) requires routing charge among metabolic pathways and synapses. The partition structure (Section~\ref{sec:partition-landscape}) is refined by the microreactor hierarchy.
+
+\textbf{Motor Control Layer} (Residue-Constrained Commands): Motor commands from the brain are transmitted via the neuromuscular graph. However, each synapse leaves a residual NT concentration that constrains the next firing. The residue is the system's reality anchor: it prevents the motor system from executing impossible action sequences and ensures thoughts are grounded in neuromuscular state.
+
+\textbf{Feedback Layer} (Sensory Correction): Proprioceptive and sensory feedback loops verify that motor commands produced expected outcomes. Mismatches between expectation and reality trigger corrections.
+
+This multi-layer organization explains why:
+\begin{itemize}[noitemsep]
+\item Multiple spinal pathways converge to identical motor outputs (sufficiency).
+\item Muscle fatigue and neural fatigue are ultimately oxygen-limited phenomena.
+\item The brain can conceive of impossible actions, but the neuromuscular system constrains execution to physically feasible acts.
+\item Dreams differ from waking: without synaptic-residue constraints and sensory feedback, thoughts can attempt impossible sequences.
+\end{itemize}
+\end{principle}
+

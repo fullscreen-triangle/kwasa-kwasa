@@ -1,0 +1,236 @@
+{
+  "metadata": {
+    "timestamp": "2026-06-04T14:05:50.975239",
+    "total_experiments": 26,
+    "passed": 26,
+    "failed": 0,
+    "max_relative_error": 0.30974757238151923,
+    "machine_epsilon": 2.220446049250313e-16
+  },
+  "experiment_clusters": {
+    "three_curve_intersection": {
+      "experiments": [
+        {
+          "name": "perception_decay_to_categorical_baseline",
+          "predicted": 0.035673993347252395,
+          "measured": 0.035673993347252395,
+          "relative_error": 0.0,
+          "passed": true
+        },
+        {
+          "name": "thought_decay_to_committed_state",
+          "predicted": 0.006737946999085467,
+          "measured": 0.006737946999085467,
+          "relative_error": 0.0,
+          "passed": true
+        },
+        {
+          "name": "memory_trajectory_history_integral",
+          "predicted": 0.9375,
+          "measured": 0.9375,
+          "relative_error": 0.0,
+          "passed": true
+        },
+        {
+          "name": "intersection_point_requires_all_three",
+          "predicted": 1.0,
+          "measured": 1.0,
+          "relative_error": 0.0,
+          "passed": true
+        },
+        {
+          "name": "poincare_deviation_nonzero_in_trajectories",
+          "predicted": 0.002,
+          "measured": 0.0013805048552366517,
+          "relative_error": 0.30974757238151923,
+          "passed": true
+        }
+      ],
+      "passed": 5,
+      "failed": 0
+    },
+    "sufficiency_principle": {
+      "experiments": [
+        {
+          "name": "receiver_floor_positivity",
+          "predicted": 0.1,
+          "measured": 0.1,
+          "relative_error": 0.0,
+          "passed": true
+        },
+        {
+          "name": "cell_truth_indistinguishability",
+          "predicted": 0.0,
+          "measured": 0.0,
+          "relative_error": 0.0,
+          "passed": true
+        },
+        {
+          "name": "path_independent_convergence_to_cell",
+          "predicted": 1.0,
+          "measured": 1.0,
+          "relative_error": 0.0,
+          "passed": true
+        },
+        {
+          "name": "unbounded_internal_variation",
+          "predicted": 0.39,
+          "measured": 0.39,
+          "relative_error": 0.0,
+          "passed": true
+        }
+      ],
+      "passed": 4,
+      "failed": 0
+    },
+    "closure_requirement": {
+      "experiments": [
+        {
+          "name": "closed_loop_enables_stability",
+          "predicted": 1.0,
+          "measured": 1.0,
+          "relative_error": 0.0,
+          "passed": true
+        },
+        {
+          "name": "open_loop_topology_fails",
+          "predicted": 1.0,
+          "measured": 1.0,
+          "relative_error": 0.0,
+          "passed": true
+        },
+        {
+          "name": "hierarchical_closure_timescales",
+          "predicted": 1.0,
+          "measured": 1.0,
+          "relative_error": 0.0,
+          "passed": true
+        }
+      ],
+      "passed": 3,
+      "failed": 0
+    },
+    "operational_equivalence": {
+      "experiments": [
+        {
+          "name": "all_modalities_have_positive_floors",
+          "predicted": 0.1,
+          "measured": 0.1,
+          "relative_error": 0.0,
+          "passed": true
+        },
+        {
+          "name": "representational_invariance_across_encodings",
+          "predicted": 0.0,
+          "measured": 0.0,
+          "relative_error": 0.0,
+          "passed": true
+        },
+        {
+          "name": "modality_composition_law",
+          "predicted": 0.2698199999999873,
+          "measured": 0.26982,
+          "relative_error": 4.711308884426134e-14,
+          "passed": true
+        },
+        {
+          "name": "all_modalities_reach_action_cell",
+          "predicted": 1.0,
+          "measured": 1.0,
+          "relative_error": 0.0,
+          "passed": true
+        }
+      ],
+      "passed": 4,
+      "failed": 0
+    },
+    "sentiment_modulation": {
+      "experiments": [
+        {
+          "name": "sentiment_specializes_thought_trajectories",
+          "predicted": 0.16,
+          "measured": 0.16027043702544083,
+          "relative_error": 0.0016902314090051667,
+          "passed": true
+        },
+        {
+          "name": "emotion_field_shapes_variance_landscape",
+          "predicted": 1.0,
+          "measured": 1.0000000000000004,
+          "relative_error": 4.440892098500621e-16,
+          "passed": true
+        },
+        {
+          "name": "sentiment_alone_generates_thought_structure",
+          "predicted": 0.077,
+          "measured": 0.07737427764919573,
+          "relative_error": 0.0048607486908535886,
+          "passed": true
+        }
+      ],
+      "passed": 3,
+      "failed": 0
+    },
+    "incompleteness_principle": {
+      "experiments": [
+        {
+          "name": "perception_is_radically_incomplete",
+          "predicted": 0.99,
+          "measured": 0.99,
+          "relative_error": 0.0,
+          "passed": true
+        },
+        {
+          "name": "incomplete_components_converge_sufficiently",
+          "predicted": 0.09,
+          "measured": 0.09,
+          "relative_error": 0.0,
+          "passed": true
+        },
+        {
+          "name": "imagination_is_also_incomplete",
+          "predicted": 5e-06,
+          "measured": 5e-06,
+          "relative_error": 0.0,
+          "passed": true
+        },
+        {
+          "name": "multiple_incomplete_combinations_reach_sufficiency",
+          "predicted": 1.0,
+          "measured": 1.0,
+          "relative_error": 0.0,
+          "passed": true
+        }
+      ],
+      "passed": 4,
+      "failed": 0
+    },
+    "trajectory_history": {
+      "experiments": [
+        {
+          "name": "trajectory_history_validates_coherence",
+          "predicted": 1.0,
+          "measured": 1.0,
+          "relative_error": 0.0,
+          "passed": true
+        },
+        {
+          "name": "memory_absence_isolates_moments",
+          "predicted": 1.0,
+          "measured": 1.0,
+          "relative_error": 0.0,
+          "passed": true
+        },
+        {
+          "name": "trajectory_history_stores_geometry_not_content",
+          "predicted": 100.0,
+          "measured": 100.0,
+          "relative_error": 0.0,
+          "passed": true
+        }
+      ],
+      "passed": 3,
+      "failed": 0
+    }
+  }
+}

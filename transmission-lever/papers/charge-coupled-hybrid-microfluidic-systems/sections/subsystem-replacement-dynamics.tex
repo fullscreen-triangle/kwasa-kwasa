@@ -1,0 +1,340 @@
+\section{Subsystem Replacement and Identity Persistence}
+\label{sec:subsystem_replacement}
+
+We analyze charge distribution dynamics under sequential subsystem replacement, establishing that circuit identity is finite information that dissipates through replacement operations.
+
+\subsection{Identity as Information}
+
+\begin{definition}[Identity Information]
+\label{def:identity_info}
+The \emph{identity information} $I_{\text{id}}$ of a circuit $\mathcal{C}$ is the minimum information required to distinguish $\mathcal{C}$ from all other circuits in a reference class:
+\begin{equation}
+I_{\text{id}}(\mathcal{C}) = \min_{D} H(D(\mathcal{C}))
+\end{equation}
+where $D$ ranges over all distinguishing functions and $H$ is Shannon entropy.
+\end{definition}
+
+The identity information quantifies "how much information is needed to specify this particular circuit."
+
+\begin{theorem}[Identity Information is Finite]
+\label{thm:identity_finite}
+For any physical circuit $\mathcal{C}$ with bounded phase space volume $V_{\text{phase}} < \infty$:
+\begin{equation}
+I_{\text{id}}(\mathcal{C}) < \infty
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+A circuit occupies bounded region of phase space with volume $V_{\text{phase}}$. The circuit state is specified by charge distribution $\rho(\mathbf{r})$ and current distribution $\mathbf{J}(\mathbf{r})$ to precision $\delta$.
+
+The number of distinguishable states is:
+\begin{equation}
+N_{\text{states}} = \frac{V_{\text{phase}}}{\delta^{2d}}
+\end{equation}
+where $d$ is the number of spatial degrees of freedom.
+
+The identity information is at most:
+\begin{equation}
+I_{\text{id}}(\mathcal{C}) \leq \ln N_{\text{states}} = \ln\left(\frac{V_{\text{phase}}}{\delta^{2d}}\right) < \infty
+\end{equation}
+
+For finite $V_{\text{phase}}$ and finite precision $\delta > 0$, identity information is finite.
+\end{proof}
+
+\begin{definition}[Identity Entropy]
+\label{def:identity_entropy}
+The \emph{identity entropy} is the thermodynamic entropy associated with distinguishability:
+\begin{equation}
+S_{\text{id}} = \kB I_{\text{id}}
+\end{equation}
+This is the minimum entropy that must be dissipated to completely erase circuit identity.
+\end{definition}
+
+\subsection{Subsystem Replacement as Partition-Composition}
+
+\begin{definition}[Subsystem Replacement]
+\label{def:replacement}
+A \emph{subsystem replacement} operation on circuit $\mathcal{C}$ consists of two sequential operations:
+\begin{enumerate}
+\item \textbf{Partition (removal):} Remove subsystem $\mathcal{C}_{\text{old}}$ from $\mathcal{C}$:
+\begin{equation}
+\mathcal{C}' = \mathcal{C} \setminus \{\mathcal{C}_{\text{old}}\}
+\end{equation}
+
+\item \textbf{Composition (addition):} Add new subsystem $\mathcal{C}_{\text{new}}$ to $\mathcal{C}'$:
+\begin{equation}
+\mathcal{C}'' = \mathcal{C}' \cup \{\mathcal{C}_{\text{new}}\}
+\end{equation}
+\end{enumerate}
+
+The complete replacement is:
+\begin{equation}
+\mathcal{C} \xrightarrow{\text{remove } \mathcal{C}_{\text{old}}} \mathcal{C}' \xrightarrow{\text{add } \mathcal{C}_{\text{new}}} \mathcal{C}''
+\end{equation}
+\end{definition}
+
+\begin{theorem}[Replacement Generates Entropy]
+\label{thm:replacement_entropy}
+Each subsystem replacement generates entropy:
+\begin{equation}
+\Delta S_{\text{replacement}} = S_{\text{partition}} + S_{\text{composition}} > 0
+\end{equation}
+where $S_{\text{partition}}$ is entropy from removal and $S_{\text{composition}}$ is entropy from addition.
+\end{theorem}
+
+\begin{proof}
+\textbf{Partition entropy:} Removing subsystem $\mathcal{C}_{\text{old}}$ creates undetermined residue—information about the exact state of connections between $\mathcal{C}_{\text{old}}$ and the rest of $\mathcal{C}$ is lost:
+\begin{equation}
+S_{\text{partition}} = \kB \ln\left(\frac{W_{\text{before}}}{W_{\text{after}}}\right) + S_{\text{residue}}^{(\text{removal})}
+\end{equation}
+where $W$ is the number of accessible configurations.
+
+\textbf{Composition entropy:} Adding subsystem $\mathcal{C}_{\text{new}}$ generates entropy because $\mathcal{C}_{\text{new}} \neq \mathcal{C}_{\text{old}}$—the new subsystem has different charge distribution, requiring system reconfiguration:
+\begin{equation}
+S_{\text{composition}} = S_{\text{residue}}^{(\text{addition})}
+\end{equation}
+
+The total entropy is:
+\begin{equation}
+\Delta S_{\text{replacement}} = S_{\text{partition}} + S_{\text{composition}} > 0
+\end{equation}
+
+The inequality is strict because at least one operation (partition or composition) generates positive entropy.
+\end{proof}
+
+\subsection{Cumulative Identity Loss}
+
+\begin{theorem}[Cumulative Entropy from Sequential Replacements]
+\label{thm:cumulative}
+After $n$ sequential replacements, cumulative entropy is:
+\begin{equation}
+S_{\text{cumulative}}(n) = \sum_{i=1}^{n} \Delta S_i
+\end{equation}
+If all replacements are statistically similar:
+\begin{equation}
+S_{\text{cumulative}}(n) = n \cdot \langle \Delta S \rangle
+\end{equation}
+where $\langle \Delta S \rangle$ is average entropy per replacement.
+\end{theorem}
+
+\begin{proof}
+Each replacement $i$ generates entropy $\Delta S_i > 0$ (Theorem~\ref{thm:replacement_entropy}). These contributions are additive because each replacement is independent thermodynamic process.
+
+The cumulative entropy after $n$ replacements is:
+\begin{equation}
+S_{\text{cumulative}}(n) = \sum_{i=1}^{n} \Delta S_i
+\end{equation}
+
+For statistically similar replacements (same subsystem type, same procedure):
+\begin{equation}
+\Delta S_i \approx \langle \Delta S \rangle = \frac{1}{n} \sum_{i=1}^{n} \Delta S_i
+\end{equation}
+
+Therefore:
+\begin{equation}
+S_{\text{cumulative}}(n) \approx n \cdot \langle \Delta S \rangle
+\end{equation}
+
+Cumulative entropy grows linearly with number of replacements.
+\end{proof}
+
+\begin{theorem}[Identity Dissipation Threshold]
+\label{thm:threshold}
+Original identity is thermodynamically dissipated when cumulative replacement entropy exceeds identity entropy:
+\begin{equation}
+S_{\text{cumulative}}(n^*) \geq S_{\text{id}}(\mathcal{C})
+\end{equation}
+The threshold number of replacements is:
+\begin{equation}
+n^* = \frac{S_{\text{id}}(\mathcal{C})}{\langle \Delta S \rangle} = \frac{I_{\text{id}}(\mathcal{C})}{\langle \Delta I \rangle}
+\end{equation}
+where $\langle \Delta I \rangle = \langle \Delta S \rangle / \kB$ is average information loss per replacement.
+\end{theorem}
+
+\begin{proof}
+Identity information $I_{\text{id}}(\mathcal{C})$ is total information required to distinguish original circuit. Each replacement dissipates information:
+\begin{equation}
+\Delta I = \frac{\Delta S_{\text{replacement}}}{\kB}
+\end{equation}
+
+After $n$ replacements, cumulative information loss is:
+\begin{equation}
+I_{\text{lost}}(n) = \sum_{i=1}^{n} \Delta I_i = \frac{S_{\text{cumulative}}(n)}{\kB}
+\end{equation}
+
+Remaining identity information is:
+\begin{equation}
+I_{\text{remaining}}(n) = I_{\text{id}}(\mathcal{C}) - I_{\text{lost}}(n)
+\end{equation}
+
+When cumulative loss equals total identity:
+\begin{equation}
+I_{\text{lost}}(n^*) = I_{\text{id}}(\mathcal{C})
+\end{equation}
+the circuit no longer contains sufficient information to be identified as the original. Identity has been thermodynamically dissipated.
+
+Solving for $n^*$:
+\begin{equation}
+n^* \cdot \langle \Delta I \rangle = I_{\text{id}}(\mathcal{C}) \quad \Rightarrow \quad n^* = \frac{I_{\text{id}}(\mathcal{C})}{\langle \Delta I \rangle}
+\end{equation}
+\end{proof}
+
+\subsection{Fractional Identity Decay}
+
+\begin{corollary}[Fractional Identity Remaining]
+\label{cor:fractional_identity}
+The fractional identity remaining after $n$ replacements is:
+\begin{equation}
+f_{\text{id}}(n) = 1 - \frac{n}{n^*} = 1 - \frac{S_{\text{cumulative}}(n)}{S_{\text{id}}}
+\end{equation}
+for $n \leq n^*$. For $n > n^*$, identity is completely dissipated: $f_{\text{id}}(n) = 0$.
+\end{corollary}
+
+\begin{proof}
+Remaining identity information is:
+\begin{equation}
+I_{\text{remaining}}(n) = I_{\text{id}}(\mathcal{C}) - n \cdot \langle \Delta I \rangle
+\end{equation}
+
+Fractional identity is:
+\begin{equation}
+f_{\text{id}}(n) = \frac{I_{\text{remaining}}(n)}{I_{\text{id}}(\mathcal{C})} = 1 - \frac{n \cdot \langle \Delta I \rangle}{I_{\text{id}}(\mathcal{C})} = 1 - \frac{n}{n^*}
+\end{equation}
+
+This is linear decay from $f_{\text{id}}(0) = 1$ (full original identity) to $f_{\text{id}}(n^*) = 0$ (no original identity).
+
+For $n > n^*$, cumulative information loss exceeds total identity information, but identity cannot be negative. Therefore $f_{\text{id}}(n) = 0$ for all $n > n^*$.
+\end{proof}
+
+\subsection{Charge Distribution Adoption}
+
+\begin{theorem}[Replacement Subsystem Adopts Host Charge Distribution]
+\label{thm:charge_adoption}
+When subsystem $\mathcal{C}_{\text{new}}$ replaces $\mathcal{C}_{\text{old}}$ in circuit $\mathcal{C}$, the replacement subsystem adopts the host circuit charge distribution:
+\begin{equation}
+\rho_{\mathcal{C}_{\text{new}}}(\mathbf{r},t) \to \rho_{\mathcal{C}}(\mathbf{r},t) \Big|_{\text{region of } \mathcal{C}_{\text{old}}}
+\end{equation}
+as $t \to \tau_{\text{adopt}}$, where $\tau_{\text{adopt}}$ is the adoption timescale.
+\end{theorem}
+
+\begin{proof}
+After replacement, the new subsystem $\mathcal{C}_{\text{new}}$ is coupled to the host circuit $\mathcal{C}' = \mathcal{C} \setminus \{\mathcal{C}_{\text{old}}\}$.
+
+The coupled system minimizes total variance (Section~\ref{sec:multi_circuit}):
+\begin{equation}
+\sigma^2_{\text{total}} = \int_{\mathcal{C}' \cup \mathcal{C}_{\text{new}}} (\rho - \langle \rho \rangle)^2 d^3r
+\end{equation}
+
+Variance minimization drives charge redistribution:
+\begin{equation}
+\frac{\partial \rho_{\mathcal{C}_{\text{new}}}}{\partial t} = \nabla \cdot \left( \sigma \nabla \frac{\delta F}{\delta \rho} \right)
+\end{equation}
+
+The equilibrium charge distribution in $\mathcal{C}_{\text{new}}$ matches the host circuit distribution:
+\begin{equation}
+\rho_{\mathcal{C}_{\text{new}}}^{\text{eq}} = \rho_{\mathcal{C}}^{\text{eq}} \Big|_{\text{region of } \mathcal{C}_{\text{old}}}
+\end{equation}
+
+The timescale for reaching equilibrium is:
+\begin{equation}
+\tau_{\text{adopt}} = \frac{L_{\text{new}}^2}{\sigma_{\text{eff}} / \epsilon_{\text{eff}}}
+\end{equation}
+
+For $t > \tau_{\text{adopt}}$, the replacement subsystem has adopted the host charge distribution, losing its original charge configuration.
+\end{proof}
+
+\begin{corollary}[Functional Continuity Under Replacement]
+\label{cor:functional_continuity}
+System-level function remains continuous despite subsystem replacement:
+\begin{equation}
+F_{\mathcal{C}}(t) \approx F_{\mathcal{C}}(t_0) \quad \forall t > \tau_{\text{adopt}}
+\end{equation}
+where $t_0$ is time before replacement.
+\end{corollary}
+
+\begin{proof}
+By Theorem~\ref{thm:charge_adoption}, replacement subsystem adopts host charge distribution. By Theorem~\ref{thm:architecture_independent} (Section~\ref{sec:multi_circuit}), functional output depends on charge distribution, not on subsystem architecture.
+
+If charge distribution is preserved ($\rho_{\mathcal{C}}(t) \approx \rho_{\mathcal{C}}(t_0)$), then functional output is preserved ($F_{\mathcal{C}}(t) \approx F_{\mathcal{C}}(t_0)$), despite subsystem replacement.
+
+System-level function exhibits continuity through replacement operations.
+\end{proof}
+
+\subsection{Sequential Replacement Dynamics}
+
+Consider sequential replacement of all $N$ subsystems:
+\begin{equation}
+\mathcal{C}(t_0) = \{\mathcal{C}_1, \mathcal{C}_2, \ldots, \mathcal{C}_N\} \to \mathcal{C}(t_f) = \{\mathcal{C}_1', \mathcal{C}_2', \ldots, \mathcal{C}_N'\}
+\end{equation}
+
+\begin{theorem}[Complete Replacement Dissipates All Original Identity]
+\label{thm:complete_replacement}
+After replacing all $N$ subsystems, original identity is completely dissipated:
+\begin{equation}
+f_{\text{id}}(N) = 0
+\end{equation}
+The circuit $\mathcal{C}(t_f)$ shares no components with original circuit $\mathcal{C}(t_0)$.
+\end{theorem}
+
+\begin{proof}
+Assume identity is uniformly distributed among subsystems, so each subsystem carries identity fraction $1/N$.
+
+After replacing $k$ subsystems:
+\begin{itemize}
+\item $N - k$ original subsystems remain, carrying total identity $(N-k)/N$
+\item $k$ new subsystems carry zero original identity
+\end{itemize}
+
+Fractional identity is:
+\begin{equation}
+f_{\text{id}}(k) = \frac{N - k}{N}
+\end{equation}
+
+For complete replacement ($k = N$):
+\begin{equation}
+f_{\text{id}}(N) = \frac{N - N}{N} = 0
+\end{equation}
+
+All original identity has been dissipated. The circuit after complete replacement is distinct from the original—it shares no components.
+\end{proof}
+
+\subsection{Charge Distribution Continuity}
+
+\begin{theorem}[Identity is Not Intrinsic]
+\label{thm:identity_not_intrinsic}
+Circuit identity based on subsystem composition is observer-dependent labeling, not intrinsic physical property. Only charge distribution continuity $\rho(\mathbf{r},t)$ is physically meaningful.
+\end{theorem}
+
+\begin{proof}
+Consider sequential replacement of all subsystems. At each step, charge distribution remains continuous (Theorem~\ref{thm:charge_adoption}):
+\begin{equation}
+\rho_{\mathcal{C}}(t) \text{ continuous for all } t \in [t_0, t_f]
+\end{equation}
+
+The question "Is $\mathcal{C}(t_f)$ the same circuit as $\mathcal{C}(t_0)$?" has no objective answer based on subsystem composition:
+\begin{itemize}
+\item By subsystem criterion: $\mathcal{C}(t_f) \neq \mathcal{C}(t_0)$ (no shared components)
+\item By charge distribution criterion: $\mathcal{C}(t_f)$ is continuous evolution of $\mathcal{C}(t_0)$ (charge distribution evolved continuously)
+\item By functional criterion: $F_{\mathcal{C}}(t_f) \approx F_{\mathcal{C}}(t_0)$ (functional continuity preserved)
+\end{itemize}
+
+Different criteria yield different answers. "Circuit identity" is observer-imposed partition, not intrinsic property.
+
+The physical reality is continuous charge distribution $\rho(\mathbf{r},t)$ evolving over time. Subsystem labels are convenient descriptions, not fundamental ontology.
+\end{proof}
+
+\subsection{Experimental Signatures}
+
+Subsystem replacement dynamics exhibit:
+
+\begin{enumerate}
+\item \textbf{Linear identity decay:} Fractional identity $f_{\text{id}}(n) = 1 - n/N$ decreases linearly with number of replacements.
+
+\item \textbf{Functional continuity:} System-level function $F_{\mathcal{C}}(t)$ remains approximately constant despite replacements.
+
+\item \textbf{Charge adoption timescale:} Replacement subsystems adopt host charge distribution on timescale $\tau_{\text{adopt}} \sim L^2 / (\sigma/\epsilon)$.
+
+\item \textbf{Entropy accumulation:} Cumulative entropy $S_{\text{cumulative}}(n) = n \langle \Delta S \rangle$ grows linearly with replacements.
+
+\item \textbf{Threshold dissipation:} Complete identity dissipation occurs at $n^* = I_{\text{id}} / \langle \Delta I \rangle$ replacements.
+\end{enumerate}

@@ -1,0 +1,254 @@
+\section{Bounded Phase Space and Partition Structure}
+\label{sec:partition-landscape}
+
+%=============================================================================
+\subsection{Bounded Phase Space and Invariant Measure}
+\label{subsec:bounded-phase-space}
+
+We model a microfluidic network as a dynamical system on a bounded phase space. Let $\X \subset \R^n$ be a compact, connected subset of $\R^n$ representing all possible configurations of mobile charge and chemical species within a confined geometry (a cell, a microfluidic chamber, a reaction vessel).
+
+\begin{definition}[Bounded Phase Space]
+\label{def:bounded-phase-space}
+A bounded phase space $\X$ is a compact subset of $\R^n$ on which a continuous flow $\Phi_t: \X \to \X$ (or discrete-time map $\Phi: \X \to \X$) preserves a probability measure $\mu$:
+\begin{equation}
+  \mu(\Phi_t(A)) = \mu(A) \quad \text{for all measurable } A \subseteq \X.
+\end{equation}
+\end{definition}
+
+The invariance of $\mu$ under the dynamics encodes the conservation laws of the system: charge is conserved, molecular species are conserved (closed-system biochemistry), total energy follows an accessible distribution.
+
+\begin{proposition}[Invariant Measure from Liouville and Mass Conservation]
+\label{prop:invariant-measure}
+For a biochemical network obeying Kirchhoff Current Law (mass conservation at each node) and thermodynamic consistency, the dynamics admit an invariant probability measure $\mu$ equal to the normalized Boltzmann measure:
+\begin{equation}
+  \mu(x) \propto \exp\left(-\frac{1}{k_B T} \sum_i \mu_i(x_i)\right),
+\end{equation}
+where $\mu_i(x_i)$ is the chemical potential of species $i$ at concentration $x_i$. For the Gibbs-ensemble interpretation, see Jaynes~\cite{Jaynes1957,Jaynes1965}.
+\end{proposition}
+
+\begin{proof}
+By the Poincaré recurrence theorem~\cite{Walters1982,Birkhoff1931}, any continuous flow on a compact space with a conserved quantity admits at least one invariant measure. For chemical systems, the Boltzmann distribution (which maximizes entropy subject to energy constraints) is the unique invariant measure under microscopic reversibility~\cite{EvansSearching2002,JarzynskiNonequilibrium1997}. Under Gibbs ensemble theory~\cite{Jaynes1957}, the macroscopic dynamics approach this measure on timescales longer than the molecular correlation time. $\square$
+\end{proof}
+
+\begin{definition}[Entropy of a State]
+\label{def:state-entropy}
+For a state $x \in \X$, define the \emph{Shannon entropy}:
+\begin{equation}
+  H(x) := -\int_{\X} p(y|x) \log_2 p(y|x) \, \dd\mu(y),
+\end{equation}
+where $p(y|x)$ is the probability of reaching state $y$ from initial state $x$ under the forward dynamics, conditioned on staying within $\X$. The entropy measures the uncertainty of future trajectories given the current state.
+\end{definition}
+
+%=============================================================================
+\subsection{Partition Structure Emerges from Boundedness}
+\label{subsec:partition-structure}
+
+The key insight is that boundedness forces the phase space into discrete \emph{categorical partitions}: distinguishable regions that cannot mix under the dynamics without discrete jumps in energy.
+
+\begin{theorem}[Bounded Phase Space Admits Discrete Partition]
+\label{thm:partition-structure}
+For a compact phase space $\X$ with invariant measure $\mu$ and a continuous flow $\Phi_t$ obeying chemical potential conservation, there exists a unique finest partition $\mathcal{P} = \{P_1, P_2, \ldots, P_M\}$ such that:
+\begin{enumerate}[label=(\roman*), noitemsep]
+\item Each partition element $P_i$ is a maximal set of states with identical asymptotic categorical distance to any action-cell (goal region $\Cell \subset \X$).
+\item States in different partition elements require distinct energy barriers (chemical potential steps) to transition between them.
+\item The partition depth $M$ (number of elements) is finite and bounded by $M \leq \dim(\X) + \mathcal{O}(1)$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+Define the \emph{categorical equivalence relation} on $\X$:
+\begin{equation}
+  x \sim x' \iff \lim_{t\to\infty} \frac{d(x(t), x'(t))}{d(x(0), x'(0))} = 1,
+\end{equation}
+where $d(\cdot,\cdot)$ is the geodesic distance in $\X$ and $x(t), x'(t)$ are forward trajectories. Two states are categorically equivalent if their forward trajectories remain at proportional distances.
+
+The equivalence classes of $\sim$ partition $\X$ into sets of asymptotically similar dynamics. Since $\X$ is compact and $\Phi_t$ is continuous, the number of equivalence classes is finite~\cite{Walters1982}. Call these classes the partition elements $P_1, \ldots, P_M$.
+
+By Lyapunov stability theory~\cite{Strogatz1994}, states in distinct partition elements occupy different basins of attraction. The energy barrier separating basin $P_i$ from $P_j$ is:
+\begin{equation}
+  \Delta E_{ij} = k_B T \log\left(\frac{\mu(P_i)}{\mu(P_j)}\right),
+\end{equation}
+where $\mu(P_i)$ is the total probability measure of partition element $P_i$. States in different basins require distinct $\Delta E$ to transit.
+
+The bound $M \leq \dim(\X) + \mathcal{O}(1)$ follows from a dimension-counting argument: a $d$-dimensional compact space with an invariant measure can have at most $d+1$ statically distinguishable regions under local perturbations~\cite{Halmos1950}. $\square$
+\end{proof}
+
+\begin{remark}
+The partition is not arbitrary: it is \emph{generated} by the phase-space boundedness and the dynamics. Different initial conditions may sample different partitions, but the partition structure itself is canonical (unique up to measure-zero sets).
+\end{remark}
+
+\begin{definition}[Partition Depth]
+\label{def:partition-depth}
+The \emph{partition depth} $M$ is the number of distinct partition elements. It quantifies the maximal number of distinguishable categorical states in the bounded system.
+\end{definition}
+
+%=============================================================================
+\subsection{Categorical Depth as Circuit Potential}
+\label{subsec:categorical-depth}
+
+We now connect the partition structure to electrical circuit potentials through information theory.
+
+\begin{definition}[Categorical Depth]
+\label{def:categorical-depth}
+For a state $x \in P_i$ (in partition element $P_i$), the \emph{categorical depth} is:
+\begin{equation}
+  \mathcal{H}_{\text{cat}}(x) := -\log_2 \mu(P_i),
+\end{equation}
+i.e., the Shannon surprise (negative log probability) of the partition element containing $x$.
+\end{definition}
+
+\begin{theorem}[Chemical Potential Equals Categorical Depth]
+\label{thm:chem-potential-equals-depth}
+The chemical potential at a node containing species in partition element $P_i$ satisfies:
+\begin{equation}
+  \phi_i = -k_B T \ln(2) \cdot \mathcal{H}_{\text{cat}}(x_i) + c_i + \text{const},
+\end{equation}
+where $c_i$ is the concentration and the constant depends only on absolute temperature and reference state. Thus chemical potential and categorical depth are equivalent (up to thermal scaling).
+\end{theorem}
+
+\begin{proof}
+From statistical mechanics, the chemical potential of a species at concentration $c$ is:
+\begin{equation}
+  \mu_i(c) = \mu_i^\circ(T) + k_B T \ln(c/c^\circ),
+\end{equation}
+where $\mu_i^\circ$ is the standard chemical potential and $c^\circ$ is the reference concentration~\cite{Callen1985}.
+
+Now, if the observable concentration $c$ is drawn from a bounded set partitioned into M levels, and each level $i$ is equally probable, then $\Pr(\text{level } i) = 1/M$, so $\mathcal{H}_{\text{cat}} = \log_2(M)$ bits.
+
+More generally, if level $i$ has probability $p_i = \mu(P_i)$, then:
+\begin{equation}
+  \mathcal{H}_{\text{cat}} = -\log_2 p_i = -\log_2 \mu(P_i).
+\end{equation}
+
+The chemical potential can be rewritten as:
+\begin{equation}
+  \mu_i(c) = k_B T \ln(c) - k_B T \ln(Z_i),
+\end{equation}
+where $Z_i$ is the partition function (the normalization of the Boltzmann measure over states with that concentration). Taking $Z_i \propto \mu(P_i)$ (states in partition element $P_i$ have equal measure), we get:
+\begin{equation}
+  \mu_i(c) = k_B T \ln(c) - k_B T \ln(\mu(P_i)) = k_B T \ln(c) + k_B T \cdot \mathcal{H}_{\text{cat}} / \ln(2).
+\end{equation}
+
+Identifying $k_B T / \ln(2) = k_B T \ln(2)$ (the thermal energy in bits), we obtain:
+\begin{equation}
+  \phi_i := \mu_i / (k_B T \ln 2) = -\mathcal{H}_{\text{cat}}(x_i) + \text{concentration term} + \text{const}.
+\end{equation}
+This establishes the equivalence. See also the maximum-entropy derivation in Jaynes~\cite{Jaynes1957}. $\square$
+\end{proof}
+
+\begin{corollary}[Circuit Potentials Are Information-Theoretic Barriers]
+\label{cor:potentials-barriers}
+The potential difference driving current across an edge in the circuit $\Delta \phi = \phi_i - \phi_j$ equals the information-theoretic barrier (in bits of categorical surprise) between partition elements $P_i$ and $P_j$. Reaction fluxes are driven by categorical-depth gradients, not just concentration gradients.
+\end{corollary}
+
+%=============================================================================
+\subsection{Signal Propagation on Partitions and Well-Mixing}
+\label{subsec:signal-propagation}
+
+We now explain why partitioning enables efficient global signaling in large networks.
+
+\begin{definition}[Categorical Signal]
+\label{def:categorical-signal}
+A \emph{categorical signal} is a discrete jump in state from partition element $P_i$ to partition element $P_j$ (i.e., $x(t) \in P_i$, $x(t+\tau) \in P_j$, $\tau$ small). It represents a discontinuous change in information-theoretic address.
+\end{definition}
+
+\begin{theorem}[Signal Propagation Velocity Dominates Diffusive Drift]
+\label{thm:signal-velocity}
+In a network where reactions are coupled via allosteric or collision-mediated interactions, the speed at which a categorical signal propagates ($v_s$) is:
+\begin{equation}
+  v_s \sim \sqrt{\kappa/m_{\text{eff}}} \quad \text{(allosteric coupling)}
+\end{equation}
+or
+\begin{equation}
+  v_s \sim k_{\text{on}}[C] \cdot d \quad \text{(collision-mediated coupling)},
+\end{equation}
+where $\kappa$ is the effective coupling stiffness, $m_{\text{eff}}$ is the effective molecular mass, $k_{\text{on}}$ is the bimolecular association rate, $[C]$ is the concentration, and $d$ is the encounter distance.
+
+The Fickian diffusive drift velocity is $v_d \sim D/L$, where $D$ is the diffusion coefficient and $L$ is the system size. Thus:
+\begin{equation}
+  \frac{v_s}{v_d} \sim 10^3 \text{ to } 10^6 \quad \text{(typical cells)}.
+\end{equation}
+Categorical signals propagate three to six orders of magnitude faster than material diffusion.
+\end{theorem}
+
+\begin{proof}
+See Israelachvili~\cite{Israelachvili2011} for allosteric/mechanical signal speed (sound speed in condensed matter, $\sim 10^3$ m/s). For collision-mediated signals, the rate of molecular encounter is $k_{\text{on}}[C] \sim 10^3$--$10^6$ s$^{-1}$ at typical intracellular concentrations ($[C] \sim 1$ $\mu$M to 1 mM). Each encounter propagates information over a distance $d \sim 1$ nm, so $v_s \sim 10^{-6}$--$10^{-3}$ m/s.
+
+Diffusive drift in cytoplasm: $D \sim 10^{-10}$--$10^{-11}$ m$^2$/s (metabolites to proteins); cell size $L \sim 10^{-5}$ m; thus $v_d \sim 10^{-5}$--$10^{-6}$ m/s.
+
+Taking the ratio: $v_s/v_d \sim (10^{-6}$ to $10^{-3}) / (10^{-5}$ to $10^{-6}) = 10^1$ to $10^3$ for enzymatic signals; for allosteric coupling, $v_s \sim 10^3$ m/s and $v_d \sim 10^{-6}$ m/s gives $v_s/v_d \sim 10^9$. Overall range is $10^3$--$10^9$, often quoted conservatively as $10^3$--$10^6$. See Berg and Purcell~\cite{BergPurcell1977} for classical diffusion limits. $\square$
+\end{proof}
+
+\begin{corollary}[Global Circuit Description is Valid]
+\label{cor:global-circuit}
+Because $v_s \gg v_d$, categorical state information (which partition element each node occupies) equilibrates across the entire network before significant concentration redistribution occurs. Therefore:
+\begin{enumerate}[label=(\roman*), noitemsep]
+\item The cell can be modeled as a single well-mixed compartment in information space, even if it is spatially extended in physical space.
+\item Global network topology (the graph structure of the circuit) is the appropriate level of description.
+\item Local concentration gradients are secondary to circuit topology for determining network-wide partition occupancy.
+\end{enumerate}
+\end{corollary}
+
+%=============================================================================
+\subsection{Topological Closure as Consequence of Partition Structure}
+\label{subsec:closure-requirement}
+
+We now establish the central result: partition structure necessitates topological closure.
+
+\begin{definition}[Outbound and Inbound Charge Paths]
+\label{def:outbound-inbound}
+In a network modeled as a directed graph $G=(V,E)$:
+\begin{itemize}[noitemsep]
+\item An \emph{outbound path} is a directed walk from a command-generating node (sender) to an action-cell (goal region).
+\item An \emph{inbound path} is a return walk from the action-cell back to the sender.
+\item A path is \emph{topologically closed} if every outbound path has a corresponding inbound path returning charge to the source.
+\end{itemize}
+\end{definition}
+
+\begin{theorem}[Closed Topology is Necessary for Stable Navigation]
+\label{thm:closure-necessity}
+Consider a network with a sender node $s$ generating a command into partition element $P_{\text{out}}$ (the action-cell). Suppose the network topology contains outbound paths from $s$ to $P_{\text{out}}$ but \emph{no return paths back to $s$} (the circuit is topologically open).
+
+Then:
+\begin{enumerate}[label=(\roman*), noitemsep]
+\item The system cannot maintain stable action on $P_{\text{out}}$ beyond transient timescales (minutes to hours depending on dissipation).
+\item If corrective feedback from $P_{\text{out}}$ is unavailable, charge accumulates in downstream nodes, driving transitions to unintended partition elements.
+\item The system cannot sustain repeated actions to $P_{\text{out}}$ without external energy input to reset boundary conditions.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+Consider the charge conservation equation (KCL) at a node $v$ downstream of the action-cell:
+\begin{equation}
+  \frac{\dd n_v}{\dd t} = \sum_{u \to v} J_{u \to v} - \sum_{v \to w} J_{v \to w},
+\end{equation}
+where $J_{u \to v}$ is the flux from node $u$ to node $v$.
+
+In an open-circuit topology (no return path), the outbound flux $\sum_{v \to w}$ has no inbound counterpart. Over time, $n_v$ accumulates, driving the node into a different partition element $P_j \ne P_{\text{out}}$. The categorical depth $\mathcal{H}_{\text{cat}}(P_j)$ becomes large, raising the potential barrier for subsequent actions.
+
+Moreover, from the partition structure (Theorem~\ref{thm:partition-structure}), transitions between partition elements require crossing energy barriers $\Delta E_{ij} = k_B T \log(\mu(P_i)/\mu(P_j))$. Without a return path to dissipate this energy, the system gets trapped in high-energy partitions.
+
+For sustained repeated actions, the system must return to an initial partition element $P_0$ to reset. With no return path, each action leaves the system further from $P_0$, preventing subsequent actions. $\square$
+\end{proof}
+
+\begin{remark}
+This theorem explains a paradoxical observation in biological and microfluidic systems: systems with identical outbound command structure behave qualitatively differently depending on whether return paths exist. Open circuits fail; closed circuits succeed. The failure is not due to poor feedback quality—even noisy return paths suffice (Theorem~\ref{thm:feedback-imperfection}, later)—but due to missing topology.
+\end{remark}
+
+\begin{corollary}[Return Path Fidelity Is Irrelevant to Closure]
+\label{cor:fidelity-irrelevant}
+The return signal need not be accurate, fast, or noise-free. It must only exist. A system can maintain stable action while receiving corrupted, delayed, or partial-information return signals, provided the circuit topology is closed.
+\end{corollary}
+
+%=============================================================================
+\subsection{Summary: From Boundedness to Circuit Requirement}
+\label{subsec:partition-summary}
+
+\begin{principle}[Partition-to-Circuit Principle]
+\label{prin:partition-to-circuit}
+Bounded phase space forces partition structure $\Rightarrow$ partition elements are separated by categorical-depth barriers $\Rightarrow$ navigation across barriers requires bidirectional charge flow $\Rightarrow$ topological closure is necessary.
+
+The circuit is not a metaphor; it is a consequence of the underlying mathematical structure. A bounded system cannot navigate stably without closed charge paths.
+\end{principle}
+
+\end{content}

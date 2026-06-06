@@ -1,0 +1,351 @@
+\section{Neuromusculoskeletal Derivation: Trajectory Navigation Through Biomechanical Constraint}
+\label{sec:neuromusculoskeletal}
+
+%=============================================================================
+\subsection{Motor Command as Trajectory Path in Neural Circuits}
+\label{subsec:motor-trajectory}
+
+A motor command is not a stored instruction executed from a program library. It is a trajectory path through neural state space, constrained by synaptic state history and external feedback.
+
+\begin{definition}[Motor Command Trajectory]
+\label{def:motor-command-trajectory}
+A motor command to execute a movement (e.g., reaching, running, grasping) is a continuous trajectory through the state space of motor cortex, brainstem, spinal interneurons, and motor neuron populations:
+\begin{equation}
+  \mathbf{x}_{\text{command}}(t) : t \in [t_0, t_f] \to \text{State Space of Motor Circuits}.
+\end{equation}
+
+At each moment $t$, the trajectory occupies a point $\mathbf{x}(t)$ representing which neurons are active, at what firing rates, and with what synaptic strengths. The trajectory is:
+\begin{itemize}[noitemsep]
+\item \textbf{History-dependent}: Synaptic residue from prior motor commands constrains where the trajectory can go next (Theorem~\ref{thm:residue-prevention}).
+\item \textbf{Feedback-corrected}: Proprioceptive and visual feedback perturb the trajectory if the executed movement diverges from the commanded movement (error signal).
+\item \textbf{Oxygen-rate-limited}: The rate at which the trajectory propagates through neural circuits depends on local oxygen availability to motor regions (prefrontal, supplementary motor area, motor cortex).
+\end{itemize}
+\end{definition}
+
+\begin{theorem}[No Motor Program Storage]
+\label{thm:no-motor-storage}
+The brain does not store a library of motor programs (e.g., "reach," "grasp," "run," "jump"). Such storage would require:
+\begin{enumerate}[label=(\roman*), noitemsep]
+\item \textbf{Foreknowledge of utility}: Deciding which movements to store requires predicting which movements will be useful in the future.
+\item \textbf{Finite representation}: A stored program is a fixed sequence. But every actual execution varies (speed, force, context).
+\item \textbf{Combinatorial explosion}: All possible movements cannot be stored ($2^{\infty}$ combinations of muscle activations).
+\end{enumerate}
+
+Instead, the brain navigates motor-command trajectories online, constrained by:
+\begin{enumerate}[label=(\arabic*), noitemsep]
+\item Current motor state (synaptic residue, recent firing patterns)
+\item Target state (desired endpoint position or velocity)
+\item Proprioceptive feedback (current body position and velocity)
+\item Oxygen availability to motor circuits and muscles
+\end{enumerate}
+
+Each movement is a new trajectory, with no explicit storage.
+\end{theorem}
+
+\begin{proof}
+By the sufficiency principle (Section~\ref{sec:partition-landscape}, Theorem~\ref{thm:partition-structure}), a system needs only enough information to navigate to action-cells, not to store all possible futures. Storage of motor programs violates this: it requires knowing in advance which movements will be needed. Instead, the brain maintains sufficient state (synaptic residue, proprioceptive maps, oxygen resources) to generate novel trajectories online.
+
+Empirically, people execute movements they have never performed before (novel tool use, novel sports skills, novel dance moves) without retrieving a stored program. They navigate trajectories learned through practice, where practice refines the trajectory landscape (synaptic weights, habituation patterns), not the storage of fixed sequences~\cite{Doyon2009,WolpertWolpert1998}. $\square$
+\end{proof}
+
+\begin{corollary}[Motor Memory is Trajectory History, Not Motor Program]
+\label{cor:motor-memory-trajectory}
+When you describe a movement or execute a movement for the second time, your trajectory is different because:
+\begin{enumerate}[label=(\roman*), noitemsep]
+\item Time has passed; synaptic states have evolved.
+\item Residual NT from intervening motor commands constrains the next trajectory (Poincaré deviation).
+\item Proprioceptive and visual feedback from the first execution have reshaped synaptic weights (error correction).
+\item Oxygen distribution to motor circuits has shifted (circadian/activity-dependent changes).
+\end{enumerate}
+
+The movement is not a retrieval of a stored program. It is a new navigation of motor space that \emph{resembles} the prior trajectory because the state landscape has been shaped by prior paths, but is never identical. This is why movements improve with practice (trajectories become more efficient) and why descriptions of movements change on retelling (trajectories through memory-recalling states are path-dependent).
+\end{corollary}
+
+%=============================================================================
+\subsection{Motor Neuron Recruitment and Rate Coding}
+\label{subsec:motor-recruitment}
+
+Motor commands are transmitted from motor cortex/brainstem through spinal circuits to motor neurons. Motor neurons then drive muscles via the neuromuscular graph (Definition~\ref{def:neuromuscular-graph}).
+
+\begin{definition}[Motor Neuron Recruitment and Rate Coding]
+\label{def:recruitment-coding}
+A movement of variable force or velocity is encoded by two mechanisms:
+\begin{enumerate}[label=(\Roman*), noitemsep]
+\item \textbf{Recruitment}: Additional motor neurons are activated (recruited) as force demand increases. Low force: small motor units only. High force: large motor units recruited.
+\item \textbf{Rate coding}: Individual motor neurons increase their firing rate as force demand increases. Firing rate $f \in [f_{\min}, f_{\max}]$, typically 5--100 Hz for skeletal muscle.
+\end{enumerate}
+\end{definition}
+
+\begin{theorem}[Henkel-Mendell Size Principle: Motor Unit Recruitment is Monotonic and Irreversible]
+\label{thm:size-principle}
+Motor neurons are recruited in a fixed order: from smallest (lowest threshold) to largest (highest threshold). This order is:
+\begin{enumerate}[label=(\roman*), noitemsep]
+\item \textbf{Determined by soma input resistance}: Small motor neurons have high input resistance ($R_{\text{in}}$), so a given synaptic current produces larger voltage change. They reach firing threshold first.
+\item \textbf{Monotonic}: Once a motor neuron is recruited, it remains recruited until force demand drops below its threshold.
+\item \textbf{Irreversible on fast timescales}: Derecruitment (turning off a large motor unit to lower force) is slow ($\sim 100$ ms) compared to increasing force ($\sim 50$ ms)~\cite{CayeMorris2004}.
+\end{enumerate}
+
+This Hennel-Mendell principle means that the set of active motor neurons at time $t$ encodes the cumulative force demand history, not just current force demand.
+\end{theorem}
+
+\begin{proof}
+Motor neuron input resistance is roughly inversely proportional to soma surface area. Small neurons have smaller soma, hence larger $R_{\text{in}} = V_{\text{threshold}} / I_{\text{syn}}$. If two neurons receive identical synaptic current $I_{\text{syn}}$, the small neuron (large $R_{\text{in}}$) reaches threshold first~\cite{HennelMendell1981}. Once a larger neuron is recruited, its sustained firing (mediated by persistent inward currents and residual calcium) keeps it active even if input current decreases, until the input falls sufficiently below its recruitment threshold. Derecruitment requires time because synaptic residue, transmitter residue, and dendritic calcium must clear. $\square$
+\end{proof}
+
+\begin{corollary}[Motor Unit Activation Encodes Movement Trajectory, Not Force Magnitude]
+\label{cor:activation-encodes-trajectory}
+At a given instant, the set of recruited motor units does not uniquely specify the current force. Instead, it specifies the trajectory history: which force demands have been recently commanded. This is trajectory memory in motor circuits.
+
+Two movements producing identical force at time $t$ may recruit different motor units if they arrived at that force via different paths (ramp up quickly vs. ramp up slowly, or recruited in sequence vs. recruited simultaneously). The motor system encodes path history, not state alone.
+\end{corollary}
+
+%=============================================================================
+\subsection{Muscle Architecture and Oxygen-Stratified Contraction}
+\label{subsec:muscle-architecture}
+
+Skeletal muscle is not a homogeneous force-generating tissue. It is an array of fiber compartments at different metabolic rates, stratified by oxygen diffusion from capillaries.
+
+\begin{definition}[Muscle Fiber Types]
+\label{def:fiber-types}
+Skeletal muscle contains three types of fibers, classified by their metabolic strategy:
+
+\begin{enumerate}[label=(\Roman*), noitemsep]
+\item \textbf{Type I (Slow Oxidative, SO)}: Small diameter, rich in mitochondria and myoglobin, oxidative metabolism dominant. Resistant to fatigue. Activated by small motor neurons (lower force per unit, slow twitch). Examples: postural muscles, endurance athletes.
+
+\item \textbf{Type IIa (Fast Oxidative, FOG)}: Intermediate diameter, moderate mitochondrial content. Mixed oxidative-anaerobic metabolism. Moderate fatigue resistance. Activated by intermediate-size motor neurons.
+
+\item \textbf{Type IIx/b (Fast Glycolytic, FG)}: Large diameter, sparse mitochondria, anaerobic metabolism dominant. Fatigable. Activated by large motor neurons (high force, fast twitch). Examples: explosive movements, sprinting.
+\end{enumerate}
+
+This fiber-type heterogeneity is not for redundancy. It is for **oxygen-stratified operation**: different fibers operate at different metabolic rates determined by local oxygen availability and capillary proximity.
+\end{definition}
+
+\begin{theorem}[Oxygen Gradient Determines Fiber Recruitment Order and Metabolic Cascade]
+\label{thm:fiber-oxygen-cascade}
+Within a muscle, oxygen concentration varies from high (near capillaries) to low (at fiber interior):
+
+\begin{equation}
+  [\text{O}_2](r) = [\text{O}_2]_{\text{cap}} \exp(-r/\lambda_{\text{diff}}),
+\end{equation}
+
+where $r$ is distance from capillary and $\lambda_{\text{diff}} \sim 50$--$100$ $\mu$m is the oxygen diffusion length scale.
+
+Type I fibers, being small and oxidative, are located near capillaries (high $[\text{O}_2]$). Type IIx fibers, being large and anaerobic-tolerant, are located deep in fascicles (low $[\text{O}_2]$). This spatial arrangement ensures:
+
+\begin{enumerate}[label=(\roman*), noitemsep]
+\item \textbf{Type I recruited first}: Small motor neurons are recruited first (Hensel-Mendell principle). Their fibers are near capillaries, where oxygen is abundant. They contract at slow, sustained rates (oxidative phosphorylation sufficient).
+
+\item \textbf{Type IIa recruited at medium force}: Intermediate oxygen depletion. Mixed metabolism. Transitional activation.
+
+\item \textbf{Type IIx recruited at high force}: Deep fibers, low oxygen. Forced into anaerobic metabolism. High-force, short-duration contractions. Lactate accumulation.
+\end{enumerate}
+
+The oxygen gradient is the temporal hierarchy: the system recruits fibers in order of increasing oxygen demand, not in arbitrary order.
+\end{theorem}
+
+\begin{proof}
+Oxygen diffusion equation: $\partial [\text{O}_2]/\partial t = D_{\text{O}_2} \partial^2 [\text{O}_2]/\partial r^2 - k_{\text{consume}}[\text{O}_2]$. At steady-state in a cylindrical fiber geometry, this gives exponential profile~\cite{CromerAnderson2006}. Fiber type distribution in muscle correlates with proximity to capillaries (high-oxidative near capillaries) and oxygen diffusion distance (deep fibers are more anaerobic)~\cite{PaffenbergerEvans2007,TuttleWeinberg2017}. Motor neuron size correlates with motor unit fiber type: small neurons innervate Type I, large neurons innervate Type II. The combination of size-principle recruitment and oxygen-stratified fiber location creates a natural cascade of metabolic states. $\square$
+\end{proof}
+
+%=============================================================================
+\subsection{Skeletal Mechanical Advantage and Energy Optimization}
+\label{subsec:skeletal-mechanics}
+
+The skeleton's role is not simply to provide a lever for muscles to pull on. It is to optimize the mechanical advantage (force amplification) such that movements achieve maximum force or velocity with minimum ATP expenditure.
+
+\begin{definition}[Mechanical Advantage]
+\label{def:mechanical-advantage}
+At a joint, mechanical advantage is the ratio of load arm (distance from load to joint axis) to effort arm (distance from muscle insertion to joint axis):
+
+\begin{equation}
+  \text{MA} = \frac{L_{\text{load}}}{L_{\text{effort}}}.
+\end{equation}
+
+If MA $> 1$: Force amplification (small muscle force generates large joint torque, but limited velocity). Examples: jaw, hands for precision gripping.
+
+If MA $< 1$: Velocity amplification (large muscle contraction distance yields large limb displacement, high velocity, but limited torque). Examples: legs for running, arms for reaching.
+\end{definition}
+
+\begin{theorem}[Skeletal Geometry Minimizes Metabolic Cost for Task]
+\label{thm:skeletal-optimization}
+The human skeleton is organized such that:
+
+\begin{enumerate}[label=(\roman*), noitemsep]
+\item \textbf{Proximal joints (hip, shoulder)}: Low MA, velocity-amplified. Suited for rapid, long-range movements (running, reaching). Requires less muscle force to generate large displacement, reducing ATP consumption for distance covered.
+
+\item \textbf{Distal joints (ankle, wrist)}: Variable MA, intermediate. Suited for velocity modulation and force control.
+
+\item \textbf{Fine motor joints (fingers)}: High MA, force-amplified. Suited for precision gripping and object manipulation. Requires more muscle force but enables delicate control without large joint motion.
+\end{enumerate}
+
+The metabolic cost of a movement is:
+\begin{equation}
+  E_{\text{metab}} = \sum_{\text{muscles}} \int_0^T [\text{ATP}]_{\text{consumed}}(t) \, \dd t
+  \propto \sum \int I_{\text{muscle}}(t) \cdot \text{MA}^{-1}(t) \, \dd t.
+\end{equation}
+
+Skeletal geometry optimizes this integral for natural locomotion and manipulation tasks.
+\end{theorem}
+
+\begin{proof}
+The ATP cost of a contraction is proportional to the number of cross-bridge cycles (myosin-actin interactions), which scales with force developed. For a fixed external load, reducing the required muscle force (via high MA or velocity amplification) reduces ATP cost.
+
+Humans evolved in terrestrial environments where running long distances (hunts, migrations) and precise manipulation (tool use) were survival-critical. The skeleton is optimized for these tasks:
+\begin{itemize}[noitemsep]
+\item Legs are velocity-amplified (long femur, low MA at hip), minimizing ATP cost per meter of running~\cite{AngillettaMorrison2006}.
+\item Arms are intermediate (shoulder is mobile, wrist is flexible), enabling both reaching and object control.
+\item Fingers are force-amplified (short lever arms), enabling precise grasping with fine control.
+\end{itemize}
+
+This is not random morphology; it is optimal under metabolic constraints. $\square$
+\end{proof}
+
+%=============================================================================
+\subsection{Proprioceptive Feedback and Trajectory Correction}
+\label{subsec:proprioceptive-feedback}
+
+A motor command is not executed open-loop. Proprioceptive feedback continuously monitors the trajectory and corrects deviations.
+
+\begin{definition}[Proprioception]
+\label{def:proprioception}
+Proprioceptive feedback provides the nervous system with information about body configuration and limb dynamics:
+
+\begin{itemize}[noitemsep]
+\item \textbf{Muscle spindle}: Senses muscle length and rate of length change (stretch receptor). Located in muscle belly, in parallel with contractile fibers.
+\item \textbf{Golgi tendon organ (GTO)}: Senses muscle tension (force). Located at muscle-tendon junction, in series with contractile machinery.
+\item \textbf{Joint receptor}: Senses joint angle and angular velocity (in ligaments, joint capsule).
+\end{itemize}
+
+These receptors send feedback to spinal circuits (monosynaptic reflex, polysynaptic pathways) and to higher motor centers (cerebellum, sensorimotor cortex).
+\end{definition}
+
+\begin{theorem}[Proprioceptive Feedback Validates Trajectory Against Reality]
+\label{thm:proprioceptive-validation}
+A motor command issued by motor cortex produces an expected proprioceptive consequence. If actual proprioception matches expectation, the trajectory is validated as real. If mismatch occurs, an error signal corrects the trajectory.
+
+\begin{equation}
+  \text{Error} = \text{Proprioception}_{\text{actual}} - \text{Proprioception}_{\text{expected}}.
+\end{equation}
+
+This error drives rapid corrections:
+\begin{itemize}[noitemsep]
+\item \textbf{Spinal reflex arc}: Monosynaptic reflex (e.g., stretch reflex) corrects unexpected stretch in $\sim 25$ ms.
+\item \textbf{Cerebellar update}: Cerebellum compares motor command efference copy with sensory feedback and updates cerebellar purkinje cell weights for future commands.
+\item \textbf{Cortical adaptation}: Sensorimotor cortex integrates error over minutes to hours, reshaping the motor command landscape.
+\end{itemize}
+
+This is the mechanism ensuring that motor trajectories remain aligned with reality, not diverging into self-consistent fantasies (as in dreams).
+\end{theorem}
+
+\begin{proof}
+Neuroanatomically, all motor commands include an efference copy to sensory areas (internal model). If motor command specifies "contract biceps by $X$ mm," the motor system predicts muscle spindle feedback will report lengthening of $X$ mm. When actual feedback arrives (after $\sim 50$--$100$ ms conduction delay), it is compared to prediction. Match → trajectory is valid. Mismatch → error signal → correction~\cite{WolpertWolpert1998,CereballumPerception2002}.
+
+In dreams, there is motor command (thought) but no real muscle movement, so no true proprioceptive feedback. Instead, the brain generates fabricated proprioceptive signals (hallucinated feedback). These fabricated signals always match the motor command (because they are generated by the same circuit), so no error is detected. The trajectory diverges from reality without correction. $\square$
+\end{proof}
+
+%=============================================================================
+\subsection{Running as Optimal Trajectory Navigation}
+\label{subsec:running-example}
+
+Running is a canonical example of a neuromusculoskeletal trajectory that balances multiple constraints: oxygen delivery, skeletal mechanical advantage, and sensorimotor feedback.
+
+\begin{example}[Running at Steady State]
+\label{ex:running-steady}
+A 70 kg human running at 4 m/s (9 min/mile pace) operates as follows:
+
+\begin{enumerate}[label=(\arabic*), noitemsep]
+\item \textbf{Oxygen demand}: $\sim 60$ watts metabolic power. Legs demand $\sim 40$ watts (muscle contraction + ATP restoration). Arms, trunk: $\sim 15$ watts. Brain/CNS: $\sim 5$ watts.
+
+\item \textbf{Motor command trajectory}: Motor cortex and brainstem issue commands to activate bilateral leg extensors (quadriceps, gastrocnemius, glute) in alternating bursts, phase-locked to leg swing. Frequency $\sim 2$ Hz (one cycle per 0.5 s, two legs → alternating at 2 Hz).
+
+\item \textbf{Motor unit recruitment}: Type I fibers recruited first (slow, steady force from near-capillary fibers). Type IIa recruited if running uphill or accelerating (increased oxygen demand, but still manageable). Type IIx not recruited (oxygen sufficient, no need for anaerobic burst).
+
+\item \textbf{Muscle activation pattern}: Quadriceps active during swing-to-stance transition, extending knee. Gastrocnemius active during push-off, extending ankle. Gluteus maximus active during hip extension at push-off. Each muscle fires in a coordinated temporal burst, lasting $\sim 200$ ms per leg per cycle.
+
+\item \textbf{Proprioceptive feedback}: Muscle spindles in stance-phase leg detect stretch as body weight loads the leg. Golgi tendon organs sense peak force at push-off ($\sim 1.2 \times$ body weight). Feedback regulates muscle stiffness (via Ia afferent inhibition and facilitation) and prepares swing-phase leg for next contact.
+
+\item \textbf{Skeletal mechanics}: Hip, knee, and ankle mechanical advantage balance force and velocity. Elastic storage in Achilles tendon and plantar fascia return $\sim 50\%$ of push-off energy to the next stride, reducing net metabolic cost (elastic recoil).
+
+\item \textbf{Trajectory correction}: If terrain suddenly changes (step up, pothole, uneven surface), proprioceptive error signals trigger rapid adjustments: increase or decrease leg stiffness, alter swing trajectory, modify landing angle. These are mid-trajectory corrections, taking $\sim 100$--$200$ ms.
+
+\end{enumerate}
+
+The remarkable fact: the runner does not consciously execute each of these steps. The motor trajectory is **automatic** and **self-correcting**. The conscious intention is simply "run at 4 m/s," and the sensorimotor system navigates the trajectory online.
+\end{example}
+
+%=============================================================================
+\subsection{Movement Memory and Re-execution Without Motor Program Storage}
+\label{subsec:movement-memory}
+
+When you run the same route twice, your movement trajectory is similar but not identical. This proves movements are navigated, not retrieved.
+
+\begin{theorem}[Movement Trajectories are Path-Dependent, Not Stored]
+\label{thm:movement-paths}
+Consider a movement executed twice (e.g., running the same route, or reaching to the same location).
+
+\textbf{Prediction if movements were stored:}
+Exact repetition. The motor neuron firing patterns, muscle activation timing, and limb kinematics would be identical both times.
+
+\textbf{Actual observation:}
+Trajectories are similar in overall pattern but diverge in details:
+\begin{itemize}[noitemsep]
+\item Stride length varies ±5\% between steps.
+\item Muscle activation timing shifts by ±10--50 ms.
+\item Force peaks vary ±10\% cycle-to-cycle.
+\item Limb kinematics are smooth but never reproduce frame-by-frame.
+\end{itemize}
+
+\textbf{Why:} Because the motor trajectory is constrained by:
+\begin{enumerate}[label=(\roman*), noitemsep]
+\item \textbf{Synaptic state history}: Residual NT and synaptic weights have evolved since the first execution. The path through motor space is slightly different.
+\item \textbf{Proprioceptive state}: Body position, balance, fatigue state differ. Feedback signals entering the trajectory are different, producing corrective deviations.
+\item \textbf{Oxygen availability}: Time-of-day circadian rhythms, prior activity, and metabolic state change oxygen distribution. Enzyme rates differ. The trajectory speed (frequency of motor commands) is slightly different.
+\item \textbf{Poincaré deviation}: Return trajectories are never exact (Theorem~\ref{thm:poincare-deviation}, later). Each execution is a new path that resembles but is not identical to prior paths.
+\end{enumerate}
+
+The movement is not retrieved; it is re-navigated. The navigation is constrained by learned patterns (synaptic weights from practice), but it is a new trajectory each time.
+\end{theorem}
+
+\begin{proof}
+Experimentally, repeated reaching movements show kinematic variance (trial-to-trial variability) even in constant conditions~\cite{TortorielloNichols2000}. EMG (muscle activation) shows reproducible timing but variable amplitude and duration. Intracellular recordings from motor cortex show that identical movements are encoded by different populations of neurons in different trials, yet the behavior is similar~\cite{RothschildPouget2017}. This is inconsistent with motor program retrieval (which should reactivate an identical neural pattern) but consistent with trajectory navigation (which can take multiple paths to similar endpoints).
+
+Synaptic plasticity (LTP, LTD, synaptic scaling) continuously reshape the landscape through which the trajectory navigates. Practice refines the landscape, not the storage of the trajectory itself. $\square$
+\end{proof}
+
+\begin{corollary}[Learning is Landscape Reshaping, Not Program Storage]
+\label{cor:learning-landscape}
+Motor learning (acquiring new skills through practice) is not memorizing motor programs. It is reshaping the motor landscape (synaptic weights, gain fields, attention filters) such that trajectories to action-cells become more efficient (lower energy, higher precision, faster convergence).
+
+With practice, the trajectory to "throw a ball accurately" becomes lower-energy because:
+\begin{itemize}[noitemsep]
+\item Synaptic weights (especially cerebellar purkinje cell weights) converge to near-optimal values.
+\item Muscle co-activation (unnecessary antagonist activation) decreases, reducing ATP cost.
+\item Proprioceptive feedback becomes more predictive, reducing error-correction latency.
+\item Motor unit recruitment becomes more efficient (less overshoot, less oscillation).
+\end{itemize}
+
+But the trajectory itself is re-generated each execution. It is not retrieved from storage.
+\end{corollary}
+
+%=============================================================================
+\subsection{Summary: Navigation Without Programs}
+\label{subsec:neuro-summary}
+
+\begin{principle}[Neuromusculoskeletal Navigation]
+The neuromusculoskeletal system does not execute stored motor programs. Instead, it navigates motor-command trajectories through state space, constrained by:
+
+\begin{enumerate}[label=(\arabic*), noitemsep]
+\item \textbf{Synaptic state history}: Residual NT and plasticity set the initial conditions for each trajectory.
+\item \textbf{Oxygen availability}: Determines metabolic rate, enzyme kinetics, and frequency of commands.
+\item \textbf{Skeletal mechanics}: Provides force/velocity amplification (MA) optimized for natural tasks.
+\item \textbf{Proprioceptive feedback}: Validates trajectory against reality; error signals correct deviations.
+\item \textbf{Motor unit recruitment}: Encodes force demand as trajectory history, not instantaneous value.
+\end{enumerate}
+
+Movement memory is not stored. It is the landscape itself: the synaptic weights, the muscle fiber type distribution, the skeletal geometry, and the feedback gains learned through practice. Each execution is a new navigation of that learned landscape, with inevitable Poincaré deviations ensuring no two trajectories are identical.
+
+This solves the storage paradox: the system need not predict the future or store all possible movements. It need only maintain a landscape (sufficiency principle) and navigate in real time.
+
+The brain is not a program executor. It is a trajectory navigator.
+\end{principle}
+

@@ -1,0 +1,1847 @@
+% ============================================================================
+%  Turbulance: A Formal Specification of a Declarative Language for
+%  Evidence-Bearing, Uncertainty-Aware Computation
+%
+%  Grammar, Type System, and Operational Semantics.
+%
+%  This document is self-contained: it defines the language in full from
+%  first principles and cites only the standard external literature.  No
+%  companion manuscript is required to understand the language.
+% ============================================================================
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[a4paper,margin=2.4cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{stmaryrd}      % \llbracket \rrbracket
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{microtype}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage[colorlinks=true,linkcolor=blue!45!black,citecolor=blue!45!black,
+            urlcolor=blue!55!black]{hyperref}
+\usepackage{cleveref}
+
+% ---------------------------------------------------------------------------
+%  Theorem environments
+% ---------------------------------------------------------------------------
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{convention}[theorem]{Convention}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% ---------------------------------------------------------------------------
+%  Grammar / semantics notation
+% ---------------------------------------------------------------------------
+\newcommand{\nt}[1]{\ensuremath{\langle\textsf{#1}\rangle}}  % nonterminal
+\newcommand{\tm}[1]{\textbf{\texttt{#1}}}                 % terminal keyword
+\newcommand{\opt}[1]{\ensuremath{[\,#1\,]}}               % optional
+\newcommand{\rep}[1]{\ensuremath{\{\,#1\,\}}}             % repetition (0+)
+\newcommand{\bnfeq}{\;::=\;}
+\newcommand{\bnfor}{\;\mid\;}
+\newcommand{\rn}[1]{\textsc{#1}}                          % rule name
+\newcommand{\sem}[1]{\ensuremath{\llbracket #1 \rrbracket}} % semantic brackets
+\DeclareMathOperator{\dom}{dom}                           % domain of a map
+\newcommand{\Downarrowx}{\Downarrow}                      % big-step
+\newcommand{\evalto}{\Downarrow}
+\newcommand{\stepto}{\longrightarrow}
+\newcommand{\env}{\sigma}
+\newcommand{\Val}{\mathbb{V}}
+\newcommand{\Conf}{\mathcal{C}}
+\newcommand{\Unit}{[0,1]}
+\newcommand{\nor}{\oplus}                                 % noisy-OR
+\newcommand{\att}{\ominus}                                % attenuation
+\newcommand{\Type}{\tau}
+\newcommand{\dyn}{\star}                                  % dynamic type
+\newcommand{\subtype}{<:}
+\newcommand{\consistent}{\sim}
+\newcommand{\Gam}{\Gamma}
+\newcommand{\nrm}{\mathsf{nrm}}
+\newcommand{\ret}{\mathsf{ret}}
+\newcommand{\wrong}{\mathbf{wrong}}
+\newcommand{\Strat}{\varsigma}
+
+% Inference-rule macro (portable; no external package required)
+\newcommand{\infrule}[3]{%
+  \ensuremath{\displaystyle\frac{\,#2\,}{\,#3\,}}\;\rn{(#1)}}
+\newcommand{\jspace}{\qquad}
+
+% ---------------------------------------------------------------------------
+%  Listings: Turbulance
+% ---------------------------------------------------------------------------
+\definecolor{kwcol}{rgb}{0.20,0.20,0.65}
+\definecolor{strcol}{rgb}{0.55,0.30,0.10}
+\definecolor{comcol}{rgb}{0.35,0.45,0.35}
+\lstdefinelanguage{turbulance}{
+  morekeywords={funxn,item,proposition,motion,evidence,pattern,support,
+    contradict,inconclusive,within,given,considering,for,each,in,while,
+    return,ensure,allow,research,cause,point,resolution,resolve,cycle,drift,
+    flow,roll,until,settled,over,on,goal,metacognitive,import,from,as,try,
+    catch,finally,project,sources,otherwise,and,or,not,true,false,with_confidence,
+    requirements,track,evaluate,derive_hypotheses,meta},
+  sensitive=true,
+  morecomment=[l]{//},
+  morecomment=[l]{\#},
+  morestring=[b]",
+}
+\lstset{
+  language=turbulance,
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{kwcol}\bfseries,
+  stringstyle=\color{strcol},
+  commentstyle=\color{comcol}\itshape,
+  showstringspaces=false,
+  columns=fullflexible,
+  keepspaces=true,
+  breaklines=true,
+  frame=single,
+  framesep=4pt,
+  rulecolor=\color{black!25},
+  xleftmargin=10pt,
+}
+
+% ---------------------------------------------------------------------------
+\title{\textbf{Turbulance: A Formal Specification of a Declarative Language\\
+for Evidence-Bearing, Uncertainty-Aware Computation}\\[4pt]
+\large Lexical Structure, Grammar, Type System, and Operational Semantics}
+
+\author{Kundai Farai Sachikonye\\[2pt]
+\small Technical University of Munich\\
+\small \texttt{kundai.sachikonye@wzw.tum.de}}
+
+\date{\today}
+
+% ===========================================================================
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent
+We give a complete, self-contained formal specification of \emph{Turbulance},
+a declarative programming language whose primitive notions are not values and
+side effects but \emph{evidence}, \emph{hypotheses}, and \emph{graded
+uncertainty}. Turbulance unifies three computational paradigms that are
+usually kept apart. From the imperative and functional traditions it inherits
+bindings, first-class functions, and structured control flow. From logic and
+argumentation it inherits \emph{propositions} carrying named \emph{motions}
+that are confirmed or refuted by \emph{support} and \emph{contradict}
+statements over observed data. From probabilistic and fuzzy computation it
+inherits \emph{points}---semantic units annotated with a confidence and a
+distribution over interpretations---together with \emph{resolution} operators
+that collapse a point to a determinate value under an explicit strategy. We
+formalise the language in five layers. (i) A lexical grammar over a fixed
+token alphabet. (ii) A context-free \emph{concrete grammar} in extended
+Backus--Naur form, with a fully specified operator-precedence hierarchy. (iii)
+An \emph{abstract syntax} together with a desugaring translation. (iv) A
+\emph{type system} that is gradual: it admits a dynamic type and a consistency
+relation so that annotated and unannotated code interoperate, while
+guaranteeing soundness on the fully annotated fragment. (v) An \emph{operational
+semantics}, given in big-step form, comprising the deterministic functional
+core, a confidence algebra on the unit interval, an argumentation semantics for
+propositions, a resolution semantics for points, and rules for the four
+``hybrid'' iteration constructs (\texttt{cycle}, \texttt{drift}, \texttt{flow},
+\texttt{roll}). We then formalise the \emph{four-file project model}, in which a
+program is a linked tuple of an orchestration unit, a dependency graph, a state
+surface, and a decision log. Finally we establish the metatheory: determinacy
+of evaluation, type safety (progress and preservation) for the static fragment,
+boundedness and monotonicity of the evidence semantics, and termination
+criteria for the iteration constructs. Throughout, the design is related to the
+standard literature on formal languages, type systems, operational semantics,
+probabilistic and fuzzy computation, and abstract argumentation. The
+specification is intended to be precise enough to serve as an implementation
+blueprint and stable enough to serve as a language standard.
+
+\medskip
+\noindent\textbf{Keywords:} programming-language specification, operational
+semantics, gradual typing, probabilistic programming, fuzzy logic, abstract
+argumentation, evidence theory, declarative languages, domain-specific
+languages.
+\end{abstract}
+
+\tableofcontents
+\bigskip
+\hrule
+
+% ===========================================================================
+\section{Introduction}
+\label{sec:intro}
+% ===========================================================================
+
+\subsection{The problem: computation that reasons under evidence}
+
+Mainstream programming languages model computation as the transformation of
+\emph{determinate} values: an expression denotes a value, a statement updates a
+store, and a function maps inputs to outputs \citep{landin1966,winskel1993,
+pierce2002}. This model is an excellent fit for systems whose inputs are known
+and whose correctness criteria are crisp. It is a poor fit for a large and
+growing class of tasks---scientific data analysis, evidence synthesis,
+diagnostic reasoning---whose inputs are \emph{observations} of uncertain
+provenance and whose outputs are \emph{conclusions} that are graded,
+defeasible, and accountable to the evidence that produced them. In these tasks
+the programmer is forced to encode, by hand and without language support, three
+notions that the host language does not name: a \emph{hypothesis} under test, a
+body of \emph{evidence} bearing on it, and a \emph{degree of belief} attached
+to every intermediate result. The encoding is repetitive, error-prone, and
+opaque; uncertainty is threaded through ordinary floating-point variables, and
+the chain of reasoning that justifies a conclusion is lost.
+
+Turbulance is a language in which these three notions are primitive. A
+\emph{proposition} is a first-class declaration of a hypothesis, decomposed
+into named \emph{motions}; a motion is confirmed or refuted by \emph{support}
+and \emph{contradict} statements evaluated against data; and the confirmation
+of a motion is not a Boolean but a confidence drawn from the unit interval,
+accumulated by an explicit and inspectable argumentation procedure
+\citep{toulmin1958,dung1995,shafer1976}. Orthogonally, a \emph{point} is a unit
+of meaning---typically a fragment of text or a structured datum---that carries
+both a confidence and a distribution over candidate \emph{interpretations}; a
+\emph{resolution} operator collapses a point to a determinate value under an
+explicit \emph{strategy} (maximum likelihood, Bayesian weighting, conservative
+or exploratory selection, full distribution), so that the act of disambiguation
+is itself a named, auditable computational step \citep{zadeh1965,kozen1981,
+goodman2008}.
+
+\subsection{Design principles}
+\label{sec:principles}
+
+The language obeys five design principles, each of which has direct
+consequences for the formal definition that follows.
+
+\begin{enumerate}[leftmargin=1.4em]
+\item \textbf{Uncertainty is first-class, not encoded.} Confidence is a
+semantic domain of the language (\cref{sec:domains}), not a convention on
+\texttt{Float} values. Every point, motion, and resolution carries a value in
+$\Unit$ with a fixed algebra of combination (\cref{sec:confalg}).
+
+\item \textbf{Hypotheses are programs.} A proposition is a declaration with
+operational meaning: evaluating it runs an argumentation procedure that returns
+a verdict and a confidence (\cref{sec:propsem}). This realises, at the level of
+language semantics, the view of inference as a defeasible debate rather than a
+monotone deduction \citep{dung1995,besnard2008}.
+
+\item \textbf{Determinism and probability cohere in one control flow.} The same
+program text mixes deterministic iteration (\texttt{for}, \texttt{while}) with
+probabilistic iteration (\texttt{considering}, \texttt{drift}) and convergent
+iteration (\texttt{roll until settled}). The semantics treats these uniformly
+as instances of a single iteration schema parameterised by how the loop
+variable and its auxiliary confidence are bound (\cref{sec:hybrid}).
+
+\item \textbf{Types are gradual.} Turbulance is dynamically typed with optional
+annotations and strong inference. We model this with a dynamic type and a
+consistency relation in the manner of \citet{siek2006}, obtaining
+interoperability between annotated and unannotated code together with soundness
+on the annotated fragment (\cref{sec:types,sec:meta}).
+
+\item \textbf{A program is a four-part project.} Source is organised into four
+linked file roles---an orchestration unit (\texttt{.trb}), a dependency graph
+(\texttt{.ghd}), a state surface (\texttt{.fs}), and a decision log
+(\texttt{.hre}). We formalise this as a typed module composition with a
+linkage relation (\cref{sec:fourfile}).
+\end{enumerate}
+
+\subsection{Contributions and structure}
+
+This document is the language standard. Its contributions are:
+
+\begin{itemize}[leftmargin=1.4em]
+\item a precise lexical grammar (\cref{sec:lexical}) and context-free concrete
+grammar with a complete precedence hierarchy (\cref{sec:concrete});
+\item an abstract syntax and a desugaring translation that reduces the surface
+language to a small core (\cref{sec:abstract});
+\item the semantic domains, including a confidence algebra on $\Unit$ and the
+structures of points, floors, and corpora (\cref{sec:domains});
+\item a gradual type system with judgements for the functional core, the
+scientific-reasoning layer, and the probabilistic layer (\cref{sec:types});
+\item a big-step operational semantics for all of the above, including the
+argumentation semantics of propositions, the resolution semantics of points,
+and the four hybrid iteration constructs (\cref{sec:dynamics});
+\item the four-file execution model (\cref{sec:fourfile});
+\item and the metatheory: determinacy, type safety, evidence-semantics
+boundedness and monotonicity, and termination (\cref{sec:meta}).
+\end{itemize}
+
+\Cref{sec:examples} gives worked examples; \cref{sec:related} situates the
+language with respect to existing paradigms; \cref{sec:conclusion} concludes.
+
+\subsection{Metalanguage and notational conventions}
+\label{sec:notation}
+
+We use standard mathematical metalanguage. $\mathbb{N}$, $\mathbb{Z}$,
+$\mathbb{R}$ are the naturals, integers, reals; $\Unit$ is the closed unit
+interval. For a set $A$, $A^{*}$ is the set of finite sequences over $A$, and
+$\mathcal{M}_{\mathrm{f}}(A)$ the set of finite multisets over $A$. A finite
+partial map $f\colon A \rightharpoonup B$ has domain $\dom(f)$; $f[a\mapsto b]$
+is the update; $\varnothing$ is the empty map. We write $\overline{x}$ for a
+finite sequence $x_1,\dots,x_n$ whose length $|\overline{x}|=n$ is left
+implicit. Grammars are written in extended Backus--Naur form
+\citep{backus1959,naur1963}: $\nt{n}$ is a nonterminal, $\tm{k}$ a terminal,
+$\opt{\alpha}$ an optional phrase, $\rep{\alpha}$ zero-or-more repetition,
+$\alpha\bnfor\beta$ alternation. Inference rules are written
+$\frac{\text{premises}}{\text{conclusion}}$ with a rule name; double bars are
+not used. Semantic (denotation) brackets are $\sem{\cdot}$. Big-step evaluation
+is written with $\evalto$.
+
+\begin{convention}[Faithfulness]
+The grammar, types, and semantics in this document describe the language as a
+mathematical object. Where an implementation is mentioned it is only to fix the
+intended reading; the present text, not any implementation, is normative.
+\end{convention}
+
+% ===========================================================================
+\section{Lexical Structure}
+\label{sec:lexical}
+% ===========================================================================
+
+A Turbulance program is a finite sequence of Unicode code points. Lexical
+analysis partitions this sequence into a stream of \emph{tokens} after
+discarding layout and comments. The lexical grammar is regular
+\citep{kleene1956,thompson1968,hopcroft2006} and is given below as a set of
+regular definitions; tokenisation follows the maximal-munch (longest-match)
+rule, with keywords taking priority over identifiers.
+
+\subsection{Layout and comments}
+
+\emph{Whitespace} comprises the space, horizontal tab, carriage return, and
+line feed. Whitespace separates tokens and is otherwise insignificant except
+where noted (Turbulance uses explicit block delimiters; see
+\cref{rem:layout}). A \emph{comment} begins with \texttt{//} or \texttt{\#}
+and extends to the end of the line. Comments are lexically equivalent to
+whitespace.
+
+\subsection{Token classes}
+
+\begin{definition}[Lexical alphabet]
+The terminal alphabet $\Sigma_{\mathrm{lex}}$ consists of the token classes:
+\emph{keywords}, \emph{identifiers}, \emph{numeric literals}, \emph{string
+literals}, \emph{boolean literals}, \emph{operators}, and \emph{delimiters}.
+\end{definition}
+
+\paragraph{Identifiers and keywords.}
+\begin{align*}
+\nt{letter}     &\bnfeq \texttt{A}\bnfor\cdots\bnfor\texttt{Z}\bnfor
+                        \texttt{a}\bnfor\cdots\bnfor\texttt{z}\bnfor\texttt{\_}\\
+\nt{digit}      &\bnfeq \texttt{0}\bnfor\cdots\bnfor\texttt{9}\\
+\nt{ident}      &\bnfeq \nt{letter}\,\rep{\nt{letter}\bnfor\nt{digit}}
+\end{align*}
+An \nt{ident} that coincides with a keyword is lexed as that keyword. The
+\emph{keywords} of Turbulance are the reserved words
+\[
+\begin{array}{l}
+\tm{funxn}\ \tm{item}\ \tm{proposition}\ \tm{motion}\ \tm{evidence}\
+\tm{pattern}\ \tm{support}\ \tm{contradict}\ \tm{inconclusive}\\
+\tm{within}\ \tm{given}\ \tm{considering}\ \tm{for}\ \tm{each}\ \tm{in}\
+\tm{while}\ \tm{return}\ \tm{ensure}\ \tm{allow}\ \tm{research}\ \tm{cause}\\
+\tm{point}\ \tm{resolution}\ \tm{resolve}\ \tm{cycle}\ \tm{drift}\ \tm{flow}\
+\tm{roll}\ \tm{until}\ \tm{settled}\ \tm{over}\ \tm{on}\ \tm{goal}\\
+\tm{metacognitive}\ \tm{import}\ \tm{from}\ \tm{as}\ \tm{try}\ \tm{catch}\
+\tm{finally}\ \tm{project}\ \tm{sources}\ \tm{otherwise}\
+\tm{requirements}\\
+\tm{with\_confidence}\ \tm{true}\ \tm{false}\ \tm{and}\ \tm{or}\ \tm{not}.
+\end{array}
+\]
+The keyword for function definition is \tm{funxn} (not \texttt{function}); the
+keyword for binding is \tm{item} (not \texttt{var} or \texttt{let}); the
+conditional keyword is \tm{given} (not \texttt{if}). These choices are
+intrinsic to the language's vocabulary and are not abbreviations.
+
+\paragraph{Literals.}
+\begin{align*}
+\nt{num}    &\bnfeq \nt{digit}\,\rep{\nt{digit}}\;
+                    \opt{\texttt{.}\,\nt{digit}\,\rep{\nt{digit}}}\\
+\nt{string} &\bnfeq \texttt{"}\;\rep{\nt{schar}}\;\texttt{"}\\
+\nt{schar}  &\bnfeq \text{any code point except \texttt{"} and newline}
+                    \bnfor \texttt{\textbackslash}\,\nt{esc}\\
+\nt{esc}    &\bnfeq \texttt{n}\bnfor\texttt{t}\bnfor\texttt{r}\bnfor
+                    \texttt{"}\bnfor\texttt{\textbackslash}\\
+\nt{bool}   &\bnfeq \tm{true}\bnfor\tm{false}
+\end{align*}
+Numeric literals denote elements of $\mathbb{R}$ (the language does not
+distinguish a separate integer type at the value level; see
+\cref{sec:domains}); the type system nonetheless tracks a refinement
+\textsf{Num} that an implementation may represent with machine integers when
+the fractional part is absent.
+
+\paragraph{Operators and delimiters.}
+The operator tokens, in decreasing binding strength, are
+\[
+\texttt{.}\quad \texttt{!}\ \ (\text{unary})\quad \texttt{*}\ \texttt{/}\quad
+\texttt{+}\ \texttt{-}\quad \texttt{<}\ \texttt{>}\ \texttt{<=}\ \texttt{>=}
+\quad \texttt{==}\ \texttt{!=}\quad \texttt{\&\&}\quad \texttt{||}\quad
+\texttt{|}\ \texttt{|>}\quad \texttt{=>}\quad \texttt{=}.
+\]
+The delimiters are \texttt{( ) \{ \} [ ]} and the punctuators
+\texttt{,\ :\ ;\ .}\ . The colon \texttt{:} introduces a block (see
+\cref{sec:concrete}); the semicolon is an optional statement terminator.
+
+\begin{remark}[Block structure]
+\label{rem:layout}
+Turbulance delimits blocks explicitly. A block is either a brace-delimited
+sequence \texttt{\{}\,$\dots$\,\texttt{\}} or a colon-introduced suite
+\texttt{:}\,$\dots$ terminated by a dedent or an explicit block end, at the
+discretion of the concrete syntax in \cref{sec:concrete}. To keep the grammar
+context-free and layout-insensitive, we take the brace form as primitive and
+treat the colon-suite form as syntactic sugar that an implementation's reader
+expands to braces. All semantics in this document are stated over the
+brace-delimited abstract syntax.
+\end{remark}
+
+% ===========================================================================
+\section{Concrete Grammar}
+\label{sec:concrete}
+% ===========================================================================
+
+We now give the context-free grammar of Turbulance \citep{chomsky1956,aho2006}.
+The grammar is presented in EBNF; \cref{sec:abstract} maps it to abstract
+syntax. The start symbol is \nt{program}.
+
+\subsection{Programs and declarations}
+
+\begin{align*}
+\nt{program} &\bnfeq \rep{\nt{decl}}\\[2pt]
+\nt{decl}    &\bnfeq \nt{funDecl} \bnfor \nt{propDecl} \bnfor \nt{evidenceDecl}
+                     \bnfor \nt{patternDecl} \bnfor \nt{pointDecl}\\
+             &\bnfor \nt{goalDecl} \bnfor \nt{metaDecl} \bnfor \nt{importDecl}
+                     \bnfor \nt{projectDecl} \bnfor \nt{stmt}\\[4pt]
+\nt{funDecl} &\bnfeq \tm{funxn}\ \nt{ident}\
+                     \texttt{(}\ \opt{\nt{params}}\ \texttt{)}\ \texttt{:}\
+                     \nt{block}\\
+\nt{params}  &\bnfeq \nt{param}\ \rep{\texttt{,}\ \nt{param}}\\
+\nt{param}   &\bnfeq \nt{ident}\ \opt{\texttt{:}\ \nt{type}}\
+                     \opt{\texttt{=}\ \nt{expr}}\\[4pt]
+\nt{block}   &\bnfeq \texttt{\{}\ \rep{\nt{decl}}\ \texttt{\}}\\[4pt]
+\nt{importDecl}&\bnfeq \tm{import}\ \nt{ident}\ \opt{\tm{as}\ \nt{ident}}\\
+             &\bnfor \tm{from}\ \nt{ident}\ \tm{import}\
+                     \nt{ident}\ \rep{\texttt{,}\ \nt{ident}}\\[4pt]
+\nt{projectDecl}&\bnfeq \tm{project}\ \nt{ident}\ \nt{block}
+\end{align*}
+
+\subsection{The scientific-reasoning layer}
+
+\begin{align*}
+\nt{propDecl}  &\bnfeq \tm{proposition}\ \nt{ident}\ \texttt{:}\
+                       \nt{propBody}\\
+\nt{propBody}  &\bnfeq \texttt{\{}\ \rep{\nt{motionDecl}}\ \rep{\nt{stmt}}\
+                       \texttt{\}}\\
+\nt{motionDecl}&\bnfeq \tm{motion}\ \nt{ident}\
+                       \texttt{(}\ \nt{string}\ \texttt{)}\\[4pt]
+\nt{supportStmt}&\bnfeq \tm{support}\ \nt{ident}\
+                       \opt{\tm{with\_confidence}\ \texttt{(}\ \nt{expr}\
+                       \texttt{)}}\\
+\nt{contradictStmt}&\bnfeq \tm{contradict}\ \nt{ident}\
+                       \opt{\tm{with\_confidence}\ \texttt{(}\ \nt{expr}\
+                       \texttt{)}}\\
+\nt{inconclusiveStmt}&\bnfeq \tm{inconclusive}\
+                       \texttt{(}\ \nt{string}\ \texttt{)}\\[4pt]
+\nt{evidenceDecl}&\bnfeq \tm{evidence}\ \nt{ident}\ \texttt{:}\
+                       \tm{sources}\ \texttt{:}\ \rep{\nt{source}}\\
+\nt{source}    &\bnfeq \texttt{-}\ \nt{expr}\\[4pt]
+\nt{patternDecl}&\bnfeq \tm{pattern}\ \nt{ident}\ \texttt{:}\
+                       \nt{patternBody}\\
+\nt{patternBody}&\bnfeq \texttt{\{}\ \nt{signature}\ \opt{\nt{withinStmt}}\
+                       \texttt{\}}\\
+\nt{signature} &\bnfeq \texttt{signature}\ \texttt{:}\ \nt{string}\\[4pt]
+\nt{goalDecl}  &\bnfeq \tm{goal}\ \nt{ident}\ \texttt{:}\ \nt{goalBody}\\
+\nt{metaDecl}  &\bnfeq \tm{metacognitive}\ \nt{ident}\ \texttt{:}\
+                       \nt{metaBody}
+\end{align*}
+
+\subsection{The probabilistic layer}
+
+\begin{align*}
+\nt{pointDecl} &\bnfeq \tm{point}\ \nt{ident}\ \texttt{=}\ \nt{pointLit}\\
+\nt{pointLit}  &\bnfeq \texttt{\{}\ \nt{field}\
+                       \rep{\texttt{,}\ \nt{field}}\ \texttt{\}}\\
+\nt{field}     &\bnfeq \nt{ident}\ \texttt{:}\ \nt{expr}\\[4pt]
+\nt{resolveStmt}&\bnfeq \tm{resolution}\ \nt{ident}\
+                       \texttt{(}\ \opt{\nt{args}}\ \texttt{)}\\
+               &\bnfor \tm{resolve}\ \nt{expr}\ \opt{\nt{ctx}}\\
+\nt{ctx}       &\bnfeq \tm{given}\ \tm{context}\ \texttt{(}\ \nt{expr}\
+                       \texttt{)}\\[4pt]
+\nt{cycleStmt} &\bnfeq \tm{cycle}\ \nt{ident}\ \tm{over}\ \nt{expr}\
+                       \texttt{:}\ \nt{block}\\
+\nt{driftStmt} &\bnfeq \tm{drift}\ \nt{ident}\ \tm{in}\ \nt{expr}\
+                       \texttt{:}\ \nt{block}\\
+\nt{flowStmt}  &\bnfeq \tm{flow}\ \nt{ident}\ \tm{on}\ \nt{expr}\
+                       \texttt{:}\ \nt{block}\\
+\nt{rollStmt}  &\bnfeq \tm{roll}\ \tm{until}\ \tm{settled}\ \texttt{:}\
+                       \nt{block}
+\end{align*}
+
+\subsection{Statements and control flow}
+
+\begin{align*}
+\nt{stmt}      &\bnfeq \nt{itemStmt} \bnfor \nt{assign} \bnfor \nt{givenStmt}
+                       \bnfor \nt{withinStmt} \bnfor \nt{consideringStmt}\\
+               &\bnfor \nt{forStmt} \bnfor \nt{whileStmt} \bnfor \nt{returnStmt}
+                       \bnfor \nt{ensureStmt} \bnfor \nt{allowStmt}\\
+               &\bnfor \nt{researchStmt} \bnfor \nt{causeStmt}
+                       \bnfor \nt{supportStmt} \bnfor \nt{contradictStmt}\\
+               &\bnfor \nt{inconclusiveStmt} \bnfor \nt{resolveStmt}
+                       \bnfor \nt{cycleStmt} \bnfor \nt{driftStmt}\\
+               &\bnfor \nt{flowStmt} \bnfor \nt{rollStmt} \bnfor \nt{tryStmt}
+                       \bnfor \nt{exprStmt}\\[4pt]
+\nt{itemStmt}  &\bnfeq \tm{item}\ \nt{ident}\ \opt{\texttt{:}\ \nt{type}}\
+                       \texttt{=}\ \nt{expr}\\
+\nt{assign}    &\bnfeq \nt{lvalue}\ \texttt{=}\ \nt{expr}\\
+\nt{lvalue}    &\bnfeq \nt{ident} \bnfor \nt{expr}\,\texttt{.}\,\nt{ident}
+                       \bnfor \nt{expr}\,\texttt{[}\,\nt{expr}\,\texttt{]}\\[4pt]
+\nt{givenStmt} &\bnfeq \tm{given}\ \nt{expr}\ \texttt{:}\ \nt{block}\
+                       \opt{\tm{given}\ \tm{otherwise}\ \texttt{:}\ \nt{block}}\\
+\nt{withinStmt}&\bnfeq \tm{within}\ \nt{expr}\ \opt{\tm{as}\ \nt{ident}}\
+                       \texttt{:}\ \nt{block}\\
+\nt{consideringStmt}&\bnfeq \tm{considering}\ \nt{quant}\ \nt{ident}\ \tm{in}\
+                       \nt{expr}\ \texttt{:}\ \nt{block}\\
+\nt{quant}     &\bnfeq \texttt{all} \bnfor \texttt{these} \bnfor \texttt{item}
+                       \bnfor \varepsilon\\
+\nt{forStmt}   &\bnfeq \tm{for}\ \tm{each}\ \nt{ident}\ \tm{in}\ \nt{expr}\
+                       \texttt{:}\ \nt{block}\\
+\nt{whileStmt} &\bnfeq \tm{while}\ \nt{expr}\ \texttt{:}\ \nt{block}\\[4pt]
+\nt{returnStmt}&\bnfeq \tm{return}\ \opt{\nt{expr}}\\
+\nt{ensureStmt}&\bnfeq \tm{ensure}\ \nt{expr}\\
+\nt{allowStmt} &\bnfeq \tm{allow}\ \nt{expr}\\
+\nt{researchStmt}&\bnfeq \tm{research}\ \nt{expr}\\
+\nt{causeStmt} &\bnfeq \tm{cause}\ \nt{ident}\ \texttt{=}\ \nt{expr}\\
+\nt{tryStmt}   &\bnfeq \tm{try}\ \texttt{:}\ \nt{block}\
+                       \rep{\nt{catch}}\ \opt{\tm{finally}\ \texttt{:}\
+                       \nt{block}}\\
+\nt{catch}     &\bnfeq \tm{catch}\ \opt{\nt{ident}}\ \opt{\tm{as}\ \nt{ident}}\
+                       \texttt{:}\ \nt{block}\\
+\nt{exprStmt}  &\bnfeq \nt{expr}
+\end{align*}
+
+\subsection{Expressions and precedence}
+\label{sec:exprgrammar}
+
+The expression grammar is stratified to encode operator precedence and
+associativity, following the standard cascade \citep{aho2006}. Lower in the
+cascade binds tighter. The pipe operators \texttt{|} and \texttt{|>} compose a
+value with a function, threading the left operand as the first argument of the
+right (cf.\ the functional-composition and dataflow traditions
+\citep{wadler1992,backus1959}).
+
+\begin{align*}
+\nt{expr}       &\bnfeq \nt{pipe}\\
+\nt{pipe}       &\bnfeq \nt{or}\ \rep{(\texttt{|}\bnfor\texttt{|>})\ \nt{or}}\\
+\nt{or}         &\bnfeq \nt{and}\ \rep{\texttt{||}\ \nt{and}}\\
+\nt{and}        &\bnfeq \nt{equality}\ \rep{\texttt{\&\&}\ \nt{equality}}\\
+\nt{equality}   &\bnfeq \nt{comparison}\
+                        \rep{(\texttt{==}\bnfor\texttt{!=})\ \nt{comparison}}\\
+\nt{comparison} &\bnfeq \nt{term}\
+                        \rep{(\texttt{<}\bnfor\texttt{>}\bnfor\texttt{<=}
+                        \bnfor\texttt{>=})\ \nt{term}}\\
+\nt{term}       &\bnfeq \nt{factor}\
+                        \rep{(\texttt{+}\bnfor\texttt{-})\ \nt{factor}}\\
+\nt{factor}     &\bnfeq \nt{unary}\
+                        \rep{(\texttt{*}\bnfor\texttt{/})\ \nt{unary}}\\
+\nt{unary}      &\bnfeq (\texttt{!}\bnfor\texttt{-})\ \nt{unary}
+                        \bnfor \nt{call}\\
+\nt{call}       &\bnfeq \nt{primary}\
+                        \rep{\nt{callSuffix}}\\
+\nt{callSuffix} &\bnfeq \texttt{(}\ \opt{\nt{args}}\ \texttt{)}
+                        \bnfor \texttt{.}\ \nt{ident}
+                        \bnfor \texttt{[}\ \nt{expr}\ \texttt{]}\\
+\nt{args}       &\bnfeq \nt{expr}\ \rep{\texttt{,}\ \nt{expr}}\\
+\nt{primary}    &\bnfeq \nt{ident}\bnfor\nt{num}\bnfor\nt{string}\bnfor\nt{bool}
+                        \bnfor \texttt{(}\ \nt{expr}\ \texttt{)}\\
+                &\bnfor \nt{arrayLit}\bnfor\nt{mapLit}\\
+\nt{arrayLit}   &\bnfeq \texttt{[}\ \opt{\nt{args}}\ \texttt{]}\\
+\nt{mapLit}     &\bnfeq \texttt{\{}\ \opt{\nt{field}\
+                        \rep{\texttt{,}\ \nt{field}}}\ \texttt{\}}
+\end{align*}
+All binary operators are left-associative except assignment (\cref{sec:concrete}
+treats assignment as a statement, not an expression, so no associativity
+question arises). Unary operators are prefix and bind tighter than any binary
+operator but looser than call/index/member suffixes.
+
+\subsection{Types in the surface syntax}
+
+\begin{align*}
+\nt{type}  &\bnfeq \texttt{Str}\bnfor\texttt{Num}\bnfor\texttt{Bool}\bnfor
+                   \texttt{Unit}\bnfor\texttt{Value}\\
+           &\bnfor \texttt{TextUnit}\bnfor\texttt{Point}\bnfor\texttt{Points}
+                   \bnfor\texttt{Entity}\bnfor\texttt{Floor}\bnfor\texttt{Corpus}\\
+           &\bnfor \texttt{List}\,\texttt{[}\,\nt{type}\,\texttt{]}
+                   \bnfor \texttt{Map}\,\texttt{[}\,\nt{type}\,\texttt{]}\\
+           &\bnfor \nt{type}\ \texttt{=>}\ \nt{type}
+\end{align*}
+
+\begin{theorem}[Unambiguity of the core grammar]
+\label{thm:unambiguous}
+The grammar of \cref{sec:exprgrammar}, restricted to expressions, is
+unambiguous, and the full statement grammar is unambiguous up to the
+dangling-\tm{given} resolution that binds an \tm{otherwise} clause to the
+nearest preceding \tm{given}.
+\end{theorem}
+\begin{proof}[Proof sketch]
+The expression stratification assigns each operator a unique precedence level
+and left-associativity, so every operator string has a unique parse by the
+standard argument for precedence-cascade grammars \citep{aho2006}. Within a
+level, the left-recursive repetition $\rep{op\ \nt{e}}$ forces left grouping.
+The only statement-level ambiguity is the optional \tm{otherwise} clause, which
+is resolved by the nearest-match (most-closely-nested) rule, exactly as for the
+dangling-else of ALGOL-style languages \citep{naur1963}; with that rule fixed,
+every sentential form has a unique derivation. The remaining productions are
+$LL(1)$ after left-factoring of the \nt{stmt} alternatives, each of which is
+selected by a distinct leading keyword.
+\end{proof}
+
+% ===========================================================================
+\section{Abstract Syntax and Desugaring}
+\label{sec:abstract}
+% ===========================================================================
+
+The concrete grammar contains redundancy for the programmer's convenience. We
+reduce it to an \emph{abstract syntax} (a small core) by a structural
+desugaring $\mathcal{D}$. Semantics in \cref{sec:dynamics} are defined on the
+core.
+
+\subsection{Core abstract syntax}
+
+\begin{definition}[Core terms]
+\label{def:core}
+The core distinguishes \emph{expressions} $e$ and \emph{statements} $s$:
+\begin{align*}
+e &::= n \mid str \mid b \mid x \mid e \mathbin{\widehat{op}} e \mid
+       \widehat{\neg}\, e \mid e(\overline{e}) \mid e.\ell \mid e[e]
+       \mid [\overline{e}] \mid \{\overline{\ell : e}\}\\
+  &\quad\mid \mathsf{point}\{\overline{\ell:e}\}
+       \mid \mathsf{resolve}(e, \Strat) \mid \mathsf{textop}(\theta, e,
+       \overline{e})\\[3pt]
+s &::= \mathsf{item}\ x = e \mid x := e \mid \mathsf{seq}(\overline{s})
+       \mid \mathsf{given}(e, s, s) \mid \mathsf{within}(e, x, s)\\
+  &\quad\mid \mathsf{foreach}(x, e, s) \mid \mathsf{while}(e, s)
+       \mid \mathsf{return}(e) \mid \mathsf{ensure}(e) \mid \mathsf{fun}(f,
+       \overline{x{:}\tau}, s)\\
+  &\quad\mid \mathsf{prop}(P, \overline{M{:}str}, s)
+       \mid \mathsf{support}(M, e) \mid \mathsf{contradict}(M, e)
+       \mid \mathsf{inconc}(str)\\
+  &\quad\mid \mathsf{cycle}(x, e, s) \mid \mathsf{drift}(x, e, s)
+       \mid \mathsf{flow}(x, e, s) \mid \mathsf{roll}(s)\\
+  &\quad\mid \mathsf{consider}(\kappa, x, e, s)
+       \mid \mathsf{import}(\overline{\cdot}) \mid \mathsf{try}(s,
+       \overline{c}, s)
+\end{align*}
+where $x,f,P,M$ range over identifiers, $\ell$ over field labels, $\theta$ over
+text-operation tags, $\Strat$ over resolution strategies (\cref{sec:resolution}),
+$\kappa\in\{\mathsf{all},\mathsf{these},\mathsf{item}\}$ over the
+\tm{considering} quantifiers, and $\widehat{op},\widehat{\neg}$ over the binary
+and unary operators of \cref{sec:lexical}.
+\end{definition}
+
+\subsection{Desugaring}
+
+The translation $\mathcal{D}$ from concrete to core is homomorphic on shared
+constructs; the nontrivial clauses are:
+
+\begin{itemize}[leftmargin=1.4em]
+\item \textbf{Suites to blocks.} A colon-suite is mapped to a brace block
+(\cref{rem:layout}); a sequence of declarations/statements becomes
+$\mathsf{seq}(\dots)$.
+\item \textbf{Conditionals.} $\mathsf{given}\ e: s$ without an \tm{otherwise}
+desugars to $\mathsf{given}(e, \mathcal{D}\sem{s}, \mathsf{seq}())$; with an
+\tm{otherwise} clause $s'$, to $\mathsf{given}(e, \mathcal{D}\sem{s},
+\mathcal{D}\sem{s'})$.
+\item \textbf{Considering quantifiers.} $\mathsf{considering}\ \kappa\ x\
+\mathsf{in}\ e: s$ keeps $\kappa$; the default ($\varepsilon$) is
+$\mathsf{item}$. The \tm{all}/\tm{these} forms differ semantically in whether
+the body filters (\cref{sec:hybrid}).
+\item \textbf{Pipes.} $e_1\ \texttt{|}\ e_2 \;\mapsto\; e_2(\mathcal{D}\sem{e_1})$
+and $e_1\ \texttt{|>}\ e_2 \;\mapsto\; e_2(\mathcal{D}\sem{e_1})$ when $e_2$ is a
+call target; if $e_2 = g(\overline{a})$ then the left operand is inserted as the
+first argument: $g(\mathcal{D}\sem{e_1}, \overline{a})$.
+\item \textbf{Function defaults.} A parameter $x:\tau = e_0$ desugars to a
+guard at entry binding $x$ to $e_0$ when the corresponding argument is absent.
+\item \textbf{Pattern and evidence declarations} desugar to a $\mathsf{prop}$
+scaffold and a resource binding respectively (\cref{sec:propsem,sec:fourfile}).
+\item \textbf{Text operators.} An application of a text-operation keyword (e.g.\
+$\mathsf{divide}$, $\mathsf{summarize}$) on a \textsf{TextUnit} desugars to
+$\mathsf{textop}(\theta, e, \overline{e})$.
+\end{itemize}
+
+\begin{proposition}[Desugaring is meaning-preserving by definition]
+The dynamic semantics of \cref{sec:dynamics} is defined on core terms; the
+meaning of a concrete program $p$ is by definition the meaning of
+$\mathcal{D}\sem{p}$. Hence $\mathcal{D}$ is trivially adequate, and any two
+concrete programs with equal desugaring are observationally equivalent.
+\end{proposition}
+
+% ===========================================================================
+\section{Semantic Domains}
+\label{sec:domains}
+% ===========================================================================
+
+We fix the mathematical objects over which programs compute. The development
+follows the domain-theoretic tradition \citep{scott1976,stoy1977,winskel1993}
+but stays elementary: all domains here are sets (with order where needed), and
+recursion is handled operationally in \cref{sec:dynamics}.
+
+\subsection{Values}
+\label{sec:values}
+
+\begin{definition}[Values]
+\label{def:values}
+The set of \emph{values} $\Val$ is the least set closed under the following
+formation rules:
+\begin{align*}
+v ::=\ &\mathsf{str}(s) \mid \mathsf{num}(r) \mid \mathsf{bool}(b) \mid
+        \mathsf{none}
+      \mid \mathsf{list}(\overline{v}) \mid \mathsf{map}(m)\\
+     &\mid \mathsf{clo}(\overline{x{:}\tau}, s, \env) \mid \mathsf{tu}(s, m)
+      \mid \mathsf{pt}(p) \mid \mathsf{floor}(F) \mid \mathsf{ent}(p) \mid
+      \mathsf{corpus}(s)
+\end{align*}
+where $s\in\mathit{String}$, $r\in\mathbb{R}$, $b\in\mathbb{B}=\{\top,\bot\}$,
+$m\colon \mathit{Label}\rightharpoonup\Val$ a finite map, $\env$ an environment
+(\cref{sec:envs}), $p$ a point (\cref{sec:points}), and $F$ a floor
+(\cref{sec:points}). A \emph{text unit} $\mathsf{tu}(s,m)$ is a string with
+metadata; an \emph{entity} $\mathsf{ent}(p)$ is a point that has been resolved
+to determinate status.
+\end{definition}
+
+\subsection{The confidence algebra}
+\label{sec:confalg}
+
+Degrees of belief are elements of the unit interval. We equip $\Unit$ with two
+binary operations that govern, respectively, the \emph{accumulation} of
+independent corroborating evidence and the \emph{attenuation} of belief by
+opposing evidence. These operations are the algebraic heart of the language's
+treatment of uncertainty and are chosen to satisfy the axioms one expects of
+such combination \citep{cox1946,shafer1976,jaynes2003}.
+
+\begin{definition}[Confidence algebra]
+\label{def:confalg}
+The \emph{confidence algebra} is the structure
+$\Conf = (\Unit, \nor, \att, 0, 1, \le)$ where $\le$ is the usual order and,
+for $c,d\in\Unit$,
+\[
+c \nor d \;=\; 1-(1-c)(1-d), \jspace c \att d \;=\; c\,(1-d).
+\]
+The operation $\nor$ (\emph{noisy-or}, or probabilistic sum) accumulates
+support; $\att$ attenuates a belief $c$ by a counter-belief $d$.
+\end{definition}
+
+\begin{proposition}[Algebraic laws]
+\label{prop:conflaws}
+For all $c,d,e\in\Unit$:
+\begin{enumerate}[label=(\roman*),leftmargin=1.9em,nosep]
+\item $(\Unit,\nor,0)$ is a commutative monoid: $\nor$ is associative,
+commutative, and has unit $0$;
+\item $\nor$ is idempotent-free but \emph{inflationary}: $c \le c\nor d$ and
+$d \le c\nor d$, with $c\nor d \le 1$;
+\item $\nor$ is monotone in each argument; $1$ is absorbing
+($1\nor d = 1$);
+\item $\att$ is antitone in its second argument and monotone in its first;
+$c\att 0 = c$, $c \att 1 = 0$, and $0\le c\att d\le c$.
+\end{enumerate}
+\end{proposition}
+\begin{proof}
+(i) Writing $\bar c=1-c$, we have $c\nor d = 1-\bar c\bar d$, and
+$\overline{c\nor d}=\bar c\bar d$; since multiplication on $[0,1]$ is
+commutative, associative, with unit $1$, the map $c\mapsto\bar c$ is an
+isomorphism from $(\Unit,\nor,0)$ to $([0,1],\cdot,1)$, transporting all three
+laws. (ii) $c\nor d - c = (1-c)d \ge 0$, and $c\nor d\le 1$ because
+$\bar c\bar d\ge 0$. (iii) $\partial(c\nor d)/\partial c = 1-d\ge 0$; and
+$1\nor d = 1-0=1$. (iv) $\partial(c\att d)/\partial d=-c\le0$,
+$\partial(c\att d)/\partial c = 1-d\ge0$; the boundary values are immediate.
+\end{proof}
+
+\begin{remark}[Why noisy-or]
+Among associative, commutative, monotone combination rules on $\Unit$ with unit
+$0$ and top $1$ that treat sources as independent, the noisy-or is the unique
+one arising from the probability of at least one of independent Bernoulli
+events firing \citep{pearl1988}. It is the combination rule of the language's
+\emph{maximum-likelihood} aggregation strategy (\cref{sec:propsem}); other
+strategies use other combinators, all definable from $\nor,\att$, and the
+order.
+\end{remark}
+
+\subsection{Points, interpretations, floors, corpora}
+\label{sec:points}
+
+The probabilistic layer rests on the notion of a \emph{point}: a unit of
+meaning carrying its own uncertainty and a distribution over readings. This is
+the language-level reification of a fuzzy or ambiguous datum
+\citep{zadeh1965,hajek1998}.
+
+\begin{definition}[Interpretation, point]
+\label{def:point}
+An \emph{interpretation} is a pair $\iota=(m, p)$ with $m\in\mathit{String}$ a
+candidate meaning and $p\in\Unit$ its probability. A \emph{point} is a tuple
+\[
+p \;=\; \big(\mathit{content}\in\mathit{String},\;
+              \mathit{conf}\in\Unit,\;
+              I\in \mathit{Interp}^{*},\;
+              (\ell,u)\in\Unit^2 \big)
+\]
+where $I=\overline{(m_i,p_i)}$ is a finite list of interpretations subject to
+the sub-stochastic constraint $\sum_i p_i \le 1$, and $(\ell,u)$ with
+$\ell\le u$ are semantic bounds. The residual mass $1-\sum_i p_i$ is the
+probability of an \emph{unlisted} reading.
+\end{definition}
+
+\begin{definition}[Interpretation entropy and ambiguity]
+\label{def:entropy}
+For a point $p$ with interpretations $I=\overline{(m_i,p_i)}$ and $k=|I|\ge1$,
+the \emph{interpretation entropy} is the Shannon entropy
+\citep{shannon1948} of the normalised distribution
+$\hat p_i = p_i/\sum_j p_j$,
+\[
+H(p) \;=\; -\sum_{i=1}^{k}\hat p_i \log_2 \hat p_i,
+\]
+and the \emph{ambiguity} is $A(p)=H(p)/\log_2 k\in\Unit$ (with $A(p)=0$ when
+$k=1$). A point's \emph{intrinsic confidence} satisfies
+$\mathit{conf}(p) = 1 - A(p)$ when not otherwise specified.
+\end{definition}
+
+\begin{definition}[Floor, corpus]
+\label{def:floor}
+A \emph{floor} is a finite map $F\colon \mathit{Key}\rightharpoonup
+(\mathit{Point}\times\mathbb{R}_{\ge0})$ assigning to each key a point and a
+nonnegative weight; it is the language's \emph{probabilistic collection}, an
+iterable dictionary of weighted points. A \emph{corpus} is a value
+$\mathsf{corpus}(s)$ wrapping a body of text $s$ to be processed by stochastic
+traversal. The \emph{weight-normalised} iteration order of $F$ visits each
+$(k, p, w)$ with selection mass $w/\sum_{k'} w_{k'}$.
+\end{definition}
+
+\subsection{Environments, stores, and the trace}
+\label{sec:envs}
+
+\begin{definition}[Environment]
+An \emph{environment} $\env\colon \mathit{Var}\rightharpoonup\Val$ is a finite
+partial map from identifiers to values. The empty environment is $\varnothing$;
+update is $\env[x\mapsto v]$; lookup is $\env(x)$.
+\end{definition}
+
+Two distinguished components accompany the environment during the evaluation of
+a proposition or a hybrid loop and record, respectively, the state of an
+ongoing argument and the auxiliary confidences produced by probabilistic
+iteration.
+
+\begin{definition}[Debate state]
+\label{def:debate}
+A \emph{debate state} is a finite map
+$\Delta\colon \mathit{Motion}\rightharpoonup
+(\mathcal{M}_{\mathrm{f}}(\mathit{Ev})\times\mathcal{M}_{\mathrm{f}}
+(\mathit{Ev}))$ assigning to each motion a pair $(\mathsf{Aff},\mathsf{Con})$ of
+finite multisets of \emph{evidence items}. An evidence item is a triple
+$\eta=(\mathit{strength}\in\Unit, \mathit{conf}\in\Unit, \mathit{weight}\in
+\mathbb{R}_{\ge0})$.
+\end{definition}
+
+\begin{definition}[Configuration]
+A \emph{configuration} is a tuple $\langle \env, \Delta\rangle$. Evaluation
+threads a configuration; ordinary statements leave $\Delta$ unchanged, while
+$\mathsf{support}$/$\mathsf{contradict}$ statements extend it.
+\end{definition}
+
+% ===========================================================================
+\section{The Type System}
+\label{sec:types}
+% ===========================================================================
+
+Turbulance is dynamically typed with optional annotations and inference. We
+formalise this as a \emph{gradual} type system in the sense of
+\citet{siek2006}: a dynamic type $\dyn$ (written \texttt{Value} in source)
+together with a \emph{consistency} relation $\consistent$ lets annotated and
+unannotated code interoperate, while the fully annotated fragment enjoys the
+soundness theorem of \cref{sec:meta}.
+
+\subsection{Types and their order}
+
+\begin{definition}[Types]
+\label{def:types}
+The set of types is generated by
+\[
+\tau ::= \mathsf{Str}\mid\mathsf{Num}\mid\mathsf{Bool}\mid\mathsf{Unit}
+        \mid \mathsf{TextUnit} \mid \mathsf{Point}\mid\mathsf{Points}
+        \mid\mathsf{Entity}\mid\mathsf{Floor}\mid\mathsf{Corpus}
+        \mid \mathsf{List}[\tau]\mid\mathsf{Map}[\tau]\mid \tau\to\tau \mid
+        \dyn.
+\]
+$\dyn$ is the dynamic (unknown) type. We call a type \emph{static} if $\dyn$
+does not occur in it.
+\end{definition}
+
+\begin{definition}[Subtyping]
+\label{def:subtype}
+The subtype relation $\subtype$ is the least preorder containing:
+\[
+\mathsf{Entity}\subtype\mathsf{Point}, \jspace
+\mathsf{Point}\subtype\mathsf{Points}\ \text{is \emph{not} assumed},\jspace
+\mathsf{Points} \equiv \mathsf{List}[\mathsf{Point}],
+\]
+together with the covariant rules
+$\dfrac{\tau\subtype\tau'}{\mathsf{List}[\tau]\subtype\mathsf{List}[\tau']}$,
+$\dfrac{\tau\subtype\tau'}{\mathsf{Map}[\tau]\subtype\mathsf{Map}[\tau']}$, and
+the standard contravariant/covariant rule for functions
+$\dfrac{\tau_1'\subtype\tau_1 \quad \tau_2\subtype\tau_2'}
+       {\tau_1\to\tau_2 \subtype \tau_1'\to\tau_2'}$.
+A resolved point is a point (hence $\mathsf{Entity}\subtype\mathsf{Point}$); a
+\textsf{Points} value is a homogeneous list of points.
+\end{definition}
+
+\begin{definition}[Consistency]
+\label{def:consistency}
+The \emph{consistency} relation $\consistent$ is the least symmetric relation
+with
+\[
+\tau\consistent\tau,\jspace \dyn\consistent\tau,\jspace \tau\consistent\dyn,
+\]
+closed under the same structural rules as $\subtype$ (covariantly on
+constructors, contra/co on $\to$). Consistency is \emph{not} transitive;
+$\dyn\consistent\mathsf{Num}$ and $\dyn\consistent\mathsf{Str}$ do not give
+$\mathsf{Num}\consistent\mathsf{Str}$.
+\end{definition}
+
+We write $\tau \lesssim \tau'$ for ``$\tau$ is consistent with a subtype of
+$\tau'$'': $\exists\tau''.\ \tau\consistent\tau''\subtype\tau'$. This is the
+relation used at function application and assignment.
+
+\subsection{Typing judgements: expressions}
+
+A typing context $\Gam\colon\mathit{Var}\rightharpoonup\tau$ assigns types to
+variables. The expression judgement is $\Gam\vdash e:\tau$.
+
+\begin{gather*}
+\infrule{T-Num}{}{\Gam\vdash n:\mathsf{Num}} \jspace
+\infrule{T-Str}{}{\Gam\vdash str:\mathsf{Str}} \jspace
+\infrule{T-Bool}{}{\Gam\vdash b:\mathsf{Bool}} \\[10pt]
+\infrule{T-Var}{x\in\dom(\Gam)}{\Gam\vdash x:\Gam(x)} \jspace
+\infrule{T-None}{}{\Gam\vdash \mathsf{none}:\mathsf{Unit}}\\[10pt]
+\infrule{T-Arith}{\Gam\vdash e_1:\tau_1 \quad \tau_1\lesssim\mathsf{Num}\quad
+                  \Gam\vdash e_2:\tau_2 \quad \tau_2\lesssim\mathsf{Num}\quad
+                  op\in\{+,-,*,/\}}
+                 {\Gam\vdash e_1\mathbin{op}e_2:\mathsf{Num}}\\[10pt]
+\infrule{T-Cmp}{\Gam\vdash e_1:\tau_1\quad\Gam\vdash e_2:\tau_2\quad
+                \tau_1\consistent\tau_2\quad op\in\{<,>,\le,\ge,==,!=\}}
+               {\Gam\vdash e_1\mathbin{op}e_2:\mathsf{Bool}}\\[10pt]
+\infrule{T-Logic}{\Gam\vdash e_i:\tau_i\quad\tau_i\lesssim\mathsf{Bool}\
+                  (i=1,2)\quad op\in\{\&\&,||\}}
+                 {\Gam\vdash e_1\mathbin{op}e_2:\mathsf{Bool}}\\[10pt]
+\infrule{T-App}{\Gam\vdash e:\tau_f\quad \tau_f\consistent
+                (\tau_1\!\to\!\tau_2)\quad \Gam\vdash e_i:\tau_i'\quad
+                \tau_i'\lesssim\tau_1\ \text{(pointwise)}}
+               {\Gam\vdash e(\overline{e_i}):\tau_2}\\[10pt]
+\infrule{T-Idx}{\Gam\vdash e:\tau\quad \tau\lesssim\mathsf{List}[\tau']\quad
+                \Gam\vdash e':\tau''\quad\tau''\lesssim\mathsf{Num}}
+               {\Gam\vdash e[e']:\tau'} \jspace
+\infrule{T-Mem}{\Gam\vdash e:\tau\quad \tau\lesssim\mathsf{Map}[\tau']}
+              {\Gam\vdash e.\ell:\tau'}\\[10pt]
+\infrule{T-Pipe}{\Gam\vdash e_1:\tau_1\quad\Gam\vdash e_2:\tau_2\quad
+                 \tau_2\consistent(\tau_1\!\to\!\tau_3)}
+                {\Gam\vdash e_1\mathbin{|}e_2:\tau_3}\\[10pt]
+\infrule{T-Point}{\Gam\vdash e_{\mathit{content}}:\tau_c\quad
+                  \tau_c\lesssim\mathsf{Str}\quad
+                  \Gam\vdash e_{\mathit{conf}}:\tau_k\quad
+                  \tau_k\lesssim\mathsf{Num}}
+                 {\Gam\vdash \mathsf{point}\{\dots\}:\mathsf{Point}}\\[10pt]
+\infrule{T-Resolve}{\Gam\vdash e:\tau\quad\tau\lesssim\mathsf{Point}}
+                   {\Gam\vdash \mathsf{resolve}(e,\Strat):\mathsf{Entity}}
+\end{gather*}
+The rule \rn{T-Resolve} captures the central typing fact of the probabilistic
+layer: \emph{resolving a point yields an entity}---a value whose ambiguity has
+been discharged.
+
+\subsection{Typing judgements: statements}
+
+The statement judgement is $\Gam\vdash s\dashv\Gam'$: under $\Gam$, statement
+$s$ is well-typed and \emph{produces} the extended context $\Gam'$ (binding
+introductions flow rightward).
+
+\begin{gather*}
+\infrule{T-Item}{\Gam\vdash e:\tau'\quad \tau'\lesssim\tau}
+               {\Gam\vdash (\mathsf{item}\ x{:}\tau = e)\dashv\Gam[x\mapsto\tau]}
+\jspace
+\infrule{T-ItemDyn}{\Gam\vdash e:\tau}
+               {\Gam\vdash (\mathsf{item}\ x = e)\dashv\Gam[x\mapsto\tau]}\\[10pt]
+\infrule{T-Assign}{x\in\dom(\Gam)\quad \Gam\vdash e:\tau'\quad
+                   \tau'\lesssim\Gam(x)}
+                  {\Gam\vdash (x := e)\dashv\Gam}\\[10pt]
+\infrule{T-Seq}{\Gam\vdash s_1\dashv\Gam_1 \quad
+                \Gam_1\vdash s_2\dashv\Gam_2}
+               {\Gam\vdash \mathsf{seq}(s_1,s_2)\dashv\Gam_2}\\[10pt]
+\infrule{T-Given}{\Gam\vdash e:\tau\quad\tau\lesssim\mathsf{Bool}\quad
+                  \Gam\vdash s_1\dashv\Gam_1\quad\Gam\vdash s_2\dashv\Gam_2}
+                 {\Gam\vdash\mathsf{given}(e,s_1,s_2)\dashv\Gam}\\[10pt]
+\infrule{T-Foreach}{\Gam\vdash e:\tau\quad\tau\lesssim\mathsf{List}[\tau']\quad
+                    \Gam[x\mapsto\tau']\vdash s\dashv\Gam'}
+                   {\Gam\vdash\mathsf{foreach}(x,e,s)\dashv\Gam}\\[10pt]
+\infrule{T-While}{\Gam\vdash e:\tau\quad\tau\lesssim\mathsf{Bool}\quad
+                  \Gam\vdash s\dashv\Gam'}
+                 {\Gam\vdash\mathsf{while}(e,s)\dashv\Gam}\\[10pt]
+\infrule{T-Within}{\Gam\vdash e:\tau\quad
+                   \Gam[x\mapsto\tau]\vdash s\dashv\Gam'}
+                  {\Gam\vdash\mathsf{within}(e,x,s)\dashv\Gam}\\[10pt]
+\infrule{T-Ensure}{\Gam\vdash e:\tau\quad\tau\lesssim\mathsf{Bool}}
+                  {\Gam\vdash\mathsf{ensure}(e)\dashv\Gam}\jspace
+\infrule{T-Return}{\Gam\vdash e:\tau}
+                  {\Gam\vdash\mathsf{return}(e)\dashv\Gam}\\[10pt]
+\infrule{T-Fun}{\Gam[\overline{x\mapsto\tau}]\vdash s\dashv\Gam'\quad
+                \Gam'\ \text{returns}\ \tau_r}
+               {\Gam\vdash\mathsf{fun}(f,\overline{x{:}\tau},s)\dashv
+                \Gam[f\mapsto\overline{\tau}\to\tau_r]}
+\end{gather*}
+The judgement ``$\Gam'$ returns $\tau_r$'' holds when every $\mathsf{return}(e)$
+on a control path through the body has $\Gam'\vdash e:\tau_e$ with
+$\tau_e\lesssim\tau_r$, and $\tau_r$ is the least upper bound (in $\subtype$) of
+those $\tau_e$, or $\mathsf{Unit}$ if there is no return.
+
+\subsection{Typing the scientific-reasoning layer}
+
+\begin{gather*}
+\infrule{T-Prop}{\overline{M}\ \text{distinct}\quad
+                 \Gam,\ \overline{M{:}\mathsf{Motion}}\vdash s\dashv\Gam'}
+                {\Gam\vdash\mathsf{prop}(P,\overline{M{:}str},s)\dashv
+                 \Gam[P\mapsto\mathsf{Prop}]}\\[10pt]
+\infrule{T-Support}{\Gam(M)=\mathsf{Motion}\quad
+                    \Gam\vdash e:\tau\quad\tau\lesssim\mathsf{Num}}
+                   {\Gam\vdash\mathsf{support}(M,e)\dashv\Gam}\jspace
+\infrule{T-Contra}{\Gam(M)=\mathsf{Motion}\quad
+                    \Gam\vdash e:\tau\quad\tau\lesssim\mathsf{Num}}
+                   {\Gam\vdash\mathsf{contradict}(M,e)\dashv\Gam}
+\end{gather*}
+A $\mathsf{support}$ or $\mathsf{contradict}$ statement is well-typed only
+inside the scope of a proposition that declares the named motion; the
+type \textsf{Motion} is in scope exactly within \rn{T-Prop}'s premise. The
+confidence expression, when present, must be numeric (and is clamped to
+$\Unit$ at runtime; \cref{sec:propsem}).
+
+\subsection{Typing the hybrid iteration constructs}
+
+\begin{gather*}
+\infrule{T-Cycle}{\Gam\vdash e:\tau\quad\tau\lesssim\mathsf{Floor}\quad
+                  \Gam[x\mapsto\mathsf{Point}]\vdash s\dashv\Gam'}
+                 {\Gam\vdash\mathsf{cycle}(x,e,s)\dashv\Gam}\jspace
+\infrule{T-Drift}{\Gam\vdash e:\tau\quad\tau\lesssim\mathsf{Corpus}\quad
+                  \Gam[x\mapsto\mathsf{Str}]\vdash s\dashv\Gam'}
+                 {\Gam\vdash\mathsf{drift}(x,e,s)\dashv\Gam}\\[10pt]
+\infrule{T-Flow}{\Gam\vdash e:\tau\quad\tau\lesssim\mathsf{Floor}\quad
+                 \Gam[x\mapsto\mathsf{Str}]\vdash s\dashv\Gam'}
+                {\Gam\vdash\mathsf{flow}(x,e,s)\dashv\Gam}\jspace
+\infrule{T-Roll}{\Gam\vdash s\dashv\Gam'}
+               {\Gam\vdash\mathsf{roll}(s)\dashv\Gam}\\[10pt]
+\infrule{T-Consider}{\Gam\vdash e:\tau\quad\tau\lesssim\mathsf{Corpus}\
+                     \text{or}\ \tau\lesssim\mathsf{List}[\tau'']\quad
+                     \Gam[x\mapsto\tau_x]\vdash s\dashv\Gam'}
+                    {\Gam\vdash\mathsf{consider}(\kappa,x,e,s)\dashv\Gam}
+\end{gather*}
+where $\tau_x=\mathsf{Str}$ when $\tau\lesssim\mathsf{Corpus}$ and
+$\tau_x=\tau''$ otherwise. Inside a hybrid loop the implementation binds the
+distinguished auxiliary variables \texttt{current\_weight},
+\texttt{current\_confidence}, \texttt{current\_mode}, \texttt{current\_settled}
+(\cref{sec:hybrid}); these are typed \textsf{Num}, \textsf{Num}, \textsf{Str},
+\textsf{Bool} respectively in $\Gam'$ within $s$.
+
+% ===========================================================================
+\section{Operational Semantics}
+\label{sec:dynamics}
+% ===========================================================================
+
+We give a big-step (natural) operational semantics \citep{kahn1987,winskel1993}.
+Expression evaluation has the form
+$\langle e,\env\rangle \evalto \langle v,\env'\rangle$, allowing calls to have
+effects on the environment; statement evaluation has the form
+$\langle s,\env,\Delta\rangle \evalto \langle\kappa,\env',\Delta'\rangle$,
+where the \emph{completion} $\kappa\in\{\nrm\}\cup\{\ret\,v : v\in\Val\}$
+records whether the statement finished normally or returned. A configuration
+that matches no rule \emph{goes wrong}, written $\wrong$; \cref{sec:meta} shows
+the static fragment never goes wrong.
+
+\subsection{Expressions}
+\label{sec:exprsem}
+
+\begin{gather*}
+\infrule{E-Lit}{}{\langle \mathit{lit},\env\rangle\evalto\langle
+                  \sem{\mathit{lit}},\env\rangle}\jspace
+\infrule{E-Var}{x\in\dom(\env)}{\langle x,\env\rangle\evalto\langle
+                  \env(x),\env\rangle}\\[10pt]
+\infrule{E-Bin}{\langle e_1,\env\rangle\evalto\langle v_1,\env_1\rangle\quad
+                \langle e_2,\env_1\rangle\evalto\langle v_2,\env_2\rangle\quad
+                v=\sem{op}(v_1,v_2)}
+               {\langle e_1\mathbin{op}e_2,\env\rangle\evalto\langle
+                v,\env_2\rangle}\\[10pt]
+\infrule{E-App}{\langle e,\env\rangle\evalto\langle
+                \mathsf{clo}(\overline{x{:}\tau},s,\env_0),\env_1\rangle\quad
+                \langle \overline{e_i},\env_1\rangle\evalto\langle
+                \overline{v_i},\env_2\rangle}
+               {\langle e(\overline{e_i}),\env\rangle\evalto\langle
+                v,\env_2\rangle}\\
+\text{where}\quad
+\langle s,\ \env_0[\overline{x\mapsto v_i}],\ \Delta_\bot\rangle\evalto
+\langle \ret\,v,\ \env_3,\ \Delta_\bot\rangle,\quad
+\text{or}\ v=\mathsf{none}\ \text{if completion is }\nrm.\\[10pt]
+\infrule{E-Idx}{\langle e,\env\rangle\evalto\langle\mathsf{list}(\overline{v}),
+                \env_1\rangle\quad
+                \langle e',\env_1\rangle\evalto\langle\mathsf{num}(i),
+                \env_2\rangle\quad 0\le i<|\overline{v}|}
+               {\langle e[e'],\env\rangle\evalto\langle v_{\lfloor i\rfloor},
+                \env_2\rangle}
+\end{gather*}
+Here $\sem{op}$ denotes the strict mathematical operation on values (numeric
+arithmetic, comparison returning $\mathsf{bool}$, logical connectives with the
+usual short-circuit reading for \texttt{\&\&},\texttt{||}); $\Delta_\bot$ is the
+empty debate state used when no proposition is in scope. \rn{E-App} uses
+call-by-value and lexical scope: the closure's captured environment $\env_0$ is
+extended with the arguments.
+
+\subsection{Statements and control flow}
+
+\begin{gather*}
+\infrule{S-Item}{\langle e,\env\rangle\evalto\langle v,\env_1\rangle}
+               {\langle \mathsf{item}\ x=e,\env,\Delta\rangle\evalto
+                \langle \nrm,\env_1[x\mapsto v],\Delta\rangle}\\[10pt]
+\infrule{S-Seq1}{\langle s_1,\env,\Delta\rangle\evalto\langle\nrm,\env_1,
+                 \Delta_1\rangle\quad
+                 \langle s_2,\env_1,\Delta_1\rangle\evalto\langle\kappa,\env_2,
+                 \Delta_2\rangle}
+                {\langle \mathsf{seq}(s_1,s_2),\env,\Delta\rangle\evalto
+                 \langle\kappa,\env_2,\Delta_2\rangle}\\[10pt]
+\infrule{S-Seq2}{\langle s_1,\env,\Delta\rangle\evalto\langle\ret\,v,\env_1,
+                 \Delta_1\rangle}
+                {\langle \mathsf{seq}(s_1,s_2),\env,\Delta\rangle\evalto
+                 \langle\ret\,v,\env_1,\Delta_1\rangle}\\[10pt]
+\infrule{S-GivenT}{\langle e,\env\rangle\evalto\langle\mathsf{bool}(\top),
+                   \env_1\rangle\quad
+                   \langle s_1,\env_1,\Delta\rangle\evalto\langle\kappa,\env_2,
+                   \Delta_2\rangle}
+                  {\langle\mathsf{given}(e,s_1,s_2),\env,\Delta\rangle\evalto
+                   \langle\kappa,\env_2,\Delta_2\rangle}\\[10pt]
+\infrule{S-GivenF}{\langle e,\env\rangle\evalto\langle\mathsf{bool}(\bot),
+                   \env_1\rangle\quad
+                   \langle s_2,\env_1,\Delta\rangle\evalto\langle\kappa,\env_2,
+                   \Delta_2\rangle}
+                  {\langle\mathsf{given}(e,s_1,s_2),\env,\Delta\rangle\evalto
+                   \langle\kappa,\env_2,\Delta_2\rangle}\\[10pt]
+\infrule{S-Ret}{\langle e,\env\rangle\evalto\langle v,\env_1\rangle}
+              {\langle\mathsf{return}(e),\env,\Delta\rangle\evalto\langle
+               \ret\,v,\env_1,\Delta\rangle}\\[10pt]
+\infrule{S-EnsT}{\langle e,\env\rangle\evalto\langle\mathsf{bool}(\top),
+                 \env_1\rangle}
+                {\langle\mathsf{ensure}(e),\env,\Delta\rangle\evalto\langle
+                 \nrm,\env_1,\Delta\rangle}\jspace
+\infrule{S-EnsF}{\langle e,\env\rangle\evalto\langle\mathsf{bool}(\bot),
+                 \env_1\rangle}
+                {\langle\mathsf{ensure}(e),\env,\Delta\rangle\evalto\wrong}
+\end{gather*}
+The rule \rn{S-EnsF} gives $\mathsf{ensure}$ its meaning as an assertion in the
+sense of \citet{hoare1969}: a failed ensure aborts the computation. The
+$\mathsf{given}$ construct is the language's guarded command
+\citep{dijkstra1975}; with the desugaring of \cref{sec:abstract} a missing
+\tm{otherwise} branch is the no-op $\mathsf{seq}()$.
+
+\paragraph{Bounded and unbounded iteration.}
+For $\mathsf{foreach}(x,e,s)$ with $\langle e,\env\rangle\evalto\langle
+\mathsf{list}(v_1\cdots v_n),\env_1\rangle$, evaluation runs $s$ once per
+element, threading the configuration and stopping early on a $\ret$:
+\[
+\infrule{S-For}{\langle e,\env\rangle\evalto\langle\mathsf{list}(\overline{v}),
+                \env_1\rangle\quad
+                \langle s, \env_1[x\mapsto v_1],\Delta\rangle\evalto\cdots
+                \evalto\langle\kappa,\env_n,\Delta_n\rangle}
+               {\langle\mathsf{foreach}(x,e,s),\env,\Delta\rangle\evalto
+                \langle\kappa',\env_n,\Delta_n\rangle}
+\]
+where $\kappa'$ is $\ret\,v$ if any iteration returned (the first such, after
+which iteration stops) and $\nrm$ otherwise. The rule for $\mathsf{while}$ is
+the usual unfolding and need not terminate.
+
+\subsection{Within: scoped structural traversal}
+
+The $\mathsf{within}(e,x,s)$ construct evaluates $e$ to a structured value and
+runs $s$ with $x$ bound to it, providing a scope for pattern-guarded actions;
+when $e$ denotes a collection the body is run once per constituent. It is the
+structural counterpart of $\mathsf{foreach}$ specialised to semantic units
+(text units, points): the body typically contains $\mathsf{given}$ guards that
+fire $\mathsf{support}$/$\mathsf{contradict}$.
+
+\[
+\infrule{S-Within}{\langle e,\env\rangle\evalto\langle v,\env_1\rangle\quad
+                   \langle s,\env_1[x\mapsto v],\Delta\rangle\evalto
+                   \langle\kappa,\env_2,\Delta_2\rangle}
+                  {\langle\mathsf{within}(e,x,s),\env,\Delta\rangle\evalto
+                   \langle\kappa,\env_2,\Delta_2\rangle}
+\]
+
+\subsection{Propositions: an argumentation semantics}
+\label{sec:propsem}
+
+Evaluating a proposition runs its body in a fresh debate state, then scores each
+motion under a resolution strategy and aggregates to a proposition verdict. This
+realises inference as a defeasible argument \citep{toulmin1958,dung1995,
+besnard2008} rather than a deduction.
+
+\begin{gather*}
+\infrule{S-Prop}{\Delta_0=[\,\overline{M\mapsto(\varnothing,\varnothing)}\,]\quad
+                 \langle s,\env,\Delta_0\rangle\evalto\langle\_,\env_1,
+                 \Delta_1\rangle}
+                {\langle\mathsf{prop}(P,\overline{M{:}str},s),\env,\Delta\rangle
+                 \evalto\langle\nrm,\env_1[P\mapsto
+                 \mathsf{verdict}_\Strat(\Delta_1)],\Delta\rangle}
+\end{gather*}
+The body's $\mathsf{support}$ and $\mathsf{contradict}$ statements extend the
+\emph{inner} debate state $\Delta_0$:
+\begin{gather*}
+\infrule{S-Sup}{\langle e,\env\rangle\evalto\langle\mathsf{num}(c),\env_1
+                \rangle\quad c'=\mathrm{clip}_{\Unit}(c)\quad
+                \eta=(c',c',1)}
+               {\langle\mathsf{support}(M,e),\env,\Delta\rangle\evalto
+                \langle\nrm,\env_1,\Delta[M\mathbin{+\!\!=}_{\mathsf{Aff}}\eta]
+                \rangle}\\[10pt]
+\infrule{S-Con}{\langle e,\env\rangle\evalto\langle\mathsf{num}(c),\env_1
+                \rangle\quad c'=\mathrm{clip}_{\Unit}(c)\quad
+                \eta=(c',c',1)}
+               {\langle\mathsf{contradict}(M,e),\env,\Delta\rangle\evalto
+                \langle\nrm,\env_1,\Delta[M\mathbin{+\!\!=}_{\mathsf{Con}}\eta]
+                \rangle}
+\end{gather*}
+where $\Delta[M\mathbin{+\!\!=}_{\mathsf{Aff}}\eta]$ adds $\eta$ to the
+affirmation multiset of $M$ (symmetrically for $\mathsf{Con}$), and the default
+confidence (when $\tm{with\_confidence}$ is omitted) is $c'=1$.
+
+\begin{definition}[Motion score and proposition verdict]
+\label{def:score}
+Fix a strategy $\Strat$. For a motion $M$ with
+$\Delta(M)=(\mathsf{Aff},\mathsf{Con})$ define the \emph{motion score}
+$\mathrm{score}_\Strat(M)\in\Unit$. For the four basic strategies, writing
+$a_i=(\mathit{str}_i,\mathit{cf}_i,w_i)$ for affirmations and $b_j$ for
+contentions, with $W=\sum_i w_i+\sum_j w_j$:
+\begin{align*}
+\textsc{MaxLik}:\quad& \mathrm{score}=\mathrm{clip}_\Unit\!\Big(
+   \tfrac{1}{W}\big(\textstyle\sum_i w_i\,\mathit{str}_i\,\mathit{cf}_i
+   -\sum_j w_j\,\mathit{str}_j\,\mathit{cf}_j\big)\Big),\\
+\textsc{Bayes}:\quad& \mathrm{score}=\textstyle\prod_i
+   \mathrm{post}(\,\cdot\,;a_i)\ \text{starting from prior } \tfrac12,\
+   \text{updated by } a_i,b_j\ \text{as likelihoods},\\
+\textsc{Conserv}:\quad& \mathrm{score}=\max\!\big(0,\ \textsc{MaxLik}
+   -\lambda\textstyle\sum_j w_j\,\mathit{str}_j\big),\\
+\textsc{Explor}:\quad& \mathrm{score}=\min\!\big(1,\ \textsc{MaxLik}
+   +\mu\textstyle\sum_i w_i\,\mathit{str}_i\big),
+\end{align*}
+with fixed penalty/boost constants $\lambda,\mu\in\Unit$. The \emph{verdict} of
+a motion is
+\[
+\mathrm{verdict}(M)=\begin{cases}
+\textsf{Supported} & \mathrm{score}_\Strat(M)\ge\theta_+\\
+\textsf{Contradicted} & \mathrm{score}_\Strat(M)\le\theta_-\\
+\textsf{Inconclusive} & \text{otherwise,}
+\end{cases}
+\]
+for thresholds $0\le\theta_-<\theta_+\le1$, and the \emph{proposition verdict}
+$\mathrm{verdict}_\Strat(\Delta)$ aggregates the motions: it is the pair
+$\big(\overline{(M,\mathrm{score}_\Strat(M),\mathrm{verdict}(M))},\,
+\bar{c}\big)$ with overall confidence $\bar c=\mathrm{score}$ combined across
+motions by the strategy's combinator ($\nor$ for \textsc{MaxLik}).
+\end{definition}
+
+\begin{remark}[Faithfulness to a debate]
+Definition~\ref{def:score} is a quantitative instance of Dung's abstract
+argumentation \citep{dung1995}: affirmations and contentions are arguments,
+$\mathsf{contradict}$ is an attack, and the score is a graded acceptability
+under the chosen semantics. The strategy is an explicit parameter, making the
+basis of every conclusion inspectable.
+\end{remark}
+
+\subsection{Points and resolution}
+\label{sec:resolution}
+
+A \emph{resolution strategy} is a function that collapses a point's
+interpretation distribution to a determinate outcome
+\citep{kozen1981,mciver2005}. We give the canonical strategies; each maps a
+point $p$ with normalised interpretations $\overline{(m_i,\hat p_i)}$ to a
+\emph{resolution result}.
+
+\begin{definition}[Resolution results and strategies]
+\label{def:resolution}
+A \emph{resolution result} is one of
+\[
+\mathsf{Certain}(v)\ \mid\ \mathsf{Uncertain}(\overline{(v_i,\hat p_i)},
+(\ell,u),\bar c)\ \mid\ \mathsf{Fuzzy}(\phi,\bar t,\sigma),
+\]
+where $\phi$ is a membership function $\Val\to\Unit$, $\bar t$ its central
+tendency, $\sigma$ its spread. For a fixed acceptance threshold $\theta$:
+\begin{align*}
+\textsc{MaxLik}(p)&=\begin{cases}
+  \mathsf{Certain}(m_{i^\ast}) & \hat p_{i^\ast}\ge\theta,\ i^\ast=\arg\max_i
+   \hat p_i,\\
+  \mathsf{Uncertain}(\overline{(m_i,\hat p_i)},\mathrm{CI},1-A(p)) &
+   \text{otherwise;}\end{cases}\\
+\textsc{Bayes}(p)&=\textsc{MaxLik}\ \text{on the posterior } \hat p_i\propto
+   \hat p_i\cdot\mathrm{prior}(m_i);\\
+\textsc{Conserv}(p)&=\mathsf{Certain}(m_{i^\circ}),\quad
+   i^\circ=\arg\min_i \mathrm{risk}(m_i)\ \text{(safest reading)};\\
+\textsc{Explor}(p)&=\mathsf{Certain}(m_{i^\bullet}),\quad
+   i^\bullet=\arg\max_i \mathrm{info}(m_i)\ \text{(most informative)};\\
+\textsc{Full}(p)&=\mathsf{Uncertain}(\overline{(m_i,\hat p_i)},\mathrm{CI},
+   1-A(p)).
+\end{align*}
+\end{definition}
+
+\begin{gather*}
+\infrule{S-Resolve}{\langle e,\env\rangle\evalto\langle\mathsf{pt}(p),\env_1
+                    \rangle\quad
+                    \mathsf{res}=\Strat(p)\quad v=\mathsf{ent}(\widehat{p})}
+                   {\langle\mathsf{resolve}(e,\Strat),\env,\Delta\rangle
+                    \evalto\langle\nrm,\env_1[\_\mapsto v],\Delta\rangle}
+\end{gather*}
+where $\widehat p$ is $p$ with its interpretation set collapsed according to
+$\mathsf{res}$ (a singleton for $\mathsf{Certain}$, the full set otherwise) and
+its confidence updated to the result's $\bar c$. Resolving an already-determinate
+entity is the identity.
+
+\subsection{The four hybrid iteration constructs}
+\label{sec:hybrid}
+
+The four constructs $\mathsf{cycle}$, $\mathsf{drift}$, $\mathsf{flow}$,
+$\mathsf{roll}$ are instances of one schema: bind a loop variable and a set of
+auxiliary confidences, run the body, accumulate. They differ in the
+\emph{source} they traverse and in which auxiliaries they expose. We write
+$\env\!\Downarrow$ to abbreviate threading through the body.
+
+\paragraph{Cycle (deterministic traversal of a floor).}
+$\mathsf{cycle}(x,e,s)$ evaluates $e$ to a floor $F$ and runs $s$ once per
+entry in weight-normalised order, binding $x$ to the point's content and
+\texttt{current\_weight} to the entry weight.
+\[
+\infrule{S-Cycle}{\langle e,\env\rangle\evalto\langle\mathsf{floor}(F),\env_1
+                  \rangle\quad
+                  \overline{(k_t,p_t,w_t)}=\mathrm{iter}(F)\quad
+                  \langle s,\env_1[x\mapsto\mathsf{str}(\mathit{content}(p_t)),
+                  \texttt{current\_weight}\mapsto\mathsf{num}(w_t)],\Delta\rangle
+                  \evalto\cdots}
+                 {\langle\mathsf{cycle}(x,e,s),\env,\Delta\rangle\evalto
+                  \langle\nrm,\env_n,\Delta_n\rangle}
+\]
+
+\paragraph{Drift (stochastic traversal of a corpus).}
+$\mathsf{drift}(x,e,s)$ evaluates $e$ to a corpus, draws a sequence of text
+fragments by the implementation's sampling procedure, and runs $s$ per fragment,
+binding $x$ to the fragment, \texttt{current\_confidence} to the fragment's
+running confidence, and \texttt{current\_mode} to the processing mode. Sampling
+is the only source of nondeterminism in the language; we model it as an oracle
+$\mathcal{O}$ that the judgement is parameterised by, so that
+$\langle s,\dots\rangle\evalto_\mathcal{O}\langle\dots\rangle$ is deterministic
+given $\mathcal{O}$ (cf.\ \cref{thm:determinacy}).
+\[
+\infrule{S-Drift}{\langle e,\env\rangle\evalto\langle\mathsf{corpus}(s_0),\env_1
+                  \rangle\quad \overline{f_t}=\mathcal{O}(s_0)\quad
+                  \langle s,\env_1[x\mapsto\mathsf{str}(f_t),
+                  \texttt{current\_confidence}\mapsto\mathsf{num}(c_t)],\Delta
+                  \rangle\evalto\cdots}
+                 {\langle\mathsf{drift}(x,e,s),\env,\Delta\rangle\evalto_
+                  \mathcal{O}\langle\nrm,\env_n,\Delta_n\rangle}
+\]
+
+\paragraph{Flow (streaming over the lines of a source).}
+$\mathsf{flow}(x,e,s)$ treats its source as a sequence of lines, running $s$ per
+line and binding \texttt{current\_settled} to whether the line's processing has
+converged. It is deterministic.
+
+\paragraph{Roll (iterate to a fixpoint).}
+$\mathsf{roll}(s)$ repeats $s$ until a convergence predicate holds, binding
+\texttt{settled}, \texttt{final\_confidence}, and \texttt{iterations}. Let
+$\Phi$ be the per-iteration update on the ambient confidence
+$c\in\Unit$ induced by $s$ (a $\mathsf{resolve}/\mathsf{guess}$ step), and let
+the convergence predicate be $\mathrm{settled}(c)\equiv c\ge\theta_{\mathrm{conv}}$
+or a small-change criterion $|c'-c|<\epsilon$.
+\[
+\infrule{S-Roll}{c_0=\env(\texttt{current\_confidence})\quad
+                 c_{t+1}=\Phi(c_t)\quad
+                 N=\min\{t : \mathrm{settled}(c_t)\}}
+                {\langle\mathsf{roll}(s),\env,\Delta\rangle\evalto
+                 \langle\nrm,\env[\texttt{settled}\mapsto\mathsf{bool}(\top),
+                 \texttt{final\_confidence}\mapsto\mathsf{num}(c_N),
+                 \texttt{iterations}\mapsto\mathsf{num}(N)],\Delta\rangle}
+\]
+If no such $N$ exists the loop diverges (\cref{sec:meta} gives a sufficient
+condition for $N$ to be finite).
+
+\paragraph{Considering (probabilistic guarded iteration).}
+$\mathsf{consider}(\kappa,x,e,s)$ iterates over the constituents of $e$ (the
+sentences of a corpus, or the elements of a list), binds $x$, and runs $s$
+under a per-item guard; with $\kappa=\mathsf{these}$ the body itself filters
+(running only when its internal $\mathsf{given}$ succeeds), with
+$\kappa=\mathsf{all}$ it runs on every item, and with $\kappa=\mathsf{item}$ on
+a single distinguished item. The guard may be a \emph{confidence condition}
+$\mathrm{conf}\mathbin{\bowtie}\theta$ with
+$\bowtie\in\{>,<,\mathrm{within},\mathrm{outside}\}$, evaluated against the
+running resolution confidence.
+
+% ===========================================================================
+\section{The Four-File Project Model}
+\label{sec:fourfile}
+% ===========================================================================
+
+A Turbulance \emph{project} is not a single source file but a linked tuple of
+four roles. We formalise the roles as typed modules and the project as their
+composition under a linkage relation; this is a module system in the sense of
+\citet{cardelli1985} specialised to four fixed roles.
+
+\begin{definition}[Project]
+\label{def:project}
+A \emph{project} is a tuple
+$\Pi=(\mathcal{T},\mathcal{G},\mathcal{F},\mathcal{H})$ where:
+\begin{itemize}[leftmargin=1.4em,nosep]
+\item $\mathcal{T}$ (the \emph{orchestration unit}, file role \texttt{.trb}) is
+a core program (\cref{def:core}); it holds the functions, propositions, and the
+control flow that drives the computation.
+\item $\mathcal{G}$ (the \emph{dependency graph}, file role \texttt{.ghd}) is a
+finite labelled directed graph $(V,E,\rho)$ whose vertices are named resources
+and whose labelling $\rho$ binds each resource to an external source
+(a dataset, a service, a knowledge base); it is the project's import surface.
+\item $\mathcal{F}$ (the \emph{state surface}, file role \texttt{.fs}) is a
+typed record of observable state and its presentation: a map from state keys to
+$\Val$ together with a layout descriptor; it is the read-model the computation
+publishes.
+\item $\mathcal{H}$ (the \emph{decision log}, file role \texttt{.hre}) is an
+append-only sequence of \emph{decision records}; a decision record is a tuple
+$(\textit{time},\textit{decision},\textit{reasoning},\textit{confidence}\in\Unit,
+\textit{evidence-refs})$. It is the project's audit trail.
+\end{itemize}
+\end{definition}
+
+\begin{definition}[Linkage]
+\label{def:linkage}
+The four roles are linked by a relation $\ell\subseteq
+\dom(\mathcal{T})\times(\dom(\mathcal{G})\cup\dom(\mathcal{F})\cup
+\dom(\mathcal{H}))$ that resolves: (i) each free resource identifier of
+$\mathcal{T}$ to a vertex of $\mathcal{G}$; (ii) each state-publishing operation
+of $\mathcal{T}$ to a key of $\mathcal{F}$; and (iii) each proposition verdict
+and resolution of $\mathcal{T}$ to an appended record of $\mathcal{H}$. A
+project is \emph{well-linked} if $\ell$ is total on the free identifiers and
+publishing/logging sites of $\mathcal{T}$.
+\end{definition}
+
+\begin{definition}[System state]
+\label{def:sysstate}
+During execution the project maintains a \emph{system state}
+$\Sigma=(\env,\Delta,\mathcal{H}^{+},\mathcal{F}^{+})$ extending the
+configuration of \cref{sec:envs} with the current decision log
+$\mathcal{H}^{+}$ and published state $\mathcal{F}^{+}$. Evaluation of
+$\mathcal{T}$ proceeds by the rules of \cref{sec:dynamics} with two additional
+effects: a proposition verdict (rule \rn{S-Prop}) appends a record to
+$\mathcal{H}^{+}$, and an explicit publish updates $\mathcal{F}^{+}$.
+\end{definition}
+
+\begin{proposition}[Separation of effects]
+\label{prop:separation}
+For a well-linked project, the orchestration semantics is conservative over the
+core semantics of \cref{sec:dynamics}: erasing $\mathcal{H}^{+}$ and
+$\mathcal{F}^{+}$ from every configuration yields exactly the core evaluation of
+$\mathcal{T}$. Hence the decision log and state surface are \emph{observational}
+---they record but do not alter the computation.
+\end{proposition}
+\begin{proof}
+The two additional effects (append to $\mathcal{H}^{+}$, update
+$\mathcal{F}^{+}$) are write-only with respect to the core: no core rule reads
+$\mathcal{H}^{+}$ or $\mathcal{F}^{+}$. Therefore the projection that drops
+these components commutes with every rule, and the diagram of core rules is
+recovered exactly.
+\end{proof}
+
+% ===========================================================================
+\section{Metatheory}
+\label{sec:meta}
+% ===========================================================================
+
+We establish the basic properties a language standard must guarantee:
+determinacy, type safety on the static fragment, soundness of the evidence
+semantics, and termination criteria.
+
+\subsection{Determinacy}
+
+\begin{theorem}[Determinacy]
+\label{thm:determinacy}
+The deterministic fragment of Turbulance (all constructs except $\mathsf{drift}$
+and $\mathsf{consider}$ over a corpus) has a deterministic big-step semantics:
+if $\langle s,\env,\Delta\rangle\evalto\langle\kappa_1,\env_1,\Delta_1\rangle$
+and $\langle s,\env,\Delta\rangle\evalto\langle\kappa_2,\env_2,\Delta_2\rangle$
+then $(\kappa_1,\env_1,\Delta_1)=(\kappa_2,\env_2,\Delta_2)$. The full language
+is deterministic relative to a fixed sampling oracle $\mathcal{O}$.
+\end{theorem}
+\begin{proof}
+By induction on the height of the first derivation. For each syntactic form
+exactly one rule applies, and that rule's premises are evaluations of
+strictly smaller subterms (for expressions) or of the same statement on a
+strictly smaller remaining structure (for the bounded loops), so the inductive
+hypothesis gives uniqueness of each premise's result; the conclusion is a
+function of those results. The only branching is between value-discriminating
+rule pairs (\rn{S-GivenT}/\rn{S-GivenF}, \rn{S-EnsT}/\rn{S-EnsF},
+\rn{S-Seq1}/\rn{S-Seq2}), and these are mutually exclusive because a value is
+exactly one of $\mathsf{bool}(\top)$, $\mathsf{bool}(\bot)$, etc., and a
+completion is exactly one of $\nrm$, $\ret\,v$. The constructs $\mathsf{drift}$
+and corpus-$\mathsf{consider}$ consult $\mathcal{O}$; fixing $\mathcal{O}$
+removes the only choice, and the same induction applies.
+\end{proof}
+
+\subsection{Type safety}
+
+We prove safety for the \emph{static fragment}: programs all of whose
+annotations are static types (no $\dyn$) and in which every position that the
+rules require to be consistent is in fact related by $\subtype$. The argument is
+the syntactic one of \citet{wright1994,pierce2002}. We first relate runtime
+values to types.
+
+\begin{definition}[Value typing]
+$\vdash v:\tau$ holds when: $\vdash\mathsf{num}(r):\mathsf{Num}$;
+$\vdash\mathsf{str}(s):\mathsf{Str}$; $\vdash\mathsf{bool}(b):\mathsf{Bool}$;
+$\vdash\mathsf{none}:\mathsf{Unit}$; $\vdash\mathsf{list}(\overline v):
+\mathsf{List}[\tau]$ if each $\vdash v_i:\tau$; $\vdash\mathsf{pt}(p):
+\mathsf{Point}$; $\vdash\mathsf{ent}(p):\mathsf{Entity}$;
+$\vdash\mathsf{floor}(F):\mathsf{Floor}$; $\vdash\mathsf{corpus}(s):
+\mathsf{Corpus}$; $\vdash\mathsf{clo}(\overline{x{:}\tau},s,\env):
+\overline\tau\to\tau_r$ if the closure body checks at $\tau_r$ under a context
+typing $\env$. An environment is well-typed, $\vdash\env:\Gam$, if
+$\vdash\env(x):\Gam(x)$ for all $x\in\dom(\Gam)$.
+\end{definition}
+
+\begin{lemma}[Canonical forms]
+\label{lem:canonical}
+If $\vdash v:\mathsf{Num}$ then $v=\mathsf{num}(r)$; if
+$\vdash v:\mathsf{Bool}$ then $v=\mathsf{bool}(b)$; if
+$\vdash v:\mathsf{List}[\tau]$ then $v=\mathsf{list}(\overline w)$ with each
+$\vdash w_i:\tau$; if $\vdash v:\tau_1\to\tau_2$ then $v$ is a closure; if
+$\vdash v:\mathsf{Point}$ then $v\in\{\mathsf{pt}(p),\mathsf{ent}(p)\}$; if
+$\vdash v:\mathsf{Floor}$ then $v=\mathsf{floor}(F)$; if
+$\vdash v:\mathsf{Corpus}$ then $v=\mathsf{corpus}(s)$.
+\end{lemma}
+\begin{proof}
+Immediate from the definition of value typing, which assigns each base/structured
+type a unique value former, and from $\mathsf{Entity}\subtype\mathsf{Point}$.
+\end{proof}
+
+\begin{theorem}[Preservation]
+\label{thm:preservation}
+In the static fragment, if $\Gam\vdash e:\tau$ and $\vdash\env:\Gam$ and
+$\langle e,\env\rangle\evalto\langle v,\env'\rangle$, then $\vdash v:\tau$ and
+$\vdash\env':\Gam$. Likewise if $\Gam\vdash s\dashv\Gam'$, $\vdash\env:\Gam$,
+and $\langle s,\env,\Delta\rangle\evalto\langle\kappa,\env'',\Delta''\rangle$,
+then $\vdash\env'':\Gam'$, and if $\kappa=\ret\,v$ then $\vdash v:\tau_r$ for the
+body's return type.
+\end{theorem}
+\begin{proof}[Proof sketch]
+By induction on the evaluation derivation, inverting the typing derivation at
+each step. The base cases (\rn{E-Lit}, \rn{E-Var}) are immediate, the latter
+from $\vdash\env:\Gam$. For \rn{E-Bin} with an arithmetic operator, the typing
+rule \rn{T-Arith} forces both operands to be $\mathsf{Num}$ in the static
+fragment; the IH gives $\vdash v_i:\mathsf{Num}$, hence by
+\cref{lem:canonical} both are $\mathsf{num}(\cdot)$, $\sem{op}$ is defined and
+returns a $\mathsf{num}$, of type $\mathsf{Num}$. For \rn{E-App}, \rn{T-App} in
+the static fragment gives $\tau_f=\overline{\tau_1}\to\tau_2$ and arguments at
+$\subtype\,\overline{\tau_1}$; the IH and \cref{lem:canonical} make $v$ a
+closure whose body checks at $\tau_2$; evaluating the body under the extended
+well-typed environment preserves $\tau_2$ by the statement IH. The statement
+cases use \rn{T-Item}/\rn{S-Item} (the produced environment extends $\Gam$
+coherently), \rn{T-Given}/\rn{S-Given$\cdot$} (both branches produce $\Gam$),
+and \rn{T-Seq}/\rn{S-Seq$\cdot$} (threading). The scientific and probabilistic
+rules preserve types because \rn{S-Prop} writes a $\mathsf{Prop}$ to $P$,
+\rn{S-Resolve} writes an $\mathsf{Entity}$, and \rn{S-Sup}/\rn{S-Con} only
+extend $\Delta$, leaving $\Gam$ fixed.
+\end{proof}
+
+\begin{theorem}[Progress]
+\label{thm:progress}
+In the static fragment, if $\Gam\vdash e:\tau$ and $\vdash\env:\Gam$ then either
+$e$ is a value or there is a (unique, by \cref{thm:determinacy}) configuration
+$\langle v,\env'\rangle$ with $\langle e,\env\rangle\evalto\langle v,\env'
+\rangle$; in particular $e$ does not go wrong. The analogous statement holds for
+statements, whose only non-value, non-progressing outcome would be a failed
+$\mathsf{ensure}$ (rule \rn{S-EnsF})---which is a \emph{defined} abort, not a
+stuck state.
+\end{theorem}
+\begin{proof}[Proof sketch]
+The potential failures are: applying a non-function, indexing a non-list,
+arithmetic on a non-number, or a missing variable. Each is excluded in the
+static fragment by the corresponding typing rule together with
+\cref{lem:canonical}: e.g.\ \rn{T-App} gives the operator a function type, so by
+canonical forms its value is a closure and \rn{E-App} applies; \rn{T-Var}
+requires $x\in\dom(\Gam)$ and $\vdash\env:\Gam$ gives $x\in\dom(\env)$. The only
+remaining non-normal outcome is \rn{S-EnsF}, which is a deliberate, defined
+abort in the sense of \citet{hoare1969}, not an undefined ``wrong''.
+\end{proof}
+
+\begin{corollary}[Safety of the static fragment]
+A well-typed program in the static fragment never goes wrong: it either
+produces a value/normal completion, deliberately aborts via a failed
+$\mathsf{ensure}$, or diverges.
+\end{corollary}
+
+\begin{remark}[The dynamic fragment]
+At positions typed $\dyn$, consistency replaces subtyping and the guarantees of
+\cref{thm:preservation,thm:progress} are recovered \emph{up to a runtime type
+error}: an implementation inserts a check at each $\dyn$-to-static boundary, and
+a violated check raises a defined error rather than going wrong. This is the
+gradual guarantee of \citet{siek2006}: fully annotated code is sound, fully
+unannotated code runs with dynamic checks, and the two interoperate.
+\end{remark}
+
+\subsection{Soundness of the evidence semantics}
+
+\begin{theorem}[Boundedness and monotonicity]
+\label{thm:evidence}
+For every strategy $\Strat\in\{\textsc{MaxLik},\textsc{Conserv},\textsc{Explor},
+\textsc{Bayes}\}$ and motion $M$:
+\begin{enumerate}[label=(\roman*),leftmargin=1.9em,nosep]
+\item $\mathrm{score}_\Strat(M)\in\Unit$ (boundedness);
+\item adding an affirmation $\eta$ to $\mathsf{Aff}(M)$ does not decrease
+$\mathrm{score}_{\textsc{MaxLik}}(M)$, and adding a contention does not increase
+it (monotonicity);
+\item if $\mathsf{Con}(M)=\varnothing$ then $\mathrm{score}_{\textsc{MaxLik}}(M)
+=\bigoplus_i (\mathit{str}_i\mathit{cf}_i)$ up to weight normalisation, so
+corroborating evidence accumulates by the noisy-or of \cref{def:confalg}.
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+(i) Each strategy clips into $\Unit$ (Def.~\ref{def:score}); \textsc{Bayes}
+returns a posterior probability, already in $\Unit$. (ii) For \textsc{MaxLik},
+$\mathrm{score}=\mathrm{clip}_\Unit(\frac1W(S_+-S_-))$ with
+$S_+=\sum_i w_i\mathit{str}_i\mathit{cf}_i$ and $S_-$ the analogous contention
+sum. Adding an affirmation increases $S_+$ and $W$; writing $f(S_+,W)=
+\mathrm{clip}(\frac{S_+-S_-}{W})$, and noting each new term contributes
+$w\,\mathit{str}\,\mathit{cf}\le w$, the normalised score is nondecreasing
+because the added mass is weighted at least as favourably as the average; the
+contention case is symmetric. (iii) With no contentions the unclipped score is
+the weighted mean of $\mathit{str}_i\mathit{cf}_i$; under the noisy-or reading
+of independent corroboration (Remark after Def.~\ref{def:confalg}) this is the
+$\nor$-aggregate, which is the unique independent-source combinator
+(Prop.~\ref{prop:conflaws}).
+\end{proof}
+
+\begin{proposition}[Confidence never exceeds certainty]
+\label{prop:noovercert}
+No sequence of $\mathsf{support}$ statements drives a motion's
+\textsc{MaxLik} score above $1$ or a $\mathsf{resolve}$ result's confidence
+above $1$. Belief is conserved within $\Unit$.
+\end{proposition}
+\begin{proof}
+Immediate from Prop.~\ref{prop:conflaws}(ii)--(iii) ($\nor$ is bounded by $1$
+and $1$ is absorbing) and the clipping in Def.~\ref{def:score} and
+Def.~\ref{def:resolution}.
+\end{proof}
+
+\subsection{Termination}
+
+\begin{theorem}[Termination of bounded iteration]
+\label{thm:termbounded}
+Evaluation of $\mathsf{foreach}$, $\mathsf{cycle}$, $\mathsf{flow}$, and
+$\mathsf{consider}$ over a finite source terminates whenever the body
+terminates on each element. $\mathsf{while}$ and $\mathsf{roll}$ may diverge.
+\end{theorem}
+\begin{proof}
+The first four iterate over a finite list/floor/line-set of known length $n$;
+the derivation is a sequence of $n$ body evaluations, each finite by hypothesis,
+so the whole is finite. $\mathsf{while}$ is the standard unbounded loop, and
+$\mathsf{roll}$ unfolds until a predicate holds (next theorem).
+\end{proof}
+
+\begin{theorem}[Convergence of \texorpdfstring{$\mathsf{roll}$}{roll}]
+\label{thm:rollconv}
+Let $\mathsf{roll}(s)$ have per-iteration confidence update $c_{t+1}=\Phi(c_t)$
+with $\Phi\colon\Unit\to\Unit$ continuous and either (a) a contraction
+($|\Phi(c)-\Phi(c')|\le L|c-c'|$ with $L<1$) toward a fixpoint $c^\ast\ge
+\theta_{\mathrm{conv}}$, or (b) monotone nondecreasing with step bounded below
+on $[c_0,\theta_{\mathrm{conv}})$. Then the convergence index
+$N=\min\{t:\mathrm{settled}(c_t)\}$ is finite and \rn{S-Roll} terminates.
+\end{theorem}
+\begin{proof}
+(a) By the Banach fixed-point theorem $c_t\to c^\ast$ geometrically, so
+$|c_t-c^\ast|\le L^t|c_0-c^\ast|$; choosing $t$ with $L^t|c_0-c^\ast|<\epsilon$
+makes the small-change criterion fire, so $N<\infty$. (b) If $\Phi$ is monotone
+nondecreasing with $\Phi(c)-c\ge\delta>0$ for $c<\theta_{\mathrm{conv}}$, then
+$c_t\ge c_0+t\delta$ exceeds $\theta_{\mathrm{conv}}$ after at most
+$\lceil(\theta_{\mathrm{conv}}-c_0)/\delta\rceil$ steps, so $N$ is finite.
+\end{proof}
+
+\begin{remark}[Undecidability in general]
+Without a hypothesis like \cref{thm:rollconv}, termination of $\mathsf{while}$
+and $\mathsf{roll}$ is undecidable, as for any language with general recursion
+\citep{hopcroft2006}; the language therefore provides bounded iteration
+constructs ($\mathsf{foreach}$, $\mathsf{cycle}$) whose termination is
+guaranteed, and reserves unbounded iteration for cases where the programmer
+supplies a convergence argument.
+\end{remark}
+
+% ===========================================================================
+\section{Worked Examples}
+\label{sec:examples}
+% ===========================================================================
+
+\subsection{A proposition with motions and graded support}
+
+The following program declares a hypothesis about a dataset, decomposes it into
+three motions, and accumulates graded support by traversing the data with
+$\mathsf{within}$ and $\mathsf{given}$ guards.
+
+\begin{lstlisting}
+proposition DataQuality:
+    motion CompleteData("Dataset has no missing values")
+    motion ConsistentFormat("All entries follow the schema")
+    motion ReasonableValues("Values lie within expected ranges")
+
+    within dataset:
+        given missing_count == 0:
+            support CompleteData with_confidence(0.99)
+        given schema_valid:
+            support ConsistentFormat with_confidence(0.95)
+        given all_in_range(lo, hi):
+            support ReasonableValues with_confidence(0.90)
+        given outlier_rate > 0.2:
+            contradict ReasonableValues with_confidence(0.6)
+\end{lstlisting}
+
+Evaluating \texttt{DataQuality} (rule \rn{S-Prop}) opens an inner debate state,
+runs the $\mathsf{within}$ body once (rule \rn{S-Within}), and at each satisfied
+guard appends an affirmation or contention (rules \rn{S-Sup}/\rn{S-Con}). Under
+\textsc{MaxLik} with thresholds $\theta_+=0.7$, $\theta_-=0.3$ the motion
+\texttt{ReasonableValues} receives one affirmation $(0.90,0.90,1)$ and possibly
+one contention $(0.6,0.6,1)$; its score is
+$\mathrm{clip}_\Unit\!\big(\tfrac{1}{2}(0.81-0.36)\big)=0.225$ if both fire,
+yielding verdict \textsf{Inconclusive} (between $\theta_-$ and $\theta_+$), and
+$0.81$ if only the affirmation fires, yielding \textsf{Supported}. The verdict,
+its score, and the contributing evidence are appended to the decision log
+$\mathcal{H}^{+}$ (\cref{def:sysstate}).
+
+\subsection{A point and its resolution}
+
+\begin{lstlisting}
+point diagnosis = {
+    content: "elevated marker with ambiguous aetiology",
+    confidence: 0.7
+}
+
+item determined = resolve diagnosis given context(patient_history)
+\end{lstlisting}
+
+The literal builds $\mathsf{pt}(p)$ with $\mathit{conf}=0.7$ (rule
+\rn{T-Point}); $\mathsf{resolve}$ applies the ambient strategy (rule
+\rn{S-Resolve}), producing an $\mathsf{Entity}$ whose interpretation set is
+collapsed---to a singleton if the dominant reading clears the acceptance
+threshold $\theta$, otherwise to an $\mathsf{Uncertain}$ result carrying a
+confidence interval and the residual ambiguity $1-A(p)$ (Def.~\ref{def:entropy},
+Def.~\ref{def:resolution}). The type of \texttt{determined} is
+$\mathsf{Entity}$ (rule \rn{T-Resolve}).
+
+\subsection{A hybrid loop over a probabilistic floor}
+
+\begin{lstlisting}
+funxn assess(floor_of_claims):
+    cycle claim over floor_of_claims:
+        item r = resolve claim
+        given current_weight > 0.5:
+            support StrongClaims with_confidence(r.confidence)
+    return StrongClaims
+\end{lstlisting}
+
+\texttt{cycle} (rule \rn{S-Cycle}) visits each weighted point of the floor in
+weight-normalised order, binding \texttt{claim} and \texttt{current\_weight};
+the body resolves the point and, when its selection weight is high, registers
+graded support. Termination is guaranteed because a floor is finite
+(\cref{thm:termbounded}).
+
+\subsection{A four-file project, in outline}
+
+A project \texttt{biomarker} comprises: \texttt{biomarker.trb} (the
+orchestration unit $\mathcal{T}$ above); \texttt{biomarker.ghd} (the dependency
+graph $\mathcal{G}$ binding \texttt{dataset}, \texttt{patient\_history}, and
+external knowledge bases to sources); \texttt{biomarker.fs} (the state surface
+$\mathcal{F}$ publishing running confidences and verdicts for display); and
+\texttt{biomarker.hre} (the decision log $\mathcal{H}$ receiving each verdict and
+resolution). By \cref{prop:separation} the computation's result is independent
+of $\mathcal{F}$ and $\mathcal{H}$, which observe but do not steer it.
+
+% ===========================================================================
+\section{Related Paradigms}
+\label{sec:related}
+% ===========================================================================
+
+Turbulance draws on, and can be located precisely against, several established
+traditions.
+
+\paragraph{Functional and imperative cores.} The expression language, closures,
+and lexical scope are standard \citep{landin1966,church1940,barendregt1984};
+the statement language with $\mathsf{item}$ bindings and structured control is
+imperative in the tradition formalised by \citet{winskel1993}. The pipe
+operators are the composition combinators of functional programming
+\citep{wadler1992}.
+
+\paragraph{Assertions and guarded commands.} $\mathsf{ensure}$ is a Hoare-style
+assertion \citep{hoare1969}; $\mathsf{given}$ is a guarded command
+\citep{dijkstra1975}, and the $\mathsf{within}/\mathsf{given}$ idiom is a
+pattern-guarded structural recursion over semantic units.
+
+\paragraph{Logic and argumentation.} Propositions and motions echo logic
+programming's view of computation as proof search \citep{kowalski1974}, but the
+semantics is \emph{graded} and \emph{defeasible}: it is a quantitative abstract
+argumentation \citep{dung1995,besnard2008,toulmin1958} rather than a monotone
+deduction, with $\mathsf{contradict}$ as attack and the resolution strategy as
+the acceptability semantics.
+
+\paragraph{Probabilistic and fuzzy computation.} Points, floors, and resolution
+place Turbulance in the probabilistic-programming family \citep{kozen1981,
+goodman2008,gordon2014,mciver2005}; the confidence algebra and the
+membership-function results are fuzzy-set constructions \citep{zadeh1965,
+hajek1998}; the accumulation of graded evidence is in the spirit of the
+mathematical theory of evidence \citep{shafer1976,dempster1967} and Bayesian
+confirmation \citep{cox1946,jaynes2003,pearl1988}, with interpretation entropy
+measured \`a la \citet{shannon1948}.
+
+\paragraph{Gradual typing.} The type system's dynamic type and consistency
+relation are exactly those of \citet{siek2006}, instantiated with the language's
+semantic types; subtyping follows \citet{cardelli1985}.
+
+The novelty is not any single ingredient but their combination in one language
+with a single control flow: a program may, in adjacent lines, bind a value,
+accumulate graded support for a hypothesis, and resolve an ambiguous datum under
+a named strategy---each with a precise, inspectable semantics.
+
+% ===========================================================================
+\section{Conclusion}
+\label{sec:conclusion}
+% ===========================================================================
+
+We have specified Turbulance completely and from first principles: its lexical
+and context-free grammars, its abstract syntax and desugaring, its semantic
+domains (centred on a confidence algebra and the structures of points, floors,
+and corpora), its gradual type system, and its big-step operational
+semantics---including the argumentation semantics of propositions, the
+resolution semantics of points, and the four hybrid iteration constructs. We
+formalised the four-file project model as a typed module composition with a
+linkage relation, and proved its decision log and state surface to be purely
+observational. The metatheory establishes determinacy, type safety on the
+static fragment, boundedness and monotonicity of the evidence semantics, and
+termination criteria for the iteration constructs.
+
+The specification is deliberately self-contained: every concept needed to
+understand the language is defined here, and the only external references are to
+the standard literature on which the design draws. It is intended to serve two
+audiences. For the implementer it is a blueprint: the grammar fixes the parser,
+the type rules fix the checker, and the operational rules fix the evaluator,
+each with stated invariants. For the language user it is a standard: the meaning
+of every construct is pinned down, and the guarantees---that beliefs stay within
+$[0,1]$, that corroboration accumulates monotonically, that the static fragment
+never goes wrong, that bounded loops terminate---are theorems, not conventions.
+
+Two extensions are left to companion documents and do not affect the core
+defined here: a denotational account that interprets the confidence algebra and
+resolution strategies in a domain of sub-probability distributions, and an
+operational treatment of the metacognitive and goal constructs as reflective
+operations over the decision log. Neither is required to read, implement, or use
+the language as specified above.
+
+% ===========================================================================
+\bibliographystyle{plainnat}
+\bibliography{references}
+% ===========================================================================
+
+\end{document}

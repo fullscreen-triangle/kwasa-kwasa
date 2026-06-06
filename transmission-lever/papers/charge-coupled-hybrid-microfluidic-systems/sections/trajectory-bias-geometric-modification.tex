@@ -1,0 +1,372 @@
+\section{Trajectory Bias Through Geometric Modification}
+\label{sec:trajectory_bias}
+
+We establish that previous charge redistribution events modify circuit geometry, creating trajectory biases that influence future charge dynamics without requiring information storage.
+
+\subsection{Geometric Modification from Charge Flow}
+
+\begin{definition}[Geometric Modification]
+\label{def:geometric_modification}
+\emph{Geometric modification} is the alteration of circuit properties (conductivity, free energy landscape) resulting from previous charge redistribution events:
+\begin{equation}
+\sigma(\mathbf{r},t) = \sigma_0(\mathbf{r}) + \int_0^t f[\rho(\mathbf{r},t')] \, dt'
+\end{equation}
+\begin{equation}
+F[\rho,t] = F_0[\rho] + \int_0^t g[\rho(\mathbf{r},t')] \, dt'
+\end{equation}
+where $\sigma_0$ and $F_0$ are initial properties, and $f$, $g$ are modification functionals.
+\end{definition}
+
+The integrals represent accumulated modifications from charge flow history. These modifications are geometric (changes to circuit structure), not informational (stored data).
+
+\begin{theorem}[Charge Flow Modifies Circuit Geometry]
+\label{thm:flow_modifies_geometry}
+Charge redistribution creates persistent geometric modifications that bias future charge dynamics:
+\begin{equation}
+\mathbf{J}(t) = -\sigma(\mathbf{r},t) \nabla \phi(\mathbf{r},t)
+\end{equation}
+where $\sigma(\mathbf{r},t)$ depends on charge flow history through Definition~\ref{def:geometric_modification}.
+\end{theorem}
+
+\begin{proof}
+Consider charge flow at time $t'$:
+\begin{equation}
+\mathbf{J}(\mathbf{r},t') = -\sigma(\mathbf{r},t') \nabla \phi(\mathbf{r},t')
+\end{equation}
+
+This flow dissipates energy:
+\begin{equation}
+\frac{dE}{dt'} = -\int_V \frac{\mathbf{J}^2}{\sigma} d^3r < 0
+\end{equation}
+
+The dissipated energy modifies circuit structure through:
+\begin{itemize}
+\item Joule heating: $\Delta T \propto \mathbf{J}^2 / \sigma$
+\item Electrochemical reactions: $\Delta c \propto \mathbf{J}$
+\item Structural rearrangement: $\Delta \sigma \propto \int \mathbf{J}^2 dt'$
+\end{itemize}
+
+These modifications accumulate over time:
+\begin{equation}
+\sigma(\mathbf{r},t) = \sigma_0(\mathbf{r}) + \int_0^t \alpha \frac{\mathbf{J}^2(\mathbf{r},t')}{\sigma(\mathbf{r},t')} dt'
+\end{equation}
+
+where $\alpha$ is modification rate constant.
+
+Future charge flow at time $t > t'$ experiences modified conductivity $\sigma(\mathbf{r},t)$, creating trajectory bias toward paths of previous flow.
+\end{proof}
+
+\subsection{Trajectory Bias Without Information Storage}
+
+\begin{definition}[Trajectory Bias]
+\label{def:trajectory_bias}
+A \emph{trajectory bias} is preferential selection of phase space trajectories due to geometric modifications, without explicit information storage:
+\begin{equation}
+P(\gamma_i | \rho_0) = \frac{e^{-\beta F[\gamma_i]}}{\sum_j e^{-\beta F[\gamma_j]}}
+\end{equation}
+where $F[\gamma_i]$ is free energy of trajectory $\gamma_i$, modified by previous charge flow history.
+\end{definition}
+
+\begin{theorem}[Trajectory Selection Without Storage]
+\label{thm:trajectory_no_storage}
+Geometric modifications bias trajectory selection without storing information about previous events. The bias is consequence of modified landscape, not retrieved data.
+\end{theorem}
+
+\begin{proof}
+Consider two scenarios:
+
+\textbf{Scenario 1 (First occurrence):} Charge distribution $\rho_0$ evolves along trajectory $\gamma_1$ with unmodified landscape:
+\begin{equation}
+\frac{\partial \rho}{\partial t} = \nabla \cdot \left( \sigma_0 \nabla \frac{\delta F_0}{\delta \rho} \right)
+\end{equation}
+
+This creates geometric modifications along $\gamma_1$.
+
+\textbf{Scenario 2 (Subsequent occurrence):} Similar charge distribution $\rho_0'$ (with $\|\rho_0' - \rho_0\| < \epsilon$) evolves with modified landscape:
+\begin{equation}
+\frac{\partial \rho}{\partial t} = \nabla \cdot \left( \sigma(\mathbf{r},t) \nabla \frac{\delta F[\rho,t]}{\delta \rho} \right)
+\end{equation}
+
+The modified $\sigma$ and $F$ bias trajectory toward $\gamma_1$ because:
+\begin{itemize}
+\item Conductivity increased along $\gamma_1$ path: $\sigma(\mathbf{r} \in \gamma_1) > \sigma_0(\mathbf{r})$
+\item Free energy reduced along $\gamma_1$ path: $F[\gamma_1,t] < F_0[\gamma_1]$
+\end{itemize}
+
+The trajectory preferentially follows $\gamma_1$ not because information about $\gamma_1$ is "stored" and "retrieved," but because the landscape has been geometrically modified to favor that path.
+
+**Analogy**: Water flowing down hillside carves channel. Subsequent water follows same channel not because first water "stored information" about the path, but because channel geometry biases flow direction.
+
+No information storage occurs—only geometric modification that biases future dynamics.
+\end{proof}
+
+\subsection{The River Bed Analogy}
+
+\begin{example}[River Flow as Trajectory Bias]
+\label{ex:river_flow}
+Water flowing in river provides direct analogy to trajectory bias without storage:
+
+\textbf{River dynamics}:
+\begin{itemize}
+\item Water flows downhill following path of least resistance
+\item Flow erodes riverbed, deepening channel along flow path
+\item Subsequent water follows same path due to deepened channel
+\item River has no "memory" of previous water—only modified geometry
+\end{itemize}
+
+\textbf{Circuit dynamics}:
+\begin{itemize}
+\item Charge flows following gradient of least free energy
+\item Flow modifies conductivity, lowering resistance along flow path
+\item Subsequent charge follows same path due to modified conductivity
+\item Circuit has no "memory" of previous charge—only modified geometry
+\end{itemize}
+
+The river doesn't "know" its path or "remember" previous flow. It simply follows the carved geometry. Similarly, circuits don't "store" or "retrieve" information—they follow geometrically modified trajectories.
+\end{example}
+
+\subsection{Variance-Dependent Modification Strength}
+
+\begin{theorem}[High Variance Creates Stronger Modifications]
+\label{thm:variance_modification}
+Charge distributions with higher variance create stronger geometric modifications:
+\begin{equation}
+\frac{d\sigma}{dt} \propto \sigma^2[\rho] = \int_V (\rho(\mathbf{r}) - \langle \rho \rangle)^2 d^3r
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+The modification rate depends on energy dissipation:
+\begin{equation}
+\frac{d\sigma}{dt} = \alpha \int_V \frac{\mathbf{J}^2}{\sigma} d^3r
+\end{equation}
+
+Current flux is:
+\begin{equation}
+\mathbf{J} = -\sigma \nabla \phi \propto -\sigma \nabla \rho
+\end{equation}
+
+Therefore:
+\begin{equation}
+\frac{d\sigma}{dt} \propto \int_V \sigma |\nabla \rho|^2 d^3r
+\end{equation}
+
+By integration by parts and using charge conservation:
+\begin{equation}
+\int_V |\nabla \rho|^2 d^3r \propto \int_V (\rho - \langle \rho \rangle)^2 d^3r = \sigma^2[\rho]
+\end{equation}
+
+Higher variance → larger gradients → stronger currents → more energy dissipation → stronger geometric modification.
+\end{proof}
+
+\begin{corollary}[Near-Equilibrium Events Create Weak Modifications]
+\label{cor:near_equilibrium_weak}
+Charge distributions near equilibrium (low variance) create minimal geometric modifications:
+\begin{equation}
+\sigma^2[\rho] \to 0 \quad \Rightarrow \quad \frac{d\sigma}{dt} \to 0
+\end{equation}
+\end{corollary}
+
+\begin{proof}
+By Theorem~\ref{thm:variance_modification}, modification rate is proportional to variance. For near-equilibrium distributions with $\sigma^2[\rho] \approx 0$, modification rate approaches zero.
+
+Near-equilibrium events create negligible trajectory bias because they produce minimal geometric modification.
+\end{proof}
+
+\subsection{High-Variance Events and Trajectory Preference}
+
+\begin{theorem}[High-Variance Events Create Strong Trajectory Bias]
+\label{thm:high_variance_bias}
+Charge distributions with high variance (far from equilibrium) create strong trajectory biases that persist over long timescales:
+\begin{equation}
+\Delta \sigma \propto \sigma^2[\rho] \cdot \tau_{\text{event}}
+\end{equation}
+where $\tau_{\text{event}}$ is event duration.
+\end{theorem}
+
+\begin{proof}
+The accumulated modification from event of duration $\tau_{\text{event}}$ is:
+\begin{equation}
+\Delta \sigma = \int_0^{\tau_{\text{event}}} \frac{d\sigma}{dt} dt = \int_0^{\tau_{\text{event}}} \alpha \sigma^2[\rho(t)] dt
+\end{equation}
+
+For approximately constant variance during event:
+\begin{equation}
+\Delta \sigma \approx \alpha \sigma^2[\rho] \cdot \tau_{\text{event}}
+\end{equation}
+
+High-variance events ($\sigma^2[\rho] \gg k_B T / V$) create modifications $\Delta \sigma \gg \Delta \sigma_{\text{thermal}}$, establishing strong trajectory preferences.
+
+These modifications persist until:
+\begin{itemize}
+\item Thermal fluctuations erase modifications: $\tau_{\text{persist}} \sim \Delta \sigma / (k_B T)$
+\item Competing trajectories create stronger modifications
+\item System undergoes structural reorganization
+\end{itemize}
+
+For typical circuits, $\tau_{\text{persist}} \gg \tau_{\text{event}}$, so trajectory bias persists long after initiating event.
+\end{proof}
+
+\begin{example}[Near-Miss vs. Success]
+\label{ex:near_miss}
+Consider two charge redistribution events:
+
+\textbf{Event A (Success):} Trajectory reaches equilibrium attractor:
+\begin{itemize}
+\item Initial variance: $\sigma^2[\rho_0] = \sigma_0^2$
+\item Final variance: $\sigma^2[\rho_f] \approx 0$ (equilibrium)
+\item Average variance: $\langle \sigma^2 \rangle \approx \sigma_0^2 / 2$
+\item Modification: $\Delta \sigma_A \propto \sigma_0^2 \tau / 2$
+\end{itemize}
+
+\textbf{Event B (Near-miss):} Trajectory approaches but doesn't reach attractor:
+\begin{itemize}
+\item Initial variance: $\sigma^2[\rho_0] = \sigma_0^2$
+\item Final variance: $\sigma^2[\rho_f] \approx \sigma_0^2 / 2$ (near equilibrium)
+\item Average variance: $\langle \sigma^2 \rangle \approx 3\sigma_0^2 / 4$
+\item Modification: $\Delta \sigma_B \propto 3\sigma_0^2 \tau / 4$
+\end{itemize}
+
+Near-miss creates stronger modification: $\Delta \sigma_B / \Delta \sigma_A = 3/2$.
+
+Near-miss trajectories create stronger biases because they maintain high variance longer, producing more geometric modification. This explains why "near-miss" events create stronger trajectory preferences than "success" events.
+\end{example}
+
+\subsection{Trajectory Selection from Phase Space}
+
+\begin{theorem}[Trajectories Pre-Exist in Phase Space]
+\label{thm:trajectories_preexist}
+All possible trajectories exist in phase space before any charge redistribution event. Geometric modifications bias selection among pre-existing trajectories rather than creating new trajectories.
+\end{theorem}
+
+\begin{proof}
+The phase space of circuit with $N$ degrees of freedom is:
+\begin{equation}
+\Gamma = \{(\rho(\mathbf{r}), \mathbf{J}(\mathbf{r})) : \int \rho \, d^3r = Q_{\text{total}}\}
+\end{equation}
+
+For bounded phase space (finite energy, finite volume), $\Gamma$ is compact set with finite measure.
+
+A trajectory is curve $\gamma: [0,T] \to \Gamma$ satisfying:
+\begin{equation}
+\frac{d\gamma}{dt} = \mathcal{F}[\gamma(t)]
+\end{equation}
+where $\mathcal{F}$ is the dynamics operator.
+
+The set of all possible trajectories is:
+\begin{equation}
+\mathcal{T} = \{\gamma : [0,T] \to \Gamma \text{ satisfying dynamics}\}
+\end{equation}
+
+This set is determined by:
+\begin{itemize}
+\item Phase space structure $\Gamma$ (fixed by circuit architecture)
+\item Dynamics operator $\mathcal{F}$ (fixed by charge conservation and variance minimization)
+\item Boundary conditions (fixed by circuit geometry)
+\end{itemize}
+
+Geometric modifications change the probability distribution over $\mathcal{T}$:
+\begin{equation}
+P(\gamma | \text{history}) = \frac{e^{-\beta F[\gamma,\text{history}]}}{\sum_{\gamma' \in \mathcal{T}} e^{-\beta F[\gamma',\text{history}]}}
+\end{equation}
+
+but do not change the set $\mathcal{T}$ itself. All trajectories pre-exist in phase space; modifications only bias selection probabilities.
+\end{proof}
+
+\subsection{No Information Storage Requirement}
+
+\begin{theorem}[Trajectory Bias Requires No Information Storage]
+\label{thm:no_storage_required}
+The trajectory bias mechanism operates without storing information about previous events. Only geometric modifications (structural changes) are required.
+\end{theorem}
+
+\begin{proof}
+Information storage requires:
+\begin{enumerate}
+\item Encoding: Mapping events to stored representations
+\item Retention: Maintaining stored representations over time
+\item Retrieval: Accessing stored representations when needed
+\item Decoding: Interpreting stored representations to influence behavior
+\end{enumerate}
+
+Trajectory bias requires none of these:
+
+\textbf{No encoding}: Previous charge flow directly modifies geometry through energy dissipation. No mapping to representation occurs.
+
+\textbf{No retention mechanism}: Geometric modifications persist through structural stability, not through active maintenance of stored data.
+
+\textbf{No retrieval process}: Current charge flow responds to current geometric state. No access to stored past events occurs.
+
+\textbf{No decoding}: Modified geometry directly influences charge dynamics through conductivity and free energy landscape. No interpretation of stored information occurs.
+
+The mechanism is purely geometric: past events modify structure → modified structure biases future dynamics. No information processing occurs.
+\end{proof}
+
+\begin{corollary}[Trajectory Bias Explains Apparent "Memory" Without Storage]
+\label{cor:apparent_memory}
+Circuits exhibit behavior that appears to "remember" previous events, but this behavior emerges from geometric trajectory bias rather than information storage.
+\end{corollary}
+
+\begin{proof}
+Consider circuit that previously experienced charge distribution $\rho_1$ along trajectory $\gamma_1$. When similar distribution $\rho_1'$ occurs later, circuit preferentially follows trajectory $\gamma_1'$ similar to $\gamma_1$.
+
+This appears as "memory" of previous event: circuit "remembers" $\rho_1$ and "recalls" appropriate response $\gamma_1$.
+
+But actual mechanism is:
+\begin{itemize}
+\item Previous trajectory $\gamma_1$ modified geometry along its path
+\item Modified geometry biases current trajectory toward $\gamma_1'$
+\item No information about $\rho_1$ or $\gamma_1$ is stored or retrieved
+\item Only geometric modifications influence current dynamics
+\end{itemize}
+
+The "memory" is trajectory preference created by geometric modification, not stored information about past events.
+\end{proof}
+
+\subsection{Temporal Consistency Without Predetermined Storage}
+
+\begin{theorem}[Trajectory Bias Maintains Temporal Consistency]
+\label{thm:temporal_consistency_bias}
+Geometric modifications ensure that similar charge distributions produce similar trajectories across time, maintaining temporal consistency without requiring predetermined information storage.
+\end{theorem}
+
+\begin{proof}
+For charge distribution $\rho_0$ occurring at time $t_1$, trajectory is:
+\begin{equation}
+\gamma_1(t) = \int_0^t \mathcal{F}[\rho(t'), \sigma(t_1)] dt'
+\end{equation}
+
+For similar distribution $\rho_0'$ (with $\|\rho_0' - \rho_0\| < \epsilon$) occurring at time $t_2 > t_1$, trajectory is:
+\begin{equation}
+\gamma_2(t) = \int_0^t \mathcal{F}[\rho(t'), \sigma(t_2)] dt'
+\end{equation}
+
+If $\gamma_1$ created geometric modifications, then $\sigma(t_2)$ is biased toward $\gamma_1$ path, making:
+\begin{equation}
+\|\gamma_2 - \gamma_1\| < \|\gamma_2^{\text{unbiased}} - \gamma_1\|
+\end{equation}
+
+Similar initial conditions produce similar trajectories across time due to geometric bias, not because information about "correct" response is stored and retrieved.
+
+Temporal consistency emerges from geometric modification, not from information storage.
+\end{proof}
+
+\subsection{Experimental Signatures}
+
+Trajectory bias through geometric modification exhibits:
+
+\begin{enumerate}
+\item \textbf{Path preference}: Repeated charge redistributions preferentially follow previously traversed trajectories.
+
+\item \textbf{Variance-dependent strength}: High-variance events create stronger trajectory biases than low-variance events.
+
+\item \textbf{Near-miss enhancement}: Events that approach but don't reach equilibrium create stronger biases than events that reach equilibrium.
+
+\item \textbf{Persistence timescales}: Trajectory biases persist on timescales $\tau_{\text{persist}} \sim \Delta \sigma / (k_B T)$, much longer than initiating events.
+
+\item \textbf{No storage requirement}: Trajectory bias operates through geometric modification without requiring information encoding, retention, or retrieval mechanisms.
+
+\item \textbf{Pre-existing trajectories}: All possible trajectories exist in phase space; modifications only bias selection probabilities.
+\end{enumerate}
+
+These signatures distinguish trajectory bias (geometric mechanism) from information storage (encoding/retrieval mechanism).

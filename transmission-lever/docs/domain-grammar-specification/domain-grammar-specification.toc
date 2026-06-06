@@ -1,0 +1,63 @@
+\contentsline {section}{\numberline {1}Introduction}{3}{section.1}%
+\contentsline {subsection}{\numberline {1.1}The problem: computation that reasons under evidence}{3}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Design principles}{3}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.3}Contributions and structure}{4}{subsection.1.3}%
+\contentsline {subsection}{\numberline {1.4}Metalanguage and notational conventions}{4}{subsection.1.4}%
+\contentsline {section}{\numberline {2}Lexical Structure}{4}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Layout and comments}{5}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Token classes}{5}{subsection.2.2}%
+\contentsline {paragraph}{Identifiers and keywords.}{5}{section*.2}%
+\contentsline {paragraph}{Literals.}{5}{section*.3}%
+\contentsline {paragraph}{Operators and delimiters.}{5}{section*.4}%
+\contentsline {section}{\numberline {3}Concrete Grammar}{6}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Programs and declarations}{6}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}The scientific-reasoning layer}{6}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}The probabilistic layer}{7}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Statements and control flow}{7}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.5}Expressions and precedence}{7}{subsection.3.5}%
+\contentsline {subsection}{\numberline {3.6}Types in the surface syntax}{8}{subsection.3.6}%
+\contentsline {section}{\numberline {4}Abstract Syntax and Desugaring}{8}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Core abstract syntax}{9}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Desugaring}{9}{subsection.4.2}%
+\contentsline {section}{\numberline {5}Semantic Domains}{9}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Values}{10}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}The confidence algebra}{10}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Points, interpretations, floors, corpora}{10}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Environments, stores, and the trace}{11}{subsection.5.4}%
+\contentsline {section}{\numberline {6}The Type System}{11}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Types and their order}{11}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Typing judgements: expressions}{12}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Typing judgements: statements}{13}{subsection.6.3}%
+\contentsline {subsection}{\numberline {6.4}Typing the scientific-reasoning layer}{13}{subsection.6.4}%
+\contentsline {subsection}{\numberline {6.5}Typing the hybrid iteration constructs}{14}{subsection.6.5}%
+\contentsline {section}{\numberline {7}Operational Semantics}{14}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Expressions}{14}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}Statements and control flow}{15}{subsection.7.2}%
+\contentsline {paragraph}{Bounded and unbounded iteration.}{15}{section*.5}%
+\contentsline {subsection}{\numberline {7.3}Within: scoped structural traversal}{15}{subsection.7.3}%
+\contentsline {subsection}{\numberline {7.4}Propositions: an argumentation semantics}{15}{subsection.7.4}%
+\contentsline {subsection}{\numberline {7.5}Points and resolution}{16}{subsection.7.5}%
+\contentsline {subsection}{\numberline {7.6}The four hybrid iteration constructs}{17}{subsection.7.6}%
+\contentsline {paragraph}{Cycle (deterministic traversal of a floor).}{17}{section*.6}%
+\contentsline {paragraph}{Drift (stochastic traversal of a corpus).}{17}{section*.7}%
+\contentsline {paragraph}{Flow (streaming over the lines of a source).}{17}{section*.8}%
+\contentsline {paragraph}{Roll (iterate to a fixpoint).}{17}{section*.9}%
+\contentsline {paragraph}{Considering (probabilistic guarded iteration).}{17}{section*.10}%
+\contentsline {section}{\numberline {8}The Four-File Project Model}{18}{section.8}%
+\contentsline {section}{\numberline {9}Metatheory}{18}{section.9}%
+\contentsline {subsection}{\numberline {9.1}Determinacy}{18}{subsection.9.1}%
+\contentsline {subsection}{\numberline {9.2}Type safety}{19}{subsection.9.2}%
+\contentsline {subsection}{\numberline {9.3}Soundness of the evidence semantics}{20}{subsection.9.3}%
+\contentsline {subsection}{\numberline {9.4}Termination}{20}{subsection.9.4}%
+\contentsline {section}{\numberline {10}Worked Examples}{21}{section.10}%
+\contentsline {subsection}{\numberline {10.1}A proposition with motions and graded support}{21}{subsection.10.1}%
+\contentsline {subsection}{\numberline {10.2}A point and its resolution}{21}{subsection.10.2}%
+\contentsline {subsection}{\numberline {10.3}A hybrid loop over a probabilistic floor}{21}{subsection.10.3}%
+\contentsline {subsection}{\numberline {10.4}A four-file project, in outline}{22}{subsection.10.4}%
+\contentsline {section}{\numberline {11}Related Paradigms}{22}{section.11}%
+\contentsline {paragraph}{Functional and imperative cores.}{22}{section*.11}%
+\contentsline {paragraph}{Assertions and guarded commands.}{22}{section*.12}%
+\contentsline {paragraph}{Logic and argumentation.}{22}{section*.13}%
+\contentsline {paragraph}{Probabilistic and fuzzy computation.}{22}{section*.14}%
+\contentsline {paragraph}{Gradual typing.}{22}{section*.15}%
+\contentsline {section}{\numberline {12}Conclusion}{23}{section.12}%

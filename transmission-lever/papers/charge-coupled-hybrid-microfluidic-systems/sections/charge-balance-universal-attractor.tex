@@ -1,0 +1,337 @@
+\section{Charge Balance as Universal Attractor}
+\label{sec:charge_attractor}
+
+We establish that uniform charge distribution (charge balance) functions as universal attractor for all circuit trajectories in closed systems.
+
+\subsection{Equilibrium Charge Distribution}
+
+\begin{definition}[Uniform Charge Distribution]
+\label{def:uniform_distribution}
+The \emph{uniform charge distribution} is:
+\begin{equation}
+\rho_{\text{eq}}(\mathbf{r}) = \langle \rho \rangle = \frac{Q_{\text{total}}}{V} \quad \forall \mathbf{r} \in V
+\end{equation}
+where $Q_{\text{total}}$ is total charge and $V$ is system volume.
+\end{definition}
+
+At uniform distribution, charge density is constant throughout the system. There are no gradients:
+\begin{equation}
+\nabla \rho_{\text{eq}} = 0
+\end{equation}
+
+\begin{theorem}[Uniform Distribution Minimizes Variance]
+\label{thm:uniform_minimizes}
+Among all charge distributions with fixed total charge $Q_{\text{total}}$, the uniform distribution minimizes variance:
+\begin{equation}
+\sigma^2[\rho_{\text{eq}}] = 0 < \sigma^2[\rho] \quad \forall \rho \neq \rho_{\text{eq}}
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+The charge distribution variance is:
+\begin{equation}
+\sigma^2[\rho] = \frac{1}{V} \int_V (\rho(\mathbf{r}) - \langle \rho \rangle)^2 d^3r
+\end{equation}
+
+For uniform distribution $\rho_{\text{eq}}(\mathbf{r}) = \langle \rho \rangle$:
+\begin{equation}
+\sigma^2[\rho_{\text{eq}}] = \frac{1}{V} \int_V (\langle \rho \rangle - \langle \rho \rangle)^2 d^3r = 0
+\end{equation}
+
+For any non-uniform distribution, there exist regions where $\rho(\mathbf{r}) \neq \langle \rho \rangle$, giving:
+\begin{equation}
+\sigma^2[\rho] = \frac{1}{V} \int_V (\rho(\mathbf{r}) - \langle \rho \rangle)^2 d^3r > 0
+\end{equation}
+
+Therefore $\sigma^2[\rho_{\text{eq}}] < \sigma^2[\rho]$ for all $\rho \neq \rho_{\text{eq}}$.
+
+Uniform distribution is the unique global minimum of variance functional.
+\end{proof}
+
+\subsection{Attractor Dynamics}
+
+\begin{definition}[Attractor]
+\label{def:attractor}
+A state $\rho^*$ is an \emph{attractor} if trajectories starting from nearby initial conditions approach $\rho^*$ as $t \to \infty$:
+\begin{equation}
+\|\rho(t) - \rho^*\| \to 0 \quad \text{as} \quad t \to \infty
+\end{equation}
+for all initial conditions in basin of attraction.
+\end{definition}
+
+\begin{theorem}[Uniform Distribution is Universal Attractor]
+\label{thm:universal_attractor}
+In closed charge-coupled circuits, uniform charge distribution $\rho_{\text{eq}}$ is universal attractor: all trajectories approach $\rho_{\text{eq}}$ asymptotically.
+\end{theorem}
+
+\begin{proof}
+The charge dynamics are governed by variance minimization (Section~\ref{sec:autocatalytic}):
+\begin{equation}
+\frac{\partial \rho}{\partial t} = \nabla \cdot \left( \sigma \nabla \frac{\delta F}{\delta \rho} \right)
+\end{equation}
+
+The free energy functional is:
+\begin{equation}
+F[\rho] = \int_V \left[ f(\rho) + \frac{\epsilon}{2} |\nabla \phi|^2 \right] d^3r
+\end{equation}
+
+Free energy decreases monotonically (Theorem~\ref{thm:free_energy_min}):
+\begin{equation}
+\frac{dF}{dt} = -\int_V \sigma \left| \nabla \frac{\delta F}{\delta \rho} \right|^2 d^3r \leq 0
+\end{equation}
+
+The global minimum of $F[\rho]$ subject to charge conservation $\int \rho d^3r = Q_{\text{total}}$ is the uniform distribution $\rho_{\text{eq}}$.
+
+Therefore, all trajectories evolve toward $\rho_{\text{eq}}$ as $t \to \infty$:
+\begin{equation}
+\rho(t) \to \rho_{\text{eq}} \quad \text{as} \quad t \to \infty
+\end{equation}
+
+Uniform distribution is universal attractor for all initial conditions.
+\end{proof}
+
+\subsection{Asymptotic Approach in Closed Systems}
+
+\begin{theorem}[Asymptotic Approach Without Reaching]
+\label{thm:asymptotic}
+In closed systems, trajectories approach uniform distribution asymptotically but never reach it:
+\begin{equation}
+\|\rho(t) - \rho_{\text{eq}}\| \to 0 \quad \text{but} \quad \rho(t) \neq \rho_{\text{eq}} \quad \forall t < \infty
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+The approach to equilibrium is governed by:
+\begin{equation}
+\frac{d}{dt} \|\rho(t) - \rho_{\text{eq}}\|^2 = -2 \int_V \sigma \left| \nabla \frac{\delta F}{\delta \rho} \right|^2 d^3r < 0
+\end{equation}
+
+The distance to equilibrium decreases monotonically. However, reaching exact equilibrium $\rho(t) = \rho_{\text{eq}}$ requires:
+\begin{enumerate}
+\item Zero gradient: $\nabla \rho = 0$ everywhere
+\item Zero thermal fluctuations: $\delta \rho_{\text{thermal}} = 0$
+\item Infinite precision: $\epsilon \to 0$
+\end{enumerate}
+
+In physical systems, thermal fluctuations continuously perturb charge distribution:
+\begin{equation}
+\rho(\mathbf{r}, t) = \rho_{\text{eq}} + \delta \rho_{\text{thermal}}(\mathbf{r}, t)
+\end{equation}
+where $\langle \delta \rho_{\text{thermal}} \rangle = 0$ but $\langle (\delta \rho_{\text{thermal}})^2 \rangle = k_B T / V > 0$.
+
+These fluctuations prevent exact equilibrium. The system oscillates around $\rho_{\text{eq}}$ with amplitude:
+\begin{equation}
+\langle (\rho - \rho_{\text{eq}})^2 \rangle \sim k_B T / V
+\end{equation}
+
+The distance to equilibrium approaches thermal floor:
+\begin{equation}
+\|\rho(t) - \rho_{\text{eq}}\| \to \sqrt{k_B T / V} \quad \text{as} \quad t \to \infty
+\end{equation}
+
+but never reaches zero. Equilibrium is approached asymptotically but not achieved.
+\end{proof}
+
+\subsection{Perpetual Oscillation Around Attractor}
+
+\begin{corollary}[Oscillation Around Equilibrium]
+\label{cor:oscillation_equilibrium}
+Closed systems exhibit perpetual oscillation around uniform distribution with amplitude determined by thermal energy:
+\begin{equation}
+\rho(\mathbf{r}, t) = \rho_{\text{eq}} + A(\mathbf{r}) \cos(\omega t + \phi(\mathbf{r}))
+\end{equation}
+where $A(\mathbf{r}) \sim \sqrt{k_B T / V}$ is thermal amplitude.
+\end{corollary}
+
+\begin{proof}
+Thermal fluctuations create charge imbalances with characteristic energy $k_B T$. These imbalances drive autocatalytic redistribution (Section~\ref{sec:autocatalytic}) on timescale $\tau_{\text{redist}} = L^2 / (\sigma/\epsilon)$.
+
+The oscillation frequency is:
+\begin{equation}
+\omega = \frac{1}{\tau_{\text{redist}}} = \frac{\sigma}{\epsilon L^2}
+\end{equation}
+
+The amplitude is determined by thermal energy:
+\begin{equation}
+\frac{1}{2} \epsilon A^2 V \sim k_B T \quad \Rightarrow \quad A \sim \sqrt{\frac{k_B T}{\epsilon V}}
+\end{equation}
+
+The system oscillates perpetually around $\rho_{\text{eq}}$ with thermal amplitude and characteristic frequency $\omega$.
+\end{proof}
+
+\subsection{Basin of Attraction}
+
+\begin{theorem}[Global Basin of Attraction]
+\label{thm:global_basin}
+The uniform distribution $\rho_{\text{eq}}$ has global basin of attraction: all physically realizable initial conditions evolve toward $\rho_{\text{eq}}$.
+\end{theorem}
+
+\begin{proof}
+The basin of attraction is the set of initial conditions that evolve toward attractor. For uniform distribution:
+\begin{equation}
+\mathcal{B}(\rho_{\text{eq}}) = \left\{ \rho_0 : \lim_{t \to \infty} \rho(t; \rho_0) = \rho_{\text{eq}} \right\}
+\end{equation}
+
+The free energy $F[\rho]$ is convex functional with unique global minimum at $\rho_{\text{eq}}$. Gradient flow dynamics:
+\begin{equation}
+\frac{\partial \rho}{\partial t} = \nabla \cdot \left( \sigma \nabla \frac{\delta F}{\delta \rho} \right)
+\end{equation}
+decrease free energy monotonically from any initial condition.
+
+Therefore, all initial conditions with finite free energy $F[\rho_0] < \infty$ evolve toward global minimum $\rho_{\text{eq}}$.
+
+The basin of attraction is:
+\begin{equation}
+\mathcal{B}(\rho_{\text{eq}}) = \left\{ \rho : F[\rho] < \infty, \int \rho d^3r = Q_{\text{total}} \right\}
+\end{equation}
+
+This includes all physically realizable charge distributions (finite energy, conserved charge). The basin is global.
+\end{proof}
+
+\subsection{Lyapunov Function}
+
+\begin{theorem}[Free Energy as Lyapunov Function]
+\label{thm:lyapunov}
+The free energy functional $F[\rho]$ serves as Lyapunov function for charge dynamics, proving stability of uniform distribution.
+\end{theorem}
+
+\begin{proof}
+A Lyapunov function $L[\rho]$ satisfies:
+\begin{enumerate}
+\item $L[\rho] \geq L[\rho_{\text{eq}}]$ for all $\rho$ (minimum at equilibrium)
+\item $\frac{dL}{dt} \leq 0$ along trajectories (monotonic decrease)
+\item $\frac{dL}{dt} = 0$ only at $\rho = \rho_{\text{eq}}$ (strict decrease away from equilibrium)
+\end{enumerate}
+
+The free energy satisfies all three conditions:
+
+\textbf{Condition 1:} $F[\rho_{\text{eq}}]$ is global minimum (Theorem~\ref{thm:uniform_minimizes}), so $F[\rho] \geq F[\rho_{\text{eq}}]$ for all $\rho$.
+
+\textbf{Condition 2:} Free energy decreases along trajectories (Theorem~\ref{thm:free_energy_min}):
+\begin{equation}
+\frac{dF}{dt} = -\int_V \sigma \left| \nabla \frac{\delta F}{\delta \rho} \right|^2 d^3r \leq 0
+\end{equation}
+
+\textbf{Condition 3:} $\frac{dF}{dt} = 0$ requires $\nabla (\delta F / \delta \rho) = 0$ everywhere, which occurs only at equilibrium $\rho = \rho_{\text{eq}}$.
+
+Therefore, $F[\rho]$ is Lyapunov function, proving that $\rho_{\text{eq}}$ is stable attractor.
+\end{proof}
+
+\subsection{Convergence Rate}
+
+\begin{theorem}[Exponential Convergence to Attractor]
+\label{thm:exponential_convergence}
+The distance to equilibrium decays exponentially:
+\begin{equation}
+\|\rho(t) - \rho_{\text{eq}}\| = \|\rho_0 - \rho_{\text{eq}}\| e^{-\lambda t}
+\end{equation}
+where $\lambda = \sigma / (\epsilon L^2)$ is the convergence rate.
+\end{theorem}
+
+\begin{proof}
+Linearize dynamics around equilibrium:
+\begin{equation}
+\rho(\mathbf{r}, t) = \rho_{\text{eq}} + \delta \rho(\mathbf{r}, t)
+\end{equation}
+
+The perturbation evolution is:
+\begin{equation}
+\frac{\partial \delta \rho}{\partial t} = \frac{\sigma}{\epsilon} \nabla^2 \delta \rho
+\end{equation}
+
+This is diffusion equation with solution:
+\begin{equation}
+\delta \rho(\mathbf{r}, t) = \sum_k A_k e^{-\lambda_k t} \psi_k(\mathbf{r})
+\end{equation}
+where $\psi_k$ are eigenfunctions of Laplacian and:
+\begin{equation}
+\lambda_k = \frac{\sigma}{\epsilon} k^2
+\end{equation}
+
+The slowest decay mode has $k \sim 1/L$, giving:
+\begin{equation}
+\lambda_{\min} = \frac{\sigma}{\epsilon L^2}
+\end{equation}
+
+The distance to equilibrium decays as:
+\begin{equation}
+\|\rho(t) - \rho_{\text{eq}}\| \sim e^{-\lambda_{\min} t}
+\end{equation}
+
+Convergence is exponential with rate $\lambda_{\min} = \sigma / (\epsilon L^2)$.
+\end{proof}
+
+\subsection{Universal Dynamics}
+
+\begin{theorem}[All Circuits Evolve Toward Charge Balance]
+\label{thm:universal_evolution}
+Regardless of initial configuration, circuit architecture, or coupling topology, all closed charge-coupled circuits evolve toward uniform charge distribution as universal attractor.
+\end{theorem}
+
+\begin{proof}
+The evolution toward uniform distribution follows from three universal principles:
+
+\textbf{Principle 1 (Charge conservation):} $Q_{\text{total}} = \text{const}$ in closed systems.
+
+\textbf{Principle 2 (Variance minimization):} Systems minimize $\sigma^2[\rho]$ through thermodynamic necessity.
+
+\textbf{Principle 3 (Free energy minimization):} Dynamics follow gradient flow $\partial \rho / \partial t = -\nabla (\delta F / \delta \rho)$.
+
+These three principles are independent of:
+\begin{itemize}
+\item Circuit architecture (component arrangement)
+\item Initial charge distribution $\rho_0(\mathbf{r})$
+\item Coupling topology (how subsystems connect)
+\item System size or geometry
+\end{itemize}
+
+All closed circuits satisfy these principles, therefore all evolve toward uniform distribution $\rho_{\text{eq}}$.
+
+Charge balance is universal attractor for entire class of closed charge-coupled circuits.
+\end{proof}
+
+\subsection{Comparison with Open Systems}
+
+\begin{theorem}[Attractor Reachability Distinguishes Regimes]
+\label{thm:attractor_reachability}
+The key distinction between closed and open systems is attractor reachability:
+
+\textbf{Closed systems:} Attractor approached asymptotically but never reached.
+
+\textbf{Open systems:} Attractor reached and maintained.
+\end{theorem}
+
+\begin{proof}
+In closed systems, thermal fluctuations prevent exact equilibrium (Theorem~\ref{thm:asymptotic}). The system oscillates around attractor with thermal amplitude.
+
+In open systems, dissipation to reservoir overcomes thermal fluctuations. The system reaches exact equilibrium:
+\begin{equation}
+\rho(t) = \rho_{\text{reservoir}} \quad \text{for} \quad t > \tau_{\text{diss}}
+\end{equation}
+
+The distinction is:
+\begin{itemize}
+\item Closed: $\|\rho(t) - \rho_{\text{eq}}\| \to \sqrt{k_B T / V} > 0$ (asymptotic approach)
+\item Open: $\|\rho(t) - \rho_{\text{reservoir}}\| \to 0$ (exact equilibrium)
+\end{itemize}
+
+Attractor reachability distinguishes the two regimes.
+\end{proof}
+
+\subsection{Experimental Signatures}
+
+Charge balance as universal attractor exhibits:
+
+\begin{enumerate}
+\item \textbf{Monotonic variance decrease:} $\sigma^2[\rho](t)$ decreases monotonically toward thermal floor $k_B T / V$.
+
+\item \textbf{Exponential convergence:} Distance to equilibrium decays as $e^{-\lambda t}$ with rate $\lambda = \sigma / (\epsilon L^2)$.
+
+\item \textbf{Oscillation around equilibrium:} Perpetual oscillation with amplitude $\sim \sqrt{k_B T / V}$ and frequency $\omega = \sigma / (\epsilon L^2)$.
+
+\item \textbf{Universal evolution:} All initial conditions converge to same attractor regardless of architecture or coupling.
+
+\item \textbf{Thermal floor:} Minimum achievable variance $\sigma^2_{\min} = k_B T / V$ set by thermal fluctuations.
+\end{enumerate}
+
+These signatures confirm charge balance as universal attractor for closed charge-coupled circuits.
