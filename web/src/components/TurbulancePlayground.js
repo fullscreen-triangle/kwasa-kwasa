@@ -4,8 +4,11 @@ import {
   X, Circle, FileCode2, FileText, Folder, FolderOpen,
   AlertCircle, Bell, Check, Eye, Code2, Lightbulb,
 } from "lucide-react";
+import CodeMirror from "@uiw/react-codemirror";
+import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 import { run, tbToString } from "../lib/turbulance";
 import { examples } from "../lib/turbulance/examples";
+import { turbulance } from "../lib/turbulance/codemirror";
 
 /* ------------------------------------------------------------------ *
  *  THEME — VS Code dark. Retheme in one place.                        *
@@ -85,33 +88,29 @@ function Tree({ tree, expanded, toggle, activePath, openFile, depth = 0, path = 
 /* ------------------------------------------------------------------ *
  *  Editor (line-numbered textarea). Swap for CodeMirror later.        *
  * ------------------------------------------------------------------ */
-function Editor({ value, onChange, onCursor }) {
-  const gutterRef = useRef(null);
-  const lines = value.split("\n");
-  const syncScroll = (e) => { if (gutterRef.current) gutterRef.current.scrollTop = e.target.scrollTop; };
-  const handleCursor = (e) => {
-    const upto = e.target.value.slice(0, e.target.selectionStart);
-    onCursor({ ln: upto.split("\n").length, col: upto.length - upto.lastIndexOf("\n") });
-  };
-  const handleKey = (e) => {
-    if (e.key === "Tab") {
-      e.preventDefault();
-      const ta = e.target, s = ta.selectionStart, en = ta.selectionEnd;
-      const nv = ta.value.slice(0, s) + "    " + ta.value.slice(en);
-      onChange(nv);
-      requestAnimationFrame(() => { ta.selectionStart = ta.selectionEnd = s + 4; });
-    }
-  };
+function CodeEditor({ value, onChange, onCursor }) {
   return (
-    <div className="flex min-h-0 flex-1" style={{ background: theme.editor }}>
-      <div ref={gutterRef} className="select-none overflow-hidden py-3 text-right font-mono text-[13px] leading-[1.5]" style={{ color: theme.gutter, minWidth: 52, paddingRight: 16 }}>
-        {lines.map((_, i) => <div key={i}>{i + 1}</div>)}
-      </div>
-      <textarea
-        value={value} onChange={(e) => onChange(e.target.value)} onScroll={syncScroll}
-        onKeyUp={handleCursor} onClick={handleCursor} onKeyDown={handleKey} spellCheck={false}
-        className="min-h-0 flex-1 resize-none border-0 bg-transparent py-3 pr-4 font-mono text-[13px] leading-[1.5] outline-none"
-        style={{ color: theme.editorFg, tabSize: 4, caretColor: "#fff" }}
+    <div className="min-h-0 flex-1 overflow-hidden" style={{ background: theme.editor }}>
+      <CodeMirror
+        value={value}
+        height="100%"
+        theme={vscodeDark}
+        extensions={[turbulance()]}
+        onChange={(val) => onChange(val)}
+        onUpdate={(vu) => {
+          const pos = vu.state.selection.main.head;
+          const line = vu.state.doc.lineAt(pos);
+          onCursor({ ln: line.number, col: pos - line.from + 1 });
+        }}
+        basicSetup={{
+          lineNumbers: true,
+          foldGutter: false,
+          highlightActiveLine: true,
+          autocompletion: false,
+          indentOnInput: false,
+          tabSize: 4,
+        }}
+        style={{ height: "100%", fontSize: "13px" }}
       />
     </div>
   );
@@ -397,7 +396,7 @@ export default function TurbulancePlayground() {
             )}
 
             {activeNode ? (
-              <Editor value={activeNode.content} onChange={updateContent} onCursor={setCursor} />
+              <CodeEditor value={activeNode.content} onChange={updateContent} onCursor={setCursor} />
             ) : (
               <div className="flex min-h-0 flex-1 items-center justify-center text-sm" style={{ background: theme.editor, color: "#5a5a5a" }}>Open a tutorial from the sidebar</div>
             )}
