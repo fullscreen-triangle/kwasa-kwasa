@@ -22,7 +22,7 @@ export default function Home() {
         />
       </Head>
 
-      <section className="relative h-[calc(100vh-7rem)] w-full overflow-hidden">
+      <section className="relative h-[calc(100vh-15rem)] w-full overflow-hidden">
         <div className="pointer-events-none absolute inset-x-0 top-4 z-10 flex justify-center px-4">
           <h1 className="text-center font-bold tracking-tight text-dark dark:text-light text-7xl xl:text-6xl md:text-5xl sm:text-4xl">
             kwasa-kwasa
