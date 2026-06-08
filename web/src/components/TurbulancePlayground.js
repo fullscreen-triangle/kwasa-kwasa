@@ -32,6 +32,11 @@ const verdictColor = (v) =>
  * ------------------------------------------------------------------ */
 const initialFiles = examples.reduce((acc, ex) => {
   acc[`${ex.id}.trb`] = { type: "file", lang: "trb", content: ex.code, title: ex.title, description: ex.description };
+  if (ex.files) {
+    for (const [name, content] of Object.entries(ex.files)) {
+      acc[name] = { type: "file", lang: name.endsWith(".py") ? "py" : "txt", content };
+    }
+  }
   return acc;
 }, {});
 const firstFile = `${examples[0].id}.trb`;
@@ -41,10 +46,11 @@ const firstFile = `${examples[0].id}.trb`;
  * ------------------------------------------------------------------ */
 const fileIcon = (name) => {
   if (name.endsWith(".trb")) return { Icon: FileCode2, color: "#58E6D9" };
+  if (name.endsWith(".py")) return { Icon: FileCode2, color: "#4B8BBE" };
   if (name.endsWith(".md")) return { Icon: FileText, color: "#519aba" };
   return { Icon: FileText, color: "#858585" };
 };
-const langLabel = (lang) => ({ trb: "Turbulance", md: "Markdown" }[lang] || "Plain Text");
+const langLabel = (lang) => ({ trb: "Turbulance", py: "Python", md: "Markdown" }[lang] || "Plain Text");
 const getNode = (tree, path) => { let n = { children: tree }; for (const p of path) { n = n.children?.[p]; if (!n) return null; } return n; };
 
 /* ------------------------------------------------------------------ *
@@ -193,7 +199,7 @@ function ResultView({ result }) {
   );
 }
 
-function OutputColumn({ result, onRun }) {
+function OutputColumn({ result, onRun, running, status }) {
   const [tab, setTab] = useState("output");
   const tabs = [{ id: "output", label: "Output", Icon: Eye }, { id: "ast", label: "AST", Icon: Code2 }];
   return (
@@ -211,10 +217,17 @@ function OutputColumn({ result, onRun }) {
             );
           })}
         </div>
-        <button onClick={onRun} title="Run (Ctrl+Enter)" className="flex h-6 items-center gap-1 rounded px-2 text-[12px]" style={{ background: theme.accent, color: "#fff" }}>
-          <Play size={12} /> Run
+        <button onClick={onRun} disabled={running} title="Run (Ctrl+Enter)" className="flex h-6 items-center gap-1 rounded px-2 text-[12px]"
+          style={{ background: running ? "#444" : theme.accent, color: "#fff", opacity: running ? 0.85 : 1 }}>
+          <Play size={12} /> {running ? "Running…" : "Run"}
         </button>
       </div>
+      {(running || status) && (
+        <div className="flex shrink-0 items-center gap-2 px-3 py-1 text-[11px]" style={{ background: "#16242f", color: "#7fd4ff", borderBottom: `1px solid ${theme.border}` }}>
+          <span className="inline-block h-2 w-2 animate-pulse rounded-full" style={{ background: "#58E6D9" }} />
+          {status || "Running…"}
+        </div>
+      )}
       <div className="min-h-0 flex-1">
         {tab === "output" && <ResultView result={result} />}
         {tab === "ast" && (
@@ -240,24 +253,55 @@ export default function TurbulancePlayground() {
   const [activity, setActivity] = useState("files");
   const [cursor, setCursor] = useState({ ln: 1, col: 1 });
   const [result, setResult] = useState(null);
+  const [status, setStatus] = useState(null);
+  const [running, setRunning] = useState(false);
 
   const [editorWidth, setEditorWidth] = useState(55);
   const splitRef = useRef(null);
   const dragging = useRef(false);
+  const runSeq = useRef(0);
 
   const activePathArr = useMemo(() => openTabs.find((t) => t.join("/") === activeTab) || null, [openTabs, activeTab]);
   const activeNode = activePathArr ? getNode(files, activePathArr) : null;
+  const activeName = activePathArr ? activePathArr[activePathArr.length - 1] : null;
 
-  const doRun = useCallback(() => {
+  // flatten the project to { filename: content } so delegation can resolve specialists
+  const filesMap = useMemo(() => {
+    const m = {};
+    for (const [name, node] of Object.entries(files)) if (node.type === "file") m[name] = node.content;
+    return m;
+  }, [files]);
+
+  const isHeavy = (src) => /trebuchet\.delegate|python\s*\(/.test(src || "");
+
+  const doRun = useCallback(async () => {
     if (!activeNode) return;
-    setResult(run(activeNode.content));
-  }, [activeNode]);
+    if (activeName && activeName.endsWith(".py")) {
+      setResult({ ok: true, output: [`${activeName} is a Python specialist — run the .trb that delegates to it.`], propositions: [], points: [], ast: null });
+      return;
+    }
+    const seq = ++runSeq.current;
+    setRunning(true);
+    try {
+      const res = await run(activeNode.content, {
+        files: filesMap,
+        onStatus: (m) => { if (seq === runSeq.current) setStatus(m); },
+      });
+      if (seq === runSeq.current) setResult(res);
+    } finally {
+      if (seq === runSeq.current) { setRunning(false); setStatus(null); }
+    }
+  }, [activeNode, activeName, filesMap]);
 
-  // auto-run (debounced) on edit / file switch
+  // auto-run (debounced) on edit / file switch — never for heavy (Python/AI) scripts
   useEffect(() => {
-    const t = setTimeout(() => { if (activeNode) setResult(run(activeNode.content)); }, 350);
+    if (!activeNode || (activeName && activeName.endsWith(".py")) || isHeavy(activeNode.content)) return;
+    const t = setTimeout(async () => {
+      const res = await run(activeNode.content);
+      setResult(res);
+    }, 350);
     return () => clearTimeout(t);
-  }, [activeNode]);
+  }, [activeNode, activeName]);
 
   // Ctrl/Cmd+Enter to run
   useEffect(() => {
@@ -407,7 +451,7 @@ export default function TurbulancePlayground() {
             className="w-1 shrink-0 cursor-col-resize" style={{ background: theme.border }} title="Drag to resize" />
 
           {/* Output */}
-          <OutputColumn result={result} onRun={doRun} />
+          <OutputColumn result={result} onRun={doRun} running={running} status={status} />
         </div>
       </div>
 

@@ -16,7 +16,7 @@
 /* ----------------------------- 1. LEXER ----------------------------------- */
 
 const KEYWORDS = new Set([
-  "funxn", "item", "proposition", "motion", "support", "contradict",
+  "funxn", "item", "proposition", "hypothesis", "motion", "support", "contradict",
   "inconclusive", "within", "given", "considering", "for", "each", "in",
   "while", "return", "ensure", "allow", "research", "cause", "point",
   "resolution", "resolve", "cycle", "drift", "flow", "roll", "until",
@@ -209,6 +209,7 @@ class Parser {
       switch (t.value) {
         case "funxn": return this.parseFunxn();
         case "proposition": return this.parseProposition();
+        case "hypothesis": return this.parseHypothesis();
         case "motion": return this.parseMotion();
         case "item": return this.parseItem();
         case "given": return this.parseGiven();
@@ -275,6 +276,47 @@ class Parser {
     const motions = block.body.filter((s) => s.kind === "Motion");
     const body = block.body.filter((s) => s.kind !== "Motion");
     return { kind: "Proposition", name, motions, body, line };
+  }
+
+  // hypothesis Name:
+  //     claim: "..."
+  //     success_criteria:
+  //         - sensitivity: 0.85
+  parseHypothesis() {
+    const line = this.next().line; // hypothesis
+    const name = this.eat("ID").value;
+    this.eat("OP", ":");
+    this.skipNewlines();
+    this.eat("INDENT");
+    const fields = [];
+    this.skipNewlines();
+    while (!this.at("DEDENT") && !this.at("EOF")) {
+      const key = this.eat("ID").value;
+      this.eat("OP", ":");
+      if (this.at("NEWLINE")) {
+        // nested block of "- subkey: value" entries -> a map
+        this.skipNewlines();
+        const sub = [];
+        if (this.at("INDENT")) {
+          this.next();
+          this.skipNewlines();
+          while (!this.at("DEDENT") && !this.at("EOF")) {
+            if (this.atOP("-")) this.next();
+            const subkey = this.eat("ID").value;
+            this.eat("OP", ":");
+            sub.push({ key: subkey, value: this.parseExpr() });
+            this.skipNewlines();
+          }
+          if (this.at("DEDENT")) this.next();
+        }
+        fields.push({ key, nested: sub });
+      } else {
+        fields.push({ key, value: this.parseExpr() });
+        this.skipNewlines();
+      }
+    }
+    if (this.at("DEDENT")) this.next();
+    return { kind: "Hypothesis", name, fields, line };
   }
 
   parseMotion() {
@@ -564,84 +606,105 @@ class Env {
 class ReturnSignal { constructor(value) { this.value = value; } }
 
 class Interpreter {
-  constructor() {
+  constructor(opts = {}) {
     this.output = [];
     this.propositions = [];
     this.points = [];
     this.debateStack = [];
     this.global = new Env();
     this.thresholds = { plus: 0.7, minus: 0.3 };
+    this.files = opts.files || {};                 // filename -> source (for delegation)
+    this.onStatus = opts.onStatus || (() => {});   // progress callback (e.g. loading Python)
+    // polyglot/AI namespaces (Paper B tool/oracle resolvers)
+    this.global.define("trebuchet", {
+      __t: "map",
+      data: { delegate: { __t: "builtin", name: "trebuchet.delegate" } },
+    });
   }
 
-  run(program) {
+  async run(program) {
     for (const stmt of program.body) {
       // hoist function declarations so order doesn't matter
-      if (stmt.kind === "Funxn") this.execStmt(stmt, this.global);
+      if (stmt.kind === "Funxn") await this.execStmt(stmt, this.global);
     }
     for (const stmt of program.body) {
-      if (stmt.kind !== "Funxn") this.execStmt(stmt, this.global);
+      if (stmt.kind !== "Funxn") await this.execStmt(stmt, this.global);
     }
     // If a main() exists, call it.
     if (this.global.has("main")) {
       const m = this.global.get("main");
-      if (tbType(m) === "closure") this.callClosure(m, []);
+      if (tbType(m) === "closure") await this.callClosure(m, []);
     }
   }
 
-  execBlock(block, env) {
-    for (const s of block.body) this.execStmt(s, env);
+  async execBlock(block, env) {
+    for (const s of block.body) await this.execStmt(s, env);
   }
 
-  execStmt(node, env) {
+  async execStmt(node, env) {
     switch (node.kind) {
       case "Funxn":
         env.define(node.name, { __t: "closure", name: node.name, params: node.params, body: node.body, env });
         return;
       case "Item": {
-        let v = this.eval(node.value, env);
+        let v = await this.eval(node.value, env);
         if (node.isPoint) v = this.makePoint(v);
         env.define(node.name, v);
         return;
       }
+      case "Hypothesis": {
+        const data = {};
+        for (const f of node.fields) {
+          if (f.nested) {
+            const m = {};
+            for (const s of f.nested) m[s.key] = await this.eval(s.value, env);
+            data[f.key] = { __t: "map", data: m };
+          } else {
+            data[f.key] = await this.eval(f.value, env);
+          }
+        }
+        env.define(node.name, { __t: "map", data });
+        return;
+      }
       case "Assign": {
-        const v = this.eval(node.value, env);
-        this.assign(node.target, v, env);
+        const v = await this.eval(node.value, env);
+        await this.assign(node.target, v, env);
         return;
       }
       case "ExprStmt":
-        this.eval(node.expr, env);
+        await this.eval(node.expr, env);
         return;
       case "Return":
-        throw new ReturnSignal(node.expr ? this.eval(node.expr, env) : null);
+        throw new ReturnSignal(node.expr ? await this.eval(node.expr, env) : null);
       case "Ensure":
-        if (!isTruthy(this.eval(node.expr, env))) throw new TbError("ensure failed: assertion did not hold", node.line);
+        if (!isTruthy(await this.eval(node.expr, env))) throw new TbError("ensure failed: assertion did not hold", node.line);
         return;
       case "Given": {
-        if (isTruthy(this.eval(node.cond, env))) this.execBlock(node.then, new Env(env));
-        else if (node.els) this.execBlock(node.els, new Env(env));
+        if (isTruthy(await this.eval(node.cond, env))) await this.execBlock(node.then, new Env(env));
+        else if (node.els) await this.execBlock(node.els, new Env(env));
         return;
       }
       case "Within": {
-        const target = this.eval(node.target, env);
+        const target = await this.eval(node.target, env);
         const inner = new Env(env);
         if (node.alias) inner.define(node.alias, target);
-        this.execBlock(node.body, inner);
+        await this.execBlock(node.body, inner);
         return;
       }
       case "ForEach": {
-        const it = this.iterableOf(this.eval(node.iterable, env));
-        for (const x of it) { const inner = new Env(env); inner.define(node.variable, x); this.execBlock(node.body, inner); }
+        const it = this.iterableOf(await this.eval(node.iterable, env));
+        for (const x of it) { const inner = new Env(env); inner.define(node.variable, x); await this.execBlock(node.body, inner); }
         return;
       }
       case "Considering": {
-        const it = this.iterableOf(this.eval(node.iterable, env));
-        for (const x of it) { const inner = new Env(env); inner.define(node.variable, x); this.execBlock(node.body, inner); }
+        const it = this.iterableOf(await this.eval(node.iterable, env));
+        for (const x of it) { const inner = new Env(env); inner.define(node.variable, x); await this.execBlock(node.body, inner); }
         return;
       }
       case "While": {
         let guard = 0;
-        while (isTruthy(this.eval(node.cond, env))) {
-          this.execBlock(node.body, new Env(env));
+        while (isTruthy(await this.eval(node.cond, env))) {
+          await this.execBlock(node.body, new Env(env));
           if (++guard > 100000) throw new TbError("while loop exceeded 100000 iterations", node.line);
         }
         return;
@@ -654,29 +717,29 @@ class Interpreter {
     }
   }
 
-  assign(target, value, env) {
+  async assign(target, value, env) {
     if (target.kind === "Var") { env.set(target.name, value); return; }
     if (target.kind === "Index") {
-      const obj = this.eval(target.object, env);
-      const idx = this.eval(target.index, env);
+      const obj = await this.eval(target.object, env);
+      const idx = await this.eval(target.index, env);
       if (Array.isArray(obj)) obj[idx] = value;
       else if (tbType(obj) === "map") obj.data[idx] = value;
       return;
     }
     if (target.kind === "Member") {
-      const obj = this.eval(target.object, env);
+      const obj = await this.eval(target.object, env);
       if (tbType(obj) === "map") obj.data[target.prop] = value;
       return;
     }
     throw new TbError("Invalid assignment target", target.line);
   }
 
-  execProposition(node, env) {
+  async execProposition(node, env) {
     const debate = {};
     for (const m of node.motions) debate[m.name] = { desc: m.desc, aff: [], con: [] };
     this.debateStack.push(debate);
     const inner = new Env(env);
-    try { for (const s of node.body) this.execStmt(s, inner); }
+    try { for (const s of node.body) await this.execStmt(s, inner); }
     finally { this.debateStack.pop(); }
 
     const motions = node.motions.map((m) => {
@@ -704,12 +767,12 @@ class Interpreter {
     return clip01((sPlus - sMinus) / w);
   }
 
-  execSupport(node, env) {
+  async execSupport(node, env) {
     if (this.debateStack.length === 0) throw new TbError(`'${node.kind.toLowerCase()}' outside a proposition`, node.line);
     const debate = this.debateStack[this.debateStack.length - 1];
     const entry = debate[node.motion];
     if (!entry) throw new TbError(`Unknown motion '${node.motion}'`, node.line);
-    const conf = node.conf == null ? 1 : clip01(Number(this.eval(node.conf, env)));
+    const conf = node.conf == null ? 1 : clip01(Number(await this.eval(node.conf, env)));
     const item = { strength: conf, conf, weight: 1 };
     if (node.kind === "Support") entry.aff.push(item); else entry.con.push(item);
   }
@@ -724,7 +787,7 @@ class Interpreter {
   }
 
   /* ---- expression evaluation ---- */
-  eval(node, env) {
+  async eval(node, env) {
     switch (node.kind) {
       case "Num": return node.value;
       case "Str": return node.value;
@@ -735,34 +798,38 @@ class Interpreter {
         if (BUILTINS[node.name]) return { __t: "builtin", name: node.name };
         throw new TbError(`Undefined variable '${node.name}'`, node.line);
       }
-      case "List": return node.elements.map((e) => this.eval(e, env));
+      case "List": {
+        const out = [];
+        for (const e of node.elements) out.push(await this.eval(e, env));
+        return out;
+      }
       case "Map": {
         const data = {};
-        for (const f of node.fields) data[f.key] = this.eval(f.value, env);
+        for (const f of node.fields) data[f.key] = await this.eval(f.value, env);
         return { __t: "map", data };
       }
       case "Unary": {
-        const v = this.eval(node.operand, env);
+        const v = await this.eval(node.operand, env);
         if (node.op === "!") return !isTruthy(v);
         return -Number(v);
       }
       case "Logic": {
-        const l = this.eval(node.left, env);
-        if (node.op === "&&") return isTruthy(l) ? this.eval(node.right, env) : l;
-        return isTruthy(l) ? l : this.eval(node.right, env);
+        const l = await this.eval(node.left, env);
+        if (node.op === "&&") return isTruthy(l) ? await this.eval(node.right, env) : l;
+        return isTruthy(l) ? l : await this.eval(node.right, env);
       }
-      case "Binary": return this.binop(node.op, this.eval(node.left, env), this.eval(node.right, env), node);
-      case "Member": return this.member(this.eval(node.object, env), node.prop, node);
+      case "Binary": return this.binop(node.op, await this.eval(node.left, env), await this.eval(node.right, env), node);
+      case "Member": return this.member(await this.eval(node.object, env), node.prop, node);
       case "Index": {
-        const obj = this.eval(node.object, env);
-        const idx = this.eval(node.index, env);
+        const obj = await this.eval(node.object, env);
+        const idx = await this.eval(node.index, env);
         if (Array.isArray(obj)) return obj[idx] ?? null;
         if (tbType(obj) === "str") return obj[idx] ?? "";
         if (tbType(obj) === "map") return obj.data[idx] ?? null;
         throw new TbError("Cannot index this value", node.line);
       }
       case "Call": return this.evalCall(node, env);
-      case "Resolve": return this.resolve(this.eval(node.expr, env), node);
+      case "Resolve": return this.resolve(await this.eval(node.expr, env), node);
       default: throw new TbError(`Cannot evaluate '${node.kind}'`, node.line);
     }
   }
@@ -802,23 +869,25 @@ class Interpreter {
     return null;
   }
 
-  evalCall(node, env) {
-    const callee = this.eval(node.callee, env);
-    const args = node.args.map((a) => this.eval(a, env));
+  async evalCall(node, env) {
+    const callee = await this.eval(node.callee, env);
+    const args = [];
+    for (const a of node.args) args.push(await this.eval(a, env));
     const t = tbType(callee);
-    if (t === "closure") return this.callClosure(callee, args);
-    if (t === "builtin") return BUILTINS[callee.name](this, args, node);
+    if (t === "closure") return await this.callClosure(callee, args);
+    if (t === "builtin") return await BUILTINS[callee.name](this, args, node);
     throw new TbError("Attempt to call a non-function", node.line);
   }
 
-  callClosure(clo, args) {
+  async callClosure(clo, args) {
     const env = new Env(clo.env);
-    clo.params.forEach((p, i) => {
+    for (let i = 0; i < clo.params.length; i++) {
+      const p = clo.params[i];
       let v = args[i];
-      if (v === undefined) v = p.def ? this.eval(p.def, env) : null;
+      if (v === undefined) v = p.def ? await this.eval(p.def, env) : null;
       env.define(p.name, v);
-    });
-    try { this.execBlock(clo.body, env); }
+    }
+    try { await this.execBlock(clo.body, env); }
     catch (e) { if (e instanceof ReturnSignal) return e.value; throw e; }
     return null;
   }
@@ -871,6 +940,29 @@ class Interpreter {
 
 /* --------------------------- 5. BUILTINS ---------------------------------- */
 
+// Convert a Turbulance value to plain JS (for passing into a Python specialist).
+function tbToJS(v) {
+  const t = tbType(v);
+  if (t === "none") return null;
+  if (t === "num" || t === "str" || t === "bool") return v;
+  if (t === "list") return v.map(tbToJS);
+  if (t === "map") { const o = {}; for (const k of Object.keys(v.data)) o[k] = tbToJS(v.data[k]); return o; }
+  if (t === "entity") return { value: tbToJS(v.value), confidence: v.confidence };
+  if (t === "point") return { content: v.content, confidence: v.confidence };
+  return null;
+}
+
+// Convert a plain-JS value (a Python specialist's result) back to a Turbulance value.
+function jsToTb(x) {
+  if (x === null || x === undefined) return null;
+  const tp = typeof x;
+  if (tp === "number" || tp === "string" || tp === "boolean") return x;
+  if (Array.isArray(x)) return x.map(jsToTb);
+  if (x instanceof Map) { const data = {}; for (const [k, val] of x) data[String(k)] = jsToTb(val); return { __t: "map", data }; }
+  if (tp === "object") { const data = {}; for (const k of Object.keys(x)) data[k] = jsToTb(x[k]); return { __t: "map", data }; }
+  return null;
+}
+
 const BUILTINS = {
   print(interp, args) {
     if (args.length > 0 && tbType(args[0]) === "str" && args[0].includes("{}")) {
@@ -902,19 +994,42 @@ const BUILTINS = {
   num(_i, a) { return Number(a[0]); },
   range(_i, a) { const n = Number(a[0]); return Array.from({ length: n }, (_, i) => i); },
   append(_i, a) { if (Array.isArray(a[0])) a[0].push(a[1]); return a[0]; },
+
+  // --- Polyglot tool resolver: run an inline Python snippet (Pyodide) ---
+  async python(interp, args) {
+    const code = String(args[0] ?? "");
+    const { runPython } = await import("./python.js");
+    const result = await runPython(code, interp.onStatus);
+    return jsToTb(result);
+  },
+
+  // --- Polyglot tool resolver: delegate to a Python specialist file ---
+  // trebuchet.delegate(specialist_filename, entry_function, data) -> structured result
+  "trebuchet.delegate": async (interp, args) => {
+    const specialist = String(args[0] ?? "");
+    const entry = String(args[1] ?? "main");
+    const data = tbToJS(args[2] ?? null);
+    const src = interp.files[specialist];
+    if (src == null) {
+      throw new TbError(`trebuchet.delegate: specialist '${specialist}' not found among project files`);
+    }
+    const { runSpecialist } = await import("./python.js");
+    const result = await runSpecialist(src, entry, data, interp.onStatus);
+    return jsToTb(result);
+  },
 };
 
 /* --------------------------- 6. ENTRY POINT ------------------------------- */
 
-export function run(source) {
+export async function run(source, opts = {}) {
   const result = { ok: false, output: [], propositions: [], points: [], value: null, error: null, ast: null };
   let interp;
   try {
     const tokens = lex(source);
     const ast = new Parser(tokens).parseProgram();
     result.ast = ast;
-    interp = new Interpreter();
-    interp.run(ast);
+    interp = new Interpreter({ files: opts.files || {}, onStatus: opts.onStatus });
+    await interp.run(ast);
     result.ok = true;
   } catch (e) {
     if (e instanceof ReturnSignal) { result.ok = true; }
