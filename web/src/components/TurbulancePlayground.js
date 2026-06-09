@@ -30,11 +30,21 @@ const verdictColor = (v) =>
 /* ------------------------------------------------------------------ *
  *  FILE SYSTEM — the tutorial scripts (flat .trb files).              *
  * ------------------------------------------------------------------ */
+const extLang = (name) => {
+  if (name.endsWith(".trb")) return "trb";
+  if (name.endsWith(".py")) return "py";
+  if (name.endsWith(".ghd")) return "ghd";
+  if (name.endsWith(".hre")) return "hre";
+  if (name.endsWith(".fs")) return "fs";
+  if (name.endsWith(".md")) return "md";
+  return "txt";
+};
+
 const initialFiles = examples.reduce((acc, ex) => {
   acc[`${ex.id}.trb`] = { type: "file", lang: "trb", content: ex.code, title: ex.title, description: ex.description };
   if (ex.files) {
     for (const [name, content] of Object.entries(ex.files)) {
-      acc[name] = { type: "file", lang: name.endsWith(".py") ? "py" : "txt", content };
+      acc[name] = { type: "file", lang: extLang(name), content };
     }
   }
   return acc;
@@ -47,10 +57,13 @@ const firstFile = `${examples[0].id}.trb`;
 const fileIcon = (name) => {
   if (name.endsWith(".trb")) return { Icon: FileCode2, color: "#58E6D9" };
   if (name.endsWith(".py")) return { Icon: FileCode2, color: "#4B8BBE" };
+  if (name.endsWith(".ghd")) return { Icon: FileText, color: "#6fb3a8" };
+  if (name.endsWith(".hre")) return { Icon: FileText, color: "#c9a26b" };
+  if (name.endsWith(".fs")) return { Icon: FileText, color: "#c77dc7" };
   if (name.endsWith(".md")) return { Icon: FileText, color: "#519aba" };
   return { Icon: FileText, color: "#858585" };
 };
-const langLabel = (lang) => ({ trb: "Turbulance", py: "Python", md: "Markdown" }[lang] || "Plain Text");
+const langLabel = (lang) => ({ trb: "Turbulance", py: "Python", ghd: "Gerhard · resources", hre: "Harare · decisions", fs: "Fullscreen · state", md: "Markdown" }[lang] || "Plain Text");
 const getNode = (tree, path) => { let n = { children: tree }; for (const p of path) { n = n.children?.[p]; if (!n) return null; } return n; };
 
 /* ------------------------------------------------------------------ *
@@ -272,12 +285,19 @@ export default function TurbulancePlayground() {
     return m;
   }, [files]);
 
-  const isHeavy = (src) => /trebuchet\.delegate|python\s*\(/.test(src || "");
+  const isHeavy = (src) => /trebuchet\.delegate|python\s*\(|summarize\s*\(|classify\s*\(|ask\s*\(/.test(src || "");
 
   const doRun = useCallback(async () => {
     if (!activeNode) return;
-    if (activeName && activeName.endsWith(".py")) {
-      setResult({ ok: true, output: [`${activeName} is a Python specialist — run the .trb that delegates to it.`], propositions: [], points: [], ast: null });
+    if (activeName && !activeName.endsWith(".trb")) {
+      const ext = activeName.split(".").pop();
+      const role = {
+        py: "a Python specialist — run the .trb that delegates to it",
+        ghd: "the resource graph (perception) — what the task may draw on",
+        hre: "the decision log (memory) — the orchestrator's reasoning trace",
+        fs: "the live state (sentiment) — where attention and resources sit",
+      }[ext] || "a companion file";
+      setResult({ ok: true, output: [`${activeName}: ${role}. Only .trb files are executed.`], propositions: [], points: [], ast: null });
       return;
     }
     const seq = ++runSeq.current;
@@ -295,7 +315,7 @@ export default function TurbulancePlayground() {
 
   // auto-run (debounced) on edit / file switch — never for heavy (Python/AI) scripts
   useEffect(() => {
-    if (!activeNode || (activeName && activeName.endsWith(".py")) || isHeavy(activeNode.content)) return;
+    if (!activeNode || !(activeName && activeName.endsWith(".trb")) || isHeavy(activeNode.content)) return;
     const t = setTimeout(async () => {
       const res = await run(activeNode.content);
       setResult(res);

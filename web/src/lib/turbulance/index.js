@@ -1017,6 +1017,21 @@ const BUILTINS = {
     const result = await runSpecialist(src, entry, data, interp.onStatus);
     return jsToTb(result);
   },
+
+  // --- AI oracle resolvers (transformers.js, in-browser models) ---
+  async summarize(interp, args) {
+    const { summarize } = await import("./models.js");
+    return await summarize(String(args[0] ?? ""), interp.onStatus);
+  },
+  async classify(interp, args) {
+    const labels = Array.isArray(args[1]) ? args[1].map((x) => String(x)) : [];
+    const { classify } = await import("./models.js");
+    return jsToTb(await classify(String(args[0] ?? ""), labels, interp.onStatus));
+  },
+  async ask(interp, args) {
+    const { ask } = await import("./models.js");
+    return jsToTb(await ask(String(args[0] ?? ""), String(args[1] ?? ""), interp.onStatus));
+  },
 };
 
 /* --------------------------- 6. ENTRY POINT ------------------------------- */

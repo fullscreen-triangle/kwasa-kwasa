@@ -105,15 +105,66 @@ funxn main():
 `,
   },
   {
+    id: "experiment",
+    title: "6 · Application: verify an experiment design",
+    description:
+      "A program that does not compute a result but CHECKS the logic of a plan. " +
+      "The experiment design is encoded as motions; given-guards verify power, " +
+      "controls, randomization and blinding, and the proposition returns a verdict. " +
+      "Pure Turbulance — no Python, no AI.",
+    code: `// Verify whether a proposed experiment design is sound enough to run.
+// Turbulance checks the *logic* of the plan, not any data.
+
+hypothesis CleanTrial:
+    claim: "The design is sound enough to run"
+    success_criteria:
+        - min_sample: 30
+        - min_power: 0.8
+
+funxn check_design(n_per_group, has_control, randomized, blinded, power):
+    proposition DesignIsSound:
+        motion Powered("Sample size and power are adequate")
+        motion Controlled("There is a control group")
+        motion Randomized("Assignment is randomized")
+        motion Blinded("The trial is blinded")
+
+        given n_per_group >= CleanTrial.success_criteria.min_sample and power >= CleanTrial.success_criteria.min_power:
+            support Powered with_confidence(0.9)
+        given n_per_group < CleanTrial.success_criteria.min_sample or power < CleanTrial.success_criteria.min_power:
+            contradict Powered with_confidence(0.8)
+        given has_control:
+            support Controlled with_confidence(0.95)
+        given randomized:
+            support Randomized with_confidence(0.9)
+        given blinded:
+            support Blinded with_confidence(0.85)
+
+    return DesignIsSound
+
+funxn main():
+    print("Checking a well-formed design (n=40, controlled, randomized, power 0.82)...")
+    item strong = check_design(40, true, true, false, 0.82)
+    print("  -> {} (score {})", strong.verdict, strong.score)
+
+    print("Checking a weak design (n=12, no control, power 0.5)...")
+    item weak = check_design(12, false, false, false, 0.5)
+    print("  -> {} (score {})", weak.verdict, weak.score)
+`,
+  },
+  {
     id: "massspec",
-    title: "6 · Polyglot: delegate to Python",
+    title: "7 · Polyglot: delegate to Python",
     description:
       "kwasa-kwasa is not a replacement for other languages — it orchestrates them. " +
       "Here Turbulance hands the numeric work to a Python specialist (numpy/scipy, " +
       "running in your browser via Pyodide), then EVALUATES the result against a " +
-      "hypothesis. Open lavoisier.py to see the specialist. First run loads Python (~7 MB).",
+      "hypothesis. A full task is FOUR files — you write only the .trb; the .ghd " +
+      "(resources), .hre (decision log) and .fs (live state) are shown in the sidebar " +
+      "so you can see the whole 'virtual brain'. First run loads Python (~7 MB).",
     code: `// Mass-spec biomarker discovery.
 // Turbulance is the conductor and the judge; Python does the number-crunching.
+// This task is four files: massspec.trb (logic) + .ghd (what it perceives) +
+// .hre (its memory/decisions) + .fs (its live state). Only the .trb is run.
 
 hypothesis BiomarkerDiscovery:
     claim: "Metabolomic peaks separate diabetic from control samples"
@@ -216,7 +267,113 @@ def analyze_spectrum(params):
         ],
     }
 `,
+      "massspec.ghd": `// massspec.ghd — Gerhard dependencies (PERCEPTION)
+// What this task is allowed to draw on. The framework assembles this resource
+// graph; a user does not write it by hand. Shown so you can see it.
+
+specialists:
+    spectrum_analysis: "lavoisier.py"        // the Python tool the .trb delegates to
+
+python_packages:
+    - numpy
+    - scipy
+
+reference_databases:
+    - hmdb:  "https://hmdb.ca"               // human metabolome database
+    - kegg:  "https://rest.kegg.jp"          // metabolic pathways
+
+ai_models:
+    - scibert: "huggingface.co/allenai/scibert_scivocab_uncased"
+
+success_criteria_from: "massspec.trb -> hypothesis BiomarkerDiscovery"
+`,
+      "massspec.hre": `// massspec.hre — Harare decision log (MEMORY / trajectory)
+// The metacognitive trace: what the orchestrator decided and why, with
+// confidence. Written by the framework as the task runs, not by the user.
+
+session: "biomarker_discovery"
+hypothesis: "Metabolomic peaks separate diabetic from control samples"
+
+decisions:
+    delegate_to_python:
+        reasoning: "Peak-picking and group statistics are numeric work — hand to a specialist."
+        tool: "lavoisier.py :: analyze_spectrum"
+        confidence: 0.95
+
+    evaluate_against_criteria:
+        reasoning: "Turbulance judges the Python output; it does not compute it."
+        criteria: ["separation >= 0.6", "num_features >= 3", "quality >= 0.7"]
+        confidence: 0.90
+
+confidence_evolution:
+    - initial:           0.75
+    - after_delegation:  0.90
+`,
+      "massspec.fs": `// massspec.fs — Fullscreen state (SENTIMENT / the task's "feel")
+// A live view of where attention and resources sit. The framework updates
+// this; the user reads it. (In the full system this is the sentiment field.)
+
+flow:
+    spectrum_data --> lavoisier.py (Python tool) --> structured result
+                                                          |
+                                                          v
+                                hypothesis BiomarkerDiscovery (judge)
+                                                          |
+                                                          v
+                                  proposition BiomarkerEvidence (verdict)
+
+attention:
+    delegate:   ###########   high   (waiting on the Python substrate)
+    evaluate:   ####          low    (until results return)
+
+status:
+    python_substrate: loads-on-first-run
+    verdict:          pending
+`,
     },
+  },
+  {
+    id: "paper",
+    title: "8 · AI oracle: read a paper",
+    description:
+      "The other substrate: an AI model running in your browser (transformers.js, " +
+      "no token, no backend). The oracle reads an abstract — summarize() and " +
+      "classify() — and Turbulance JUDGES what it asserts via a proposition. " +
+      "First run downloads small ONNX models (cached afterwards).",
+    code: `// Read a paper's abstract with an in-browser model, then judge what it claims.
+// The model is the oracle; Turbulance is still the judge.
+
+hypothesis PaperReading:
+    claim: "We can read an abstract and judge what it asserts"
+    success_criteria:
+        - assertion: 0.6
+
+funxn main():
+    item abstract = "Metformin reduced HbA1c by 1.2 percent versus placebo (p<0.001) over 24 weeks in 480 patients with type 2 diabetes. Gastrointestinal side effects were mild and transient. No serious adverse events were attributed to the drug."
+
+    // Oracle 1: summarize the abstract
+    item summary = summarize(abstract)
+    print("Summary: {}", summary)
+
+    // Oracle 2: zero-shot — what does the abstract assert?
+    item efficacy = classify(abstract, ["the drug is effective", "the drug is not effective"])
+    item safety = classify(abstract, ["the drug is safe", "the drug is unsafe"])
+    print("Efficacy reading: {} ({})", efficacy.top, efficacy.top_score)
+    print("Safety reading:   {} ({})", safety.top, safety.top_score)
+
+    // Turbulance judges the model's reading against the hypothesis
+    proposition AbstractClaims:
+        motion ClaimsEfficacy("The abstract asserts the drug is effective")
+        motion ClaimsSafety("The abstract asserts the drug is safe")
+
+        given efficacy.top == "the drug is effective" and efficacy.top_score > PaperReading.success_criteria.assertion:
+            support ClaimsEfficacy with_confidence(efficacy.top_score)
+        given safety.top == "the drug is safe" and safety.top_score > PaperReading.success_criteria.assertion:
+            support ClaimsSafety with_confidence(safety.top_score)
+
+    print("Verdict: {}", AbstractClaims.verdict)
+    return AbstractClaims
+`,
   },
 ];
 

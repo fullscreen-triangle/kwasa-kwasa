@@ -6,10 +6,10 @@ for (const ex of examples) {
   console.log("\n================================================");
   console.log(ex.title);
   console.log("------------------------------------------------");
-  if (ex.files) {
-    // Pyodide-backed examples need a browser; skip in the Node harness.
+  if (ex.files || /trebuchet\.delegate|python\s*\(|summarize\s*\(|classify\s*\(|ask\s*\(/.test(ex.code)) {
+    // Pyodide- / transformers.js-backed examples need a browser; skip in Node.
     skipped++;
-    console.log("  (skipped — needs the browser/Pyodide)");
+    console.log("  (skipped — needs the browser/Pyodide/model)");
     continue;
   }
   const r = await run(ex.code);
