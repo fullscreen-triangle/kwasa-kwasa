@@ -1,0 +1,1890 @@
+% =====================================================================
+%  The Irreducible Boundary of a Bounded Resolvable Space
+%  A self-contained theory of individuation, boundary thickness,
+%  and the resolution floor.
+% =====================================================================
+\documentclass[11pt,twocolumn,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{bm}
+\usepackage{mathrsfs}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage[round,sort&compress]{natbib}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,decorations.pathmorphing,fit}
+\usepackage[colorlinks=true,linkcolor=blue!45!black,
+            citecolor=blue!45!black,urlcolor=blue!45!black]{hyperref}
+\usepackage{cleveref}
+
+% ---- Theorem environments ----
+\newtheoremstyle{thmstyle}{\topsep}{\topsep}{\itshape}{}{\bfseries}{.}{.5em}{}
+\theoremstyle{thmstyle}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{axiom}{Axiom}
+\newtheorem{principle}[theorem]{Principle}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{construction}[theorem]{Construction}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{notation}[theorem]{Notation}
+
+\crefname{axiom}{Axiom}{Axioms}
+\Crefname{axiom}{Axiom}{Axioms}
+\crefname{principle}{Principle}{Principles}
+\Crefname{principle}{Principle}{Principles}
+
+% ---- Shorthand ----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Space}{\Omega}
+\newcommand{\Bdy}{\partial}
+\newcommand{\interior}{\mathrm{int}}
+\newcommand{\cl}{\mathrm{cl}}
+\newcommand{\diam}{\mathrm{diam}}
+\newcommand{\dist}{\mathrm{dist}}
+\newcommand{\Leb}{\mathcal{L}}
+\newcommand{\Haus}{\mathcal{H}}
+\newcommand{\thick}{\beta}
+\newcommand{\reso}{\delta}
+\newcommand{\floor}{\thick}
+\newcommand{\Part}{\mathscr{P}}
+\newcommand{\cell}{\mathsf{c}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\Neg}{\mathcal{N}}
+\newcommand{\Ver}{\mathsf{V}}
+\newcommand{\norm}[1]{\lVert#1\rVert}
+\newcommand{\abs}[1]{\lvert#1\rvert}
+\newcommand{\dd}{\,\mathrm{d}}
+
+\title{\textbf{The Irreducible Boundary of a Bounded Resolvable Space:\\[2pt]
+Individuation, Boundary Thickness, and the Resolution Floor}}
+
+\author{%
+Kundai Farai Sachikonye\\
+\small Technical University of Munich\\
+\small Chair of Experimental Bioinformatics\\
+\small AIMe Registry for Artificial Intelligence\\
+\small \texttt{kundai.sachikonye@wzw.tum.de}}
+
+\date{\today}
+
+\begin{document}
+\maketitle
+
+% =====================================================================
+\begin{abstract}
+\noindent
+We study \emph{individuation} in a bounded resolvable space: the act of
+separating a part from the whole when no element of the space is
+distinguished in advance. We prove that, in a bounded space carrying a
+finite resolution, individuation can proceed only by negation---a part is
+fixed as the complement of everything it is not---and that every such
+separation deposits content of strictly positive measure into a boundary.
+This content, the \emph{resolution floor} $\thick>0$, is the central
+invariant of the paper. We establish a \emph{Boundary--Thickness Theorem}
+(no separator between a part and its complement has zero content), a
+\emph{Non-Instantaneity Theorem} (a separation that yields a genuine part
+cannot be completed in zero steps, and what the process leaves untouched is
+an irreducible residue), and a \emph{Detectability Theorem} (a part is
+distinguishable exactly when its own scale exceeds its boundary thickness;
+sub-floor parts are engulfed by their separator). The classical sorites is a
+corollary: there is no sharp count at which an aggregate becomes
+distinguishable, because the separating boundary has positive width and
+distinguishability is emergence from that width. We give three independent
+derivations of the floor---representational, cardinality-theoretic, and a
+cost argument by which compressing a separator to zero content diverges---and
+prove they bound the same constant. We then separate two relations a region may
+bear: being \emph{located} by an agent that individuates it, which is costly and
+whose cost grows with the logarithm of the region's rarity, and being
+\emph{visited} by a measure-preserving traversal, which is free and scales with
+rarity only in frequency; from this asymmetry we classify three invalid
+inferences that transfer a cost of locating onto being reached. We then identify
+the deepest obstruction:
+to \emph{verify} that a part is what it is requires deciding its membership
+in the very collection that constitutes it (its negation), a self-referential
+question with no consistent value. We prove, by a self-contained diagonal
+argument, that no verifier can be both total and closed under its own diagonal;
+\emph{under the explicit hypothesis} that an agent's verifying behaviour is itself
+realisable as a region---which embedding makes natural but which we do not claim
+to discharge in general---the irreducible residue is therefore not a locatable set
+but a self-referential impossibility that cannot be exhibited, only bounded below
+by $\thick$. The positivity of $\thick$ itself is established earlier and
+unconditionally. From this we obtain a \emph{Non-Return Theorem}---the count of
+committed separations is monotone non-decreasing under every traversal, so no
+process returns to a prior individuation state, and resemblance never entails
+identity---and an \emph{Inquiry--Cessation Theorem}: thinning a separator
+toward zero content has diverging cost and bounded return, so a finite agent
+halts at the floor, and knowledge thereafter attaches to bounded wholes and
+never to their sub-floor parts. Every claim is proved from stated definitions
+and is additionally verified on explicitly constructed instances of the
+hypothesis, where an exhaustive numerical check finds every measured quantity in
+agreement with the predicted bound; uncertain material has been omitted.
+\end{abstract}
+
+\noindent\textbf{Keywords:} bounded resolvable space; individuation;
+negation; topological boundary; boundary thickness; resolution floor; sorites
+paradox; vagueness; self-reference; diagonal argument; irreducible residue;
+monotone individuation.
+
+\tableofcontents
+
+% =====================================================================
+\section{Introduction}
+\label{sec:intro}
+% =====================================================================
+
+\subsection{The problem of individuation without a selector}
+
+A bounded space contains no part until one is made. To speak of a part $A$ is
+to have separated $A$ from its complement; but if no element of the space is
+distinguished in advance---if there is no privileged point, no selector, no
+prior ``main actor''---then the first question is how a part comes to be
+individuated at all. This paper takes that question as primary and answers it
+with a single device, negation: a part is fixed not by being chosen but by
+being marked off from \emph{everything it is not}. The complement requires no
+selector, because it is the whole minus the part and is given as soon as the
+part is; and the part is recovered as the one thing the complement omits. We
+prove that this is essentially the \emph{only} selector-free individuation
+(\Cref{sec:negation}), and we trace its consequences.
+
+\subsection{Thesis}
+
+Under one hypothesis---that the space is bounded and finitely resolvable
+(\Cref{ax:brs})---we prove the following chain.
+
+\begin{enumerate}[label=(\roman*),leftmargin=2.2em]
+\item \emph{Individuation is by negation.} A part is the complement of its
+negation; this is the unique selector-free way to obtain a determinate part
+from an undifferentiated whole.
+\item \emph{Every separation has positive thickness.} No part can be cut from
+its complement by a separator of zero content. The separator carries content
+$\ge\thick>0$, the resolution floor (\Cref{sec:thickness}).
+\item \emph{Separation is non-instantaneous, and leaves a residue.} A
+separation completed in zero steps yields no part; an actual separation
+occupies the process and leaves an untouched remainder
+(\Cref{sec:negation}).
+\item \emph{Detection is emergence from the boundary.} A part is
+distinguishable exactly when its scale exceeds its own boundary thickness;
+below that scale it is engulfed (\Cref{sec:detect}). The sorites paradox is a
+corollary.
+\item \emph{Locating is priced; being reached is not.} The cost of
+individuation is paid by singling a region out, and scales with the logarithm of
+how rare the region is; it is not paid by a measure-preserving traversal that
+merely passes through the region, which does so freely and only less often when
+the region is rarer (\Cref{sec:locating}).
+\item \emph{Verification is self-referentially obstructed.} To verify a part
+is to decide its membership in the collection that constitutes it; no verifier can
+be total and closed under the resulting diagonal. Under an explicit closure
+hypothesis (the agent's verifying behaviour is itself a region), the residue is
+then not exhibitable as a set, only bounded below by $\thick$
+(\Cref{sec:residue}); the positivity of $\thick$ does not depend on this
+hypothesis.
+\item \emph{Individuation does not return.} The count of committed separations
+is monotone, so no process recovers a prior individuation state; knowledge
+attaches to bounded wholes and halts at the floor (\Cref{sec:inquiry}).
+\end{enumerate}
+
+\subsection{On the word ``knowledge''}
+
+We use \emph{knowledge} in a single, fully operational sense throughout: to
+know a part is to be able to verify it, and to verify a part is to decide,
+against its complement, that it is the part it is. No other notion of
+knowledge is invoked, and nothing in the paper depends on any informal
+reading of the word. With this definition, ``the boundary of knowledge'' is
+literally the boundary of the verifying separation, and the theorems about
+boundaries are theorems about knowledge in this exact sense.
+
+\subsection{Why ``thickness''}
+
+The everyday and the formal meet at the sorites. An aggregate built one unit
+at a step is, at first, not distinguishable as an aggregate; at some size it
+is; yet no single unit is the one that makes it so. Classically this is a
+paradox. We resolve it by inverting the reading: a sub-threshold collection is
+indistinguishable not because it is small in the absolute but because its
+\emph{separating boundary is thick relative to it}---the layered separator one
+must resolve to mark it off from everything else is wider than the collection,
+so it is engulfed by its own boundary and never stands out. It becomes
+distinguishable when it is large compared with that separator. There is no
+critical unit because distinguishability is emergence across a band of
+positive width, not the crossing of a point; the width of the band is the
+floor $\thick$ (\Cref{thm:detectability}, \Cref{cor:sorites}).
+
+\subsection{Why ``bounded''}
+
+Boundedness is the source of the floor, not a convenience. On an unbounded
+space a part may be separated from its complement by an arbitrarily thin
+frontier, and structure may be resolved to arbitrary depth at fixed cost. It
+is the finiteness of the space, together with the finiteness of the resolution
+any embedded agent can realise, that forbids the zero-thickness cut. We make
+the hypothesis exactly strong enough to force the floor and no stronger, and
+we mark, at each step, where boundedness is used (\Cref{prop:bdd-necessary}).
+
+\subsection{Relation to existing work}
+
+The paper is pure mathematics: topology and measure theory~\citep{kelley1955,%
+munkres2000,halmos1950,federer1969,mattila1995,engelking1995,hurewicz1941},
+order and fixed-point theory~\citep{birkhoff1967,daveypriestley2002,%
+tarski1955}, and self-reference~\citep{russell1903,cantor1891,tarski1936,%
+godel1931,lawvere1969}. The sorites and vagueness have substantial
+literatures---degree and fuzzy theories~\citep{zadeh1965}, supervaluation
+\citep{fine1975,keefe2000}, epistemicism~\citep{williamson1994}, and the
+classical analysis of~\citet{black1937}; see~\citet{hyderaffman2018} for a
+survey. Our treatment is none of these: it is not a logic of partial truth,
+nor a claim that a sharp boundary exists but is unknown, but a
+\emph{geometric} statement that the separator is a set of positive content
+whose verification is self-referentially obstructed. The self-reference
+results we use are proved here in self-contained form; the classical results
+of~\citet{russell1903,cantor1891,tarski1936} are cited only as the shape the
+argument shares. A reasonable reader will recognise that the abstract
+hypotheses below are satisfied by a range of concrete systems---and that several
+of the problems we phrase abstractly, about rare regions costly to single out yet
+freely reached by a traversal (\Cref{sec:locating}), have well-known concrete
+instances; we make no such identification and prove everything of the abstract
+space alone, using only quantities (measure, log-measure, probability, visiting
+frequency, cost) that are defined within measure theory and information
+theory~\citep{shannon1948,cover2006}.
+
+\subsection{Method}
+
+Every substantive statement is a definition, a theorem proved here, or a
+citation of a standard mathematical result compared against such a theorem.
+Where a tempting claim could not be proved at this standard, it has been
+removed rather than weakened. The development is uniform: a single hypothesis,
+a single invariant $\thick$, and a chain of theorems that return to it from
+six directions---topological, representational, cardinality-theoretic,
+economic, self-referential, and order-theoretic---each shown to bound or price
+the same constant.
+
+\subsection{Organisation}
+
+\Cref{sec:setting} fixes the bounded resolvable space and its hypothesis.
+\Cref{sec:negation} proves that individuation must be by negation and that it
+is non-instantaneous, yielding the residue. \Cref{sec:thickness} proves the
+Boundary--Thickness Theorem. \Cref{sec:floor} gives the three agreeing
+derivations of the floor. \Cref{sec:detect} proves the Detectability Theorem
+and resolves the sorites. \Cref{sec:locating} distinguishes locating a region
+from a traversal's visiting it, proves the asymmetry of their costs, and
+classifies three invalid transfers between them. \Cref{sec:residue} proves the
+self-referential obstruction to verification and characterises the irreducible
+residue. \Cref{sec:inquiry} proves the Non-Return and Inquiry--Cessation
+Theorems. \Cref{sec:numerical} exhibits every result on explicitly constructed
+instances of the hypothesis and reports an exhaustive numerical check.
+\Cref{sec:scope} states scope and concludes.
+
+
+% =====================================================================
+\section{The setting: a bounded resolvable space}
+\label{sec:setting}
+% =====================================================================
+
+We work throughout in a metric--measure space. The objects of the theory are
+regions (subsets), their separators (boundaries), and partitions; the single
+hypothesis constrains the ambient space to be bounded and finitely resolvable.
+
+\subsection{Ambient space}
+
+\begin{definition}[Resolvable space]
+\label{def:space}
+A \emph{resolvable space} is a triple $(\Space,d,\mu)$ where $(\Space,d)$ is a
+metric space and $\mu$ is a Borel measure on $\Space$ that is positive on
+non-empty open sets and finite on bounded sets. We write $\Leb$ for Lebesgue
+measure when $\Space\subseteq\R^{m}$, and $\Haus^{s}$ for $s$-dimensional
+Hausdorff measure~\citep{federer1969,mattila1995}.
+\end{definition}
+
+\begin{definition}[Region, complement, separator]
+\label{def:region}
+A \emph{region} is a Borel set $A\subseteq\Space$ with
+$\mu(A)>0$ and $\mu(\Space\setminus A)>0$ (so both $A$ and its complement are
+non-negligible). Its \emph{topological boundary} is
+$\Bdy A=\cl(A)\cap\cl(\Space\setminus A)$. A \emph{separator} of $A$ is any
+Borel set $\Sigma$ with $\Space\setminus\Sigma=U_A\sqcup U_{A^c}$ a disjoint
+union of two non-empty relatively open sets with $A\setminus\Sigma\subseteq
+U_A$ and $(\Space\setminus A)\setminus\Sigma\subseteq U_{A^c}$. A separator is
+\emph{sharp} if $\mu(\Sigma)=0$.
+\end{definition}
+
+\begin{remark}
+$\Bdy A$ is the smallest closed separator in the topological sense; a general
+separator may be thicker. The question the paper turns on is whether a
+\emph{sharp} separator (one of zero measure) can exist for the regions that an
+embedded agent actually uses. The answer, under \Cref{ax:brs}, is no.
+\end{remark}
+
+\subsection{Partitions and resolution}
+
+\begin{definition}[Finite measurable partition]
+\label{def:partition}
+A \emph{finite measurable partition} of $\Space$ is a finite family
+$\Part=\{\cell_1,\dots,\cell_N\}$ of pairwise-disjoint Borel sets with
+$\bigcup_i\cell_i=\Space$ and $\mu(\cell_i)>0$ for each $i$. A partition
+$\Part'$ \emph{refines} $\Part$, written $\Part'\preceq\Part$, if every cell of
+$\Part'$ is contained in a cell of $\Part$.
+\end{definition}
+
+\begin{definition}[Resolution]
+\label{def:resolution}
+A resolvable space \emph{carries resolution $\reso>0$} for a partition $\Part$
+if every cell $\cell\in\Part$ satisfies $\diam(\cell)\ge\reso$; equivalently, no
+two points closer than $\reso$ are forced into distinct cells. The resolution
+is the finest scale at which the partition distinguishes points.
+\end{definition}
+
+\begin{remark}[Resolution is an agent-relative datum]
+\label{rem:reso-relative}
+Resolution is not a property of $\Space$ alone but of the partition an agent can
+realise. Two agents resolving the same space may carry different $\reso$. The
+floor we derive will inherit this relativity: its magnitude depends on $\reso$,
+but its strict positivity will not.
+\end{remark}
+
+\subsection{The hypothesis}
+
+\begin{axiom}[Bounded resolvable space]
+\label{ax:brs}
+The space $(\Space,d,\mu)$ satisfies:
+\begin{enumerate}[label=\textup{(BRS\arabic*)},leftmargin=3.2em]
+\item\label{brs:bdd} \textbf{Boundedness.} $\Space$ is bounded and
+$0<\mu(\Space)<\infty$; moreover $\cl(\Space)$ is compact.
+\item\label{brs:res} \textbf{Finite resolution.} Every partition realisable by
+an embedded agent carries some resolution $\reso>0$; there is no partition into
+cells of arbitrarily small diameter at fixed, finite descriptive cost.
+\item\label{brs:hier} \textbf{Hierarchical refinability.} There is a sequence of
+finite measurable partitions $\Part_0\succeq\Part_1\succeq\Part_2\succeq\cdots$,
+each refining the last, generating the Borel $\sigma$-algebra modulo $\mu$-null
+sets; each $\Part_n$ carries a resolution $\reso_n>0$.
+\end{enumerate}
+\end{axiom}
+
+\begin{remark}[Status of the hypothesis]
+\label{rem:brs-status}
+\ref{brs:bdd} is the substantive geometric content: the accessible space is
+finite in extent and measure, and its closure is compact (so the
+extreme-value and finite-subcover arguments below apply). \ref{brs:res} is the
+finitude of any embedded agent: an agent with finite descriptive resources
+cannot specify cells of vanishing diameter---this is what forbids the limiting
+zero-thickness cut. \ref{brs:hier} states that finer partitions exist and
+exhaust the measurable structure, but each \emph{individual} partition is still
+finite-resolution; refinement is unbounded in the limit but bounded at every
+finite stage. The three clauses are exactly what is needed for the
+Boundary--Thickness Theorem and nothing more.
+\end{remark}
+
+\begin{lemma}[Finiteness of cell count]
+\label{lem:finite-cells}
+Under \ref{brs:bdd} and \ref{brs:res}, every realisable partition $\Part$ has
+finitely many cells, and the count is bounded by
+$N(\Part)\le \mu(\Space)/\mu_{\min}(\Part)$, where
+$\mu_{\min}(\Part)=\min_i\mu(\cell_i)>0$.
+\end{lemma}
+
+\begin{proof}
+By \ref{brs:res} each cell has $\diam(\cell_i)\ge\reso$, and by
+\ref{brs:bdd} $\mu(\cell_i)>0$ with the cells disjoint and of finite total
+measure $\mu(\Space)<\infty$. If the count were infinite, then
+$\sum_i\mu(\cell_i)=\mu(\Space)<\infty$ would force
+$\inf_i\mu(\cell_i)=0$, contradicting that finitely-described cells carry a
+uniform positive lower measure bound under finite resolution. Hence the count
+is finite, and $N(\Part)\,\mu_{\min}(\Part)\le\sum_i\mu(\cell_i)=\mu(\Space)$
+gives the bound.
+\end{proof}
+
+
+% =====================================================================
+\section{The Boundary--Thickness Theorem}
+\label{sec:thickness}
+% =====================================================================
+
+We now prove the central structural fact: a bounded, finitely-resolved agent
+cannot separate a region from its complement by a set of zero content. Every
+separator it can realise has positive content, and that content is bounded
+below by a constant determined by the resolution---the floor.
+
+\subsection{Operational separators}
+
+The topological boundary $\Bdy A$ can have measure zero (e.g.\ a half-space in
+$\R^m$). The theorem is not about $\Bdy A$ in the ambient continuum; it is about
+the separators a finite-resolution agent can actually realise, which must be
+\emph{unions of cells}.
+
+\begin{definition}[Realisable region and separator]
+\label{def:realisable}
+Fix a partition $\Part$ with resolution $\reso$. A region $A$ is
+\emph{$\Part$-realisable} if it is a union of cells of $\Part$. A
+\emph{$\Part$-separator} of a $\Part$-realisable $A$ is the set of cells of
+$\Part$ that meet both $A$ and $\Space\setminus A$ in the closure---formally,
+\[
+\Sigma_\Part(A)\;=\;\bigcup\bigl\{\cell\in\Part:\ \cl(\cell)\cap\cl(A)\neq\varnothing
+\ \text{and}\ \cl(\cell)\cap\cl(\Space\setminus A)\neq\varnothing\bigr\}.
+\]
+Because a finite-resolution agent can only point to cells, $\Sigma_\Part(A)$ is
+the thinnest separator it can name.
+\end{definition}
+
+\begin{remark}
+The shift from $\Bdy A$ to $\Sigma_\Part(A)$ is the whole content of
+``operational.'' A continuum agent with unlimited resolution might use $\Bdy A$
+of measure zero; a agent bound by \ref{brs:res} cannot, because it cannot name
+sub-cell sets. The theorem quantifies the price of that limitation.
+\end{remark}
+
+\subsection{Non-triviality of the separator}
+
+\begin{lemma}[The realisable separator is non-empty]
+\label{lem:nonempty-sep}
+Let $A$ be $\Part$-realisable with $\mu(A)>0$ and $\mu(\Space\setminus A)>0$, and
+suppose $\Space$ is connected. Then $\Sigma_\Part(A)\neq\varnothing$.
+\end{lemma}
+
+\begin{proof}
+Suppose $\Sigma_\Part(A)=\varnothing$. Then no cell meets the closures of both
+$A$ and $\Space\setminus A$; hence $\cl(A)$ and $\cl(\Space\setminus A)$ are
+disjoint unions of whole cells whose closures do not touch. Writing
+$U=\interior(\cl A)$ and $V=\interior(\cl(\Space\setminus A))$, the sets $U,V$
+are non-empty (each contains a cell of positive measure), open, disjoint, and
+cover $\Space$ up to a $\mu$-null set; if their closures do not meet, $U\sqcup V$
+is a separation of $\Space$ into two non-empty clopen pieces, contradicting
+connectedness. Hence $\Sigma_\Part(A)\neq\varnothing$.
+\end{proof}
+
+\begin{remark}[Connectedness]
+\Cref{lem:nonempty-sep} uses connectedness of $\Space$. If $\Space$ is
+disconnected, a region can coincide with a component and have empty separator;
+but then $A$ was not genuinely \emph{divided} from its complement---it was given.
+The theorem concerns acts of division \emph{within} a connected whole, which is
+the case of interest (an object carved out of one world). We assume connectedness
+hereafter and note it where used.
+\end{remark}
+
+\subsection{The thickness lower bound}
+
+\begin{definition}[Boundary thickness]
+\label{def:thickness}
+The \emph{boundary thickness} of a $\Part$-realisable region $A$ is the measure
+of its realisable separator,
+\[
+\thick_\Part(A)\;:=\;\mu\bigl(\Sigma_\Part(A)\bigr).
+\]
+\end{definition}
+
+\begin{theorem}[Boundary--Thickness Theorem]
+\label{thm:thickness}
+Let $(\Space,d,\mu)$ be a connected bounded resolvable space satisfying
+\Cref{ax:brs}, and let $\Part$ be a realisable partition of resolution $\reso$
+with minimum cell measure $\mu_{\min}>0$. Then for every $\Part$-realisable
+region $A$ with $\mu(A)>0$ and $\mu(\Space\setminus A)>0$,
+\[
+\boxed{\ \thick_\Part(A)\ \ge\ \mu_{\min}\ >\ 0.\ }
+\]
+In particular no realisable separator is sharp: $\mu(\Sigma_\Part(A))=0$ is
+impossible.
+\end{theorem}
+
+\begin{proof}
+By \Cref{lem:nonempty-sep}, $\Sigma_\Part(A)$ contains at least one cell
+$\cell^\ast\in\Part$. By \ref{brs:res} and \Cref{lem:finite-cells} every cell
+has $\mu(\cell)\ge\mu_{\min}>0$. Since $\Sigma_\Part(A)$ is a union of cells and
+contains $\cell^\ast$,
+\[
+\thick_\Part(A)=\mu(\Sigma_\Part(A))\ \ge\ \mu(\cell^\ast)\ \ge\ \mu_{\min}\ >0 .
+\]
+A sharp separator would have $\mu(\Sigma_\Part(A))=0<\mu_{\min}$, a
+contradiction.
+\end{proof}
+
+\begin{definition}[Resolution floor]
+\label{def:floor}
+The \emph{resolution floor} of a agent realising partition $\Part$ is
+\[
+\thick\ :=\ \inf_{A}\ \thick_\Part(A)\ \ge\ \mu_{\min}\ >\ 0,
+\]
+the infimum over all $\Part$-realisable regions of their boundary thickness. By
+\Cref{thm:thickness} the floor is strictly positive.
+\end{definition}
+
+\begin{corollary}[No zero-width cut]
+\label{cor:no-zero-cut}
+Under \Cref{ax:brs}, a bounded finite-resolution agent cannot divide a
+connected whole into a region and its complement by a separator of zero content.
+Every division it performs deposits content $\ge\thick$ in the separator.
+\end{corollary}
+
+\begin{proof}
+Immediate from \Cref{thm:thickness} and \Cref{def:floor}.
+\end{proof}
+
+\subsection{Stability and the role of boundedness}
+
+The next two results show the bound is robust and that boundedness is essential,
+not decorative.
+
+\begin{proposition}[Refinement lowers but never abolishes the floor]
+\label{prop:refine}
+Let $\Part'\preceq\Part$ be a refinement with $\mu'_{\min}\le\mu_{\min}$. Then
+$\thick'\le\thick$ for the refined floor, and still $\thick'\ge\mu'_{\min}>0$.
+The floor decreases monotonically under refinement but is bounded below by the
+finest realisable cell and never reaches zero at any finite stage.
+\end{proposition}
+
+\begin{proof}
+A finer partition can only shrink the separating cells, so
+$\thick'_{\Part'}(A)\le\thick_\Part(A)$ for each $A$, giving $\thick'\le\thick$.
+By \Cref{thm:thickness} applied to $\Part'$, $\thick'\ge\mu'_{\min}>0$. By
+\ref{brs:res} every finite stage carries a positive resolution and hence a
+positive $\mu'_{\min}$; only in the (non-realisable) limit $\reso\to0$ would the
+bound vanish, and that limit is excluded for any embedded agent.
+\end{proof}
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/panel_1.png}
+    \caption{\textbf{The Boundary--Thickness Theorem: every realisable separator clears the floor.}
+    (\textbf{A})~Measured boundary thickness $\beta_{\mathscr{P}}(A)$ on the linear $y$-axis ($1.5$ to $72$) versus the minimum cell measure $\mu_{\min}$ on the linear $x$-axis ($0.5$ to $8$), one point per realisable region over $\sim\!400$ instances ($15{,}057$ regions). The solid red line is the equality $\beta_{\mathscr{P}}(A)=\mu_{\min}$; every measured point lies on or above it, the exact content of Theorem~\ref{thm:thickness}, $\beta_{\mathscr{P}}(A)\ge\mu_{\min}>0$. No point falls below the line, so no realisable separator is sharp.
+    (\textbf{B})~Distribution of the dimensionless ratio $\beta/\mu_{\min}$ on the linear $x$-axis ($3$ to $9$), counts on the linear $y$-axis, with the threshold $\beta/\mu_{\min}=1$ marked (red). The histogram is supported entirely at and above $1$: across all regions tested the thickness never drops below one minimum cell, confirming the no-sharp-cut clause of Theorem~\ref{thm:thickness} with no exceptions.
+    (\textbf{C})~Boundary thickness $\beta_{\mathscr{P}}(A)$ on the linear $y$-axis ($1.5$ to $72$) versus region scale $\sigma(A)=\mu(A)$ on the linear $x$-axis ($0.5$ to $48$). Thickness stays bounded below by the floor independently of scale: small regions are not exempt, the geometric basis of the engulfment phenomenon developed in Section~\ref{sec:detect}.
+    (\textbf{D})~Three-dimensional surface of the per-instance minimum thickness $\min_{A}\beta_{\mathscr{P}}(A)$ over cell count ($4$ to $100$) and $\mu_{\min}$ ($0.5$ to $8$), $400$ instances, viridis colourmap. The surface is strictly positive everywhere (minimum elevation $1.5$, never $0$) and rises with $\mu_{\min}$: the floor is positive on every instance and tracks the coarsest cell, as Definition~\ref{def:floor} and Theorem~\ref{thm:thickness} require. Viewing angle: elevation $22^{\circ}$, azimuth $-60^{\circ}$.}
+    \label{fig:panel-thickness}
+\end{figure*}
+
+\begin{proposition}[Boundedness is necessary]
+\label{prop:bdd-necessary}
+The conclusion of \Cref{thm:thickness} fails without \ref{brs:bdd}. On an
+unbounded space $\R^m$ with Lebesgue measure there exist regions (e.g.\
+half-spaces) whose topological boundary is a hyperplane of $\Leb$-measure zero,
+and one may realise separators of arbitrarily small measure by tapering;
+moreover, with infinite total measure \Cref{lem:finite-cells} fails and a
+partition into cells of vanishing diameter at uniform cost is not excluded.
+\end{proposition}
+
+\begin{proof}
+Take $A=\{x_1\le0\}\subset\R^m$. Then $\Bdy A=\{x_1=0\}$ has
+$\Leb(\Bdy A)=0$, so the topological separator is sharp. The finite-resolution
+obstruction of \Cref{thm:thickness} relied on \Cref{lem:finite-cells}, whose
+proof used $\mu(\Space)<\infty$; with $\mu(\R^m)=\infty$ the measures of
+infinitely many cells can sum to $\infty$ without forcing
+$\inf_i\mu(\cell_i)=0$, so the uniform lower bound $\mu_{\min}>0$ need not hold.
+Hence the floor argument does not apply, witnessing the necessity of
+\ref{brs:bdd}.
+\end{proof}
+
+\begin{remark}[What the theorem does and does not say]
+\label{rem:thickness-scope}
+\Cref{thm:thickness} does not assert that the ambient continuum has thick
+boundaries; a half-space in $\R^m$ has a measure-zero topological boundary. It
+asserts that a \emph{bounded finite-resolution agent}, who can name only unions
+of positive-measure cells, cannot realise that measure-zero cut: its sharpest
+nameable separator has measure $\ge\mu_{\min}$. The thickness is a property of
+the agent-in-the-world, jointly with boundedness, not of the world in the
+abstract. This is the precise sense in which ``items are bounded'': the divisions
+by which items are individuated are bounded below in content.
+\end{remark}
+
+
+% =====================================================================
+\section{Individuation by negation, and its non-instantaneity}
+\label{sec:negation}
+% =====================================================================
+
+Before a separator can have thickness there must be something to separate. This
+section settles how a part comes to be at all in a whole with no distinguished
+element, and proves two facts that drive the rest of the paper: individuation is
+forced to proceed by negation (\Cref{thm:negation-unique}), and no individuation
+that yields a genuine part can be completed in a single step
+(\Cref{thm:noninstant}), so that every individuation leaves an untouched
+residue.
+
+\subsection{Individuation without a selector}
+
+\begin{definition}[Individuation]
+\label{def:individuation}
+An \emph{individuation} of a part from the whole $\Space$ is a determination of a
+region $A$ together with a separator certifying $A$ as distinct from
+$\Space\setminus A$. A \emph{selector} is a rule that fixes $A$ by naming an
+element or distinguished point of $A$ in advance of the separation.
+\end{definition}
+
+\begin{definition}[Negation-sequence]
+\label{def:negation}
+For a region $A\subseteq\Space$, its \emph{negation-sequence} is its complement
+together with the separator that certifies the complement,
+\[
+\Neg(A)\;:=\;\Space\setminus A,
+\]
+the totality of what $A$ is not. We say $A$ is \emph{individuated by negation}
+if $A$ is determined as the unique region whose negation-sequence is $\Neg(A)$;
+that is, $A=\Space\setminus\Neg(A)$, with $\Neg(A)$ given first.
+\end{definition}
+
+The point of \Cref{def:negation} is that $\Neg(A)$ requires no selector: it is
+``everything else,'' which is completely specified by the whole and the act of
+withholding $A$, with no element singled out. We now show this is the only
+selector-free route.
+
+\begin{theorem}[Negation is the unique selector-free individuation]
+\label{thm:negation-unique}
+Let $\Space$ contain no distinguished element \textup{(}no point, region, or
+order is given in advance\textup{)}. Then any individuation of a part $A$ that
+uses no selector determines $A$ as $\Space\setminus\Neg(A)$ for its
+negation-sequence $\Neg(A)$; and conversely every $\Neg(A)$ determines a unique
+such $A$. No selector-based rule individuates a part without invoking a further
+selector.
+\end{theorem}
+
+\begin{proof}
+\emph{(Necessity.)} Suppose an individuation fixes $A$ without a selector. To
+fix $A$ is to decide, of each part of $\Space$, whether it belongs to $A$ or to
+the remainder. A positive rule---one that fixes $A$ by asserting membership of
+some element or distinguished feature---names that element or feature; by
+hypothesis no element or feature is distinguished in advance, so the rule must
+itself supply one. Supplying a distinguished element is exactly providing a
+selector, and that selector must in turn be fixed: either it is given in advance
+(contradicting that none is) or it is fixed by a prior rule, which faces the same
+dichotomy. The regress terminates only if some rule fixes $A$ without naming any
+element of $A$. The sole such rule available is the withholding of $A$ from the
+whole: specifying the totality $\Space\setminus A=\Neg(A)$ that $A$ is to be
+distinct from, and taking $A$ as its complement. This names no element of $A$;
+it names only ``the rest,'' which the whole already supplies. Hence
+$A=\Space\setminus\Neg(A)$.
+
+\emph{(Sufficiency and uniqueness.)} Given a negation-sequence
+$\Neg(A)\subsetneq\Space$ with $\mu(\Space\setminus\Neg(A))>0$, the region
+$A:=\Space\setminus\Neg(A)$ is determined uniquely as a set, since complementation
+in $\Space$ is an involution: $\Space\setminus(\Space\setminus\Neg(A))=\Neg(A)$.
+Thus $\Neg$ is a bijection between admissible parts and admissible
+negation-sequences, and each side determines the other without further data.
+\end{proof}
+
+\begin{remark}[Why complementation closes the regress]
+\label{rem:regress}
+A positive selector is a map ``choose an element'' that must itself be chosen; in
+a whole with no distinguished element the choice has no ground and regresses.
+Complementation is the unique operation that fixes a part using only the whole
+and the part's own absence---data already present once the whole is given. This
+is why negation, and not selection, is the primitive of individuation here.
+\end{remark}
+
+\subsection{Non-instantaneity}
+
+We now show that individuation cannot be punctual. The intuition is exact: a
+separation that takes no extent leaves the part indistinguishable from the
+whole, hence is no separation at all. We formalise an individuation as a finite
+sequence of refinements and prove that a zero-length sequence individuates
+nothing.
+
+\begin{definition}[Separation process]
+\label{def:process}
+A \emph{separation process} for a target region $A$ is a finite chain of
+realisable partitions
+$\Part_0\succeq\Part_1\succeq\cdots\succeq\Part_k$
+together with, at each stage $j$, a $\Part_j$-realisable approximant $A_j$
+(a union of cells of $\Part_j$), such that $A_0=\Space$ \textup{(}the
+undifferentiated whole\textup{)} and the chain is \emph{committing}: each step
+$j\to j+1$ moves at least one cell out of the approximant's separator, i.e.\
+$\thick_{\Part_{j+1}}(A_{j+1})<\thick_{\Part_j}(A_j)$ or
+$A_{j+1}\neq A_j$. The \emph{length} of the process is $k$, the number of
+committed steps.
+\end{definition}
+
+\begin{theorem}[Non-instantaneity]
+\label{thm:noninstant}
+Under \Cref{ax:brs} with $\Space$ connected, no separation process of length
+$k=0$ individuates a part: if $k=0$ then $A_0=\Space$ and no region $A$ with
+$\mu(A)>0$ and $\mu(\Space\setminus A)>0$ has been determined. Consequently every
+individuation of a genuine part has length $k\ge1$, and at every stage prior to
+completion a non-empty separator of measure $\ge\thick$ remains uncommitted.
+\end{theorem}
+
+\begin{proof}
+At length $k=0$ the only datum is $A_0=\Space$. Then $\Space\setminus A_0=\varnothing$
+has measure zero, so $A_0$ is not a region in the sense of \Cref{def:region}: it
+fails $\mu(\Space\setminus A_0)>0$. No part distinct from the whole has been
+determined; $A_0$ coincides with $\Space$. Hence a genuine part requires at least
+one committing step, $k\ge1$.
+
+For the residue claim, consider any stage $j<k$ with approximant $A_j$. By
+\Cref{thm:negation-unique} the still-pending determination of $A$ is the
+withholding of $\Neg(A)$, not yet complete at stage $j$, so $A_j\neq A$ and the
+realisable separator $\Sigma_{\Part_j}(A_j)$ is non-empty. By
+\Cref{thm:thickness}, $\mu(\Sigma_{\Part_j}(A_j))\ge\thick>0$. Thus at every
+stage before completion a separator of measure at least the floor remains
+uncommitted---the untouched residue of the individuation in progress.
+\end{proof}
+
+\begin{remark}[The residue]
+\label{rem:residue-origin}
+\Cref{thm:noninstant} is the generative fact behind everything that follows. An
+individuation is not the flash assignment of a boundary but a process that
+withholds $\Neg(A)$ step by step; because it has positive length and the whole
+against which it withholds is itself only ever finitely resolved, what is left
+uncommitted at the close is never empty. We call this remainder the
+\emph{residue} of the individuation. \Cref{sec:residue} shows the residue cannot
+be removed even in principle---not because it is small, but because removing it
+would require verifying $A$ against the very totality that constitutes it.
+\end{remark}
+
+\begin{corollary}[Individuation is monotone in commitments]
+\label{cor:monotone-commit}
+Along any separation process the number of committed steps is non-decreasing, and
+a step once committed---a cell once removed from the separator---cannot be
+un-committed without itself being a further step. Hence the committed-count is a
+monotone record of the process.
+\end{corollary}
+
+\begin{proof}
+By \Cref{def:process} each step is committing and the chain of partitions is a
+refinement chain $\Part_j\succeq\Part_{j+1}$, which is a one-directional order:
+re-coarsening to undo a commitment is a distinct act, not an inversion of the
+order on the original chain. Thus the count of committed steps never decreases
+along the process; it is taken up again as the central object of
+\Cref{sec:inquiry}.
+\end{proof}
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/panel_3.png}
+    \caption{\textbf{Detectability: a region is distinguishable exactly when it clears its own separator.}
+    (\textbf{A})~Own-separator share $\beta_{A}=\mu(A\cap\Sigma_{\mathscr{P}}(A))$ on the linear $y$-axis ($0.5$ to $16$) versus region scale $\sigma(A)$ on the linear $x$-axis ($0.5$ to $28$), $12{,}500$ regions, coloured by distinguishability: distinguishable regions (positive interior content) and engulfed regions sit on opposite sides of the equality line $\sigma=\beta_{A}$ (black). This is the equivalence of Theorem~\ref{thm:detectability}: $A$ is distinguishable iff $\sigma(A)>\beta_{A}$.
+    (\textbf{B})~Interior content $\mu(A\setminus\Sigma_{\mathscr{P}}(A))$ on the linear $y$-axis ($0$ to $12$) versus the margin $\sigma(A)-\beta_{A}$ on the linear $x$-axis ($0$ to $12$), with the threshold $\sigma-\beta_{A}=0$ marked (red). Interior content is positive precisely when the margin is positive---in fact the two coincide by the cell decomposition $\sigma=\text{interior}+\beta_{A}$---making the detectability criterion an identity rather than an approximation.
+    (\textbf{C})~Distribution of relative thickness $\tau=\beta_{\mathscr{P}}(A)/\sigma(A)$ on the linear $x$-axis ($0.86$ to $5$), counts on the linear $y$-axis, threshold $\tau=1$ marked (red). The histogram separates the engulfed regime $\tau\ge1$ from the distinguishable regime $\tau<1$ about the single threshold of Theorem~\ref{thm:detectability}.
+    (\textbf{D})~Three-dimensional surface of interior content over scale $\sigma(A)$ ($0.5$ to $28$) and own-separator share $\beta_{A}$ ($0.5$ to $16$), $12{,}500$ regions, cividis colourmap. Interior content is zero on and below the ridge $\sigma=\beta_{A}$ (the engulfed regime) and rises with the margin above it, the surface form of the detectability equivalence. Viewing angle: elevation $24^{\circ}$, azimuth $-58^{\circ}$.}
+    \label{fig:panel-detectability}
+\end{figure*}
+
+
+% =====================================================================
+\section{Three derivations of the floor}
+\label{sec:floor}
+% =====================================================================
+
+The Boundary--Thickness Theorem produced the floor $\thick>0$ from the geometry
+of separators. We now give two further, independent derivations---one
+representational, one cardinality-theoretic---and a cost argument showing that
+driving a separator toward zero content has diverging cost. The three agree:
+each bounds the same constant from below away from zero, and none can be reduced
+to the others. This redundancy is the paper's evidence that the floor is
+structural and not an artefact of one formalism.
+
+\subsection{The representational derivation}
+
+The first derivation asks what it costs to \emph{name} a region, independently of
+any separator. An embedded agent identifies a region by a finite descriptor
+drawn from a finite scheme; we show no such scheme distinguishes all regions of
+a bounded resolvable space exactly, so a positive descriptive residue persists.
+
+\begin{definition}[Descriptive scheme]
+\label{def:scheme}
+A \emph{descriptive scheme} for a partition $\Part$ with $N$ cells is an
+injection $\rho$ from a set $\mathcal{R}$ of realisable regions into the finite
+set $\{0,1\}^{N}$ of cell-indicator strings: $\rho(A)$ is the string whose
+$i$-th entry is $1$ iff $\cell_i\subseteq A$. A region $A$ is
+\emph{exactly named} by $\rho$ if $A=\bigcup\{\cell_i:\rho(A)_i=1\}$.
+\end{definition}
+
+\begin{proposition}[Representational residue]
+\label{prop:rep-residue}
+Under \Cref{ax:brs}, for any region $A$ that is not $\Part$-realisable the
+descriptive scheme $\rho$ names instead the realisable region
+$\widehat A=\bigcup\{\cell_i:\cell_i\subseteq A\}$, and the discrepancy
+$A\,\triangle\,\widehat A$ lies in the separator $\Sigma_\Part(A)$, of measure
+$\ge\thick$. No finite descriptive scheme over $\Part$ names every region of
+$\Space$ exactly; the unnamed discrepancy has measure at least the floor.
+\end{proposition}
+
+\begin{proof}
+A scheme over $\Part$ has range $\{0,1\}^N$, a finite set, while the regions of
+$\Space$ (Borel sets modulo null sets) are uncountable under \ref{brs:hier}; so
+$\rho$ cannot be injective on all regions and must collapse some region $A$ onto
+a realisable $\widehat A$. The cells contributing to $A$ only partially lie in
+$\Sigma_\Part(A)$: a cell $\cell_i$ with $\cell_i\subseteq A$ is named, a cell
+disjoint from $A$ is omitted, and a cell meeting both $A$ and $\Space\setminus A$
+is exactly a separator cell. Hence $A\,\triangle\,\widehat A\subseteq
+\Sigma_\Part(A)$, and where $A$ is non-realisable this symmetric difference is
+non-null and contained in a separator of measure $\ge\thick$ by
+\Cref{thm:thickness}.
+\end{proof}
+
+\begin{remark}[A faithful image is not the invariant]
+\label{rem:faithful}
+\Cref{prop:rep-residue} says that the best name a finite scheme can give a region
+is a realisable approximant differing from it by at least a floor's worth of
+content. A representation that is faithful at the resolution of $\Part$ is still
+not the region itself; the gap is the same $\thick$ that the separator carries.
+The descriptive and the geometric residues coincide.
+\end{remark}
+
+\subsection{The cardinality derivation}
+
+The second derivation needs no geometry at all---only counting. It shows that the
+collection of distinctions an agent might draw outruns any finite stage of
+representation, so that at each finite stage a positive shortfall remains.
+
+\begin{proposition}[Cardinality shortfall]
+\label{prop:card}
+Under \ref{brs:hier}, the family of regions of $\Space$ \textup{(}Borel modulo
+null\textup{)} has cardinality of the continuum, while the regions exactly
+nameable at any finite stage $\Part_n$ number at most $2^{N(\Part_n)}<\infty$.
+Hence at every finite stage the nameable regions are a measure-dense but
+cardinality-negligible subfamily, and the act of naming any further region
+requires passing to a strictly finer partition, which by \Cref{prop:refine}
+carries its own positive floor $\thick_{n+1}>0$.
+\end{proposition}
+
+\begin{proof}
+By \Cref{lem:finite-cells} each $\Part_n$ is finite, so its nameable regions
+(unions of cells) number $2^{N(\Part_n)}$. By \ref{brs:hier} the partitions
+generate the Borel $\sigma$-algebra modulo null sets, whose cardinality is that
+of the continuum; no finite stage attains it. To name a region not realisable at
+stage $n$ one refines to a stage $m>n$ at which it becomes a union of cells; by
+\Cref{prop:refine} every such stage carries $\thick_m\ge\mu_{\min}(\Part_m)>0$.
+Thus the floor reappears at each refinement; there is no finite stage of exact,
+complete naming and no stage with zero floor.
+\end{proof}
+
+\begin{remark}
+\Cref{prop:card} is a pure counting fact and is logically independent of the
+measure-geometry of \Cref{sec:thickness}: even if every separator could somehow
+be made thin, the finite nameable family could never exhaust the continuum of
+regions, so a fresh refinement---with its own floor---would always be required.
+The two derivations corner the floor from disjoint directions.
+\end{remark}
+
+\subsection{The cost derivation}
+
+The third derivation treats the floor as the limit of an optimisation: it shows
+that the cost of thinning a separator toward zero content diverges, so a finite
+agent never reaches the sharp cut. We work with an abstract, monotone cost
+functional and assume only what any reasonable accounting of refinement must
+satisfy.
+
+\begin{definition}[Refinement cost]
+\label{def:cost}
+A \emph{refinement cost} is a functional $\Gamma$ assigning to each realisable
+partition $\Part$ a value $\Gamma(\Part)\in[0,\infty)$ such that
+\begin{enumerate}[label=\textup{(C\arabic*)},leftmargin=3em]
+\item\label{c:mono} \textbf{Monotone.} $\Part'\preceq\Part\Rightarrow
+\Gamma(\Part')\ge\Gamma(\Part)$ \textup{(}finer costs at least as much\textup{)};
+\item\label{c:additive} \textbf{Additive over cells.} splitting a cell of
+measure $m$ into cells of measures $m_1,\dots,m_r$ adds
+$\sum_s g(m_s)-g(m)\ge0$ to $\Gamma$, for a convex $g\colon(0,\infty)\to\R$
+with $g(m)\to+\infty$ as $m\to0^+$;
+\item\label{c:reso} \textbf{Resolution-bounded.} achieving boundary thickness
+$\thick_\Part(A)=t$ for a fixed region requires a partition whose separating
+cells have measure $\le t$, hence each of cost $\ge g(t)$.
+\end{enumerate}
+\end{definition}
+
+\begin{theorem}[Cost divergence at the sharp cut]
+\label{thm:cost}
+Let $\Gamma$ be a refinement cost. For a fixed region $A$, the cost of realising
+boundary thickness $t$ satisfies $\Gamma_t\ge g(t)\to+\infty$ as $t\to0^+$.
+Hence no finite-cost separation process attains a sharp ($t=0$) separator; the
+infimum of attainable thickness over finite-cost processes is a strictly
+positive $\thick$.
+\end{theorem}
+
+\begin{proof}
+By \ref{c:reso}, realising thickness $t$ requires separating cells of measure
+$\le t$; by \ref{c:additive} each such cell costs at least $g(t)$, and since at
+least one separating cell is present (\Cref{lem:nonempty-sep}),
+$\Gamma_t\ge g(t)$. Since $g$ is convex with $g(m)\to+\infty$ as $m\to0^+$,
+$\Gamma_t\to+\infty$ as $t\to0^+$. A finite-cost process has $\Gamma\le C<\infty$
+for some bound $C$, so its attainable thickness is bounded below by
+$t_\ast:=\sup\{t:g(t)\le C\}>0$. Setting $\thick=t_\ast$ gives a strictly
+positive floor below which no finite-cost process reaches.
+\end{proof}
+
+\begin{remark}[Bounded return forces a halt]
+\label{rem:bounded-return}
+The cost derivation has a corollary used in \Cref{sec:inquiry}: because the
+return from thinning a separator---the additional content correctly assigned---is
+bounded by the finite measure $\mu(\Space)$ (\ref{brs:bdd}), while the cost
+$g(t)$ diverges as $t\to0^+$, the marginal return per unit cost falls to zero.
+A finite agent with any positive cost-per-return threshold therefore halts at a
+strictly positive thickness. The halt is not a failure of resolve but the
+rational endpoint of a diverging-cost, bounded-return optimisation.
+\end{remark}
+
+\subsection{Agreement of the three}
+
+\begin{theorem}[The floor is one constant]
+\label{thm:floor-agree}
+For a fixed bounded resolvable space and agent, the geometric floor of
+\Cref{def:floor}, the representational residue of \Cref{prop:rep-residue}, and
+the cost-limited thickness of \Cref{thm:cost} are all strictly positive and
+bound the same quantity: each equals or exceeds $\mu_{\min}$ at the agent's
+finest realisable partition, and each vanishes only in the excluded limit
+$\reso\to0$. No one of them can be reduced to zero while the others remain
+positive.
+\end{theorem}
+
+\begin{proof}
+All three are controlled by $\mu_{\min}$ at the finest realisable partition. The
+geometric floor satisfies $\thick\ge\mu_{\min}$ (\Cref{thm:thickness}); the
+representational residue is a separator of measure $\ge\thick\ge\mu_{\min}$
+(\Cref{prop:rep-residue}); the cost-limited thickness $t_\ast$ satisfies
+$g(t_\ast)\le C$ with separating cells of measure $\ge\mu_{\min}$ forced by
+\ref{brs:res}, so $t_\ast\ge\mu_{\min}$. Each is therefore $\ge\mu_{\min}>0$, and
+each $\to0$ only as $\mu_{\min}\to0$, i.e.\ $\reso\to0$, which \ref{brs:res}
+excludes for an embedded agent. Hence they rise and fall together and are
+positive together.
+\end{proof}
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/panel_2.png}
+    \caption{\textbf{The three derivations of the floor bound one constant.}
+    (\textbf{A})~Representational floor on the linear $y$-axis ($1.5$ to $8$) versus geometric floor on the linear $x$-axis ($1.5$ to $24$), one point per instance ($300$ spaces), with the equality diagonal (red). Both floors are strictly positive and the representational residue never undercuts the geometric floor, the agreement asserted by Theorem~\ref{thm:floor-agree}: the best name a finite scheme gives a region differs from it by at least a separator's worth of content (Proposition~\ref{prop:rep-residue}).
+    (\textbf{B})~Cost floor on the linear $y$-axis ($0.5$ to $8$) versus geometric floor on the linear $x$-axis ($1.5$ to $24$), $300$ instances, equality diagonal (red). The cost-limited thickness coincides with $\mu_{\min}$ on every instance, confirming that the optimisation floor of Theorem~\ref{thm:cost} equals the geometric one of Theorem~\ref{thm:thickness}.
+    (\textbf{C})~The refinement cost $g(t)=-\log t$ on the linear $y$-axis ($0$ to $\sim\!13.7$) versus separator thickness $t$ on a logarithmic $x$-axis ($10^{-6}$ to $1$). The cost diverges monotonically as $t\to0^{+}$, the content of Theorem~\ref{thm:cost}: no finite-cost separation process reaches a sharp cut, so the attainable thickness is bounded below by a strictly positive $\beta$.
+    (\textbf{D})~Three-dimensional point cloud of the three floors per instance---geometric, representational, cost---as the coordinate triple over $300$ spaces, plasma colourmap. The cloud is confined to the strictly positive octant and stays close to the joint diagonal, displaying Theorem~\ref{thm:floor-agree}: the three rise and fall together and are positive together, vanishing only in the excluded limit $\delta\to0$. Viewing angle: elevation $20^{\circ}$, azimuth $-50^{\circ}$.}
+    \label{fig:panel-floor-agreement}
+\end{figure*}
+
+
+% =====================================================================
+\section{Detectability and the sorites}
+\label{sec:detect}
+% =====================================================================
+
+We now turn from the existence of the floor to its consequence for what can be
+\emph{distinguished}. A region is registered by an agent only if it stands out
+from its own separator; we make this precise and prove that distinguishability is
+governed by the ratio of a region's scale to its boundary thickness
+(\Cref{thm:detectability}). The sorites paradox follows as a corollary
+(\Cref{cor:sorites}): there is no sharp count at which an aggregate becomes
+distinguishable, because distinguishability is emergence across a band of
+positive width, not the crossing of a point.
+
+\subsection{Scale and distinguishability}
+
+\begin{definition}[Scale of a region]
+\label{def:scale}
+The \emph{scale} of a $\Part$-realisable region $A$ is its measure
+$\sigma(A):=\mu(A)$. Its \emph{relative thickness} is the ratio
+\[
+\tau_\Part(A)\;:=\;\frac{\thick_\Part(A)}{\sigma(A)}
+\;=\;\frac{\mu(\Sigma_\Part(A))}{\mu(A)} .
+\]
+\end{definition}
+
+\begin{definition}[Distinguishable region]
+\label{def:distinguishable}
+A region $A$ is \emph{distinguishable} \textup{(}by an agent realising
+$\Part$\textup{)} if its interior content exceeds its separator content,
+\[
+\mu\bigl(A\setminus\Sigma_\Part(A)\bigr)\;>\;0,
+\]
+equivalently if $A$ is not engulfed by its own separator. We say $A$ is
+\emph{engulfed} if $A\subseteq\Sigma_\Part(A)$, i.e.\ every cell of $A$ also
+borders the complement.
+\end{definition}
+
+\begin{theorem}[Detectability]
+\label{thm:detectability}
+Let $(\Space,d,\mu)$ satisfy \Cref{ax:brs} and be connected, and let $\Part$ have
+floor $\thick$. A $\Part$-realisable region $A$ is distinguishable if and only if
+its scale exceeds its boundary thickness:
+\[
+A \text{ distinguishable}\quad\Longleftrightarrow\quad \sigma(A)>\thick_\Part(A),
+\qquad\text{equivalently}\qquad \tau_\Part(A)<1 .
+\]
+In particular every region with $\sigma(A)\le\thick$ is engulfed and not
+distinguishable: below the floor, a region cannot be told from its own boundary.
+\end{theorem}
+
+\begin{proof}
+The region decomposes as a disjoint union of its interior cells and its
+separator cells, $A=(A\setminus\Sigma_\Part(A))\sqcup(A\cap\Sigma_\Part(A))$, so
+$\sigma(A)=\mu(A\setminus\Sigma_\Part(A))+\mu(A\cap\Sigma_\Part(A))$.
+
+$(\Leftarrow)$ If $\sigma(A)>\thick_\Part(A)\ge\mu(A\cap\Sigma_\Part(A))$, then
+$\mu(A\setminus\Sigma_\Part(A))=\sigma(A)-\mu(A\cap\Sigma_\Part(A))
+\ge\sigma(A)-\thick_\Part(A)>0$, so $A$ is distinguishable.
+
+$(\Rightarrow)$ If $A$ is distinguishable, $\mu(A\setminus\Sigma_\Part(A))>0$, so
+$\sigma(A)=\mu(A\setminus\Sigma_\Part(A))+\mu(A\cap\Sigma_\Part(A))
+>\mu(A\cap\Sigma_\Part(A))$. Since $A$ has at least one separating cell
+(\Cref{lem:nonempty-sep}) and is realisable, its separator cells are among $A$'s
+cells when $A$ is small; in the boundary case the inequality
+$\sigma(A)>\thick_\Part(A)$ is exactly the statement that interior content is
+present. Finally, if $\sigma(A)\le\thick$ then since
+$\thick\le\thick_\Part(A)$ would force $\sigma(A)\le\thick_\Part(A)$, the
+interior content $\sigma(A)-\mu(A\cap\Sigma_\Part(A))$ cannot be positive, and
+$A\subseteq\Sigma_\Part(A)$: $A$ is engulfed.
+\end{proof}
+
+\begin{remark}[Distinguishability is relative to the separator, not absolute]
+\label{rem:relative}
+The theorem locates distinguishability not in the absolute size of $A$ but in the
+comparison $\sigma(A)$ versus $\thick_\Part(A)$. A region is silent---fails to
+register---precisely when its separating boundary is thick relative to it. This
+is the exact inversion the introduction promised: smallness is never itself the
+cause of silence; being engulfed by one's own boundary is.
+\end{remark}
+
+\subsection{The sorites as a corollary}
+
+We model an aggregate as a region grown by accretion of sub-floor grains and ask
+when it becomes distinguishable. The classical sorites asks for the single grain
+whose addition first makes the aggregate a heap. We show no such grain exists,
+and locate the reason in the floor.
+
+\begin{construction}[Accretive aggregate]
+\label{con:accretion}
+Let $A_0\subset A_1\subset A_2\subset\cdots$ be realisable regions with
+$A_{n+1}=A_n\cup\cell_{i_n}$ formed by adjoining a single cell of measure
+$\mu(\cell_{i_n})\le\thick$ \textup{(}a sub-floor grain\textup{)}. Write
+$\tau_n:=\tau_\Part(A_n)$ for the relative thickness at stage $n$.
+\end{construction}
+
+\begin{corollary}[No sharp threshold; the sorites dissolves]
+\label{cor:sorites}
+For the accretive aggregate of \Cref{con:accretion}:
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.2em]
+\item \textbf{No single grain is decisive.} The transition from engulfed
+\textup{(}$\tau_n\ge1$\textup{)} to distinguishable \textup{(}$\tau_n<1$\textup{)}
+cannot be effected by any single sub-floor grain alone: each grain changes
+$\sigma(A_n)$ by at most $\thick$ and $\thick_\Part(A_n)$ by a bounded amount, so
+$\tau_n$ moves continuously and no one step carries it across $1$ from a value
+bounded away from $1$.
+\item \textbf{Distinguishability is emergence across a band.} There is a range of
+stages over which $\tau_n$ descends through a neighbourhood of $1$; the aggregate
+becomes distinguishable somewhere in this band, whose width is set by the floor
+$\thick$, not at any point.
+\item \textbf{The grain is silent because its boundary is thick relative to it.}
+Each grain has $\sigma(\cell)\le\thick\le\thick_\Part(\cell)$, so by
+\Cref{thm:detectability} every grain is itself engulfed and individually
+indistinguishable, while the aggregate clears its boundary only once
+$\sigma(A_n)>\thick_\Part(A_n)$.
+\end{enumerate}
+Hence the sorites has no decisive grain not because the predicate is vague in a
+logical sense but because distinguishability is the crossing of a positive-width
+band $\tau\approx1$, and a sub-floor grain cannot, by itself, carry an aggregate
+across a band wider than its own contribution.
+\end{corollary}
+
+\begin{proof}
+Each adjunction increases $\sigma$ by $\mu(\cell_{i_n})\le\thick$ and changes the
+separator by at most the measure of the cells whose bordering status flips, a
+quantity bounded in terms of $\thick$ by \Cref{thm:thickness}. Hence
+$\tau_{n+1}-\tau_n$ is bounded in magnitude by a quantity controlled by
+$\thick/\sigma(A_n)$, which is $<1$ once $\sigma(A_n)>\thick$. A bounded
+per-step change cannot move $\tau$ across the value $1$ from a starting value
+bounded away from $1$, giving (i); the descent of $\tau_n$ through a
+neighbourhood of $1$ occupies a range of stages of width controlled by $\thick$,
+giving (ii); and (iii) is \Cref{thm:detectability} applied to a single
+sub-floor cell, for which $\sigma(\cell)\le\thick\le\thick_\Part(\cell)$ forces
+$\tau_\Part(\cell)\ge1$, i.e.\ engulfment.
+\end{proof}
+
+\begin{remark}[Relation to theories of vagueness]
+\label{rem:vagueness}
+The standard responses to the sorites---degree-theoretic~\citep{zadeh1965},
+supervaluationist~\citep{fine1975,keefe2000}, and
+epistemicist~\citep{williamson1994}; see~\citet{black1937,hyderaffman2018}---all
+locate the difficulty in the semantics of the predicate. The present account is
+orthogonal and geometric: it places the difficulty in the object, namely in the
+positive content of the separator that any distinguishing of the aggregate must
+resolve. There is no hidden sharp threshold (against epistemicism), no
+many-valued truth (against degree theories), and no need for admissible
+precisifications (against supervaluation); there is a band of positive width
+$\thick$ across which a region emerges from its boundary. The dissolution is a
+theorem about separators, not a logic of partial truth.
+\end{remark}
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/panel_4.png}
+    \caption{\textbf{The sorites dissolved: emergence across a band, with no decisive grain.}
+    (\textbf{A})~Relative thickness $\tau=\beta/\sigma$ on the linear $y$-axis ($0.03$ to $4$) versus the number of sub-floor grains added on the linear $x$-axis ($0$ to $142$), for an aggregate grown one unit at a time on a $12\times12$ instance. The curve starts well above the threshold $\tau=1$ (red)---a tiny aggregate is all boundary---and descends smoothly through it; there is no single grain at which $\tau$ leaps across $1$, the content of Corollary~\ref{cor:sorites}(i).
+    (\textbf{B})~The same trajectory plotted as $\tau$ on the linear $y$-axis ($0.03$ to $4$) versus aggregate scale $\sigma(A_{n})$ on the linear $x$-axis ($1$ to $143$), threshold $\tau=1$ marked (red). Distinguishability is reached once $\sigma$ exceeds the boundary, across a band of positive width set by the floor, not at a point (Corollary~\ref{cor:sorites}(ii)).
+    (\textbf{C})~Per-step change $|\Delta\tau|$ on the linear $y$-axis ($0$ to $1.33$) versus grains added on the linear $x$-axis ($0$ to $141$). The increments are bounded and decay once the aggregate clears its boundary, so no individual sub-floor grain carries the aggregate across the threshold: the grain is silent because its own boundary is thick relative to it (Corollary~\ref{cor:sorites}(iii)).
+    (\textbf{D})~Three-dimensional overlay of three independent accretion orders (random orderings of the same atoms), each a curve of $\tau$ over aggregate scale $\sigma$ ($1$ to $\sim\!143$) at a fixed order-index $y$-coordinate. All three descend through the same $\tau\approx1$ band regardless of accretion order, showing the dissolution is a property of the geometry, not of any particular sequence of additions. Viewing angle: elevation $20^{\circ}$, azimuth $-62^{\circ}$.}
+    \label{fig:panel-sorites}
+\end{figure*}
+
+% =====================================================================
+\section{Locating versus visiting}
+\label{sec:locating}
+% =====================================================================
+
+The results so far concern an agent that \emph{individuates} a region: draws a
+separator, pays the floor, distinguishes the region from its complement. There is
+a second, entirely different relation a region can stand in---being \emph{arrived
+at} by a traversal of the space, with no separator drawn and no agent acting. This
+section formalises the two relations and proves they obey opposite economies. The
+distinction is purely measure- and order-theoretic; it names no dynamics. Its
+consequence is a precise account of why a region can be free to be reached yet
+costly to single out, and a classification of three invalid inferences that
+silently exchange the two.
+
+\subsection{Log-measure, probability, and traversal}
+
+We add three abstract quantities, each with a standard home in measure theory and
+information theory~\citep{shannon1948,cover2006}, and one abstract map.
+
+\begin{definition}[Log-measure and probability of a region]
+\label{def:logmeasure}
+For a region $W\subseteq\Space$ with $\mu(W)>0$, its \emph{probability} is the
+normalised measure
+\[
+p(W)\;:=\;\frac{\mu(W)}{\mu(\Space)}\in(0,1],
+\]
+and its \emph{log-measure} is
+\[
+S(W)\;:=\;\log\mu(W).
+\]
+A region is \emph{rare} if $p(W)$ is small, equivalently if $S(W)$ is small
+relative to $\log\mu(\Space)$.
+\end{definition}
+
+\begin{remark}[One quantity under two names]
+\label{rem:one-quantity}
+$S(W)$ and $\log p(W)=S(W)-\log\mu(\Space)$ differ by an additive constant
+independent of $W$. ``Small log-measure'' and ``small probability'' are therefore
+not two correlated attributes of a region but a single attribute under two names.
+No operation lowers $p(W)$ while holding $S(W)$ fixed, or raises one while fixing
+the other; they move together by definition. This identity is used in
+\Cref{prop:cannot-raise} and is the abstract counterpart of the familiar
+log-count relation in information theory.
+\end{remark}
+
+\begin{definition}[Measure-preserving traversal]
+\label{def:traversal}
+A \emph{traversal} of $\Space$ is a measurable map $T\colon\Space\to\Space$ with
+$\mu(T^{-1}E)=\mu(E)$ for every Borel $E$ \textup{(}it preserves $\mu$\textup{)}.
+A point $x$ \emph{visits} a region $W$ \emph{at step} $n$ if $T^{n}(x)\in W$. The
+\emph{visiting frequency} of $W$ along $x$ is
+\[
+\bar f_W(x)\;:=\;\lim_{N\to\infty}\frac1N\sum_{n=0}^{N-1}\mathbf 1_W\!\bigl(T^{n}(x)\bigr),
+\]
+when the limit exists. No agent, separator, or choice appears in this definition.
+\end{definition}
+
+\begin{remark}[Why this is not ``dynamics'']
+\label{rem:not-dynamics}
+A traversal is an iterated measure-preserving self-map---an order-theoretic and
+measure-theoretic object, the discrete shift along the orbit
+$x,Tx,T^2x,\dots$. We use it only through two classical facts: that on a
+finite-measure space such a map returns almost every point to any positive-measure
+region (recurrence), and that the visiting frequency, when it exists, equals the
+region's probability (the ergodic average). Both are theorems of measure theory;
+neither requires a continuum parameter, a rate, or any external scale.
+\end{remark}
+
+\subsection{Two relations to a region}
+
+\begin{definition}[Visiting and locating]
+\label{def:visit-locate}
+A point \emph{visits} a region $W$ under a traversal $T$ when some iterate
+$T^{n}(x)$ lies in $W$ \textup{(}\Cref{def:traversal}\textup{)}: a fact about the
+orbit, involving no separator and no agent. An embedded agent \emph{locates} $W$
+when it individuates $W$---draws a realisable separator marking $W$ off from
+$\Space\setminus W$ to its finite resolution \textup{(}\Cref{def:individuation},
+\Cref{def:realisable}\textup{)}: an act carrying the floor residue. Visiting
+relates a traversal to a point; locating relates an agent to a region.
+\end{definition}
+
+\begin{remark}[The relations are categorically distinct]
+\label{rem:two-relations}
+At every step a point occupies exactly one maximally fine position, visited
+because the traversal took it there, with no agent locating it. Conversely an
+agent may locate a region no orbit visits within any finite horizon. A region's
+being visited says nothing about its being located, and vice versa. The rest of
+the section is the consequence of holding the two apart.
+\end{remark}
+
+\subsection{The asymmetry}
+
+\begin{theorem}[Locating--Visiting Asymmetry]
+\label{thm:asymmetry}
+Let $W$ be a realisable region of $(\Space,d,\mu)$ under \Cref{ax:brs} with
+$\Space$ connected, and let $T$ be a measure-preserving traversal. Then:
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.4em]
+\item \textbf{Locating is costly.} Any individuation of $W$ by an embedded agent
+deposits separator content $\ge\thick>0$ \textup{(}\Cref{thm:thickness}\textup{)};
+the cost does not depend on $p(W)$ and is never zero.
+\item \textbf{Visiting is free.} Almost every point visits $W$ under $T$, with no
+agent and no separator; by recurrence on the finite-measure space
+$\mu(\Space)<\infty$ the visit occurs, and being a fact about the orbit it carries
+no individuation cost.
+\item \textbf{Only frequency scales with rarity.} The visiting frequency satisfies
+$\bar f_W(x)=p(W)$ for an ergodic traversal \textup{(}and is bounded by the
+recurrence fraction in general\textup{)}; thus a rare $W$ is visited just as
+freely as a common one, only \emph{less often}. Rarity is a statement about
+$p(W)$, never about the cost or possibility of a visit.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+(i) is \Cref{thm:thickness}: a realisable separator in a connected bounded
+finitely-resolved space has measure $\ge\mu_{\min}=\thick>0$, independently of
+$\mu(W)$. (ii): on a space with $\mu(\Space)<\infty$ a measure-preserving $T$
+returns almost every point of any positive-measure region to that region (the sets
+$T^{-k}W$ cannot be pairwise disjoint modulo null sets, since their equal measures
+$\mu(W)>0$ would otherwise sum past $\mu(\Space)$); the visit is a property of the
+orbit and involves no separator, hence no floor. (iii): the visiting frequency is
+the average of the indicator $\mathbf 1_W$ along the orbit, which for an ergodic
+$T$ equals $\int \mathbf 1_W\,\mathrm d(\mu/\mu(\Space))=p(W)$; smallness of the
+frequency is exactly smallness of $p(W)$, and is independent of (i)--(ii).
+\end{proof}
+
+\begin{remark}[The asymmetry in one line]
+\label{rem:needle}
+A region may be hard to single out and yet effortlessly reached: it is hard to
+\emph{locate} a distinguished region among many alternatives, but a traversal
+passes through it regardless of whether anything locates it, and through a rare
+region only \emph{less frequently}, never at greater cost. The cost lives entirely
+on the locating side; the rarity lives entirely on the visiting side; nothing
+carries one to the other.
+\end{remark}
+
+\subsection{The cost of locating among alternatives}
+
+Locating a single region costs the floor (\Cref{thm:thickness}). Locating one
+region \emph{among many} costs more, and the excess grows with how rare the target
+is---a quantitative refinement of detectability.
+
+\begin{theorem}[Locating cost grows with the log of the alternatives]
+\label{thm:locating-cost}
+Let $W$ be one region among $K$ pairwise-disjoint realisable alternatives of equal
+measure that together exhaust a fixed portion of $\Space$. To single out $W$ from
+the other $K-1$, an embedded agent performs at least $\lceil\log_2 K\rceil$ binary
+individuations, each depositing residue $\ge\thick$; hence the total locating cost
+is at least
+\[
+\thick\,\lceil\log_2 K\rceil .
+\]
+Since the target's probability is $p(W)=1/K$ of the exhausted portion, the cost
+grows like $\thick\,\log_2(1/p(W))$: rarer targets are costlier to locate, while
+\textup{(}by \Cref{thm:asymmetry}\textup{)} no rarer to visit.
+\end{theorem}
+
+\begin{proof}
+Distinguishing $W$ from $K-1$ equally-sized alternatives is a search whose outcome
+selects one of $K$ possibilities; any decision procedure resolving one of $K$
+equiprobable outcomes makes at least $\lceil\log_2 K\rceil$ binary distinctions
+(a counting bound: $b$ binary tests distinguish at most $2^{b}$ cases, so
+$2^{b}\ge K$). Each binary distinction is an individuation---a separator between
+the surviving candidates and the rejected ones---carrying residue $\ge\thick$ by
+\Cref{thm:thickness}. Summing over the $\ge\lceil\log_2 K\rceil$ distinctions
+gives total residue $\ge\thick\lceil\log_2 K\rceil$. With $p(W)=1/K$ this is
+$\thick\,\lceil\log_2(1/p(W))\rceil$.
+\end{proof}
+
+\begin{remark}[Consistency with the cardinality derivation]
+\label{rem:consistent-card}
+\Cref{thm:locating-cost} refines \Cref{prop:card}: where the cardinality argument
+showed that exhausting the regions of $\Space$ requires unbounded refinement, each
+stage carrying its own floor, this shows that even \emph{within} a fixed finite
+family of $K$ alternatives the cost of singling out one member scales with
+$\log K$. The floor appears once per binary distinction, and the number of
+distinctions is set by the rarity of the target.
+\end{remark}
+
+\subsection{Three invalid transfers}
+
+The asymmetry blocks a family of inferences that move an attribute of locating
+onto visiting, or silently alter the measure that constitutes a region. We state
+the three that arise in practice and show each is invalid; they share a single
+form (\Cref{prop:one-form}).
+
+\begin{proposition}[Naming confers no structural priority]
+\label{prop:rename}
+Let $y=T^{n}(x)$ with $n\ge1$, so $y$ is reached by the traversal and has
+predecessors. Designating $y$ ``the starting point'' is a locating act
+\textup{(}a label\textup{)} and does not endow $y$ with the structural property
+of an origin---having no predecessor. Any statement whose hypothesis is ``has no
+predecessor'' fails to apply to $y$ whatever $y$ is called.
+\end{proposition}
+
+\begin{proof}
+``Starting point'' has two senses: a bookkeeping origin chosen by the agent, and
+the structural origin, a point with no predecessor under $T$. A reached point
+$y=T^{n}(x)$, $n\ge1$, has the predecessor $T^{n-1}(x)$, so it meets the first
+sense by stipulation and fails the second by construction. A statement proved
+under ``no predecessor'' reads a property $y$ lacks; the label supplies only the
+inert first sense. The transfer carries nothing.
+\end{proof}
+
+\begin{proposition}[Specificity does not entail an arranger]
+\label{prop:arrange}
+From ``$W$ is highly specific'' \textup{(}rare; small $p(W)$\textup{)} one cannot
+infer ``some agent located or produced $W$.'' Specificity is a measure attribute
+of the region; production is an act of an agent. The first does not entail the
+second.
+\end{proposition}
+
+\begin{proof}
+\Cref{thm:asymmetry}(ii) provides a standing counterexample: under any traversal,
+the position $T^{n}(x)$ at each step is a maximally fine, individually rare
+location that no agent located---it is visited, not located. Hence a region can be
+as rare as one likes while having been singled out by no one. Rarity is $p(W)$;
+arrangement is agency; rarity does not imply agency.
+\end{proof}
+
+\begin{proposition}[A region cannot be made probable at fixed log-measure]
+\label{prop:cannot-raise}
+There is no operation that makes a rare region the most probable destination while
+it remains rare. ``Most probable'' is largest measure and ``rare'' is smallest
+measure; by \Cref{rem:one-quantity} these are the same scale, so the demand is that
+one region be simultaneously least and most. Any construction appearing to achieve
+it has enlarged the region---changed $\mu(W)$, hence $S(W)$ and $p(W)$ together---and
+so has replaced the rare region by a different, common one.
+\end{proposition}
+
+\begin{proof}
+By \Cref{rem:one-quantity}, $p(W)$ and $S(W)$ are the same scale up to an additive
+constant; maximising $p(W)$ maximises $\mu(W)$. To keep $W$ rare is to keep
+$\mu(W)$ small; to make it most probable is to make $\mu(W)$ largest. Requiring
+both is requiring $\mu(W)=\min$ and $\mu(W)=\max$, impossible unless the family is
+trivial. A purported construction that ``raises the probability of the rare
+region'' has increased $\mu(W)$ and thereby exchanged $W$ for a larger region; the
+original rare region was not made probable but replaced.
+\end{proof}
+
+\begin{proposition}[The three transfers share one form]
+\label{prop:one-form}
+\Cref{prop:rename,prop:arrange,prop:cannot-raise} are instances of one invalid
+move: an attribute established for the agent's relation to a region
+\textup{(}locating: naming, singling out, producing\textup{)} is carried onto the
+traversal's relation to the region \textup{(}visiting\textup{)}, or the measure
+that constitutes the region is silently changed. Under \Cref{thm:asymmetry} and
+\Cref{rem:one-quantity} each move is blocked, because the two relations obey
+opposite economies and the constituting measure is the probability.
+\end{proposition}
+
+\begin{proof}
+\Cref{prop:rename} carries a label (locating) onto a structural predicate of
+visiting (having no predecessor). \Cref{prop:arrange} carries an agency claim
+(production) onto a measure attribute (rarity). \Cref{prop:cannot-raise} alters
+the measure that is the probability. In each case validity would require visiting
+to inherit locating's cost-structure, or a region to change its measure while
+keeping its identity; \Cref{thm:asymmetry} forbids the former and
+\Cref{rem:one-quantity} the latter.
+\end{proof}
+
+\begin{remark}[What this section adds]
+\label{rem:locating-adds}
+The floor (\Cref{sec:thickness,sec:floor}) priced the act of individuation; this
+section shows that price is paid by \emph{locating} alone and not by
+\emph{visiting}, that it scales with the log of a target's rarity
+(\Cref{thm:locating-cost}), and that the appearance of paradox in problems about
+rare configurations is produced by transferring the locating price onto visiting
+(\Cref{prop:one-form}). A reader will recognise that many concrete problems about
+rare states---in which a configuration seems impossible to reach because it is
+costly to arrange---have exactly this shape; the resolution in each case is the
+asymmetry proved here, that what is costly to single out may be free to be reached
+and merely seldom so. The self-referential obstruction of the next section shows
+why even the locating price can never be driven to zero: the residue it leaves
+cannot be certified away from within.
+\end{remark}
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/panel_5.png}
+    \caption{\textbf{Locating versus visiting: cost rises with rarity; being reached does not.}
+    (\textbf{A})~Cost on the linear $y$-axis ($0$ to $8$) versus number of alternatives $K$ on a logarithmic $x$-axis ($2$ to $256$). The locating cost (blue step) follows $\beta\lceil\log_{2}K\rceil$ from Theorem~\ref{thm:locating-cost}, while the visiting cost (red) is identically zero for all $K$: singling a region out is priced and the price grows with the alternatives, whereas a traversal's passing through it is free (Theorem~\ref{thm:asymmetry}).
+    (\textbf{B})~Locating cost on the linear $y$-axis ($1$ to $8$) versus $\log_{2}(1/p)$ on the linear $x$-axis ($1$ to $8$), where $p=1/K$ is the target's probability. The relation is linear with slope $\beta$: the cost of locating scales with the logarithm of the target's rarity, the quantitative refinement of detectability promised in Theorem~\ref{thm:locating-cost}.
+    (\textbf{C})~Visiting frequency $\bar f_{W}$ on a logarithmic $y$-axis ($\sim\!3.9\times10^{-3}$ to $0.5$) versus region probability $p(W)$ on a logarithmic $x$-axis (same range). The data lie exactly on the identity $\bar f_{W}=p(W)$, the ergodic-average clause of Theorem~\ref{thm:asymmetry}(iii): rarity enters a visit only through its frequency, never through its cost or possibility.
+    (\textbf{D})~Three-dimensional surface of locating cost $\beta\lceil\log_{2}K\rceil$ over $\log_{2}K$ ($1$ to $8$) and floor $\beta$ ($0.5$ to $2$), magma colourmap. The cost rises linearly in both $\log_{2}K$ and $\beta$ and is bounded away from zero whenever $\beta>0$: there is no free locating, and the dependence on rarity is logarithmic throughout. Viewing angle: elevation $22^{\circ}$, azimuth $-55^{\circ}$.}
+    \label{fig:panel-locating-visiting}
+\end{figure*}
+
+
+% =====================================================================
+\section{Non-self-verifiability and the irreducible residue}
+\label{sec:residue}
+% =====================================================================
+
+The previous sections show the separator has positive content and that this
+content silences sub-floor regions. We now reach the deepest obstruction: the
+separator cannot be \emph{verified} from within. To verify a part is to decide it
+against the totality that constitutes it---its negation-sequence---and that
+decision is self-referential, with no consistent value. We prove this by a
+self-contained diagonal argument (\Cref{thm:diagonal}), deduce that the
+irreducible residue is not a locatable set but a self-referential impossibility
+(\Cref{thm:residue-not-measure}), and conclude that the floor can only ever be
+bounded below, never exhibited (\Cref{cor:floor-only-bounded}).
+
+\subsection{Verification as deciding membership in the negation}
+
+Recall (\Cref{def:negation}) that $A$ is constituted as $\Space\setminus\Neg(A)$:
+its identity is fixed by the totality $\Neg(A)=\Space\setminus A$ of what it is
+not. We make verification precise as the decision that constitutes this identity.
+
+\begin{definition}[Verifier]
+\label{def:verifier}
+A \emph{verifier} for the parts of $\Space$ is a map $\Ver$ that, given a part
+$X$ and a candidate constituting totality $T$, returns $\Ver(X,T)\in\{0,1\}$,
+intended to read $1$ iff $X$ is exactly the part constituted by withholding $T$,
+i.e.\ iff $X=\Space\setminus T$. To \emph{verify $A$} is to evaluate
+$\Ver(A,\Neg(A))$: to decide whether $A$ is the part its own negation-sequence
+constitutes.
+\end{definition}
+
+\begin{remark}[Why verification is membership in the negation]
+\label{rem:ver-membership}
+By \Cref{def:negation}, $A=\Space\setminus\Neg(A)$ exactly when $A$ and $\Neg(A)$
+partition $\Space$; deciding this is deciding, of the constituting totality
+$\Neg(A)$, whether what it omits is precisely $A$---a question about $A$ posed
+entirely in terms of the collection $\Neg(A)$ that is defined as
+``everything but $A$.'' Verification of $A$ is thus inseparable from a question
+of self-membership: $A$ figures, through its own definition, inside the totality
+against which it is checked.
+\end{remark}
+
+\subsection{A self-contained diagonal obstruction}
+
+We now prove, without invoking any external impossibility theorem, that no
+verifier decides every part correctly. The argument is a diagonal one, in the
+shape of the classical results of~\citet{russell1903,cantor1891,tarski1936} and
+the general form of~\citet{lawvere1969}, but it is self-contained: it uses only
+the definitions above.
+
+Two ingredients are needed before the diagonal can be run, and we isolate them as
+an explicit hypothesis, because whether they hold is exactly the delicate point.
+The diagonal collection
+\[
+D\;:=\;\bigl\{\,X : \Ver(X,\Neg(X))=0\,\bigr\}
+\]
+is, a priori, only a \emph{collection of parts indexed by the verifier's
+behaviour}; for the verifier to be asked about $D$ in the sense of the theory, $D$
+must itself be an admissible object of the same kind---a region of $\Space$ on
+which $\Ver$ is defined.
+
+\begin{definition}[Self-applicable verifier]
+\label{def:self-applicable}
+A verifier $\Ver$ is \emph{self-applicable} if
+\begin{enumerate}[label=\textup{(SA\arabic*)},leftmargin=3em]
+\item\label{sa:total} it is total on the regions of $\Space$ (it returns a value
+in $\{0,1\}$ on every region and its negation), and
+\item\label{sa:closed} the diagonal collection $D$ above is itself a region of
+$\Space$---a Borel set on which $\Ver(\,\cdot\,,\Neg(\,\cdot\,))$ is defined---so
+that $\Ver(D,\Neg(D))$ is a legal query.
+\end{enumerate}
+\end{definition}
+
+\begin{theorem}[Diagonal obstruction to verification]
+\label{thm:diagonal}
+No self-applicable verifier exists. Equivalently, there is no verifier $\Ver$
+that is total on regions \ref{sa:total} and closed under its own diagonal
+\ref{sa:closed}: for any such $\Ver$ the value $\Ver(D,\Neg(D))$ cannot be
+consistently assigned, since $\Ver(D,\Neg(D))=1$ and $\Ver(D,\Neg(D))=0$ each
+entail the other. In particular no verifier satisfying \ref{sa:closed} returns
+$1$ on every region.
+\end{theorem}
+
+\begin{proof}
+Suppose, for contradiction, a self-applicable verifier $\Ver$ exists. By
+\ref{sa:closed} the collection $D$ is a region and $\Ver(D,\Neg(D))$ is a legal
+query; by \ref{sa:total} it has a value. $D$ collects exactly those parts $X$ for
+which the verifier returns $0$ on the self-referential query $\Ver(X,\Neg(X))$.
+Now ask the verifier about $D$ itself.
+
+If $\Ver(D,\Neg(D))=1$, then $D$ is declared constituted by its own negation;
+but by the defining property of $D$, membership-defining condition for $D$ is
+$\Ver(X,\Neg(X))=0$, so $D$ satisfying its own membership condition would require
+$\Ver(D,\Neg(D))=0$. Reading $D$ through its own definition therefore forces
+$\Ver(D,\Neg(D))=0$, contradicting the assumed value $1$.
+
+If instead $\Ver(D,\Neg(D))=0$, then $D$ meets its own membership condition, so
+$D$ is among the parts collected by $D$, i.e.\ $D$ is constituted as the part its
+negation withholds, which is the assertion $\Ver(D,\Neg(D))=1$, contradicting the
+assumed value $0$.
+
+Both values are self-refuting, so no consistent value exists for
+$\Ver(D,\Neg(D))$. This contradicts \ref{sa:total}, which requires a value. Hence
+no verifier satisfies both \ref{sa:total} and \ref{sa:closed}; in particular none
+satisfying \ref{sa:closed} returns $1$ on every region. This is the diagonal
+obstruction.
+\end{proof}
+
+\begin{remark}[On the closure hypothesis \ref{sa:closed}]
+\label{rem:self-app}
+The theorem is exactly as strong as \ref{sa:closed}, and we are careful not to
+claim more than we prove. \ref{sa:closed} asserts that the behaviour-defined
+collection $D$ is again a region of $\Space$ on which the verifier is defined.
+This is the genuine content of ``self-application'': the verifier can be asked
+about an object built from its own verdicts. Two remarks on its status.
+
+\emph{Why embedding makes it natural.} An agent that verifies regions of $\Space$
+while being itself a part of $\Space$ is a plausible setting in which a
+description of the agent's own verifying behaviour is realised as a region---the
+agent's verdicts leave a trace in the same space they range over, and a region
+selected by those verdicts is a region of that space. In such a setting
+\ref{sa:closed} holds and the obstruction bites.
+
+\emph{Why it is not automatic.} Nothing in \Cref{ax:brs} forces a
+behaviour-defined collection to be Borel-encodable as a region. The classical
+diagonal results show the shape of the argument but not that its preconditions are
+met here: Russell's construction lives in unrestricted comprehension, which the
+measurable setting does not grant; and the general fixed-point
+theorem of~\citet{lawvere1969} delivers the contradiction only given a
+point-surjection in a cartesian-closed category---structure that an embedding
+\emph{may} supply but that must be exhibited, not assumed. We therefore treat
+\ref{sa:closed} as a hypothesis, true in any model where the agent's verifying
+behaviour is itself realisable as a region, and we mark every downstream claim
+that depends on it. Discharging \ref{sa:closed} in full generality---constructing
+the measurable encoding of parts on which $\Ver$ acts as a point-surjection---is a
+separate undertaking we do not claim to have carried out.
+\end{remark}
+
+\subsection{The residue is not a set under the closure hypothesis}
+
+The diagonal obstruction lets us characterise the irreducible residue, under the
+same closure hypothesis \ref{sa:closed} that the obstruction requires. One might
+hope that the un-verified remainder of an individuation is a definite set---small,
+locatable, perhaps measurable---which a finer effort could in principle exhibit
+and remove. We show that this hope is incompatible with \ref{sa:closed}: a
+locatable residue would let one assemble a total verifier closed under its own
+diagonal, which \Cref{thm:diagonal} forbids.
+
+\begin{definition}[Irreducible residue]
+\label{def:irreducible}
+The \emph{irreducible residue} of the individuation of $A$ is the obstruction to
+deciding $\Ver(A,\Neg(A))$: the content that an individuation cannot certify
+about itself. It is \emph{exhibitable} if there is a realisable region $E$ with
+$\mu(E)>0$ such that verifying \emph{every} region reduces to verifying it on
+$\Space\setminus E$ together with a separate, always-terminating certification of
+the residue localised in $E$.
+\end{definition}
+
+\begin{theorem}[The irreducible residue is not exhibitable, under \ref{sa:closed}]
+\label{thm:residue-not-measure}
+Let \Cref{ax:brs} hold and suppose the closure hypothesis \ref{sa:closed}---that
+a behaviour-defined collection of regions is again a region. Then the irreducible
+residue is not exhibitable: there is no realisable region $E$ of positive measure
+whose separate certification completes the verification of every region. Under
+\ref{sa:closed} the residue is a self-referential impossibility, not a locatable
+set.
+\end{theorem}
+
+\begin{proof}
+Suppose the residue were exhibitable by some realisable $E$ with $\mu(E)>0$:
+certifying the residue localised in $E$ always terminates and, combined with
+verification on $\Space\setminus E$, completes the verification of every region.
+This combination is a verifier $\Ver^\ast$ that is total on regions
+\ref{sa:total}. By the standing hypothesis \ref{sa:closed}, the diagonal
+collection $D$ of $\Ver^\ast$ is again a region; so $\Ver^\ast$ satisfies both
+\ref{sa:total} and \ref{sa:closed}, i.e.\ is self-applicable. \Cref{thm:diagonal}
+shows no such verifier exists---a contradiction. Hence no exhibiting $E$ exists:
+under \ref{sa:closed} the residue cannot be localised to a positive-measure set
+and certified away. It is the standing impossibility of the self-referential
+decision, not a region awaiting finer treatment.
+\end{proof}
+
+\begin{remark}[What survives if \ref{sa:closed} fails]
+\label{rem:if-sa-fails}
+If the closure hypothesis fails---if the agent's verifying behaviour is not
+realisable as a region---then \Cref{thm:diagonal} and \Cref{thm:residue-not-measure}
+do not apply, and the present section establishes nothing about exhibitability. The
+paper's quantitative core is untouched by this: the floor $\thick>0$ is already
+established three independent ways in \Cref{sec:thickness,sec:floor}, before any
+diagonal argument is invoked, and the detectability, locating, and non-return
+results of \Cref{sec:detect,sec:locating,sec:inquiry} rest on those derivations
+alone. What rides on \ref{sa:closed} is solely the \emph{upgrade} from ``the floor
+is positive'' to ``the residue is not a locatable set, only boundable below.'' We
+state that upgrade as conditional and claim no more.
+\end{remark}
+
+\begin{corollary}[The floor can only be bounded below, under \ref{sa:closed}]
+\label{cor:floor-only-bounded}
+The resolution floor $\thick$ admits a strict positive lower bound
+\textup{(}$\thick\ge\mu_{\min}>0$, \Cref{thm:thickness}\textup{)}
+unconditionally. If in addition the closure hypothesis \ref{sa:closed} holds,
+then $\thick$ has no exact exhibition as $\mu(R)$ for a definite residue set $R$:
+every attempt to write the residue as the measure of a located set $R$ supplies
+an exhibitable $E=R$, contradicting \Cref{thm:residue-not-measure}. In that case
+the floor is known only as the positive quantity below which no individuation can
+certify itself.
+\end{corollary}
+
+\begin{proof}
+The lower bound is \Cref{thm:thickness}. If $\thick=\mu(R)$ for a realisable $R$
+of positive measure, then $R$ exhibits the residue, contradicting
+\Cref{thm:residue-not-measure}. Hence no such exhibition exists, and $\thick$ is
+characterised solely as a positive lower bound on un-certifiable content.
+\end{proof}
+
+\begin{remark}[The recognition gap]
+\label{rem:recognition-gap}
+\Cref{thm:residue-not-measure}, where it applies, has a reading in terms of the
+relation between an agent and the part it would verify. To certify $A$ completely, the agent must
+decide $A$ against the totality $\Neg(A)$ that constitutes $A$; but the agent,
+being embedded, is itself within that totality, so a complete certification would
+require it to occupy both sides of the constituting partition at once---to be at
+once the part verified and a portion of the totality against which it is
+verified. The residue is the irreducible gap that keeps the two apart. Closing
+the gap would collapse the distinction on which verification depends; the floor
+$\thick$ is the measure of how far the gap can never be closed. This is the
+precise sense in which the boundary of knowledge is constitutive, not contingent:
+the un-knowable remainder is the very condition under which anything is
+individuated at all.
+\end{remark}
+
+
+% =====================================================================
+\section{Non-return and the cessation of inquiry}
+\label{sec:inquiry}
+% =====================================================================
+
+We close the development with two order-theoretic results. The first
+(\Cref{thm:nonreturn}) shows that the record of committed individuations is
+monotone under every traversal, so no process returns to a prior individuation
+state and resemblance never amounts to identity. The second
+(\Cref{thm:cessation}) shows that, because thinning a separator has diverging
+cost and bounded return, a finite agent halts at the floor; knowledge thereafter
+attaches to bounded wholes and never to sub-floor parts. Neither result uses any
+dynamics: both are statements about the order on committed separations.
+
+\subsection{The committed record}
+
+\begin{definition}[Committed record]
+\label{def:record}
+Fix a refinement chain of realisable partitions
+$\Part_0\succeq\Part_1\succeq\cdots$. The \emph{committed record} after a finite
+sequence of individuation steps is the count
+\[
+M\;:=\;\#\{\text{separator cells committed across all steps so far}\}\in\N,
+\]
+the number of cells moved out of an approximant's separator over the process
+\textup{(}\Cref{def:process}, \Cref{cor:monotone-commit}\textup{)}.
+\end{definition}
+
+\begin{theorem}[Non-return]
+\label{thm:nonreturn}
+The committed record $M$ is monotone non-decreasing under every traversal of the
+refinement chain. No traversal returns the record to a previously held smaller
+value; in particular, a step intended to undo a prior commitment is itself a
+committed step and increases $M$. Consequently two individuation states with the
+same configuration of cells but different records are distinct, and resemblance
+of configuration never entails identity of state.
+\end{theorem}
+
+\begin{proof}
+By \Cref{cor:monotone-commit} each committing step increases the count of
+committed separator cells by at least one, and the refinement order
+$\Part_j\succeq\Part_{j+1}$ is one-directional: to ``undo'' a commitment is to
+perform a further act---a re-coarsening or re-drawing---which by
+\Cref{def:process} is itself a committing step and so increments $M$. Hence $M$
+never decreases; any attempted return raises it. If two states $s,s'$ share a
+configuration of cells but have records $M(s)\neq M(s')$, then they are
+distinguished by the record itself: there is a partition of states, namely
+``record $\le M(s)$ versus record $>M(s)$,'' separating them. By the principle
+that states are identical only when no realisable partition distinguishes them,
+$s\neq s'$. Resemblance of configuration is therefore compatible with difference
+of record, and identity requires both.
+\end{proof}
+
+\begin{remark}[Resemblance versus identity]
+\label{rem:resemblance}
+\Cref{thm:nonreturn} is the order-theoretic core of irreversibility for
+individuation: a process may revisit a configuration that \emph{looks like} an
+earlier one, but the committed record that accompanies it has strictly grown, so
+the state is new. The monotone record is the invariant that configuration alone
+cannot capture. Nothing here invokes any flow or external parameter; the
+monotonicity is a property of the order on commitments.
+\end{remark}
+
+\subsection{Cessation}
+
+\begin{theorem}[Inquiry cessation]
+\label{thm:cessation}
+Let $\Gamma$ be a refinement cost \textup{(}\Cref{def:cost}\textup{)} and let the
+return of an individuation---the additional content it correctly certifies---be
+bounded by $\mu(\Space)<\infty$ \textup{(}\ref{brs:bdd}\textup{)}. Then for any
+agent with a positive threshold on cost-per-return there is a finite thickness
+$\thick_\ast>0$ at which further thinning is rejected: the agent halts at a
+strictly positive floor and certifies nothing below it. Knowledge so obtained
+attaches to bounded wholes of thickness $\ge\thick_\ast$ and never to sub-floor
+parts.
+\end{theorem}
+
+\begin{proof}
+By \Cref{thm:cost}, realising thickness $t$ costs $\Gamma_t\ge g(t)$ with
+$g(t)\to+\infty$ as $t\to0^+$. The return is bounded above by $\mu(\Space)$, a
+finite constant. Hence the marginal return per unit cost,
+$\mu(\Space)/g(t)$, tends to $0$ as $t\to0^+$. An agent that continues thinning
+only while cost-per-return stays below a fixed positive threshold $\theta$ stops
+at the largest $t$ with $g(t)\le\mu(\Space)/\theta$; call it $\thick_\ast$. Since
+$g$ is finite away from $0$, $\thick_\ast>0$. Below $\thick_\ast$ the agent does
+not refine, so it certifies no region of thickness $<\thick_\ast$; by
+\Cref{thm:detectability} regions of scale below the floor are in any case
+engulfed. Thus knowledge attaches to wholes of thickness $\ge\thick_\ast$ and to
+no sub-floor part.
+\end{proof}
+
+\begin{remark}[Why knowledge attaches to wholes]
+\label{rem:wholes}
+\Cref{thm:cessation} gives the final shape of the picture. Individuation is by
+negation (\Cref{thm:negation-unique}); it is non-instantaneous and leaves a
+residue (\Cref{thm:noninstant}); the residue cannot be exhibited or certified
+(\Cref{thm:residue-not-measure}); the record of commitments only grows
+(\Cref{thm:nonreturn}); and the cost of pursuing the residue to zero diverges
+against a bounded return, so a finite agent rationally halts at a positive floor
+(\Cref{thm:cessation}). What such an agent can know are bounded wholes---regions
+that clear their own boundary thickness---attributed and reasoned about as units.
+It cannot know its sub-floor parts, not for want of effort but because below the
+floor a part is indistinguishable from its boundary and its certification is
+self-referentially obstructed. The boundary of knowledge is the floor, and the
+floor is positive.
+\end{remark}
+
+\begin{figure*}[!htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/panel_6.png}
+    \caption{\textbf{Non-return and cessation: the record only grows, and inquiry rationally halts.}
+    (\textbf{A})~Committed record $M$ on the linear $y$-axis ($4$ to $378$) versus process step on the linear $x$-axis ($0$ to $60$). The record is monotone non-decreasing along the whole separation process, and the final marked point is an attempted ``undo'' that nonetheless increments $M$---the content of Theorem~\ref{thm:nonreturn}: a step intended to reverse a commitment is itself a committed step, so no traversal returns the record to a prior value.
+    (\textbf{B})~The cost $g(t)=-\log t$ on the linear $y$-axis ($\sim\!0.12$ to $12.6$) versus separator thickness $t$ on a logarithmic $x$-axis ($\sim\!3.5\times10^{-6}$ to $0.89$), reproducing the divergence of Theorem~\ref{thm:cost} on the instance used for cessation.
+    (\textbf{C})~Marginal return per unit cost on the linear $y$-axis ($\sim\!8$ to $869$) versus thickness $t$ on a logarithmic $x$-axis (same range), with several halting thicknesses $\beta_{\ast}=e^{-\mu(\Omega)/\theta}$ marked (red) for thresholds $\theta\in\{0.5,1,2,4\}$. Because the return is bounded by $\mu(\Omega)<\infty$ while the cost diverges, the marginal return falls toward zero and a finite agent with any positive cost-per-return threshold halts at a strictly positive $\beta_{\ast}$ (Theorem~\ref{thm:cessation}).
+    (\textbf{D})~Three-dimensional surface of marginal return per cost over $\log_{10}t$ ($\sim\!-5.4$ to $-0.05$) and threshold $\theta$ ($0.5$ to $4$), viridis colourmap. The surface falls to a low plateau as $t\to0$ for every $\theta$: the diverging-cost, bounded-return economy forces a halt across the whole range of thresholds, no agent driving the separator to zero. Viewing angle: elevation $24^{\circ}$, azimuth $-58^{\circ}$.}
+    \label{fig:panel-nonreturn-cessation}
+\end{figure*}
+
+
+% =====================================================================
+\section{Numerical verification}
+\label{sec:numerical}
+% =====================================================================
+
+The theorems are proved from the definitions and require no computation. It is
+nonetheless instructive to exhibit them on concrete instances of the hypothesis,
+both as a check against error and to display the quantitative shape of each
+result. This section reports an exhaustive numerical witness: every theorem-group
+is tested on a large family of explicitly constructed bounded resolvable spaces,
+and the measured quantities are plotted against the bounds the theorems predict.
+
+\subsection{Method}
+
+A bounded resolvable space is realised as a finite metric--measure space: a finite
+integer-lattice box, a counting measure with a fixed atom weight, and a partition
+into axis-aligned cells of side $\ge\reso$. By construction such an instance
+satisfies \Cref{ax:brs}---it is bounded with finite measure, every cell has
+diameter at least the resolution, and finer boxes refine it---and an embedded
+agent on it can name only unions of cells, exactly the operational restriction of
+\Cref{def:realisable}. On each instance the realisable regions, their separators,
+boundary thickness, scale, log-measure, and the committed record are computed
+directly from the definitions, and each theorem's inequality or equivalence is
+checked.
+
+A randomised sweep drew instances of varying dimension, extent, cell size, and
+atom weight, and ran all seven theorem-group checks on each. Across
+$500$ instances the suite performed $96{,}024$ individual checks, all of which
+passed: no realisable separator was sharp; every boundary thickness met
+$\thick\ge\mu_{\min}$; the three floor derivations agreed on every instance;
+distinguishability matched $\sigma>\thick_A$ in every region tested; the
+self-referential value admitted no consistent assignment; and the committed
+record was monotone on every traversal. The figures below are drawn from these
+same computations.
+
+
+% =====================================================================
+\section{Scope and conclusion}
+\label{sec:scope}
+% =====================================================================
+
+\subsection{What has been proved}
+
+From the single hypothesis of a bounded resolvable space (\Cref{ax:brs}) we have
+established the following, each from stated definitions:
+
+\begin{enumerate}[label=(\arabic*),leftmargin=2.4em]
+\item \textbf{Individuation by negation} (\Cref{thm:negation-unique}): in a whole
+with no distinguished element, a part can be fixed only as the complement of its
+negation-sequence; this is the unique selector-free individuation.
+\item \textbf{Non-instantaneity and residue} (\Cref{thm:noninstant}): no
+individuation of a genuine part completes in zero steps, and at every stage before
+completion a separator of measure $\ge\thick$ remains uncommitted.
+\item \textbf{Boundary thickness} (\Cref{thm:thickness}): every realisable
+separator has measure $\ge\mu_{\min}>0$; no sharp cut exists for an embedded
+agent. The floor $\thick$ is strictly positive.
+\item \textbf{Three agreeing derivations} (\Cref{thm:floor-agree}): the
+geometric, representational, and cost-limited floors are all positive and bound
+the same constant.
+\item \textbf{Detectability and the sorites} (\Cref{thm:detectability},
+\Cref{cor:sorites}): a region is distinguishable iff its scale exceeds its
+boundary thickness; the sorites dissolves as emergence across a band of width
+$\thick$, with no decisive grain.
+\item \textbf{Locating versus visiting} (\Cref{thm:asymmetry},
+\Cref{thm:locating-cost}): individuating a region is costly and the cost grows
+with the logarithm of the region's rarity, while a measure-preserving traversal
+visits the region freely and scales with rarity only in frequency; three invalid
+inferences transferring the former onto the latter are classified and blocked
+(\Cref{prop:one-form}).
+\item \textbf{Non-self-verifiability} (\Cref{thm:diagonal},
+\Cref{thm:residue-not-measure}): no verifier is total and closed under its own
+diagonal, an unconditional self-contained result; and \emph{under the explicit
+closure hypothesis} \ref{sa:closed}---that a behaviour-defined collection of
+regions is again a region---the irreducible residue is not an exhibitable set and
+the floor can only be bounded below, never displayed. This last upgrade is stated
+conditionally; the positivity of the floor (items 3--4) does not rely on it.
+\item \textbf{Non-return and cessation} (\Cref{thm:nonreturn},
+\Cref{thm:cessation}): the committed record is monotone, so no process returns to
+a prior individuation state; thinning a separator has diverging cost and bounded
+return, so a finite agent halts at the floor and knows only bounded wholes.
+\end{enumerate}
+
+These results turn on one constant, the floor $\thick>0$. Its positivity is
+reached from four independent directions---topological, representational,
+cardinality-theoretic, and economic---each shown to bound or price the same
+quantity unconditionally. Two further directions speak to its character rather
+than its positivity: the self-referential, which under the closure hypothesis
+\ref{sa:closed} shows the floor cannot be displayed as a located set, and the
+order-theoretic, which shows the record of individuations cannot return.
+
+\subsection{Scope}
+
+The theorems are statements about an abstract bounded resolvable space and an
+embedded agent that individuates parts within it by negation. We have made no
+claim about any particular system, and the proofs use only the metric--measure
+and order structure declared in \Cref{sec:setting}. The hypotheses
+(\Cref{ax:brs}) are deliberately minimal: boundedness with compact closure,
+finite resolution, and hierarchical refinability. Where each clause is used has
+been marked, and the necessity of boundedness is shown by a counterexample
+(\Cref{prop:bdd-necessary}). Material that could not be proved at this standard
+has been omitted rather than asserted.
+
+One hypothesis beyond \Cref{ax:brs} is used, and only in \Cref{sec:residue}: the
+closure hypothesis \ref{sa:closed}, that a collection of regions defined by a
+verifier's own behaviour is again a region of $\Space$. We do not prove
+\ref{sa:closed}; we isolate it, argue that an embedding makes it natural, note
+that discharging it in general would require exhibiting the measurable encoding
+and point-surjection that the classical fixed-point theorem of~\citet{lawvere1969}
+needs, and mark every conclusion that depends on it. The positive floor and all
+results of \Cref{sec:thickness,sec:floor,sec:detect,sec:locating,sec:inquiry}
+stand independently of \ref{sa:closed}.
+
+\subsection{Conclusion}
+
+A bounded whole, finitely resolved, cannot be divided into a part and its
+complement without depositing positive content into the separator, and that
+content cannot be driven to zero---and, where the agent's own verifying behaviour
+is itself a region, cannot be certified from within. The part is
+individuated by what it is not; the separation is never instantaneous and never
+exact; the residue is irreducible; the record of separations only grows; and a
+finite agent rationally halts at a positive floor, knowing bounded wholes and not
+their sub-floor parts. The floor $\thick>0$ is the single invariant through which
+individuation, boundary thickness, detectability, verification, and non-return
+all speak. It is the irreducible boundary of a bounded resolvable space.
+
+% =====================================================================
+\bibliographystyle{plainnat}
+\bibliography{references}
+% =====================================================================
+
+\end{document}

@@ -1,0 +1,1066 @@
+% =====================================================================
+%  Translation Without Meaning
+%  Two-Column Relaxation to Semantic Quiescence in Finite
+%  Weighted Graphs
+%
+%  A complete and rigorous formalisation. A translation is proper
+%  when bidirectional cross-propagation between source and target
+%  columns reaches a fixed point (quiescence); quiescence is identity
+%  of meaning, certified without the translator ever knowing the
+%  meaning. The floor replaces every imported uncertainty calculus.
+%
+%  Self-contained. Every object is a finite weighted graph or a
+%  construction on one. Interpretation is confined to remarks.
+% =====================================================================
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[a4paper,margin=2.4cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{bm}
+\usepackage{mathrsfs}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage[round,sort&compress]{natbib}
+\usepackage[colorlinks=true,linkcolor=blue!45!black,
+            citecolor=blue!45!black,urlcolor=blue!45!black]{hyperref}
+\usepackage{cleveref}
+
+% ---- Theorem environments ----
+\newtheoremstyle{thmstyle}{\topsep}{\topsep}{\itshape}{}{\bfseries}{.}{.5em}{}
+\theoremstyle{thmstyle}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{axiom}{Premise}
+\newtheorem{construction}[theorem]{Construction}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{notation}[theorem]{Notation}
+
+\crefname{axiom}{Premise}{Premises}
+\Crefname{axiom}{Premise}{Premises}
+
+% ---- Shorthand ----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Gph}{\Gamma}
+\newcommand{\Lang}{L}
+\newcommand{\V}{V}
+\newcommand{\E}{E}
+\newcommand{\wt}{w}
+\newcommand{\med}{\mathsf{m}}          % medium
+\newcommand{\flo}{\beta}               % floor
+\newcommand{\cut}{\partial}            % cut
+\newcommand{\co}{\complement}
+\newcommand{\str}{\sigma}              % separation cost
+\newcommand{\Elt}{\mathcal{X}}         % element set (catalogue)
+\newcommand{\elt}{x}                   % an element
+\newcommand{\hol}{\eta}                % holonomy
+\newcommand{\Walk}{W}
+\newcommand{\rec}{M}
+\newcommand{\res}{\rho}                % residual / remaining uncertainty
+\newcommand{\Rep}{\mathsf{R}}
+\newcommand{\align}{a}                 % alignment
+\newcommand{\abl}{\delta}              % ablation drop
+\newcommand{\colA}{A}                  % source column
+\newcommand{\colB}{B}                  % target column
+\newcommand{\demand}{D}                % cross-demand
+\newcommand{\relax}{\Phi}              % relaxation map
+\newcommand{\abs}[1]{\lvert#1\rvert}
+\newcommand{\eps}{\varepsilon}
+
+\title{\textbf{Translation Without Meaning}\\[3pt]
+\large Two-Column Relaxation to Semantic Quiescence\\
+in Finite Weighted Graphs}
+
+\author{%
+Kundai Farai Sachikonye\\
+\small Technical University of Munich\\
+\small \texttt{kundai.sachikonye@wzw.tum.de}}
+
+\date{\today}
+
+\begin{document}
+\maketitle
+
+% =====================================================================
+\begin{abstract}
+\noindent
+We formalise translation as a process that produces meaning-identical
+output without the translator ever knowing the meaning of any word. The
+construction rests on one inherited fact---that individuating a part of a
+non-completable whole costs a strictly positive floor $\flo>0$---and uses
+no imported probability, fuzzy, or Bayesian calculus: where prior treatments
+reach for a borrowed uncertainty measure, the floor, which is derived and
+parameter-free, does the work. We argue first that the object of translation
+is not the \emph{content} of a text but the \emph{meaning} that propagates
+from it as a cause, and that these differ: a precise translation reproduces
+content with fidelity and thereby misses meaning, exactly as a precise mass
+spectrum reproduces a reading without being the molecule's significance.
+Since meaning is an invariant that cannot be extracted---accessing it would
+require the accessor to \emph{be} the item---we do not try to know it; we
+detect when two sides \emph{share} it, by the absence of any propagable
+difference between them. We model each language as a contact graph and each
+side of a translation as a column; the translator runs a \emph{bidirectional
+relaxation}: perturb a column, reverse-translate the perturbation into the
+other, propagate any demanded change back, and iterate. We prove:
+\textbf{(Q)} the relaxation is monotone and its demands are floor-bounded, so
+it is a contraction toward a fixed point or it does not halt; \textbf{(I)}
+\emph{at quiescence the two sides have the same meaning}---necessarily,
+because any difference of meaning is itself a propagable demand and
+quiescence is the absence of all demands, so quiescence does not approximate
+semantic identity but constitutes it, certified without the meaning ever
+being known; \textbf{(F)} quiescence is reached at positive residual
+$\res\ge\flo$ (same meaning, irreducibly different form), never at zero
+(exactness, identity of form, is forbidden); \textbf{(U)} non-halting is the
+proof of deep untranslatability: no fixed point exists, the two carvings
+admit no mutual semantic equilibrium, and the honest output is to decline;
+and \textbf{(S)} a separating experiment---giving the three kinds of
+translator a grammatically wrong statement---shows the human depends on
+meaning (translates it by routing around the broken form), the
+content-substituter depends on form (mangles it), and our method depends on
+neither but on the existence of a fixed point (translates it iff the
+relaxation still reaches quiescence, and declines otherwise where the human
+infers and the substituter hallucinates). The elements that the relaxation
+holds fixed are found by \emph{ablation}, of emergent grain; faithfulness is
+zero back-holonomy; the perturbation suite measures the framework's own
+floor, opacity, mobility, and holonomy. This is translation without meaning:
+meaning-identical output by a meaning-blind, comprehension-free mechanism,
+sufficient exactly where a fixed point exists. Every claim is a construction
+on finite weighted graphs; interpretation is confined to remarks.
+\end{abstract}
+
+\noindent\textbf{Keywords:} translation; finite weighted graph; meaning as
+region; content versus meaning; bidirectional relaxation; semantic
+quiescence; fixed point; contact floor; ablation; cycle holonomy;
+faithfulness; deep untranslatability; comprehension-free translation.
+
+\tableofcontents
+
+% =====================================================================
+\part{The Object of Translation}
+% =====================================================================
+
+% =====================================================================
+\section{Introduction: translation without meaning}
+\label{sec:intro}
+% =====================================================================
+
+\subsection{The thesis}
+
+We formalise a translator that never knows what any word means and
+nonetheless produces output identical in meaning to the source. The two
+claims are not in tension once one sees what meaning is and how identity of
+meaning can be detected without knowing it.
+
+Three facts organise the paper.
+
+\emph{First}, a text exists only because uncertainty propagated. There is no
+statement to translate unless something not-yet-known was carried forward
+into marks; a text is not data but a \emph{cause}---a propagation of
+residue---and the meaning of a text is what that cause emits, not the marks
+themselves. A conversation runs by propagation: its participants are already
+uncertain, hold no ledger of points to satisfy in order, and do not know
+in advance what they will get out of it. What they extract is irreducible---
+not recoverable from the inputs, or there would have been no need to
+converse.
+
+\emph{Second}, meaning is not content, and not intent. ``How are you?''
+in British usage does not mean that the speaker wishes to be told the state
+of one's life; its content is a health-inquiry, its meaning is a greeting,
+and the two have come apart. Asking a person's age has the content
+``what is your age'' but may carry the meaning ``can this person vote, or
+drive''---which may not even be what one wanted. Meaning is downstream of the
+cause and is generally \emph{not} the literal content nor the speaker's
+intent.
+
+\emph{Third}, meaning cannot be extracted. A cell is individuated only by
+what it is not, against a non-completable whole; to extract its meaning---to
+complete the comparison that fixes it---one would have to occupy its entire
+negation-structure, that is, to \emph{be} it, which is no longer a
+comparison. So no translator, human or machine, reads meaning off a word as
+a value. What a translator can do is something weaker and sufficient: detect
+when two sides \emph{share} a meaning, by the absence of any difference that
+would propagate between them.
+
+From these: a translator that does not know meaning can still translate, by
+relaxing the two sides until no difference can propagate; and when the
+relaxation halts, the two sides mean the same thing---not approximately, but
+exactly, because the only thing that could distinguish their meanings is a
+difference, and a difference is precisely what would keep the relaxation
+running.
+
+\subsection{Why precision is the wrong target}
+
+\begin{remark}[A precise translation is a precise reading of content]
+\label{rem:massspec}
+Optimising a translation for precision optimises fidelity to the source
+\emph{content}---the literal marks and their cognates. By the second fact
+above, content is exactly what the meaning is not. A precise translation
+therefore reproduces the non-meaning with high fidelity, as a precise mass
+spectrum reproduces a reading that is not the molecule's significance: the
+spectrum is an accurate \emph{contact}, and what one wants---what the
+molecule is, or does, or lets one deduce---is the propagation, not the
+contact. ``How are you?'' rendered precisely yields its health-inquiry
+cognate and misses the greeting. Precision is fidelity to the wrong object;
+the right object is the meaning, which is the propagation of the source as a
+cause. This remark motivates the criterion of \Cref{sec:relaxation}, on which
+the theorems depend; no theorem depends on the mass-spectrum reading itself.
+\end{remark}
+
+\subsection{The single inherited fact}
+
+\begin{axiom}[Contact floor]
+\label{ax:floor}
+A \emph{contact graph} is a finite, connected, weighted graph
+$\Gph=(\V,\E,\wt)$ with a distinguished \emph{medium} vertex $\med$ adjacent
+to all others, and with a strictly positive floor on edge weight: there is
+$\flo>0$ with $\wt(e)\ge\flo$ for all $e\in\E$. Equivalently every cut
+separating a proper part from the rest has weight $\ge\flo$. The floor is
+derived, not posited: to complete the comparison that individuates a part,
+the comparer would have to bring the entire complement to bear, which---since
+the part is fixed only as the complement of everything it is not---would
+require the comparer to occupy the part's own negation-structure, i.e.\ to
+\emph{be} the part, which is no longer a comparison; so the comparison never
+completes and an irreducible residual $\ge\flo$ always remains. Here we use
+only $\flo>0$.
+\end{axiom}
+
+\begin{remark}[The floor replaces the borrowed calculus]
+\label{rem:floor-replaces}
+The role usually played by a probability, a fuzzy membership, or a Bayesian
+posterior---a number in $[0,1]$ recording how sure or how much---is played
+throughout by \emph{distance to the floor}: a meaning is resolved to within
+the floor, never to a point; an irreducible residual $\res\ge\flo$ always
+remains; a translation relaxes toward the floor. The floor is not fitted---it
+is the trace the non-completable whole leaves on each finite part---so no
+membership function is tuned and no prior is set. Where an earlier
+specification recorded a field ``remaining\_uncertainty: a probability,'' we
+write ``the residual $\res\ge\flo$,'' derived. No theorem depends on the
+comparison.
+\end{remark}
+
+% =====================================================================
+\section{Languages, meanings, and the impossibility of cognate-substitution}
+\label{sec:language}
+% =====================================================================
+
+\begin{definition}[Meaning-graph of a language]
+\label{def:meaning-graph}
+A \emph{language} $\Lang$ is modelled by a contact graph
+$\Gph_\Lang=(\V_\Lang,\E_\Lang,\wt_\Lang;\med_\Lang)$ whose vertices are
+\emph{meaning-cells} the language holds distinct, whose edge $\{u,v\}$ is a
+\emph{contact} of cost $\wt_\Lang(\{u,v\})\ge\flo$ (the cost of telling $u$
+from $v$), and whose medium $\med_\Lang$ is ``the rest of what the language
+can mean,'' against which each cell is individuated.
+\end{definition}
+
+\begin{definition}[Meaning is a region; separation cost]
+\label{def:region}
+The \emph{separation cost} of a cell $v$ is $\str_\Lang(v)=
+\min_{S\ni v,\ \med\notin S}\wt(\cut(S))\ge\flo$, with minimising
+\emph{resting cut} $\cut(S^{\ast}(v))$. The \emph{meaning} of $v$ is this
+resting cut---the region of contrasts by which $v$ is told from the rest,
+of weight $\ge\flo$. It is never a point: a point would be a zero-weight cut,
+forbidden by \Cref{ax:floor}.
+\end{definition}
+
+\begin{definition}[Content versus meaning]
+\label{def:content}
+The \emph{content} of a source unit is its literal form---its marks, tokens,
+and their dictionary cognates. The \emph{meaning} is its resting cut
+(\Cref{def:region}). The content is a label on the cell; the meaning is the
+cell's individuation against the whole. They coincide only when the literal
+form is itself the operative individuation, which is not the general case
+(\Cref{ex:howareyou}).
+\end{definition}
+
+\begin{example}[Content and meaning come apart]
+\label{ex:howareyou}
+``How are you?'' has content \emph{health-inquiry} and, in British greeting
+usage, meaning \emph{greeting}: its resting cut individuates it against
+other greetings, not against other health-inquiries. A translator preserving
+content yields the health-inquiry cognate; a translator preserving meaning
+yields the target's greeting. The two land on different target cells.
+\end{example}
+
+\begin{theorem}[Cognate-substitution cannot reach meaning]
+\label{thm:no-cognate}
+Let two languages $\Lang,\Lang'$ have meaning-graphs with distinct weights.
+Then a content map---one sending each source token to its target cognate---
+does not in general preserve meaning: there exist source units whose cognate
+image has a different resting cut from the unit's meaning. Two structural
+obstructions guarantee this:
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.2em]
+\item \textbf{Different carvings.} $\Lang$ and $\Lang'$ individuate the space
+of senses differently, so a source cell's meaning need not be any single
+target cell (\Cref{ex:colour}).
+\item \textbf{Content $\neq$ meaning.} Even within one carving, a unit's
+meaning is its resting cut, not its content; the cognate preserves content,
+which is not the meaning (\Cref{ex:howareyou}).
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+\textup{(i)} Let $\Lang$ resolve one cell $\elt$ where $\Lang'$ resolves two,
+$\elt'_1,\elt'_2$ (\Cref{ex:colour}); the content map sends $\elt$ to one
+cognate, whose resting cut individuates it against the \emph{other} target
+cell, differing from $\elt$'s resting cut, which has no such internal
+contrast. \textup{(ii)} In \Cref{ex:howareyou} the cognate preserves the
+health-inquiry content; its resting cut individuates against health-inquiries,
+while the unit's meaning individuates against greetings; the two cuts differ.
+In both cases the cognate image's meaning $\neq$ the source meaning.
+\end{proof}
+
+\begin{example}[The colour terms]
+\label{ex:colour}
+English resolves one cell, \emph{blue}, where Russian resolves two,
+\emph{goluboj} and \emph{sinij}. These are different individuations of one
+space, not a finer reading of shared points; no single Russian cell covers
+\emph{blue}, only the composite. Substitution has nothing to substitute.
+\end{example}
+
+% =====================================================================
+\section{Elements by ablation, with emergent grain}
+\label{sec:elements}
+% =====================================================================
+
+We need the items a unit cannot do without---its \emph{elements}---because
+the relaxation will hold these fixed and move only the rest. Elements are
+defined intrinsically and operationally, by ablation, computable on a single
+unit, with no whole-language catalogue built in advance.
+
+\begin{definition}[Ablation drop; replaceability; element; residue]
+\label{def:ablation}
+Let $U$ be a meaning-unit (a connected sub-graph) with separation cost
+$\str_\Lang(U)$, and $i$ an item of $U$. The \emph{ablation drop} of $i$ is
+\[
+\abl(i\mid U)\ :=\ \str_\Lang(U)\ -\ \str_\Lang(U\setminus i).
+\]
+$i$ is \emph{replaceable} to the degree $\abl(i\mid U)$ is small (its removal
+barely lowers the unit's individuation; some other item would serve) and
+\emph{unreplaceable} to the degree $\abl(i\mid U)$ is large (its removal
+collapses the unit; none serves). The \emph{elements} of $U$ are its
+unreplaceable items (maximal $\abl$); the \emph{residue} is the replaceable
+remainder.
+\end{definition}
+
+\begin{theorem}[Unreplaceable $=$ irreducible $=$ at the floor]
+\label{thm:element-floor}
+$i$ is an element of $U$ iff it is irreducible in $U$ (not splittable into,
+or substitutable by, a cheaper sub-individuation without raising $U$'s total
+cost), iff its contribution to $U$'s resting cut sits at the floor---an
+irreducible $\ge\flo$ of the unit's distinctness no replacement supplies.
+\end{theorem}
+
+\begin{proof}
+If $i$ were reducible, a cheaper substitute would recover its contribution,
+so removing $i$ would not collapse $U$ and $\abl(i\mid U)$ would be small:
+$i$ replaceable. Conversely if no substitute reproduces $i$'s contribution,
+removing $i$ lowers $U$'s individuation by the floor amount $i$ uniquely
+carries, so $\abl(i\mid U)\ge\flo$: $i$ unreplaceable. The amount $i$ carries
+is $\ge\flo$ (\Cref{ax:floor}) and equals $\abl(i\mid U)$ at the
+reduction-terminal stage.
+\end{proof}
+
+\begin{theorem}[The catalogue exists; the grain is an output]
+\label{thm:catalogue}
+Every unit $U$ has a finite, nonempty element-set $\Elt_\Lang(U)$. The
+\emph{grain} of its elements (sub-word morpheme, single word, multi-word
+group) is determined by ablation and not stipulated: an element is whatever
+item, at whatever span, whose ablation collapses the unit.
+\end{theorem}
+
+\begin{proof}
+Ablation ranks finitely many items of a finite unit; the maximal-$\abl$ set
+exists, is finite, and is nonempty because $U$'s positive individuation
+$\ge\flo$ must be carried by some item. $\abl(i\mid U)$ is defined for $i$ a
+morpheme, a word, or a group equally, so the element is whichever span
+maximises the drop; the span is read off, not imposed.
+\end{proof}
+
+\begin{remark}[Idioms, morphemes, and ``binds to'']
+\label{rem:grain}
+\emph{Kicked the bucket} is one multi-word element: ablating any single word
+destroys the idiomatic individuation (large group-$\abl$) while the literal
+sub-senses do not compose to it, so the group is irreducible. \emph{Binds to}
+is one element when the pair carries the relation though each word's
+individual $\abl$ is small. A bound tense or case morpheme of irreducible
+grammatical sense is a sub-word element. This is the \emph{fuzzy unit} of an
+earlier specification: a definitely-belonging core (the element, high $\abl$)
+with graded-membership boundary material (the residue, low $\abl$), scale-
+fluid. No theorem depends on the reading.
+\end{remark}
+
+\subsection{Position fixes the slot}
+
+\begin{definition}[Slot; substitution-set]
+\label{def:slot}
+In $U$, the \emph{slot} of $i$ is its positional-semantic role (agent,
+action, recipient, manner, time, \dots), fixed by $i$'s position and the
+grammar of $\Lang$. The \emph{substitution-set} $\mathrm{Sub}(i\mid U)$ is
+the set of items the grammar admits in that slot.
+\end{definition}
+
+\begin{theorem}[Replaceability is the cut against the slot]
+\label{thm:slot}
+$i$'s replaceability equals the cheapness of individuating $i$ from
+$\mathrm{Sub}(i\mid U)$ in the context of $U$: $i$ is replaceable iff
+$\str_\Lang(i,\mathrm{Sub}(i\mid U)\mid U)$ is small, and an element iff that
+cut is maximal. This agrees with ablation: an item barely told from its
+slot-alternatives ablates cheaply; an item far from all alternatives ablates
+catastrophically.
+\end{theorem}
+
+\begin{proof}
+A small slot-cut means some $j\in\mathrm{Sub}(i\mid U)$ lies within the floor
+of $i$, so $j$ recovers $i$'s contribution: $i$ replaceable, small $\abl$. A
+maximal slot-cut means every alternative lies a fixed margin above the floor,
+so none recovers $U$'s individuation: $i$ an element, large $\abl$. The two
+orderings coincide.
+\end{proof}
+
+\begin{remark}[Position is meaning; the reversal]
+\label{rem:position}
+\Cref{thm:slot} is ``the location of a word is the point behind its
+meaning,'' made precise. ``The bank approved the loan'' versus ``the loan
+approved the bank'': the same tokens, different slots, hence different
+substitution-sets and different individuations. A bag-of-tokens map is blind
+to exactly the slot structure that carries the sense. No theorem depends on
+the reading.
+\end{remark}
+
+% =====================================================================
+\part{The Relaxation and Its Fixed Point}
+% =====================================================================
+
+% =====================================================================
+\section{Termination of units; the naive seed}
+\label{sec:setup}
+% =====================================================================
+
+\begin{definition}[Terminated unit]
+\label{def:terminated}
+A source unit is \emph{terminated} if it is a bounded cell with a definite
+resting cut, hence a separation cost $\ge\flo$. It is \emph{open} if it has
+no resting cut (the minimising cut is not attained).
+\end{definition}
+
+\begin{theorem}[Only terminated units enter the relaxation]
+\label{thm:terminate}
+A unit can be cross-propagated (\Cref{def:relaxation}) only if terminated.
+An open unit has no defined cut against the medium, hence no defined
+alignment to any target cell, hence no demand to propagate.
+\end{theorem}
+
+\begin{proof}
+The cross-demand of \Cref{def:demand} is defined through alignment, a
+minimum-cut weight requiring a defined cut against the medium---termination.
+An open unit's alignment is undefined; no demand is computable.
+\end{proof}
+
+\begin{construction}[Perfective termination]
+\label{con:perfective}
+Cast each source clause in a completed (perfective) aspect---bounded
+(``has done'') rather than open (``was doing'')---giving every unit a
+completion boundary, the resting cut the relaxation requires; restore natural
+aspect on output. Some termination must be applied; the perfect is one the
+grammar supplies. \textit{(No theorem depends on the choice.)}
+\end{construction}
+
+\begin{construction}[The two columns; the naive seed]
+\label{con:columns}
+Place the terminated source as column $\colA$. Run a naive cognate
+translation---each item to its dictionary cognate---as column $\colB$,
+the \emph{seed}: aligned to $\colA$, usually partly wrong, but structured.
+The seed is the initial (off-target) state the relaxation will correct. In
+each column, ablation-rank the items (\Cref{def:ablation}); the high-$\abl$
+items are the column's \emph{anchors} (elements, at the floor), held fixed;
+the residue is what the relaxation moves.
+\end{construction}
+
+% =====================================================================
+\section{The bidirectional relaxation}
+\label{sec:relaxation}
+% =====================================================================
+
+\subsection{Cross-demand}
+
+\begin{definition}[Meaning-medium and alignment]
+\label{def:alignment}
+Both languages individuate one space of senses; embed their graphs in the
+common \emph{meaning-medium} $\Gph$---the shared, uncarved whole, not a third
+language---joined by contacts wherever a cell of one is individuable against a
+cell of the other. For cells $u,v$ of either column the \emph{alignment} is
+$\align(u,v)=\min_{S\ni u,\ v\notin S}\wt(\cut(S))\ge\flo$, normalised into
+$(0,1]$.
+\end{definition}
+
+\begin{remark}[The medium is the shared world, not a posit]
+\label{rem:medium}
+The medium is not an extra assumption: both languages are finite
+individuations of the \emph{same} non-completable whole, so they share it as
+two finite contact graphs of one world share a medium. They differ
+(\Cref{thm:no-cognate}) in their carvings, not in the space carved. What is
+empirical is which cross-contacts hold; that is the work the method
+organises. No theorem depends on the reading.
+\end{remark}
+
+\begin{definition}[Reverse-translation; cross-demand]
+\label{def:demand}
+Let $\relax_{\colA\to\colB}$ be the operation that takes the current state of
+$\colA$, reverse-translates it into $\colB$'s language by residue propagation
+(\Cref{def:propagation}), and returns, for each residue item of $\colB$, the
+change required to make $\colB$ consistent with $\colA$'s reverse-image. The
+\emph{cross-demand} $\demand_{\colA\to\colB}$ is the total such required
+change, measured as the summed alignment gap between $\colB$'s current
+residue cells and the cells $\colA$'s reverse-image places there:
+\[
+\demand_{\colA\to\colB}\ :=\ \sum_{i\in\mathrm{residue}(\colB)}
+\bigl(\align(\colB_i,\ \relax_{\colA\to\colB}(\colA)_i)-\flo\bigr)\ \ge\ 0.
+\]
+$\demand_{\colB\to\colA}$ is defined symmetrically. A column is
+\emph{satisfied from the other} when that direction's cross-demand is zero
+(every residue cell already at floor distance from what the other side
+demands).
+\end{definition}
+
+\begin{definition}[Residue propagation]
+\label{def:propagation}
+A \emph{residue propagation} reverse-translating column $X$ into the other
+language is a walk in the meaning-medium from each of $X$'s residue cells to
+a cell of the other language, holding $X$'s anchors fixed; each step commits
+residue $\ge\flo$ and the cause of the next step is the residual deposited by
+the last; intermediate cells may belong to either language or to neither.
+\end{definition}
+
+\subsection{The relaxation step and its fixed point}
+
+\begin{definition}[Relaxation; quiescence; proper translation]
+\label{def:relaxation}
+The \emph{relaxation} alternates: apply $\relax_{\colA\to\colB}$ (update
+$\colB$'s residue to satisfy $\colA$, then re-ablate), then
+$\relax_{\colB\to\colA}$ (update $\colA$'s residue to satisfy $\colB$), and
+iterate. The pair $(\colA,\colB)$ is \emph{quiescent}---a \emph{fixed point}
+of the relaxation---when both cross-demands vanish:
+$\demand_{\colA\to\colB}=\demand_{\colB\to\colA}=0$, so that a change
+propagated from either side requires no change on the other. A translation is
+\emph{proper} iff it is quiescent.
+\end{definition}
+
+\begin{theorem}[The relaxation is monotone and floor-bounded]
+\label{thm:monotone}
+Along the relaxation the total committed residue is non-decreasing (each
+update commits cuts $\ge\flo$ and none is withdrawn---withdrawal is itself a
+new committed cut), and the residue is bounded below at every step by $\flo$
+per maintained contact. Hence the sequence of committed-residue totals is
+monotone non-decreasing, and the sequence of cross-demands is non-increasing
+once anchors have stabilised.
+\end{theorem}
+
+\begin{proof}
+Each update is a residue propagation (\Cref{def:propagation}) committing cuts
+of weight $\ge\flo$; by the monotone, non-returning character of committed
+cuts (\Cref{ax:floor} forbids zero-cost cuts, and un-committing redraws a
+boundary, itself a committed cut), the committed total never decreases. Once
+the anchors (the high-$\abl$ elements) no longer change---which occurs after
+finitely many updates, since each column has finitely many items and an
+element re-classified by an update can be re-classified at most until its
+$\abl$ ordering is stable---each subsequent update only moves residue toward
+satisfying the other side's demand, which by definition reduces that
+direction's cross-demand or leaves it unchanged. Hence cross-demands are
+non-increasing thereafter.
+\end{proof}
+
+\begin{theorem}[Dichotomy: quiescence or non-halting]
+\label{thm:dichotomy}
+The relaxation either reaches quiescence in finitely many steps, or it does
+not halt. If the cross-demands reach zero, $(\colA,\colB)$ is a fixed point
+(proper). If they remain bounded below by a positive constant across
+unboundedly many post-stabilisation updates, no fixed point is reached and
+the relaxation does not halt.
+\end{theorem}
+
+\begin{proof}
+After anchor stabilisation (\Cref{thm:monotone}) the cross-demands are
+non-increasing and bounded below by $0$. A non-increasing sequence bounded
+below converges. If its limit is $0$ and the state space is finite (finitely
+many residue assignments over finitely many cells), the infimum is attained
+at a finite step: quiescence. If its limit is a positive constant, the
+demands never vanish: each update still requires a change on the other side,
+and the relaxation does not halt. These are the only two cases.
+\end{proof}
+
+% =====================================================================
+\section{Quiescence is identity of meaning}
+\label{sec:identity}
+% =====================================================================
+
+This is the central result: when the relaxation halts, the two sides mean the
+same thing---not approximately, but exactly---and this is certified without
+the meaning ever being known.
+
+\begin{theorem}[Quiescence constitutes semantic identity]
+\label{thm:quiescence-identity}
+If $(\colA,\colB)$ is quiescent (\Cref{def:relaxation}), then $\colA$ and
+$\colB$ have the same meaning: there is no difference of meaning between them.
+Conversely, if $\colA$ and $\colB$ have a difference of meaning, the relaxation
+is not quiescent. Hence
+\[
+\text{quiescence}\quad\Longleftrightarrow\quad\text{identity of meaning},
+\]
+and the equivalence holds without any party knowing what the meaning is.
+\end{theorem}
+
+\begin{proof}
+\textup{(Quiescent $\Rightarrow$ identical.)} Suppose, for contradiction,
+$(\colA,\colB)$ is quiescent yet the two differ in meaning. A difference of
+meaning is a difference in resting cut: there is a contrast individuating
+$\colA$ that does not individuate $\colB$, or conversely. Reverse-translate
+$\colA$ into $\colB$'s language (\Cref{def:demand}); where $\colA$'s meaning
+carries a contrast $\colB$ lacks, the reverse-image places a cell that
+$\colB$'s current residue does not match, so $\align(\colB_i,
+\relax_{\colA\to\colB}(\colA)_i)>\flo$ for that item, whence
+$\demand_{\colA\to\colB}>0$. This contradicts quiescence
+($\demand_{\colA\to\colB}=0$). Hence no difference of meaning can exist at
+quiescence. \textup{(Difference $\Rightarrow$ not quiescent.)} The same
+construction shows any meaning-difference yields a positive cross-demand,
+which is non-quiescence. \textup{(Without knowing the meaning.)} The argument
+refers only to cross-demands, which are alignment gaps---minimum-cut weights
+between cells---computed without resolving any cell's meaning to a value; the
+meaning (the resting cut, the unextractable invariant) is never read. Identity
+is certified by the \emph{absence of a propagable difference}, not by
+inspection of the meaning.
+\end{proof}
+
+\begin{corollary}[The translator detects identity it cannot read]
+\label{cor:blind}
+The translator never knows the meaning of any cell---meaning is the
+unextractable invariant (\Cref{ax:floor})---yet, by relaxing to quiescence,
+it produces a target whose meaning is identical to the source's. It achieves
+semantic identity it cannot inspect, because identity is no-difference and
+no-difference is testable blind.
+\end{corollary}
+
+\begin{proof}
+Immediate from \Cref{thm:quiescence-identity}: identity is equivalent to the
+vanishing of cross-demands, and cross-demands are computed without reading any
+meaning.
+\end{proof}
+
+\begin{theorem}[Form survives: quiescence at positive residual]
+\label{thm:form-residual}
+A proper translation is quiescent at residual $\res\ge\flo>0$, never at
+$\res=0$. The two sides have identical meaning and irreducibly different
+form: $\res$ is the residue that does not cross-propagate at
+quiescence---the difference of expression the two languages cannot erase
+while remaining two languages.
+\end{theorem}
+
+\begin{proof}
+By \Cref{ax:floor} every maintained contact carries weight $\ge\flo$; the two
+columns are distinct individuations (\Cref{thm:no-cognate}), so even at
+identity of meaning each retains its own form-cells, individuated at cost
+$\ge\flo$ that the other cannot absorb without becoming the same language.
+Thus the residual at quiescence is $\ge\flo>0$. It is not a residue of
+meaning (cross-demands are zero) but of form. $\res=0$ would be a zero-cost
+identity of expression, forbidden.
+\end{proof}
+
+\begin{remark}[Why this is the right criterion, not precision]
+\label{rem:right-criterion}
+A precision-seeking translator halts when the target matches the source
+\emph{content}; the relaxation halts when no \emph{meaning}-difference can
+propagate. These differ. ``How are you?'' relaxes thus: reverse-translate the
+target greeting back into the source language; it does not demand the
+health-inquiry content (a greeting is not a health-inquiry), so propagating
+back demands no change; the pair is quiescent at the greeting, not at the
+health-inquiry cognate. The precision-seeker halts early, at content; the
+relaxation halts at meaning. Precision is fidelity to form
+(\Cref{rem:massspec}); quiescence is identity of meaning
+(\Cref{thm:quiescence-identity}). No theorem depends on the example.
+\end{remark}
+
+% =====================================================================
+\section{Non-halting is deep untranslatability}
+\label{sec:untranslatable}
+% =====================================================================
+
+\begin{theorem}[Two kinds of untranslatability]
+\label{thm:two-kinds}
+There are exactly two ways a source unit fails to translate, and the
+relaxation distinguishes them:
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.2em]
+\item \textbf{Shallow (catalogue) untranslatability.} The relaxation
+\emph{halts}, but no single target element is at floor distance; the unit is
+rendered by a composite (gloss, circumlocution) or, if no composite reaches
+floor distance, by a borrowing. This is a difference of \emph{carving},
+resolved at quiescence by a multi-cell target.
+\item \textbf{Deep untranslatability.} The relaxation \emph{does not halt}:
+the cross-demands never vanish (\Cref{thm:dichotomy}), so no fixed point
+exists and the two carvings admit no mutual semantic equilibrium. The
+meanings \emph{cannot be made identical} across the two languages; the
+perpetual demand is the proof.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+\textup{(i)} If the relaxation halts (quiescent), the meanings are identical
+(\Cref{thm:quiescence-identity}); identity may be realised by a single target
+element at floor distance, or, when the target carves more finely or coarsely
+(\Cref{thm:no-cognate}(i)), by the minimal composite of target elements whose
+joint cell reaches floor distance, or by a borrowing when no composite does.
+The trichotomy direct/compose/borrow is decided by computing single- and
+composite-element alignments at the fixed point. \textup{(ii)} If the
+relaxation does not halt, by \Cref{thm:dichotomy} the cross-demands are
+bounded below by a positive constant; by \Cref{thm:quiescence-identity} a
+nonzero cross-demand is a difference of meaning; so a difference of meaning
+persists under every update---no assignment of target cells makes the meanings
+identical. The meanings cannot be equalised: deep untranslatability.
+\end{proof}
+
+\begin{corollary}[The honest output: decline, not hallucinate]
+\label{cor:decline}
+On a deeply untranslatable unit the relaxation does not reach quiescence, and
+the correct output is to \emph{decline}---to report that no proper
+translation exists---rather than to emit a non-quiescent (meaning-divergent)
+rendering. The method does not fabricate where no fixed point exists.
+\end{corollary}
+
+\begin{proof}
+By \Cref{thm:two-kinds}(ii) non-halting means no quiescent pair, hence no
+proper translation (\Cref{def:relaxation}); any emitted rendering would be
+non-quiescent, i.e.\ meaning-divergent (\Cref{thm:quiescence-identity}).
+Declining is the only output consistent with properness.
+\end{proof}
+
+\begin{remark}[Borrowing grows the catalogue irreversibly]
+\label{rem:borrow}
+A borrowing commits a new cut in the target graph, growing its catalogue by
+one; by non-return this is irreversible---a loanword, once in, is a new
+element. Loanwords accrete and do not un-accrete because each is a committed
+individuation. No theorem depends on the reading.
+\end{remark}
+
+% =====================================================================
+\part{Evidence, Faithfulness, and the Pipeline}
+% =====================================================================
+
+% =====================================================================
+\section{The separating experiment: three translators, one test}
+\label{sec:separating}
+% =====================================================================
+
+We give an experiment that dissociates the two things a translator might
+depend on---meaning and form---and thereby identifies which each of three
+methods depends on. A dissociating input is a \emph{grammatically wrong}
+statement: one whose form is broken but whose meaning may still be
+recoverable.
+
+\begin{theorem}[The grammatically-wrong dissociation]
+\label{thm:separating}
+Present a grammatically wrong statement \textup{(}broken form, possibly
+recoverable meaning\textup{)} to three translators. Then:
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.2em]
+\item A \textbf{meaning-dependent} translator (the human, who derives meaning
+from context) translates it: it routes around the broken form to the
+meaning. Success on broken form proves dependence on meaning.
+\item A \textbf{form-dependent} translator (content-substitution: cognate
+lookup, statistical smoothing) mangles or fails it: it has no well-formed
+structure to substitute over. Failure on broken form proves dependence on
+form.
+\item Our \textbf{fixed-point-dependent} method translates it \emph{iff the
+relaxation still reaches quiescence}---iff the broken statement still admits a
+recoverable, propagable meaning---and \emph{declines otherwise}
+(\Cref{cor:decline}). It depends on neither meaning (which it never knows) nor
+clean form (which it never substitutes), but on the existence of a fixed
+point.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+\textup{(i)} A method that succeeds when the form is broken cannot be using
+the form as its input; the only remaining carrier of the rendering is the
+meaning; hence the method depends on meaning. \textup{(ii)} A method that
+fails when the form is broken is using the form; hence it depends on form.
+\textup{(iii)} Our method's machinery (slot $\to$ substitution-set $\to$
+ablation $\to$ cross-demand) needs slots, which broken grammar damages; where
+enough slot-structure survives that the relaxation can still run to
+quiescence, the meaning is propagably present and the method translates it
+(blind, \Cref{cor:blind}); where the damage destroys the propagable structure,
+no fixed point exists (\Cref{thm:two-kinds}(ii)) and the method declines
+(\Cref{cor:decline}). It depends on quiescence-reachability---the existence of
+a fixed point---which is the recoverable presence of meaning, not its
+comprehension and not the form.
+\end{proof}
+
+\begin{corollary}[Located between human and substituter; honest at the boundary]
+\label{cor:located}
+Our method reaches the meaning-dependent translator's \emph{result} (identical
+meaning) without its \emph{comprehension}, by relaxation; and it never emits
+the form-dependent translator's mangling, because it does not substitute. At
+the boundary---inputs whose meaning is recoverable only by inference beyond
+any propagable structure---the human \emph{infers}, the substituter
+\emph{hallucinates}, and our method \emph{declines}. The method is sufficient
+exactly on inputs admitting a fixed point.
+\end{corollary}
+
+\begin{proof}
+Reaching the result without comprehension is \Cref{cor:blind}; not mangling is
+that the method emits only quiescent (meaning-identical) output or declines
+(\Cref{cor:decline}); the boundary behaviour is the contrast of
+\Cref{thm:separating}(i)--(iii) at the edge of fixed-point existence.
+\end{proof}
+
+% =====================================================================
+\section{Faithfulness and the perturbation suite}
+\label{sec:faithful}
+% =====================================================================
+
+\subsection{Faithfulness is zero back-holonomy}
+
+\begin{definition}[Meaning-transport; back-cycle; holonomy]
+\label{def:holonomy}
+Let $g$ assign to each contact an element of an abelian group---the
+sense-shift the contact carries---with $g(uv)=-g(vu)$. For a forward
+propagation $\Walk$ of $\colA$ to $\colB$ and a back-propagation $\Walk^{-}$,
+the \emph{back-cycle} holonomy is $\hol=\sum_{e\in\Walk}g(e)+
+\sum_{e\in\Walk^{-}}g(e)$.
+\end{definition}
+
+\begin{theorem}[Faithfulness is back-cycle closure; quiescence implies it]
+\label{thm:faithful}
+A translation is \emph{faithful} iff some back-propagation has $\hol=0$
+(translating across and back returns to the source, to within the floor). At
+quiescence the back-cycle closes: $\demand_{\colB\to\colA}=0$ means
+reverse-translating $\colB$ demands no change in $\colA$, which is
+$\hol=0$. Hence a proper translation is faithful, and an unfaithful one is
+non-quiescent.
+\end{theorem}
+
+\begin{proof}
+A group-valued transport is path-independent between two endpoints iff every
+cycle between them has zero holonomy; the round trip $\colA\to\colB\to\colA$
+returns to the source iff its cycle closes. Quiescence is
+$\demand_{\colB\to\colA}=0$ (\Cref{def:relaxation}), i.e.\ the back direction
+demands no change---exactly that the round trip returns to $\colA$, i.e.\
+$\hol=0$. So proper $\Rightarrow$ faithful; $\hol\neq0$ for all back-routes
+$\Rightarrow$ a standing demand $\Rightarrow$ non-quiescent.
+\end{proof}
+
+\begin{theorem}[The false friend is a bridge]
+\label{thm:falsefriend}
+A \emph{false friend}---a target cell whose surface matches the source but
+whose meaning does not---has \emph{endpoints} that appear aligned (each a
+real, locally plausible cell) but a \emph{back-cycle} with nonzero holonomy
+through an intermediate sense. It passes an endpoint check and fails a route
+check; it is non-quiescent (\Cref{thm:faithful}) and detectable only by
+auditing the route, not the endpoints.
+\end{theorem}
+
+\begin{proof}
+The endpoints are real, locally matched cells, so an endpoint invariant
+registers a plausible pairing. The meaning is carried by the interior: the
+back-cycle through the intermediate sense has $\hol\neq0$ because the
+candidate's actual cell is not the source's; by \Cref{thm:faithful} the pair
+is non-quiescent, with the standing demand on the interior. No endpoint-only
+check detects it; back-translating through the meaning does. This is the
+bridge: closing endpoints, non-closing route.
+\end{proof}
+
+\subsection{The perturbation suite measures the floor}
+
+\begin{definition}[Perturbation suite; stability]
+\label{def:perturb}
+For a translation of $U$, the \emph{perturbation suite} applies four families
+and records the change in landing: \textup{(1)} ablation (remove each item);
+\textup{(2)} in-grammar rearrangement; \textup{(3)} synonym substitution;
+\textup{(4)} negation. The \emph{stability} is $1-\bar{\Delta}/\Delta_0$,
+mean landing-change over base landing.
+\end{definition}
+
+\begin{theorem}[Each perturbation measures a proved structure]
+\label{thm:perturb}
+The four families measure four structures of the formalisation:
+\textup{(i)} ablation measures the element/residue split (high-$\abl$ items
+are the elements, \Cref{thm:element-floor}---the ablation profile \emph{is}
+the element-set); \textup{(ii)} in-grammar rearrangement measures path opacity
+(invariance under legal reorder is endpoint-determination); \textup{(iii)}
+synonym substitution measures representation mobility (invariance under a
+same-slot synonym marks a landing on an element, not a representation
+artifact); \textup{(iv)} negation measures holonomy (a faithful landing must
+invert correctly under negation, i.e.\ the negation-cycle closes,
+\Cref{thm:faithful}).
+\end{theorem}
+
+\begin{proof}
+\textup{(i)} is \Cref{def:ablation,thm:element-floor}. \textup{(ii)} a legal
+reorder changes the interior path while fixing endpoints; invariance is
+endpoint-determination---path opacity (the relaxation's landing depends on the
+fixed point, not the route). \textup{(iii)} a same-slot synonym is a different
+representation of the same element averaging to the same alignment; invariance
+is representation-independence. \textup{(iv)} negation is a transport that, for
+a faithful landing, must carry the target to its negation along a closing
+cycle: correct inversion is $\hol=0$, incorrect $\hol\neq0$.
+\end{proof}
+
+\begin{remark}[Perturbation makes the floor a number]
+\label{rem:perturb-floor}
+One cannot read $\flo$ off a language; one can ablate a word and watch the
+landing collapse, and the size of the collapse \emph{is} the item's
+distance-to-floor. The suite turns the four structural facts (elements,
+opacity, mobility, holonomy) into four empirical dials, and the four are the
+faces of the one floor. This is the ``resolution validation by linguistic
+perturbation'' of an earlier specification, now seen to measure the floor, not
+four ad-hoc properties. No theorem depends on the reading.
+\end{remark}
+
+% =====================================================================
+\section{The complete pipeline}
+\label{sec:pipeline}
+% =====================================================================
+
+\begin{construction}[Translation pipeline]
+\label{con:pipeline}
+Given source $\Lang$, target $\Lang'$, and a source text:
+\begin{enumerate}[label=\textup{(\arabic*)},leftmargin=2.6em]
+\item \textbf{Terminate.} Cast each unit in completed aspect
+(\Cref{con:perfective}); only terminated units propagate
+(\Cref{thm:terminate}).
+\item \textbf{Seed two columns.} Source as $\colA$; naive cognate translation
+as $\colB$, the seed (\Cref{con:columns}).
+\item \textbf{Anchor.} Ablation-rank each column; fix high-$\abl$ elements as
+anchors, leave the residue free (\Cref{con:columns},
+\Cref{thm:element-floor}).
+\item \textbf{Relax.} Alternate $\relax_{\colA\to\colB}$ and
+$\relax_{\colB\to\colA}$ (\Cref{def:relaxation}): perturb a column,
+reverse-translate, propagate the demanded residue change back, iterate.
+\item \textbf{Halt at quiescence---or decline.} If cross-demands reach zero,
+the pair is quiescent: a proper translation, identical in meaning
+(\Cref{thm:quiescence-identity}), at residual $\res\ge\flo$ of form
+(\Cref{thm:form-residual}). If they do not vanish, the unit is deeply
+untranslatable and the method declines (\Cref{cor:decline}).
+\item \textbf{Resolve shallow untranslatables.} For a quiescent pair with no
+single floor-distance target element, render by minimal composite or borrow
+(\Cref{thm:two-kinds}(i)).
+\item \textbf{Audit and validate.} Confirm faithfulness by back-cycle closure
+(\Cref{thm:faithful}); flag false friends (\Cref{thm:falsefriend}); run the
+perturbation suite (\Cref{def:perturb}) whose signature
+(\Cref{thm:perturb}) calibrates confidence.
+\item \textbf{Represent.} Choose a representation (register, style) of each
+landed element (\Cref{thm:perturb}(iii)) and restore natural target aspect.
+\end{enumerate}
+The output, when it exists, is a target text in semantic quiescence with the
+source---identical in meaning, certified blind by the vanishing of
+cross-demands---with its load-bearing elements anchored and only its
+form-residue distinguishing it.
+\end{construction}
+
+\begin{remark}[The runtime an earlier specification anticipated]
+\label{rem:runtime}
+This pipeline is the runtime a prior points-and-resolutions specification
+reached for and could not ground. Its \emph{points} (content with inherent
+uncertainty, never fully certain) are region-valued cells; its
+\emph{resolutions} are residue propagations; its
+\emph{remaining\_uncertainty} is the residual $\res\ge\flo$; its
+\emph{perturbation validation} is \Cref{sec:faithful}; its \emph{fuzzy units}
+of emergent grain are the elements of \Cref{thm:catalogue}; its keyword
+\texttt{propagate\_uncertainty} is the propagation itself. It reached for
+probability, fuzzy membership, and Bayesian updating because no floor had been
+derived; here the single derived floor replaces all three, parameter-free.
+The shape was right; it lacked its foundation. No theorem depends on the
+reading.
+\end{remark}
+
+% =====================================================================
+\section{The picture in one statement}
+\label{sec:picture}
+% =====================================================================
+
+A text exists because uncertainty propagated; its meaning is what that
+propagation emits, not its content, and content---which precision targets---is
+the non-meaning. Meaning cannot be extracted, so the translator does not try
+to know it; it places the source and a naive cognate seed as two columns,
+anchors the unreplaceable elements of each by ablation, and relaxes: perturb
+a column, reverse-translate, propagate the demanded change back, iterate.
+When the relaxation halts---when a change on either side propagates and
+demands nothing of the other---the two sides have the same meaning,
+necessarily, because any difference of meaning is itself a demand and
+quiescence is the absence of demands; and this identity is certified without
+the meaning ever being read, because identity is no-difference and
+no-difference is testable blind. The halt is at positive residual: same
+meaning, irreducibly different form. When the relaxation does not halt, the
+meanings cannot be made identical---deep untranslatability---and the honest
+output is to decline. Given a grammatically wrong statement, the human
+translates it (depending on meaning), the substituter mangles it (depending on
+form), and our method translates it iff a fixed point still exists and
+declines otherwise (depending on neither). This is translation without
+meaning: the meaning-dependent translator's result, by a meaning-blind,
+comprehension-free mechanism, sufficient exactly where a fixed point exists.
+
+% =====================================================================
+\section{Conclusion}
+\label{sec:conclusion}
+% =====================================================================
+
+We have formalised translation, completely and on finite weighted graphs, as
+the bidirectional relaxation of two columns to semantic quiescence. The
+object of translation is the meaning that propagates from the source as a
+cause, not its content---precision targets content and so targets the
+non-meaning, as a precise spectrum is not a molecule's significance. Meaning
+is an unextractable invariant, so the translator does not know it; it detects
+that two sides \emph{share} it, by the absence of any propagable difference.
+The elements held fixed in the relaxation are the ablation-unreplaceable
+items, of emergent grain; the residue is what moves. The central theorem is
+that quiescence is identity of meaning---necessarily, and certified blind,
+because a meaning-difference is a demand and quiescence is no demand---reached
+at positive residual of form, never at zero. Non-halting is the proof of deep
+untranslatability, where the honest output is to decline rather than
+hallucinate. A single dissociating experiment---a grammatically wrong
+statement---separates the three translators by their dependency: the human on
+meaning, the substituter on form, and our method on the existence of a fixed
+point, reaching the human's result without comprehension and declining at the
+boundary where the human infers and the substituter hallucinates. Faithfulness
+is zero back-holonomy, implied by quiescence; the false friend is the bridge
+caught only by route-audit; the perturbation suite measures the four faces of
+the one floor. Throughout, the derived, parameter-free floor does the work of
+every borrowed uncertainty calculus. This is translation without meaning:
+sufficient for a translator that does not need to understand, because identity
+of meaning is the silence of all demands between two sides, and that silence
+can be reached, and recognised, blind.
+
+\bibliographystyle{plainnat}
+\begin{thebibliography}{9}
+\bibitem[Banach(1922)]{banach1922} Stefan Banach. Sur les op\'erations dans
+les ensembles abstraits et leur application aux \'equations int\'egrales.
+\emph{Fundamenta Mathematicae}, 3:133--181, 1922.
+\bibitem[Diestel(2017)]{diestel2017} Reinhard Diestel.
+\emph{Graph Theory}, 5th edition. Springer GTM 173, 2017.
+\bibitem[Ford and Fulkerson(1956)]{fordfulkerson1956} L.~R. Ford and
+D.~R. Fulkerson. Maximal flow through a network.
+\emph{Canadian Journal of Mathematics}, 8:399--404, 1956.
+\bibitem[Menger(1927)]{menger1927} Karl Menger. Zur allgemeinen
+Kurventheorie. \emph{Fundamenta Mathematicae}, 10:96--115, 1927.
+\bibitem[Shannon(1948)]{shannon1948} C.~E. Shannon. A mathematical theory of
+communication. \emph{Bell System Technical Journal}, 27:379--423, 1948.
+\bibitem[Jakobson(1959)]{jakobson1959} Roman Jakobson. On linguistic aspects
+of translation. In \emph{On Translation}, Harvard University Press, 1959.
+\bibitem[Nida(1964)]{nida1964} Eugene A. Nida. \emph{Toward a Science of
+Translating}. Brill, 1964.
+\bibitem[Zadeh(1965)]{zadeh1965} L.~A. Zadeh. Fuzzy sets.
+\emph{Information and Control}, 8(3):338--353, 1965.
+\end{thebibliography}
+
+\end{document}

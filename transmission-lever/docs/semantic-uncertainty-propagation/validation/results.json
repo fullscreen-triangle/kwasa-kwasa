@@ -1,0 +1,233 @@
+{
+  "paper": "Semantic Uncertainty Propagation",
+  "generated": "2026-06-24T16:50:33",
+  "backend": "self-contained Edmonds-Karp max-flow / exact minimum cut",
+  "seed": 20260609,
+  "categories": 20,
+  "total_checks": 4696,
+  "total_passed": 4696,
+  "pass_rate": 1.0,
+  "all_pass": true,
+  "results": [
+    {
+      "category": "Floor",
+      "theorem": "Thm 3.2 / Cor 3.3",
+      "type": "Bound",
+      "instances": 1939,
+      "passed": 1939,
+      "failed": 0,
+      "max_error": 0.0,
+      "all_pass": true,
+      "note": "sigma(v) >= beta for every item; no sharp cut"
+    },
+    {
+      "category": "FloorFromInfinitude",
+      "theorem": "Thm 3.1",
+      "type": "Bound",
+      "instances": 420,
+      "passed": 420,
+      "failed": 0,
+      "max_error": null,
+      "all_pass": true,
+      "note": "residual >= beta at every finite stage; never completes"
+    },
+    {
+      "category": "IndividuationByNegation",
+      "theorem": "Thm 4.2",
+      "type": "Identity",
+      "instances": 200,
+      "passed": 200,
+      "failed": 0,
+      "max_error": 0.0,
+      "all_pass": true,
+      "note": "complement involution; U and ~U partition V"
+    },
+    {
+      "category": "IdentityInvariant",
+      "theorem": "Thm 5.1",
+      "type": "Identity",
+      "instances": 707,
+      "passed": 707,
+      "failed": 0,
+      "max_error": 0.0,
+      "all_pass": true,
+      "note": "sigma(v) preserved under weighted relabelling"
+    },
+    {
+      "category": "IdentityIsRegion",
+      "theorem": "Thm 5.3",
+      "type": "Structural",
+      "instances": 80,
+      "passed": 80,
+      "failed": 0,
+      "max_error": 0.0,
+      "all_pass": true,
+      "note": "min v--m cut puts a multi-item set on v's side; never a point"
+    },
+    {
+      "category": "DistanceToFloor",
+      "theorem": "Lem 11.2 / Thm 11.3",
+      "type": "Bound",
+      "instances": 120,
+      "passed": 120,
+      "failed": 0,
+      "max_error": 0.0,
+      "all_pass": true,
+      "note": "alignment in (0,1], >= beta/Omega; parameter-free"
+    },
+    {
+      "category": "MonotoneNonReturn",
+      "theorem": "Thm 9.4",
+      "type": "Structural",
+      "instances": 60,
+      "passed": 60,
+      "failed": 0,
+      "max_error": 0.0,
+      "all_pass": true,
+      "note": "M strictly up; vertex recurrence is not state return"
+    },
+    {
+      "category": "ResidueIsPropagator",
+      "theorem": "Thm 9.2",
+      "type": "Structural",
+      "instances": 60,
+      "passed": 60,
+      "failed": 0,
+      "max_error": 0.0,
+      "all_pass": true,
+      "note": "next cut distinct iff residue>0; chain halts at residue 0"
+    },
+    {
+      "category": "ThreeReadings",
+      "theorem": "Thm 9.5",
+      "type": "Identity",
+      "instances": 100,
+      "passed": 100,
+      "failed": 0,
+      "max_error": 4.440892098500626e-16,
+      "all_pass": true,
+      "note": "resolved link H=0 (information); uniform H=log2 k (entropy)"
+    },
+    {
+      "category": "QuiescenceIsIdentity",
+      "theorem": "Thm 12.1",
+      "type": "Identity",
+      "instances": 120,
+      "passed": 120,
+      "failed": 0,
+      "max_error": 0.0,
+      "all_pass": true,
+      "note": "cross-demand 0 <=> identical resting cut; certified blind"
+    },
+    {
+      "category": "FormResidual",
+      "theorem": "Thm 12.2",
+      "type": "Bound",
+      "instances": 100,
+      "passed": 100,
+      "failed": 0,
+      "max_error": 0.0,
+      "all_pass": true,
+      "note": "quiescence at residual >= beta > 0, never 0"
+    },
+    {
+      "category": "RelaxationDichotomy",
+      "theorem": "Thm 11.5 / 11.6 / 12.3",
+      "type": "Boundary",
+      "instances": 120,
+      "passed": 120,
+      "failed": 0,
+      "max_error": 0.0,
+      "all_pass": true,
+      "note": "committed up, demand down; quiescence or non-halt->decline (62 declines)"
+    },
+    {
+      "category": "ReceiverRelativity",
+      "theorem": "Thm 13.1",
+      "type": "Structural",
+      "instances": 80,
+      "passed": 80,
+      "failed": 0,
+      "max_error": 0.0,
+      "all_pass": true,
+      "note": "different decoders register different cells; each correct; no privileged value"
+    },
+    {
+      "category": "FourColumnRouteAudit",
+      "theorem": "Thm 15.2 / 15.3",
+      "type": "Structural",
+      "instances": 120,
+      "passed": 120,
+      "failed": 0,
+      "max_error": 0.0,
+      "all_pass": true,
+      "note": "endpoint missed 63; four-column caught 63 false friends"
+    },
+    {
+      "category": "ComprehensionFree",
+      "theorem": "Thm 15.4",
+      "type": "Structural",
+      "instances": 100,
+      "passed": 100,
+      "failed": 0,
+      "max_error": 0.0,
+      "all_pass": true,
+      "note": "swapping a response for an equivalent one leaves the criterion unchanged"
+    },
+    {
+      "category": "StaticVsDynamic",
+      "theorem": "Def 8.4 / Rem 8.x",
+      "type": "Structural",
+      "instances": 100,
+      "passed": 100,
+      "failed": 0,
+      "max_error": 0.0,
+      "all_pass": true,
+      "note": "element cell context-free; name cell shifts with context"
+    },
+    {
+      "category": "NonCompositional",
+      "theorem": "Thm 8.6 (i,ii)",
+      "type": "Structural",
+      "instances": 80,
+      "passed": 80,
+      "failed": 0,
+      "max_error": 0.0,
+      "all_pass": true,
+      "note": "compound (riverbed) cut != composition of constituents' cuts"
+    },
+    {
+      "category": "ContextualInterchange",
+      "theorem": "Prop 8.7",
+      "type": "Identity",
+      "instances": 80,
+      "passed": 80,
+      "failed": 0,
+      "max_error": 0.0,
+      "all_pass": true,
+      "note": "distinct handles on one cell have identical alignment"
+    },
+    {
+      "category": "MasterEquivalence",
+      "theorem": "Thm 16.1",
+      "type": "Boundary",
+      "instances": 60,
+      "passed": 60,
+      "failed": 0,
+      "max_error": 0.0,
+      "all_pass": true,
+      "note": "beta>0 => no sharp cut; beta->0 => sharp cut, structures collapse"
+    },
+    {
+      "category": "DiagonalSelfName",
+      "theorem": "Thm 8.9",
+      "type": "Structural",
+      "instances": 50,
+      "passed": 50,
+      "failed": 0,
+      "max_error": 0.0,
+      "all_pass": true,
+      "note": "V(D,~D) has no consistent value; no direct self-name"
+    }
+  ]
+}
