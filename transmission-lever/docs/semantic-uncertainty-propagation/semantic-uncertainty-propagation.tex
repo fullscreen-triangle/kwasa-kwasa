@@ -337,6 +337,22 @@ $\flo$, only its positivity.
 \end{remark}
 
 % ============================================================================
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/panel_1.png}
+\caption{\textbf{The floor and granular meaning} (computed on finite weighted
+graphs; exact minimum cuts). \textbf{(A)}~Separation cost $\sigma(v)$ for every
+item of ${\sim}220$ random contact graphs versus graph size; every point lies on
+or above the floor $\flo$ (red), independent of size---no sharp cut
+(\Cref{thm:floor}). \textbf{(B)}~Distribution of $\sigma(v)/\flo$, supported
+entirely at and above $1$. \textbf{(C)}~Alignment score $\al(x,y)$ versus the
+floor $\flo/\Om$; every point lies above the diagonal, the bound
+$\al\ge\flo/\Om$ (\Cref{lem:align-floor}). \textbf{(D)}~The realised floor
+$\min_v\sigma(v)$ over graph size and $\flo$: strictly positive throughout,
+rising with $\flo$.}
+\label{fig:panel1}
+\end{figure*}
+
 \section{Individuation by negation}
 \label{sec:negation}
 % ============================================================================
@@ -475,6 +491,21 @@ sufficiently and at least cost---never what it is.
 \end{remark}
 
 % ============================================================================
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/panel_2.png}
+\caption{\textbf{Individuation by negation and the invariant region.}
+\textbf{(A)}~The minimum-cut minimiser side $|S^\ast(v)|$ versus cluster size $k$
+for the two-cluster construction: it equals $k>1$, so identity is a region, never
+a point (\Cref{thm:region}). \textbf{(B)}~$\sigma(v)$ after a random relabelling
+versus before: on the diagonal---identity is a relabelling invariant
+(\Cref{thm:invariant}). \textbf{(C)}~$|U|+|\complement U|$ versus $|V|$: on the
+diagonal, a part and its negation partition the whole exactly
+(\Cref{thm:negation}). \textbf{(D)}~The same in three coordinates
+$(|U|,|\complement U|,|V|)$, lying on the plane $|U|+|\complement U|=|V|$.}
+\label{fig:panel2}
+\end{figure*}
+
 \part{Termination, meaning, and propagation}
 % ============================================================================
 
@@ -1211,6 +1242,20 @@ pair is quiescent at the greeting. The precision-seeker halts early, at content;
 the relaxation halts at meaning. No theorem depends on the example.
 \end{remark}
 
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/panel_3.png}
+\caption{\textbf{Propagation, the monotone record, and the relaxation.}
+\textbf{(A)}~The committed record $M$ along a walk (blue), strictly increasing;
+red marks revisited vertices---recurrence of position is not return of state
+(\Cref{thm:monotone}). \textbf{(B)}~Cross-demand $D$ along the relaxation: one
+instance reaches $0$ (quiescence, teal), one plateaus at the floor (non-halt
+$\to$ decline, orange) (\Cref{thm:dichotomy,thm:two-kinds}). \textbf{(C)}~Residual
+above floor for several seeds, each descending to $0$. \textbf{(D)}~The demand
+surface $D(\text{step},D_0)$: monotone descent to the floor.}
+\label{fig:panel3}
+\end{figure*}
+
 % ============================================================================
 \part{Conversation and the four-column translator}
 % ============================================================================
@@ -1428,6 +1473,23 @@ minimal propagation-aware translator is the four-column one, and it is exactly
 the upgrade from an endpoint-audit (does the content match?) to a route-audit
 (does it start the same conversation?). No theorem depends on the reading.
 \end{remark}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/panel_4.png}
+\caption{\textbf{Route-audit, names, and the master equivalence.}
+\textbf{(A)}~Central (content) demand versus response demand: proper pairs (blue)
+sit at the origin, false friends (orange) have near-zero central demand---invisible
+to an endpoint check---but large response demand, caught by the four-column
+route-audit (\Cref{thm:false-friend}). \textbf{(B)}~A compound's cut $\sigma(U)$
+(blue, flat at $2\flo$) versus the composition of its constituents' cuts (orange,
+rising): names are non-compositional (\Cref{thm:non-derivable}).
+\textbf{(C)}~The realised floor $\min_v\sigma$ versus $\flo$: positive for
+$\flo>0$, vanishing (a sharp cut, red) only at $\flo=0$---the master equivalence
+(\Cref{thm:master}). \textbf{(D)}~The same non-compositionality in three
+coordinates $(W,\sigma(U),\text{composition})$.}
+\label{fig:panel4}
+\end{figure*}
 
 % ============================================================================
 \section{The master equivalence, scope, and conclusion}
