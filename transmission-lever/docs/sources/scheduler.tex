@@ -1,0 +1,1329 @@
+% =====================================================================
+%  Trajectory Scheduling:
+%  Residue-Driven Process Scheduling and Orthogonal
+%  Content--Time Process Annotation
+%
+%  Self-contained. Every term is defined in the text. Only the
+%  standard external literature is cited; no companion paper is
+%  presupposed.
+% =====================================================================
+\documentclass[twocolumn,10pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[a4paper,margin=1.9cm,columnsep=0.6cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{bm}
+\usepackage{mathrsfs}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage[round,sort&compress]{natbib}
+\usepackage[dvipsnames,table]{xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!45!black,
+            citecolor=blue!45!black,urlcolor=blue!45!black]{hyperref}
+\usepackage{cleveref}
+
+% ---- Theorem environments ----
+\newtheoremstyle{thmstyle}{\topsep}{\topsep}{\itshape}{}{\bfseries}{.}{.5em}{}
+\theoremstyle{thmstyle}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{axiom}{Axiom}
+\newtheorem{principle}[theorem]{Principle}
+\newtheorem{construction}[theorem]{Construction}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\crefname{axiom}{Axiom}{Axioms}
+\Crefname{axiom}{Axiom}{Axioms}
+\crefname{principle}{Principle}{Principles}
+\Crefname{principle}{Principle}{Principles}
+
+% ---- Shorthand ----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Zp}{\mathbb{Z}_{\ge 0}}
+\newcommand{\floor}{\beta}
+\newcommand{\res}{\rho}
+\newcommand{\Mcount}{M}
+\newcommand{\Tasks}{\mathcal{T}}
+\newcommand{\task}{\tau}
+\newcommand{\state}{\sigma}
+\newcommand{\States}{\Sigma}
+\newcommand{\Cls}{\mathsf{C}}
+\newcommand{\Addr}{\mathsf{a}}
+\newcommand{\dig}{\mathsf{h}}
+\newcommand{\lab}{\ell}
+\newcommand{\abs}[1]{\lvert#1\rvert}
+\newcommand{\norm}[1]{\lVert#1\rVert}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\dd}{\,\mathrm{d}}
+\DeclareMathOperator{\lcp}{lcp}
+\DeclareMathOperator{\dec}{dec}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+\title{\textbf{Trajectory Scheduling:\\[2pt]
+Residue-Driven Process Scheduling and Orthogonal\\
+Content--Time Process Annotation}}
+
+\author{%
+Kundai Farai Sachikonye\\
+\small Technical University of Munich\\
+\small \texttt{kundai.sachikonye@wzw.tum.de}}
+
+\date{\today}
+
+\begin{document}
+\maketitle
+
+% =====================================================================
+\begin{abstract}
+\noindent
+We develop, from first principles, a scheduler that orders work not by
+predicted running time---a quantity we prove no scheduler can know in
+advance without performing the work---but by a measured \emph{residue}:
+the distance of a partially computed result from completion. The
+framework rests on a small core of theorems. First, we prove a
+\emph{Residue Floor Theorem}: any finite agent that resolves a problem
+to a recognisable answer cannot drive its residual error to zero, and a
+strictly positive floor $\floor>0$ separates ``recognised as solved''
+from ``not yet distinguishable from any other candidate.'' Second, we
+prove that the count of committed work units is strictly monotone---no
+operation decrements it---so that the natural progress coordinate of a
+process is a non-decreasing integer we call its \emph{trajectory count}.
+Third, we define a \emph{categorical complexity} that measures a task by
+the number of distinguishable work-trajectories required to settle it,
+prove a closed-form $\mathcal{O}(\log K)$ termination bound for
+content-bounded tasks, and use the live deviation of measured residue
+from this baseline to diagnose, at runtime, whether a task is
+compute-limited or structure-limited---a distinction we show is the
+correct basis for resource allocation. We assemble these into a
+residue-driven scheduling algorithm, prove its priority rule sound (it
+never starves a task that is converging and never feeds a task that has
+stalled), prove a sufficiency-stopping theorem (a sub-task may be
+released above its own floor once it crosses the floor of the parent
+problem), and bound its overhead. Finally we address process
+annotation. We prove a \emph{Label Orthogonality Theorem}: identity and
+relatedness are independent requirements served by opposite locality
+properties---a cryptographic digest (avalanche: maximal output
+divergence from minimal input difference) is optimal for identity and
+provably destroys relatedness, while a monotone trajectory address
+(prefix-sharing) is optimal for temporal/structural relatedness and
+carries no integrity guarantee. We show that a cryptographic hash is, by
+construction, time-blind, and that pairing it with the monotone
+trajectory address yields a label on which recurrence, co-temporality,
+and refinement are each decidable in $\mathcal{O}(1)$, and prove that no
+single label can serve both axes. All claims are proved; every
+construction is finite; complexity bounds are stated and derived.
+\end{abstract}
+
+\noindent\textbf{Keywords:} process scheduling; residue; resolution
+floor; anytime computation; categorical complexity; monotone progress;
+content addressing; avalanche; locality-sensitive hashing; logical
+clocks; sufficiency stopping.
+
+\tableofcontents
+
+% =====================================================================
+\section{Introduction}
+\label{sec:intro}
+% =====================================================================
+
+\subsection{The unknowable-duration problem}
+
+A scheduler decides, repeatedly, which of several pending pieces of work
+to advance next, and how much of a shared budget to give it. The
+classical theory of scheduling assigns each job a processing time and
+optimises a function of completion times \citep{pinedo2016,brucker2007,
+liu1973}. The assignment is the difficulty. For a large class of
+processes---search, inference, optimisation, any computation whose
+running time depends on data it has not yet seen---the processing time is
+not known in advance, and cannot be, for a reason that is not
+contingent:
+
+\begin{quote}\itshape
+If the exact running time of a process were known before running it, the
+process would already have been run; the only general way to learn how
+long a computation takes is to perform it.
+\end{quote}
+
+This is a restatement, in scheduling terms, of the impossibility of a
+non-trivial running-time oracle \citep{turing1936,blum1967}. A scheduler
+that orders work by predicted duration is therefore ordering by a
+quantity it cannot measure, and must fall back on heuristics, historical
+averages, or static priorities, each of which is wrong whenever the data
+diverges from the assumption.
+
+\subsection{The move: schedule by closeness, not by duration}
+
+We make one change of variable. Instead of asking \emph{how long will
+this take}---unknowable---we ask \emph{how close is this to done}---a
+property of the present partial result, measurable now. The two are not
+the same question, and the second is the better one for a scheduler:
+remaining \emph{duration} is a prediction about the future; remaining
+\emph{distance to a solution} is a measurement of the present.
+
+To make ``distance to a solution'' a rigorous quantity we need three
+things, each of which we derive from scratch:
+
+\begin{enumerate}[leftmargin=1.4em,itemsep=2pt]
+\item A notion of how far a partial result stands from being a
+\emph{recognised} answer, and a proof that this distance has a strictly
+positive floor---that ``solved'' is a region, not a point
+(\Cref{sec:floor}).
+\item A monotone progress coordinate: a count of committed work that
+never decreases, so that ``how far along'' is well-defined and a
+revisited state is never a return (\Cref{sec:count}).
+\item A complexity measure, computed before running, that predicts how
+many work units a task \emph{should} need, against which the live
+measurement is compared to diagnose the kind of limit the task faces
+(\Cref{sec:complexity}).
+\end{enumerate}
+
+\subsection{Two products}
+
+The paper has two deliverables. The first is a \emph{residue-driven
+scheduler} (\Cref{sec:scheduler}): an algorithm that prioritises tasks
+by measured residue and its rate of descent, allocates compute to tasks
+whose residue is falling (compute-limited) and withholds it from tasks
+whose residue has gone flat (structure-limited), and stops a sub-task as
+soon as it is good enough for the larger problem it serves, even if it
+has not reached its own floor. We prove the priority rule sound and the
+sufficiency-stop correct.
+
+The second is a \emph{process annotation scheme}
+(\Cref{sec:annotation}). A scheduler must label processes so as to answer
+two questions in $\mathcal{O}(1)$: \emph{is this the same work as that}
+(identity), and \emph{is this related to that} (relatedness). We prove
+these require opposite locality and therefore cannot be served by one
+label: a cryptographic digest, whose avalanche property maps minimal
+input differences to maximal output differences \citep{shannon1949,
+webster1986,feistel1973}, is optimal for identity and provably destroys
+relatedness; a monotone trajectory address, whose prefixes are shared by
+related work, is optimal for relatedness and carries no integrity. We
+prove further that a cryptographic hash is structurally time-blind---time
+is not among its inputs---and that pairing it with the monotone progress
+coordinate of \Cref{sec:count} supplies exactly the missing axis, making
+recurrence, co-temporality, and refinement decidable by direct
+comparison.
+
+\subsection{What is and is not claimed}
+
+We do not claim to predict running time; we prove it cannot be done and
+build a scheduler that does not need it. We do not claim a new
+cryptographic primitive; we use standard hashes as black boxes and prove
+a separation between what they can and cannot annotate. We do not claim
+to reduce any standard complexity class; the categorical complexity of
+\Cref{sec:complexity} is a refinement along an access-pattern axis, with
+explicit non-tight relations to time and space
+(\Cref{sec:complexity-standard}). Every theorem is proved from the stated
+definitions, and where a claim could not be proved at this standard it is
+omitted.
+
+\subsection{Organisation}
+
+\Cref{sec:model} fixes the agent, the candidate space, and the residue
+functional. \Cref{sec:floor} proves the Residue Floor Theorem.
+\Cref{sec:count} proves strict monotonicity of the trajectory count.
+\Cref{sec:complexity} develops categorical complexity and the
+$\mathcal{O}(\log K)$ termination bound. \Cref{sec:diagnosis} proves the
+compute-versus-structure diagnosis. \Cref{sec:scheduler} states and
+analyses the scheduler. \Cref{sec:sufficiency} proves sufficiency
+stopping. \Cref{sec:annotation} proves the Label Orthogonality and
+Time-Blindness theorems and constructs the paired annotation.
+\Cref{sec:overhead} bounds total overhead. \Cref{sec:related} situates
+the work. \Cref{sec:conclusion} concludes.
+
+% =====================================================================
+\section{The model}
+\label{sec:model}
+% =====================================================================
+
+We fix a domain-agnostic model of a computation that resolves a problem
+to an answer. Nothing in it is specific to any machine.
+
+\subsection{Candidates, truth, and the resolving agent}
+
+\begin{definition}[Problem instance]
+\label{def:instance}
+A \emph{problem instance} is a pair $(\mathcal{X}, \mathcal{X}^\ast)$
+where $\mathcal{X}$ is a non-empty set of \emph{candidates} (admissible
+partial or complete answers) and $\varnothing\neq\mathcal{X}^\ast
+\subseteq\mathcal{X}$ is the set of \emph{solutions}. We allow
+$\abs{\mathcal{X}^\ast}>1$: several candidates may be operationally
+correct.
+\end{definition}
+
+\begin{definition}[Finite resolving agent]
+\label{def:agent}
+A \emph{finite resolving agent} $A$ is a tuple
+$(K_A,\,\Phi_A,\,\dec_A)$ where $K_A$ is a finite set of
+\emph{internal states} (the agent's representational capacity),
+$\Phi_A\colon\mathcal{X}\to K_A$ encodes a candidate into a state, and
+$\dec_A\colon K_A\to\mathcal{X}$ decodes a state back to a candidate. The
+agent is \emph{bounded} for the instance if $\abs{K_A}<\abs{\mathcal{X}}$
+(strictly fewer internal states than candidates).
+\end{definition}
+
+Boundedness is the only substantive hypothesis on the agent. It holds for
+every physically realised computer relative to any candidate space large
+enough to matter (finite memory, unbounded or merely larger candidate
+space).
+
+\subsection{The residue functional}
+
+The agent measures how far a candidate stands from solving the instance.
+
+\begin{definition}[Residue functional]
+\label{def:residue}
+A \emph{residue functional} for agent $A$ is a map
+\[
+\res_A\colon \mathcal{X}\times\mathcal{X}^\ast \to [0,U],
+\qquad U>0,
+\]
+where $\res_A(x,x^\ast)$ is the agent's measured misalignment of
+candidate $x$ from solution $x^\ast$, satisfying:
+\begin{enumerate}[label=\textup{(R\arabic*)},leftmargin=2.8em,itemsep=2pt]
+\item\label{R:nonneg} \textbf{Non-negativity.} $\res_A(x,x^\ast)\ge 0$.
+\item\label{R:bound} \textbf{Boundedness.} $\res_A(x,x^\ast)\le U$.
+\item\label{R:coherent} \textbf{Representational coherence.} There is a
+function $\delta_A\colon K_A\times K_A\to[0,U]$ with $\delta_A(k,k)=\floor_A$
+constant on the diagonal, such that
+$\res_A(x,x^\ast)=\delta_A(\Phi_A(x),\Phi_A(x^\ast))$. That is, the agent
+reads residue only through its internal encodings of the two candidates,
+and two candidates it encodes identically have the diagonal value.
+\end{enumerate}
+\end{definition}
+
+\ref{R:coherent} is the operational content: an agent cannot compare
+candidates except through its own finite representation of them. The
+constant $\floor_A:=\delta_A(k,k)$ is the residue the agent reads between
+a state and itself; we will prove it is strictly positive and that it is
+the floor of $\res_A$.
+
+\begin{remark}[Why residue, not ``time remaining'']
+\label{rem:why-residue}
+$\res_A(x,x^\ast)$ depends only on the present candidate $x$ and is
+evaluable now; ``time remaining'' depends on the future trajectory and is
+not. The entire design rests on substituting the first for the second.
+\end{remark}
+
+% =====================================================================
+\section{The Residue Floor Theorem}
+\label{sec:floor}
+% =====================================================================
+
+We prove that a bounded agent cannot reduce residue to zero, and that the
+floor $\floor_A>0$ is the boundary between ``recognised as a solution''
+and ``indistinguishable from any candidate.'' This is the theorem that
+makes ``solved'' a region rather than a point, and hence makes residue a
+usable scheduling signal.
+
+\begin{theorem}[Residue Floor]
+\label{thm:floor}
+For every bounded resolving agent $A$ with residue functional $\res_A$,
+the diagonal value $\floor_A$ is strictly positive, and no candidate
+attains residue below it:
+\[
+\inf_{x\in\mathcal{X}}\res_A(x,x^\ast)=\floor_A>0
+\qquad\text{for every }x^\ast\in\mathcal{X}^\ast .
+\]
+\end{theorem}
+
+\begin{proof}
+Suppose $\floor_A=0$. Then by \ref{R:coherent} there is, for some
+$x^\ast$, a candidate $x_0$ with $\res_A(x_0,x^\ast)=0$, hence
+$\delta_A(\Phi_A(x_0),\Phi_A(x^\ast))=0$. Since the diagonal value is
+$\floor_A=0$ and (by \ref{R:coherent}) the diagonal is where $\delta_A$
+attains its minimum reading, $\delta_A(\Phi_A(x_0),\Phi_A(x^\ast))=0$
+forces $\Phi_A(x_0)=\Phi_A(x^\ast)$: the agent encodes $x_0$ and
+$x^\ast$ to the \emph{same} internal state.
+
+Now count. The agent's representable candidates are
+$\dec_A(\Phi_A(\mathcal{X}))$, of cardinality at most $\abs{K_A}$. Because
+$A$ is bounded, $\abs{K_A}<\abs{\mathcal{X}}$, so $\Phi_A$ is not
+injective and some distinct candidates share an internal state. Zero
+residue, by the above, means the agent cannot internally separate $x_0$
+from $x^\ast$; but then it equally cannot separate $x_0$ from \emph{any}
+candidate sharing that state. The reading ``$x_0$ is the solution'' is
+then indistinguishable, within $A$, from ``$x_0$ is any of the candidates
+collapsed onto $\Phi_A(x^\ast)$.'' A residue of $0$ thus carries no
+information identifying $x_0$ as the solution rather than as an
+arbitrary member of its collision class. This contradicts the premise
+that $\res_A=0$ marks recognition of the solution: a value that does not
+distinguish the solution from non-solutions does not recognise it. Hence
+$\floor_A>0$. That $\floor_A$ is the infimum is \ref{R:coherent}: every
+reading factors through $\delta_A$, whose minimum is the diagonal value
+$\floor_A$.
+\end{proof}
+
+\begin{corollary}[Recognition requires a gap]
+\label{cor:gap}
+A candidate is recognisable as a solution by $A$ only at residue
+$\ge\floor_A>0$. The positive gap is not error to be eliminated; it is
+the margin by which the solution stands apart from the candidates the
+agent cannot distinguish from it. Driving residue to zero destroys
+recognition rather than perfecting it.
+\end{corollary}
+
+\begin{proof}
+Immediate from \Cref{thm:floor}: below $\floor_A$ the solution collapses,
+in the agent's representation, into a class it cannot resolve.
+\end{proof}
+
+\begin{theorem}[Information capacity of the residue scale]
+\label{thm:info}
+At reading precision $\eps>0$, the number of distinguishable residue
+values an agent can record is at most $\lceil(U-\floor_A)/\eps\rceil$,
+carrying at most $\log_2\!\big((U-\floor_A)/\eps\big)$ bits.
+\end{theorem}
+
+\begin{proof}
+By \Cref{thm:floor} the image of $\res_A$ lies in $[\floor_A,U]$, an
+interval of length $U-\floor_A$; partitioning into bins of width $\eps$
+gives the count, and the binary logarithm gives the bit bound
+\citep{shannon1948,cover2006}.
+\end{proof}
+
+\Cref{thm:info} is a sizing law used later: a scheduler that ranks tasks
+by residue can distinguish at most $\mathcal{O}((U-\floor_A)/\eps)$
+priority levels, so its comparisons are over a finite, bounded-precision
+ladder, and ties are genuine (two tasks may be residue-indistinguishable).
+
+% =====================================================================
+\section{The trajectory count is strictly monotone}
+\label{sec:count}
+% =====================================================================
+
+We now fix the progress coordinate. A process advances by committing
+discrete \emph{work units}; we prove the count of committed units is
+strictly increasing, so it is a faithful, non-decreasing clock against
+which residue descent is measured, and a revisited candidate is never a
+return to a prior process state.
+
+\subsection{Work units and the count}
+
+\begin{definition}[Work unit; trajectory count]
+\label{def:count}
+A \emph{work unit} of a process is a committed step that changes the
+process's record: it appends one entry to an append-only log of the
+process's history. The \emph{trajectory count} $\Mcount(t)\in\Zp$ is the
+number of work units committed up to step $t$. The process \emph{state}
+at step $t$ is the pair
+\[
+s_t=\big(x_t,\ \Mcount(t)\big),
+\]
+the current candidate together with the count; two states are equal iff
+both components agree.
+\end{definition}
+
+\begin{theorem}[Strict monotonicity]
+\label{thm:monotone}
+Along any process the trajectory count is strictly increasing: each
+committed work unit increments $\Mcount$ by exactly one, so for $i<j$,
+$\Mcount(i)<\Mcount(j)$. No operation decrements $\Mcount$.
+\end{theorem}
+
+\begin{proof}
+By \Cref{def:count} each work unit appends exactly one log entry and
+$\Mcount$ counts entries; appending increases the count by one. The log
+is append-only, so no entry is removed and the count never decreases. A
+purported ``undo'' is itself a committed step---it appends a
+compensating entry---hence increments $\Mcount$ rather than decrementing
+it: undoing is a forward unit, not a reversal of the count.
+\end{proof}
+
+\begin{corollary}[No return; resemblance is not identity]
+\label{cor:noreturn}
+For $i<j$, $s_i\neq s_j$ even when $x_i=x_j$: a process that revisits a
+candidate is in a new state, because its count has strictly grown. Two
+process states with identical candidates but different counts are
+distinct.
+\end{corollary}
+
+\begin{proof}
+By \Cref{thm:monotone}, $\Mcount(i)<\Mcount(j)$, so the second components
+of $s_i,s_j$ differ; hence the states differ regardless of the
+candidates.
+\end{proof}
+
+\begin{remark}[Why a count, not a wall clock]
+\label{rem:why-count}
+The trajectory count orders a process's own work intrinsically. Unlike a
+wall clock it cannot run backward, cannot be reset, and cannot collide
+(two units in the same physical instant still receive distinct, ordered
+counts). It is the process's logical time
+\citep{lamport1978,fidge1988,mattern1989}, and---being monotone by
+construction (\Cref{thm:monotone})---it is the coordinate against which a
+\emph{decreasing} residue is meaningful: residue measured per unit count
+is the descent rate driving the scheduler (\Cref{sec:scheduler}).
+\end{remark}
+
+% =====================================================================
+\section{Categorical complexity and the termination bound}
+\label{sec:complexity}
+% =====================================================================
+
+Residue tells the scheduler how far a task is from done \emph{now};
+categorical complexity tells it how far the task \emph{should} have to
+travel, as a static prediction, so that the deviation between the two can
+be read at runtime. We define complexity by the number of distinguishable
+work-trajectories a task requires, derive its closed form, and prove a
+logarithmic termination bound for the content-bounded case.
+
+\subsection{Work-trajectories and their count}
+
+\begin{definition}[Work-trajectory; type]
+\label{def:trajectory}
+A \emph{work-trajectory} of length $n$ is an ordered sequence of $n$
+committed work units. Each unit carries one of $d$ \emph{operation types}
+from a fixed finite set (e.g.\ read, transform, branch, record). The
+\emph{commitment structure} of a trajectory is a partition of its $n$
+units into maximal contiguous \emph{blocks} the process records as single
+checkpoints; a length-$n$ trajectory with $k$ blocks is recorded as a
+composition $(c_1,\dots,c_k)$ of $n$ together with a type for each block.
+\end{definition}
+
+\begin{lemma}[Compositions of an integer]
+\label{lem:compositions}
+The number of ordered compositions of $n$ into $k$ positive parts is
+$\binom{n-1}{k-1}$; summed over $k$, the total number of compositions of
+$n$ is $2^{n-1}$ \citep{stanley2012}.
+\end{lemma}
+
+\begin{proof}
+A composition into $k$ parts is a choice of $k-1$ of the $n-1$ gaps
+between $n$ ordered units as block boundaries, giving $\binom{n-1}{k-1}$;
+$\sum_{k=1}^{n}\binom{n-1}{k-1}=\sum_{j=0}^{n-1}\binom{n-1}{j}=2^{n-1}$
+by the binomial theorem.
+\end{proof}
+
+\begin{theorem}[Trajectory inflation]
+\label{thm:inflation}
+The number of distinguishable work-trajectories of length $n$ over $d$
+operation types, counted with their commitment structure, is
+\[
+\boxed{\,T(n,d)=d\,(d+1)^{\,n-1}.\,}
+\]
+\end{theorem}
+
+\begin{proof}
+A distinguishable trajectory is a composition of $n$ into $k$ blocks
+(\Cref{lem:compositions}) together with a choice of one of $d$ types per
+block, giving $d^k$ labellings for a $k$-block composition. Summing over
+commitment depth $k$,
+\[
+T(n,d)=\sum_{k=1}^{n}\binom{n-1}{k-1}d^{k}
+= d\sum_{j=0}^{n-1}\binom{n-1}{j}d^{j}
+= d\,(1+d)^{n-1},
+\]
+the inner sum being $(1+d)^{n-1}$ by the binomial theorem.
+\end{proof}
+
+\begin{corollary}[Multiplicative recurrence]
+\label{cor:recurrence}
+$T(n{+}1,d)=(d+1)\,T(n,d)$ with $T(1,d)=d$: each additional committed
+unit multiplies the trajectory count by $d+1$ (the $d$ type choices for a
+new block, plus the single option of extending the current block).
+\end{corollary}
+
+\begin{proof}
+$T(n{+}1,d)=d(d+1)^{n}=(d+1)T(n,d)$; $T(1,d)=d(d+1)^0=d$.
+\end{proof}
+
+\subsection{Categorical complexity and termination}
+
+\begin{definition}[Categorical complexity]
+\label{def:complexity}
+The \emph{categorical complexity} of a task is the number $K\ge 1$ of
+distinguishable work-trajectories that must be realised before the task's
+residue is certified at the floor---i.e.\ the size of the trajectory
+space the task must explore to recognise its solution. A task is
+\emph{content-bounded} if its completion condition is ``$K$ trajectories
+realised'' (as opposed to ``an external event has occurred,'' treated in
+\Cref{sec:diagnosis}).
+\end{definition}
+
+\begin{theorem}[Logarithmic termination bound]
+\label{thm:termination}
+A content-bounded task of categorical complexity $K$ over $d$ operation
+types reaches completion after committing
+\[
+n_{\mathrm{term}}(K,d)=1+\Big\lceil\log_{d+1}\!\tfrac{K}{d}\Big\rceil
+\]
+work units. Its cumulative committed cost is at least
+$n_{\mathrm{term}}\cdot\floor_A=\Theta(\log K)$.
+\end{theorem}
+
+\begin{proof}
+By \Cref{thm:inflation}, $n$ committed units realise $T(n,d)=d(d+1)^{n-1}$
+distinguishable trajectories. The task completes at the least $n$ with
+$T(n,d)\ge K$, i.e.\ $d(d+1)^{n-1}\ge K$, i.e.\ $(d+1)^{n-1}\ge K/d$,
+i.e.\ $n\ge 1+\log_{d+1}(K/d)$; the least integer is
+$n_{\mathrm{term}}=1+\lceil\log_{d+1}(K/d)\rceil$. Each committed unit
+deposits residue at least $\floor_A$ (\Cref{thm:floor} read as a
+per-unit lower bound on resolved content), so cumulative cost is
+$\ge n_{\mathrm{term}}\floor_A=\Theta(\log K)$.
+\end{proof}
+
+\begin{remark}[Linear cost, exponential content]
+\label{rem:asymmetry}
+The cumulative \emph{cost} of $n$ units grows linearly ($\ge n\floor_A$),
+while the \emph{content}---distinguishable trajectories---grows
+exponentially ($T(n,d)=d(d+1)^{n-1}$). A task that terminates on content
+(``$K$ trajectories'') terminates in $\mathcal{O}(\log K)$ units; a task
+that terminates on cost (``deposit total residue $R$'') terminates in
+$\mathcal{O}(R)$ units. The two are different stopping rules, and a task's
+specification, not the framework, selects which governs it
+(\Cref{sec:diagnosis}).
+\end{remark}
+
+\subsection{Relation to standard complexity}
+\label{sec:complexity-standard}
+
+\begin{proposition}[Non-tight relations]
+\label{prop:standard}
+Categorical complexity refines time/space complexity along an
+access-pattern axis, with non-tight inclusions. A task content-bounded
+with $K$ polynomial in instance size is solvable in time polynomial in
+$\log K$ and hence polynomial in input size; a task with no
+trajectory structure (every candidate must be enumerated) has
+$n_{\mathrm{term}}=\Theta(K)$, matching brute force. Categorical
+simplicity neither implies nor is implied by polynomial-time simplicity.
+\end{proposition}
+
+\begin{proof}
+The first claim is \Cref{thm:termination} with $K=\mathrm{poly}$:
+$n_{\mathrm{term}}=\mathcal{O}(\log K)$ units, each of bounded cost. The
+second: if no proper subset of trajectories certifies the solution, the
+completion condition is ``all $K$ realised,'' so $T(n,d)\ge K$ is needed
+with the trajectories enumerated, giving $\Theta(K)$. Independence: a
+problem can be categorically simple (one trajectory settles it) yet
+costly per unit, or categorically hard yet cheap per unit; the two axes
+measure different resources \citep{hartmanis1965,arora2009,sipser2013}.
+No claim of class collapse is made or used.
+\end{proof}
+
+% =====================================================================
+\section{Runtime diagnosis: compute-limited vs.\ structure-limited}
+\label{sec:diagnosis}
+% =====================================================================
+
+The static complexity $K$ is a prediction; the live residue is a
+measurement. Their relationship at runtime classifies the kind of limit a
+task faces, which we prove is the correct basis for allocation.
+
+\subsection{Descent and the predicted curve}
+
+\begin{definition}[Residue descent; on-curve]
+\label{def:descent}
+For a running task, write $\res(n)$ for its residue after $n$ committed
+units. Its \emph{descent rate} at $n$ is
+$\Delta(n)=\res(n-1)-\res(n)\ge 0$ (residue is non-increasing along a
+correct process: committing work cannot increase distance to a solution
+the process is converging to). The task is \emph{on-curve} if its
+realised descent matches the rate implied by its categorical complexity
+$K$ (\Cref{thm:termination}): residue should fall from its start toward
+$\floor_A$ over $n_{\mathrm{term}}(K,d)$ units. It is \emph{behind curve}
+if $\res(n)$ exceeds the predicted residue at the same $n$.
+\end{definition}
+
+\begin{definition}[Limit type]
+\label{def:limit}
+A running task above its floor ($\res(n)>\floor_A$) is:
+\begin{itemize}[leftmargin=1.4em,itemsep=2pt]
+\item \emph{compute-limited} if $\Delta(n)>0$: it is still converging;
+the only obstacle to completion is further committed work.
+\item \emph{structure-limited} if $\Delta(n)=0$ over a window of $w$
+units (a \emph{stall}): residue has stopped falling; further compute does
+not reduce distance to a solution.
+\end{itemize}
+\end{definition}
+
+\begin{theorem}[Diagnosis correctness]
+\label{thm:diagnosis}
+A task's limit type is decidable from its residue stream alone, without
+knowing its running time, and the decision is correct in the following
+sense:
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.2em,itemsep=2pt]
+\item if $\Delta(n)>0$ then allocating one more unit strictly reduces
+residue, so additional compute makes progress toward the floor;
+\item if $\Delta(n)=0$ over a window then no allocation of further
+units within the task's current structure reduces residue, so additional
+compute makes no progress.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+(i) $\Delta(n)>0$ is, by \Cref{def:descent}, the statement that the most
+recent unit strictly reduced residue; by the process's determinism the
+next unit of the same kind reduces it again unless the task crosses the
+floor (\Cref{thm:floor}) or stalls---both of which are detected as
+$\Delta=0$ at the next step. Hence while $\Delta>0$, compute is exactly
+the operative limit.
+(ii) $\Delta(n)=0$ over a window means the committed units in that window
+left residue unchanged: the candidate moved (count advanced,
+\Cref{thm:monotone}) but did not approach a solution. By
+\Cref{def:residue} residue is a function of the candidate's encoding; an
+unchanged residue under changing candidates means the task is cycling
+within a residue level-set, which further same-structure units cannot
+leave. Compute is therefore not the limit; the task is bounded by its
+structure (missing input, wrong decomposition, or genuine
+non-convergence). Both readings use only $\res(\cdot)$, which is
+measurable at each unit, and never the running time.
+\end{proof}
+
+\begin{remark}[Behind-curve is reclassification, not failure]
+\label{rem:reclassify}
+A task with $n>n_{\mathrm{term}}(K,d)$ that has not completed is
+\emph{not} ipso facto failed: by \Cref{prop:standard} the static $K$ may
+have under-estimated the task's true categorical class. The correct
+response is to re-estimate $K$ from the realised descent and re-apply
+\Cref{thm:diagnosis}: if still descending, the task is compute-limited
+and merely harder than predicted (allocate more); only if stalled is it
+structure-limited (decline). Treating prediction-overrun as automatic
+failure---a common scheduler heuristic---discards converging work.
+\end{remark}
+
+% =====================================================================
+\section{The residue-driven scheduler}
+\label{sec:scheduler}
+% =====================================================================
+
+We now assemble the scheduler. It maintains a set of live tasks, each
+with a measured residue stream and a static complexity; on each tick it
+selects tasks by a residue-based priority, allocates a share of the
+tick's budget, dispatches a work unit, reads the returned residue, and
+repeats.
+
+\subsection{State and priority}
+
+\begin{definition}[Live task]
+\label{def:livetask}
+A \emph{live task} $\task$ carries: a categorical complexity $K_\task$
+(with $d$ fixed); a committed-unit count $n_\task$ (its trajectory count,
+\Cref{def:count}); a current residue $\res_\task=\res_\task(n_\task)$; a
+recent descent rate $\Delta_\task$ over a fixed window; a sufficiency
+threshold $\theta_\task\in[\floor_A,U]$ (\Cref{sec:sufficiency}); and a
+state in $\{\textsc{running},\textsc{stalled},\textsc{sufficient},
+\textsc{done},\textsc{declined}\}$.
+\end{definition}
+
+\begin{definition}[Residue priority]
+\label{def:priority}
+The \emph{priority} of a running task $\task$ is
+\[
+P(\task)=
+\frac{\Delta_\task}{\max(\res_\task-\theta_\task,\ \floor_A)} .
+\]
+If $\res_\task\le\theta_\task$ (the task has reached its sufficiency
+threshold), $P(\task)=+\infty$ (dispatch to finalise immediately). If
+$\Delta_\task=0$ over the stall window, $P(\task)=0$ (do not feed a
+stalled task).
+\end{definition}
+
+The numerator rewards \emph{descent rate} (a fast-converging task is
+worth advancing); the denominator rewards \emph{closeness} to the
+sufficiency threshold (a nearly-done task is worth finishing). A stalled
+task ($\Delta=0$) gets priority $0$ regardless of closeness---compute
+will not help it. A task at threshold gets $+\infty$---finish it and free
+its resources. This realises the two scheduling instincts proved correct
+in \Cref{thm:diagnosis}: feed the converging, finish the close, starve the
+stalled.
+
+\begin{remark}[Why not $1/n_{\mathrm{term}}$]
+\label{rem:not-static}
+A scheduler could rank by static remaining units
+$n_{\mathrm{term}}(K)-n_\task$. This is a prediction and inherits the
+unknowable-duration problem: a behind-curve task (\Cref{rem:reclassify})
+would be deprioritised exactly when it is converging and should be fed.
+\Cref{def:priority} uses the \emph{measured} $\Delta$ and $\res$, so it is
+a present-tense quantity, not a forecast.
+\end{remark}
+
+\subsection{The tick loop}
+
+\begin{algorithm}[H]
+\caption{Residue-driven scheduler tick}
+\label{alg:tick}
+\begin{algorithmic}[1]
+\Function{Tick}{$L,\,B$} \Comment{live tasks $L$, tick budget $B$}
+  \State $R\gets\varnothing$ \Comment{collected results}
+  \While{$B>0$ \textbf{and} $\exists\,\task\in L:\task.\text{state}=\textsc{running}$}
+    \State $\task\gets\argmax_{\task'\in L}P(\task')$
+    \If{$P(\task)=0$} \Comment{all runnable tasks stalled}
+      \State \textbf{break}
+    \EndIf
+    \State $s\gets P(\task)/\textstyle\sum_{\task'}\max(P(\task'),0)$
+    \State $b\gets\min(B,\ \lceil s\cdot B\rceil)$ \Comment{budget share}
+    \State $r\gets \textsc{Dispatch}(\task,\,b)$ \Comment{one work unit}
+    \State $\task.n\mathrel{+}=1$;\ \ $\task.\res\gets r.\res$
+    \State update $\task.\Delta$ over the window
+    \State append $r$ to the append-only log;\ \ $R\gets R\cup\{r\}$
+    \State $B\mathrel{-}=b$
+    \If{$\task.\res\le\theta_\task$} $\task.\text{state}\gets\textsc{sufficient}$
+    \ElsIf{$\task.\Delta=0$ over window} $\task.\text{state}\gets\textsc{stalled}$
+    \EndIf
+  \EndWhile
+  \State \Return $R$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+\begin{theorem}[Priority-rule soundness]
+\label{thm:sound}
+\Cref{alg:tick} (i) never dispatches a stalled task, (ii) never withholds
+dispatch from the unique converging task when budget remains, and (iii)
+dispatches a task that has reached its threshold before any task that has
+not.
+\end{theorem}
+
+\begin{proof}
+(i) A stalled task has $\Delta=0$, hence $P=0$ by \Cref{def:priority};
+\textsc{Tick} selects $\argmax P$ and breaks when the maximum is $0$, so a
+stalled task is dispatched only if it is the unique runnable task and even
+then the loop breaks before dispatching it. (ii) If exactly one task is
+converging ($\Delta>0$) and others are stalled, the converging task is the
+unique non-zero priority, so $\argmax P$ selects it while $B>0$. (iii) A
+task at threshold has $P=+\infty$, strictly exceeding every finite
+priority, so $\argmax P$ selects it first.
+\end{proof}
+
+\begin{theorem}[No livelock; progress or decline]
+\label{thm:progress}
+On each tick, either some task's trajectory count strictly increases, or
+every runnable task is stalled and the scheduler signals decline. The
+trajectory count of the whole system (sum over tasks) is strictly
+monotone across non-declining ticks.
+\end{theorem}
+
+\begin{proof}
+If any runnable task has $P>0$, \textsc{Tick} dispatches it, incrementing
+its count (\Cref{thm:monotone}); the system count rises. If all runnable
+tasks have $P=0$ they are stalled; the loop breaks without dispatch and
+the scheduler reports decline for the stalled set. Monotonicity of the
+system count across dispatching ticks follows from per-task monotonicity
+and the append-only log.
+\end{proof}
+
+\begin{remark}[Decline as an honest output]
+\label{rem:decline}
+\Cref{thm:progress} makes ``stuck'' a detectable state---all runnable
+tasks stalled---rather than an elapsed timeout. The scheduler distinguishes
+``slow but converging'' (keep going) from ``not converging'' (decline)
+using the descent signal, never a wall-clock deadline. This is the
+anytime-computation stance \citep{dean1988,zilberstein1996} sharpened: the
+stopping criterion is non-approach, not time spent.
+\end{remark}
+
+% =====================================================================
+\section{Sufficiency stopping}
+\label{sec:sufficiency}
+% =====================================================================
+
+A sub-task serves a larger task. Its job is not to reach its \emph{own}
+floor but to be good enough for the \emph{parent}. We formalise this and
+prove that a sub-task may be released above its own floor, and that this
+judgment cannot be made by the sub-task itself.
+
+\subsection{Parent and sub-task floors}
+
+\begin{definition}[Task graph; parent floor]
+\label{def:taskgraph}
+A \emph{task graph} is a directed acyclic graph whose vertices are tasks
+and whose arcs $\task'\!\to\!\task$ mean ``$\task$ consumes $\task'$'s
+output.'' A designated sink carries the global goal $g$ with its own
+residue functional $\res_g$ and floor $\floor_g$. For a sub-task $\task$
+feeding (directly or transitively) the sink, the \emph{sufficiency
+threshold} $\theta_\task$ is the largest residue of $\task$'s output at
+which the sink's attainable residue toward $g$ is unaffected:
+\[
+\theta_\task=\sup\big\{\,r:\ \res_g^{\min}(\task\!=\!r)=\res_g^{\min}(\task\!=\!\floor_A)\big\},
+\]
+where $\res_g^{\min}(\cdot)$ is the best residue the rest of the graph can
+reach toward $g$ given $\task$'s output residue.
+\end{definition}
+
+\begin{theorem}[Sufficiency stopping]
+\label{thm:sufficiency}
+A sub-task $\task$ may be released (marked \textsc{sufficient}) as soon as
+$\res_\task\le\theta_\task$, even when $\res_\task>\floor_A$ (it has not
+reached its own floor). Releasing at $\theta_\task$ does not change the
+global attainable residue toward $g$.
+\end{theorem}
+
+\begin{proof}
+By \Cref{def:taskgraph}, $\theta_\task$ is exactly the threshold below
+which further reduction of $\task$'s residue leaves $\res_g^{\min}$
+unchanged: the sink is already at the residue it would reach were
+$\task$ resolved to its own floor. Hence committing further units to
+$\task$ below $\theta_\task$ reduces $\res_\task$ but not $\res_g^{\min}$;
+the marginal contribution to the global goal is zero. Releasing $\task$ at
+$\theta_\task$ therefore preserves $\res_g^{\min}$ while saving the
+committed cost of driving $\task$ from $\theta_\task$ to $\floor_A$.
+\end{proof}
+
+\begin{example}[Coarse-but-sufficient]
+\label{ex:timetable}
+Let $g$ be ``produce a train timetable,'' whose floor $\floor_g$ is at
+minute resolution, and let $\task$ be a timing sub-task capable of
+microsecond residue. The sink's residue toward $g$ is unchanged once
+$\task$'s output is correct to the minute, so $\theta_\task$ sits at
+minute resolution---far above $\task$'s own microsecond floor. By
+\Cref{thm:sufficiency}, $\task$ is released at the minute, and the
+microsecond precision it could attain is never computed. The extra
+precision is residue no part of $g$ registers; computing it is the cost of
+closing a gap the parent does not need closed (\Cref{cor:gap}).
+\end{example}
+
+\subsection{Sufficiency is not locally decidable}
+
+\begin{theorem}[No local sufficiency]
+\label{thm:nolocal}
+A sub-task $\task$ cannot, in general, compute its own sufficiency
+threshold $\theta_\task$. The threshold depends on $\res_g^{\min}$, a
+function of the global goal $g$ and the whole task graph; if $g$ is not
+represented within $\task$, no quantity internal to $\task$ is a function
+of $\theta_\task$.
+\end{theorem}
+
+\begin{proof}
+By \Cref{def:taskgraph}, $\theta_\task$ is defined through
+$\res_g^{\min}(\cdot)$, which quantifies over the rest of the graph and
+the goal $g$. If $g\notin$ representation of $\task$, then $\task$ holds
+no value depending on $\res_g$: two task graphs agreeing on $\task$'s
+local data but differing in the downstream structure that fixes
+$\res_g^{\min}$ assign different $\theta_\task$, yet are indistinguishable
+to $\task$. Hence $\theta_\task$ is not a function of $\task$-internal
+data, and $\task$ cannot compute it.
+\end{proof}
+
+\begin{corollary}[The threshold is set above the sub-task]
+\label{cor:above}
+Sufficiency thresholds must be assigned by a layer that holds the global
+goal and the task graph---the scheduler/orchestrator---and supplied to
+each sub-task as data. The sub-task reports its residue; the supervising
+layer decides whether that residue is sufficient for $g$ and signals
+release.
+\end{corollary}
+
+\begin{proof}
+Immediate from \Cref{thm:nolocal}: the only observer able to evaluate
+$\res_g^{\min}$ is one holding $g$ and the graph, which is not any single
+sub-task.
+\end{proof}
+
+This is the one place the global goal touches the scheduler's per-task
+loop: the threshold $\theta_\task$ (a number) is supplied top-down, while
+the residue $\res_\task$ flows bottom-up; \Cref{alg:tick} compares them.
+The separation keeps the scheduler's measurement local (it reads only
+$\res_\task,\Delta_\task$) and the sufficiency judgment global.
+
+% =====================================================================
+\section{Process annotation: identity and relatedness}
+\label{sec:annotation}
+% =====================================================================
+
+A scheduler must label every process so as to answer, in $\mathcal{O}(1)$,
+two questions: \emph{is this the same work as that} (identity) and
+\emph{is this related to that} (relatedness, e.g.\ shares structure, or
+occurs in the same burst). We prove these demand opposite locality and
+therefore cannot be served by one label, characterise the two labels that
+serve them, and construct their pairing.
+
+\subsection{Two labelling requirements}
+
+\begin{definition}[Labelling; locality]
+\label{def:label}
+A \emph{labelling} is a map $\lab\colon\mathcal{P}\to\mathcal{L}$ from
+processes (each a content with a trajectory state) to labels, with a
+label metric $d_\mathcal{L}$. The labelling is:
+\begin{itemize}[leftmargin=1.4em,itemsep=2pt]
+\item \emph{identity-faithful} if distinct processes receive labels at
+near-maximal $d_\mathcal{L}$ (no two processes are confusable), and
+collisions are cryptographically hard to produce;
+\item \emph{relatedness-faithful} if processes that are close in the
+process metric (shared structure, or temporal proximity) receive labels
+close in $d_\mathcal{L}$.
+\end{itemize}
+\end{definition}
+
+\begin{theorem}[Label orthogonality]
+\label{thm:orthogonality}
+No single labelling is both identity-faithful and relatedness-faithful.
+The two properties impose opposite locality: identity-faithfulness sends
+near inputs to far labels; relatedness-faithfulness sends near inputs to
+near labels.
+\end{theorem}
+
+\begin{proof}
+Let $\lab$ be identity-faithful. Take two processes $p,p'$ that are
+\emph{related} (close in the process metric) but distinct---e.g.\ two
+inputs differing in one bit. Identity-faithfulness requires
+$d_\mathcal{L}(\lab(p),\lab(p'))$ near-maximal, since $p\neq p'$ and the
+labelling must not confuse distinct processes; this is the avalanche
+property \citep{shannon1949,webster1986,feistel1973}: minimal input
+difference maps to maximal output difference. But relatedness-faithfulness
+requires $d_\mathcal{L}(\lab(p),\lab(p'))$ \emph{small}, because $p,p'$
+are close. The two demands on $d_\mathcal{L}(\lab(p),\lab(p'))$---near-%
+maximal and small---are contradictory for the same related pair. Hence no
+$\lab$ satisfies both.
+\end{proof}
+
+\begin{corollary}[A cryptographic digest cannot annotate relatedness]
+\label{cor:no-related}
+A cryptographic hash $\dig$ (designed for the strict avalanche criterion
+\citep{webster1986}, hence identity-faithful) is, by
+\Cref{thm:orthogonality}, not relatedness-faithful: related processes
+receive maximally distant digests, and the relatedness is unrecoverable
+from $\dig$ alone.
+\end{corollary}
+
+\begin{proof}
+By construction $\dig$ realises avalanche, the extreme of
+identity-faithfulness; \Cref{thm:orthogonality} forbids it from being
+relatedness-faithful.
+\end{proof}
+
+\subsection{Time-blindness of a content hash}
+
+The deeper limitation of a content hash for scheduling is not only that it
+destroys structural relatedness, but that it ignores \emph{when} a process
+ran.
+
+\begin{definition}[Time-blind labelling]
+\label{def:timeblind}
+A labelling $\lab$ is \emph{time-blind} if it is a function of process
+content alone: for any two processes with identical content but distinct
+trajectory states, $\lab$ assigns the same label.
+\end{definition}
+
+\begin{theorem}[Content hashes are time-blind]
+\label{thm:timeblind}
+A cryptographic content hash $\dig$ is time-blind: it takes no temporal
+input, so two processes with identical content and distinct trajectory
+counts $\Mcount_1\neq\Mcount_2$ satisfy $\dig(p_1)=\dig(p_2)$.
+\end{theorem}
+
+\begin{proof}
+$\dig$ is by definition a function of the content bytes only
+\citep{nist180-4,katz2014}; the trajectory count is not among its inputs.
+Two processes with identical content present identical inputs to $\dig$,
+so $\dig(p_1)=\dig(p_2)$ regardless of $\Mcount_1,\Mcount_2$. The
+labelling is therefore constant on content, i.e.\ time-blind by
+\Cref{def:timeblind}.
+\end{proof}
+
+\begin{corollary}[Temporal relatedness is invisible to a content hash]
+\label{cor:no-temporal}
+Two processes close in trajectory count (occurring in the same burst of
+work) but of unrelated content receive maximally distant digests; two
+processes of identical content but far apart in time receive identical
+digests. Neither temporal proximity nor temporal distance is legible from
+the digest.
+\end{corollary}
+
+\begin{proof}
+First claim: unrelated content means avalanche-distant digests
+(\Cref{cor:no-related}); the small trajectory-count gap is not seen by
+$\dig$ (\Cref{thm:timeblind}). Second claim: identical content gives an
+identical digest (\Cref{thm:timeblind}) whatever the count gap.
+\end{proof}
+
+\subsection{The trajectory address supplies the missing axis}
+
+The monotone count of \Cref{sec:count} is precisely the temporal input a
+content hash lacks. We give it a prefix-structured form so that temporal
+and structural proximity become prefix agreement.
+
+\begin{definition}[Trajectory address]
+\label{def:address}
+Fix a branching factor $b\ge 2$. The \emph{trajectory address} of a
+process at trajectory count $\Mcount$ along a structured work-tree is the
+base-$b$ digit string $\Addr(\Mcount)=(a_1 a_2\cdots a_m)$, where the
+digits are the process's choices at successive structural levels of the
+tree (the path from the tree root to the process's current node). Two
+addresses share a prefix of length $j$ iff the two processes agree on
+their first $j$ structural choices.
+\end{definition}
+
+\begin{theorem}[Prefix is proximity]
+\label{thm:prefix}
+Let $\lcp(\Addr_1,\Addr_2)$ be the length of the longest common prefix of
+two trajectory addresses. Then:
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.2em,itemsep=2pt]
+\item processes in the same structural subtree to depth $j$ have
+$\lcp\ge j$ (structural relatedness $=$ prefix length);
+\item along a single process, the address is monotone---each committed
+unit appends one digit---so addresses order the process's history and
+never collide (\Cref{thm:monotone});
+\item $\lcp$ is computable in $\mathcal{O}(\min(m_1,m_2))$, i.e.\
+$\mathcal{O}(1)$ in the address length, by digit comparison.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+(i) By \Cref{def:address}, the first $j$ digits encode the first $j$
+structural choices; agreement on the subtree to depth $j$ is exactly
+agreement on those $j$ digits, so $\lcp\ge j$. (ii) Each committed unit
+descends one tree level, appending one digit; the count is strictly
+increasing (\Cref{thm:monotone}), so successive addresses extend, never
+repeat, and order the history. (iii) Longest-common-prefix of two strings
+is a left-to-right digit scan, linear in the shorter length and bounded by
+the fixed address width.
+\end{proof}
+
+\begin{remark}[Address vs.\ wall-clock timestamp]
+\label{rem:vs-timestamp}
+One could append a wall-clock timestamp to a digest to add a temporal
+axis. The trajectory address is strictly preferable: it is monotone and
+collision-free by \Cref{thm:monotone} (a wall clock can reset, run
+backward, or collide within a tick); and its prefix encodes
+\emph{structural} position, not merely an instant, so $\lcp$ measures
+shared work, which a timestamp cannot
+(\Cref{thm:prefix}(i)). It is the logical time of
+\citep{lamport1978,fidge1988,mattern1989} carrying structural locality.
+\end{remark}
+
+\subsection{The paired label}
+
+\begin{construction}[Content--time process label]
+\label{con:paired}
+Annotate each process $p$ with the ordered pair
+\[
+\lab(p)=\big(\,\dig(\mathrm{content}(p)),\ \Addr(\Mcount(p))\,\big),
+\]
+the cryptographic digest of its content and its trajectory address. The
+two components are kept separate (not mixed into one digest).
+\end{construction}
+
+\begin{theorem}[Decidable relatedness queries]
+\label{thm:queries}
+Under \Cref{con:paired}, for any two processes $p_1,p_2$ the following are
+decidable in $\mathcal{O}(1)$ (in label width):
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.2em,itemsep=2pt]
+\item \emph{recurrence:} $\dig_1=\dig_2$ and $\Addr_1\neq\Addr_2$ ---
+same computation, occurring again at a later trajectory count
+(\Cref{cor:noreturn}: a re-occurrence, not the original);
+\item \emph{co-temporality:} $\dig_1\neq\dig_2$ and
+$\lcp(\Addr_1,\Addr_2)$ large --- unrelated content sharing a structural
+neighbourhood (a burst);
+\item \emph{refinement:} $\dig_1\neq\dig_2$ (small content change) and
+$\lcp(\Addr_1,\Addr_2)$ large --- a successive structural step of related
+work.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+Each query is a constant number of comparisons on the two label
+components: digest equality is an $\mathcal{O}(1)$ word comparison;
+$\lcp$ is the bounded digit scan of \Cref{thm:prefix}(iii). (i) Digest
+equality certifies identical content (collision-resistance of $\dig$
+\citep{nist180-4,stevens2017}); distinct addresses certify distinct
+trajectory counts (\Cref{thm:prefix}(ii)), hence a later occurrence. (ii)
+Distinct digests certify unrelated content (\Cref{cor:no-related}); large
+$\lcp$ certifies a shared subtree (\Cref{thm:prefix}(i)), i.e.\ temporal/%
+structural co-location. (iii) Same as (ii) with the content difference
+small, read as a refinement step rather than unrelated work.
+\end{proof}
+
+\begin{theorem}[Necessity of the pairing]
+\label{thm:necessity}
+No single component of \Cref{con:paired} decides all three queries.
+\Cref{thm:queries}(i) (recurrence) is undecidable from $\Addr$ alone;
+\Cref{thm:queries}(ii)--(iii) (co-temporality, refinement) are
+undecidable from $\dig$ alone.
+\end{theorem}
+
+\begin{proof}
+From $\Addr$ alone: two processes of \emph{identical} content but
+committed at different counts have distinct addresses and are
+indistinguishable, by the address, from two of \emph{different} content at
+those counts---the address does not encode content, so recurrence
+(same-content-again) cannot be certified. From $\dig$ alone: by
+\Cref{cor:no-temporal} temporal proximity and refinement are invisible to
+the content hash (time-blindness, \Cref{thm:timeblind}; relatedness
+destruction, \Cref{cor:no-related}). Hence each axis is decided only by
+its own component, and both components are required---the pairing is
+necessary, matching \Cref{thm:orthogonality}.
+\end{proof}
+
+\begin{remark}[Two faces of a process]
+\label{rem:two-faces}
+The pairing reflects that a process is content-at-a-time: the digest
+labels \emph{what} it is (maximal distinction, so it is unmistakably
+itself---the identity face), the address labels \emph{when and where} in
+the work-tree it sits (shared prefix with its kin---the relatedness
+face). Identity wants maximal apartness; relatedness wants shared
+structure; \Cref{thm:orthogonality} proves these cannot be one label, and
+\Cref{con:paired} supplies both. If integrity over the address stream is
+also required (tamper-evidence on the history), one additionally chains
+the addresses in a Merkle hash \citep{merkle1988,damgaard1989}---a third,
+separate use of a digest, for integrity, not relatedness.
+\end{remark}
+
+% =====================================================================
+\section{Overhead and complexity of the scheduler}
+\label{sec:overhead}
+% =====================================================================
+
+We bound the cost of running the scheduler and annotation themselves, so
+that the machinery does not dominate the work it schedules.
+
+\begin{theorem}[Per-tick cost]
+\label{thm:pertick}
+With $L$ live tasks and tick budget $B$ (work units), one call to
+\textsc{Tick} (\Cref{alg:tick}) costs
+$\mathcal{O}(B\log L)$ time and $\mathcal{O}(L)$ space, excluding the
+dispatched work itself.
+\end{theorem}
+
+\begin{proof}
+Priorities are maintained in a max-priority queue keyed by $P(\task)$;
+each of at most $B$ dispatches per tick performs one $\argmax$
+(queue-top, $\mathcal{O}(1)$) and one priority update on the dispatched
+task ($\mathcal{O}(\log L)$ to re-heapify), giving $\mathcal{O}(B\log L)$.
+The queue and task records are $\mathcal{O}(L)$ space. Reading the
+returned residue and updating $\Delta$ over a fixed window is
+$\mathcal{O}(1)$ per dispatch.
+\end{proof}
+
+\begin{theorem}[Annotation cost]
+\label{thm:annot-cost}
+Annotating one process (\Cref{con:paired}) costs one content-hash
+evaluation plus $\mathcal{O}(1)$ to extend the trajectory address by one
+digit. Each relatedness query (\Cref{thm:queries}) costs $\mathcal{O}(1)$
+in label width.
+\end{theorem}
+
+\begin{proof}
+The digest is one hash of the content; the address extends by one digit
+per committed unit (\Cref{thm:prefix}(ii)). Queries are the bounded
+comparisons of \Cref{thm:queries}.
+\end{proof}
+
+\begin{corollary}[Residue measurement does not dominate]
+\label{cor:nondominate}
+If reading a task's residue costs $\mathcal{O}(1)$ per unit (a single
+functional evaluation, \Cref{def:residue}), the scheduler's overhead per
+dispatched unit is $\mathcal{O}(\log L)$, independent of task running
+times. The scheduler's cost is governed by the number of tasks, not by
+how long any task takes---consistent with its refusal to predict
+durations.
+\end{corollary}
+
+\begin{proof}
+Per dispatched unit: $\mathcal{O}(\log L)$ for the queue update
+(\Cref{thm:pertick}), $\mathcal{O}(1)$ for residue read and address
+extension (\Cref{thm:annot-cost}). No term depends on the dispatched
+work's duration.
+\end{proof}
+
+% =====================================================================
+\section{Discussion and related work}
+\label{sec:related}
+% =====================================================================
+
+\paragraph{Scheduling.} Classical scheduling minimises functions of
+completion times from given processing times \citep{pinedo2016,
+brucker2007,liu1973,coffman1968}. The residue scheduler removes the
+given-processing-time assumption, which it argues is unattainable
+(\Cref{sec:intro}), and replaces ranking-by-predicted-duration with
+ranking-by-measured-residue and its descent
+(\Cref{def:priority}). The closest prior stance is anytime computation
+\citep{dean1988,zilberstein1996}, which trades solution quality for time;
+we sharpen its stopping rule from ``time elapsed'' to ``residue stalled or
+sufficient'' (\Cref{thm:progress,thm:sufficiency}) and give the
+quality coordinate (residue) a floor (\Cref{thm:floor}).
+
+\paragraph{Complexity.} Categorical complexity
+(\Cref{def:complexity}) counts distinguishable work-trajectories and
+yields a logarithmic termination bound for content-bounded tasks
+(\Cref{thm:termination}); it refines, with explicit non-tight relations,
+time/space complexity \citep{hartmanis1965,arora2009,sipser2013,blum1967},
+and makes no class-collapse claim (\Cref{prop:standard}). The
+unknowable-duration premise is the scheduling face of the absence of a
+general running-time oracle \citep{turing1936,blum1967}.
+
+\paragraph{Hashing and locality.} The label orthogonality theorem
+(\Cref{thm:orthogonality}) is a separation between cryptographic hashing
+(avalanche \citep{shannon1949,webster1986,feistel1973}, optimal for
+identity \citep{nist180-4,katz2014,stevens2017}) and locality-sensitive
+hashing (proximity-preserving \citep{indyk1998,broder1997,charikar2002},
+optimal for relatedness). We do not propose a hash that does both---we
+prove none can---and instead pair a content digest with a monotone
+prefix-structured trajectory address, the latter a structurally enriched
+logical clock \citep{lamport1978,fidge1988,mattern1989}. Time-blindness
+of a content hash (\Cref{thm:timeblind}) is, to our knowledge, not
+usually stated as a theorem though it is implicit in the definition of a
+content-addressed store \citep{merkle1980,merkle1988}.
+
+\paragraph{Bounded agents.} The Residue Floor Theorem
+(\Cref{thm:floor}) is a finite-capacity result in the spirit of bounded
+rationality \citep{simon1955}: a finite representation cannot resolve a
+solution to a point, and the irreducible gap is the margin of
+recognition. The information bound (\Cref{thm:info}) makes this a sizing
+law on the residue scale \citep{shannon1948,cover2006}.
+
+% =====================================================================
+\section{Conclusion}
+\label{sec:conclusion}
+% =====================================================================
+
+We have built a scheduler that does not predict running times---which we
+argued, and the standard theory confirms, cannot be done in
+general---and instead orders work by a measured residue and its rate of
+descent. The construction rests on three proved facts: a bounded agent
+cannot drive residue to zero, so ``solved'' is a region of positive
+thickness $\floor>0$ whose boundary is the margin of recognition
+(\Cref{thm:floor}); the count of committed work is strictly monotone, so a
+process's progress is a faithful non-decreasing coordinate and a revisited
+state is never a return (\Cref{thm:monotone}); and the number of
+distinguishable work-trajectories grows as $d(d+1)^{n-1}$, giving
+content-bounded tasks a logarithmic termination bound and a static
+complexity baseline (\Cref{thm:inflation,thm:termination}). The live
+deviation of residue from this baseline diagnoses, without any duration
+estimate, whether a task is compute-limited (feed it) or structure-limited
+(starve it) (\Cref{thm:diagnosis}), and a sub-task is released as soon as
+it is sufficient for the parent goal, even above its own floor, by a
+judgment the sub-task itself cannot make
+(\Cref{thm:sufficiency,thm:nolocal}). The scheduler's priority rule is
+sound, livelock-free, and of $\mathcal{O}(\log L)$ overhead per unit
+(\Cref{thm:sound,thm:progress,cor:nondominate}).
+
+For annotation we proved that identity and relatedness demand opposite
+locality and so cannot share a label (\Cref{thm:orthogonality}): a
+cryptographic digest is optimal for identity and destroys relatedness, and
+is moreover structurally time-blind (\Cref{thm:timeblind}). Pairing the
+digest with a monotone, prefix-structured trajectory address supplies the
+missing temporal/structural axis and makes recurrence, co-temporality, and
+refinement decidable in $\mathcal{O}(1)$ (\Cref{thm:queries}), with the
+pairing proved necessary (\Cref{thm:necessity}). A process is
+content-at-a-time; its label must carry both faces, and no single hash can.
+
+The throughline is one quantity: the residue---the positive-thickness gap
+between a partial result and a recognised solution. It is at once the
+scheduler's progress signal, the floor that makes recognition possible,
+the diagnostic that separates compute-limits from structure-limits, and
+the basis on which a process is annotated by what it is and when it ran.
+A scheduler that measures the gap, rather than predicting the time, needs
+neither an oracle it cannot have nor a label that cannot exist.
+
+% =====================================================================
+\bibliographystyle{plainnat}
+\bibliography{references}
+% =====================================================================
+
+\end{document}

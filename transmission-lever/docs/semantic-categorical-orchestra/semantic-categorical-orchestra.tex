@@ -1,0 +1,988 @@
+% ============================================================================
+%  Semantic Categorical Orchestra
+%  kwasa-kwasa, formalised: the conductor of a research operating system.
+%
+%  Self-contained. Every object is a finite weighted graph or a construction on
+%  one; only the standard external literature is cited. Interpretation is
+%  confined to remarks on which no theorem depends. The paper is intended to be
+%  read alone: nothing in the surrounding framework is presupposed.
+% ============================================================================
+\documentclass[twocolumn,11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{bm}
+\usepackage{mathrsfs}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage[round,sort&compress]{natbib}
+\usepackage[colorlinks=true,linkcolor=blue!45!black,
+            citecolor=blue!45!black,urlcolor=blue!45!black]{hyperref}
+\usepackage{cleveref}
+
+% ---- theorem environments ----
+\newtheoremstyle{sup}{6pt}{6pt}{\itshape}{}{\bfseries}{.}{.5em}{}
+\theoremstyle{sup}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{axiom}{Premise}
+\newtheorem{construction}[theorem]{Construction}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{principle}[theorem]{Principle}
+
+\crefname{axiom}{Premise}{Premises}
+\Crefname{axiom}{Premise}{Premises}
+
+% ---- operators and shorthand ----
+\DeclareMathOperator{\Aut}{Aut}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator{\hol}{hol}
+\DeclareMathOperator{\dom}{dom}
+\DeclareMathOperator{\cod}{cod}
+\DeclareMathOperator{\im}{im}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\E}{E}                    % edge set
+\newcommand{\reach}{\mathrm{reach}}   % reachable-state operator
+\newcommand{\flo}{\beta}              % the floor
+\newcommand{\med}{\mathsf{m}}         % the medium
+\newcommand{\cut}{\partial}
+\newcommand{\co}{\complement}
+\newcommand{\str}{\sigma}             % separation cost / minimum cut
+\newcommand{\Om}{\Omega}
+\newcommand{\Sent}{S}                 % semantic distance functional
+\newcommand{\Sflat}{S_{\flat}}        % the floor of S
+\newcommand{\cell}{\mathsf{C}}        % action cell
+\newcommand{\task}{t}
+\newcommand{\Tasks}{T}
+\newcommand{\Ens}{E}                  % ensemble of tasks
+\newcommand{\intent}{\iota}           % intent
+\newcommand{\mods}{\mathcal{M}}       % set of modules
+\newcommand{\modu}{\mu}               % a module
+\newcommand{\dsl}{\mathcal{L}}        % a module's language
+\newcommand{\orch}{\mathsf{K}}        % kwasa-kwasa, the orchestrator
+\newcommand{\dem}{D}                  % demand
+\newcommand{\contrib}{\delta\Sent}    % contribution score
+\newcommand{\Rens}{R}                 % ensemble order parameter
+\newcommand{\abs}[1]{\lvert#1\rvert}
+\newcommand{\norm}[1]{\lVert#1\rVert}
+\newcommand{\set}[1]{\{#1\}}
+\newcommand{\eps}{\varepsilon}
+
+\title{\textbf{Semantic Categorical Orchestra}\\[3pt]
+\large The Conductor of a Research Operating System:\\
+A Self-Contained Formalisation of an Orchestration Language}
+
+\author{%
+Kundai Farai Sachikonye\\[2pt]
+\small Technical University of Munich\\
+\small Chair of Experimental Bioinformatics\\
+\small \texttt{kundai.sachikonye@wzw.tum.de}}
+
+\date{\today}
+
+\begin{document}
+\maketitle
+
+% ============================================================================
+\begin{abstract}
+\noindent
+We formalise an orchestration language for a research operating system. The
+system presents no applications and no windows: a blank surface on which a
+researcher writes a program in one language, and to which only the currently
+necessary result is returned. Specialised competence---testing, simulation,
+analysis, retrieval---is held not by the language but by a federation of
+\emph{modules}, each a tool with its own domain-specific language that
+\emph{terminates} its domain and answers within it. The orchestration language
+generates no general-purpose code; it compiles intent into the modules' own
+languages and routes it. This relieves the language of the burden of omniscience
+and raises a different problem, which is the subject of the paper. Every module,
+queried correctly, returns a \emph{correct} answer; correctness is the module's
+guarantee. But a correct answer to the wrong question is worthless, and no module
+can tell whether its own task was the right one to perform, because that judgment
+is a property of the whole and a module is a bounded part. We prove, from a
+single derived fact---a strictly positive floor on the cost of telling any part
+from a non-completable whole---that necessity is unreadable from within any task
+(the No-Local-Necessity theorem), that it is therefore the irreducible function
+of a layer above the modules, and that this layer can certify necessity
+\emph{without redoing any module's work}, by three measurements on the
+task-graph alone: a \emph{contribution score} that vanishes exactly on
+purposeless tasks, a \emph{holonomy} that detects when correct steps compose into
+a cycle that drifts from the stated intent, and an \emph{order parameter} whose
+phase transition marks the ensemble's convergence onto a common goal. We define
+the language as a typed compiler from intent to module-language with a necessity
+gate at its centre, prove that the gate is sound (it never prunes a necessary
+task) and that orchestration converges to a region---an \emph{action cell}---of
+admissible plans rather than to a single point, and we exhibit the conductor as
+the one component the federation cannot do without: a hall of flawless players is
+silent without it. Everything is proved of finite weighted graphs; minimum cuts
+are exact, and interpretation is confined to remarks.
+\end{abstract}
+
+\noindent\textbf{Keywords:} orchestration language; domain-specific language;
+research operating system; minimum cut; resolution floor; necessity;
+contribution score; holonomy; order parameter; bounded observer; action cell;
+separation of concerns.
+
+\tableofcontents
+
+% ============================================================================
+\part{Foundations: the floor, parts, and the whole}
+% ============================================================================
+
+% ============================================================================
+\section{Introduction}
+\label{sec:intro}
+% ============================================================================
+
+\subsection{A blank surface}
+
+Consider an operating system for research that shows nothing until asked. There
+is no desktop of applications, no array of windows, no file browser; there is a
+surface on which the user writes, and onto which the system returns the one piece
+of information the writing requires, after which the surface is clear again. Such
+a system replaces the application---a standing program waiting to be used---with
+a sentence: a request, expressed once, answered once. The question this paper
+addresses is what language that sentence is written in, and what that language
+must \emph{be} in order for the system to work.
+
+\subsection{Players and a conductor}
+
+The competence of the system---the ability to test a piece of code, to simulate a
+reaction, to align two sequences, to retrieve a measurement---does not live in the
+language. It lives in a federation of \emph{modules}: independent tools, each
+expert in one domain, each exposing its own small language by which it is
+addressed. A module is to its domain what a virtuoso is to an instrument. The
+orchestration language does not play the instruments; it does not generate the
+low-level code that a module would otherwise need handed to it. It compiles a
+request into the \emph{module's own language} and dispatches it. The competence is
+the module's; the language only needs to know how to \emph{ask}.
+
+This division has an immediate benefit and a hidden cost. The benefit: the
+language need not be omniscient. It does not have to know how to write a correct
+simulation, only how to ask the simulation module for one; the simulation
+module's language already \emph{terminates} that domain---it admits exactly the
+well-formed simulations and nothing else---so the orchestrator commits only the
+intent and lets the module's compiler enforce correctness. This is the classical
+separation of concerns \citep{dijkstra1972,mernik2005} carried to its conclusion.
+
+The cost is subtler, and it is the reason the orchestrator must \emph{excel}, not
+merely route. Every module, asked a well-formed question, returns a
+\emph{correct} answer; that is its contract. But a correct answer to a question
+that should never have been asked advances nothing. A hall of the finest players
+in the world, each rendering their part flawlessly, is noise---or silence---without
+someone to decide which piece is played, in what order, toward what whole. That
+someone is the conductor, and the conductor's skill is not a better rendition of
+any part. It is the judgment of \emph{necessity}: whether each correctly performed
+task is the \emph{right} task, a \emph{needed} one, for the result the user
+actually asked for. We will prove that this judgment cannot be made by any player,
+and must be the defining function of the orchestrator.
+
+\subsection{The thesis}
+
+Three claims organise the paper, each proved below.
+
+\emph{First} (\Cref{sec:floor,sec:nolocal}), necessity is a global property and is
+invisible locally. We derive a strictly positive floor on the cost of
+individuating any part of a non-completable whole, and show that a bounded module,
+seeing only its own task against its own rest, cannot encode whether that task is
+necessary to the whole. Correctness is local and is the module's to guarantee;
+necessity is global and is not.
+
+\emph{Second} (\Cref{sec:modules,sec:contribution,sec:holonomy,sec:order}), the
+orchestrator can nonetheless certify necessity without performing any module's
+work, by three measurements on the graph of tasks: a contribution score that is
+zero exactly on tasks whose removal changes nothing the ensemble can achieve; a
+holonomy that is nonzero exactly when correct tasks compose around a cycle that
+departs from the declared intent; and an order parameter whose value, and whose
+sharp transition, report how nearly the ensemble has converged on a single goal.
+
+\emph{Third} (\Cref{sec:language,sec:cell,sec:conductor}), the orchestration
+language is exactly a typed compiler from intent to module-language with a
+\emph{necessity gate} at its centre. We prove the gate sound, prove that
+orchestration converges to a \emph{region} of admissible plans rather than a
+single plan, and prove that the conductor is the unique component the federation
+cannot dispense with.
+
+\subsection{Method}
+
+The development is austere on purpose. Every object is a finite weighted graph or
+a construction on one. ``Identity,'' ``meaning,'' ``necessity,'' ``correctness''
+are each a specific graph quantity, defined before use, and minimum cuts are
+computable exactly by maximum flow \citep{fordfulkerson1956,menger1927}. Where a
+tempting claim could not be proved at this standard it has been removed rather
+than weakened, and every interpretive reading---of a module as a player, of the
+orchestrator as a conductor, of a task-cycle as a feedback loop---is confined to a
+remark on which no theorem depends. The paper is self-contained: a reader who
+grants only finite weighted graphs can check every claim without consulting any
+other work.
+
+% ============================================================================
+\section{Contact graphs and the floor}
+\label{sec:floor}
+% ============================================================================
+
+We begin with the object on which everything rests and the one constant we will
+use throughout. Both are defined here from nothing.
+
+\begin{definition}[Finite weighted graph; cut]
+\label{def:graph}
+A \emph{finite weighted graph} is a triple $\Gamma=(V,\E,w)$ with $V$ a finite
+nonempty vertex set, $\E\subseteq\binom{V}{2}$ undirected edges, and
+$w\colon\E\to\R_{>0}$. For $\varnothing\neq S\subsetneq V$ the \emph{cut} is
+$\cut(S)=\set{\set{u,v}\in\E:u\in S,\ v\notin S}$, of weight
+$w(\cut(S))=\sum_{e\in\cut(S)}w(e)$.
+\end{definition}
+
+\begin{definition}[Contact graph; medium; separation cost]
+\label{def:contact}
+A \emph{contact graph} has a distinguished vertex $\med$, the \emph{medium},
+adjacent to every other vertex. The vertices $v\neq\med$ are \emph{items}. The
+\emph{separation cost} of an item $v$ is the minimum weight of a cut placing $v$
+opposite the medium,
+\[
+\str(v)=\min_{S\ni v,\ \med\notin S}w(\cut(S)),
+\]
+the $v$--$\med$ minimum cut, attained on finite $V$ and computable by max-flow
+\citep{fordfulkerson1956,menger1927,diestel2017}. The minimising cut is the
+\emph{resting cut} of $v$.
+\end{definition}
+
+\begin{remark}[The medium is ``everything else'']
+\label{rem:medium}
+The medium is not a place; it is the single vertex standing for all that an item
+is told apart from. Its universal adjacency encodes that every item is, at
+minimum, individuated against the whole rest. No theorem uses any reading of
+$\med$ beyond \Cref{def:contact}.
+\end{remark}
+
+\begin{definition}[Expanding family; non-completable whole]
+\label{def:noncompletable}
+An \emph{expanding family} is a chain of contact graphs
+$\Gamma_0\subseteq\Gamma_1\subseteq\cdots$, each adding items and contacts while
+keeping the medium and all prior structure. The whole is \emph{non-completable}
+if the family has no last stage: for every $\Gamma_k$ there is
+$\Gamma_{k+1}\supsetneq\Gamma_k$. This is an order condition, not a cardinality
+assumption.
+\end{definition}
+
+\begin{theorem}[The floor]
+\label{thm:floor}
+Let the whole be non-completable. Then there is a constant $\flo>0$ with
+$w(e)\ge\flo$ for every contact and $\str(v)\ge\flo$ for every item: no item is
+told from the rest at zero cost, and there is no cut of weight $0$ separating a
+nonempty item set from its nonempty complement.
+\end{theorem}
+
+\begin{proof}
+To identify an item $v$ completely is to fix it by its cut against the entire
+rest of the whole. Suppose this needs zero residue: then at some finite stage
+$\Gamma_k$ the whole has been brought to bear, so $\Gamma_k$ contains the whole,
+contradicting non-completability (\Cref{def:noncompletable}), which supplies a
+further stage with an item not yet weighed against $v$. Hence a positive residue
+remains at every finite stage; set $\flo$ to its infimum. This residue is carried
+by the edges of $v$'s resting cut, so each such edge has weight $\ge\flo$; every
+edge lies in some singleton cut, so every weight is $\ge\flo$; and connectivity
+forces $\str(v)=w(\cut(S^\ast(v)))\ge\flo>0$.
+\end{proof}
+
+\begin{remark}[Why a floor, and why it is not assumed]
+\label{rem:trace}
+$\flo$ is not posited; it is the trace a non-completable whole leaves on each of
+its parts. A completable whole would permit zero-cost cuts and point-identities;
+the impossibility of finishing the comparison is exactly what makes the floor
+positive. Every later result depends only on $\flo>0$, never on its value.
+\end{remark}
+
+% ============================================================================
+\section{Identity, correctness, and the action cell}
+\label{sec:identity}
+% ============================================================================
+
+We now fix what ``the identity of a part'' and ``a correct result'' mean, and
+prove that each is a \emph{region}, never a point. This is the structural fact
+behind every later claim about necessity.
+
+\begin{definition}[Weighted isomorphism; invariant]
+\label{def:iso}
+A \emph{weighted isomorphism} is a vertex bijection preserving the medium, edges,
+and weights. A quantity is a \emph{graph invariant} if it agrees on isomorphic
+graphs.
+\end{definition}
+
+\begin{theorem}[Identity is the invariant cut, a region]
+\label{thm:region}
+The separation cost and resting cut of an item are graph invariants, while its
+label is permuted by automorphisms and is not. The identity of an item---the
+invariant datum fixing it---is its resting cut, a set of contacts of weight
+$\ge\flo>0$; in general the minimising side $S^\ast(v)$ is not the singleton
+$\set{v}$. Identity is therefore a region of contacts, never a point.
+\end{theorem}
+
+\begin{proof}
+An isomorphism carries each $v$--$\med$ cut to an equal-weight cut and back, so
+the minimum is preserved; labels are permuted by any nontrivial automorphism.
+By \Cref{thm:floor} the cut has weight $\ge\flo>0$. For non-locality, join two
+dense item-clusters by a single $\flo$-weight contact: the cheapest cut against
+$\med$ may peel off a whole cluster, a side of size $>1$, below the cost of
+isolating any one vertex; the minimiser is then not a singleton.
+\end{proof}
+
+We carry this from a single item to a \emph{result}: the outcome of a piece of
+work, scored by how far it stands from doing what was asked.
+
+\begin{definition}[Semantic distance; the floor of a result]
+\label{def:Sfunctional}
+Fix a goal $g$ (a designated item, the intended terminus). The \emph{semantic
+distance} of a state $x$ to $g$ is the alignment gap
+\[
+\Sent(x)=\frac{\str(x,g)}{\Om}\in(0,1],\qquad \Om:=w(\E),
+\]
+where $\str(x,g)$ is the $x$--$g$ minimum cut. By \Cref{thm:floor},
+$\Sent(x)\ge\flo/\Om=:\Sflat>0$ for $x\neq g$: no state is perfectly on goal;
+$\Sflat$ is the irreducible floor of $\Sent$.
+\end{definition}
+
+\begin{theorem}[Correctness is an action cell, not a point]
+\label{thm:cell}
+The set $\cell:=\set{x:\Sent(x)=\Sflat}$ of states at the floor---the
+\emph{action cell} of the goal---is in general not a single state: distinct $x\neq
+x'$ may both attain $\Sflat$. A correct result is membership in $\cell$, a
+positive-volume region; it is never a unique prescribed output.
+\end{theorem}
+
+\begin{proof}
+$\Sent(x)=\Sflat$ holds iff the $x$--$g$ cut attains the floor. By
+\Cref{thm:region} the floor-attaining cut need not be borne by a singleton, and
+two states whose cuts to $g$ have equal floor weight are $\Sent$-indistinguishable;
+construct them as in \Cref{thm:region}. Hence $\abs{\cell}>1$ in general.
+\end{proof}
+
+\begin{remark}[``Correct'' is a region; this is not a defect]
+\label{rem:cell}
+\Cref{thm:cell} says a module that returns \emph{any} $x\in\cell$ has returned a
+correct result; there is no single right output to match. This is why correctness
+can be a module's local guarantee and yet leave the harder question---whether the
+\emph{goal} $g$ was the one the user wanted---entirely open. We make that gap
+precise next.
+\end{remark}
+
+% ============================================================================
+\section{No local necessity}
+\label{sec:nolocal}
+% ============================================================================
+
+This section proves the paper's pivot: a part cannot judge its own necessity. We
+first separate two notions kept apart throughout.
+
+\begin{definition}[Correctness versus necessity]
+\label{def:corr-nec}
+Let a \emph{task} produce a result $x$ aimed at a local goal $g_\task$. The task
+is \emph{correct} if $x\in\cell(g_\task)$: it does what it was asked, to within
+the floor. Given an \emph{intent} $g$ (the global goal) and an ensemble of tasks
+$\Ens$, a task $\task\in\Ens$ is \emph{necessary} if removing it strictly worsens
+the best semantic distance the ensemble can reach toward $g$:
+\[
+\min_{x\in\reach(\Ens\setminus\set\task)}\Sent_g(x)\ >\
+\min_{x\in\reach(\Ens)}\Sent_g(x),
+\]
+where $\reach(\cdot)$ is the set of states the ensemble can produce. Correctness
+is judged against $g_\task$; necessity against $g$.
+\end{definition}
+
+\begin{definition}[Bounded module; its horizon]
+\label{def:bounded}
+A \emph{module} is a bounded observer: a finite contact graph $\Gamma_\modu$ with
+a state capacity $\kappa_\modu=\log_2\abs{V_\modu}$ bits, individuating its task
+against \emph{its own} rest $\med_\modu$, with no edge to the global goal $g$
+unless $g\in V_\modu$.
+\end{definition}
+
+\begin{theorem}[No local necessity]
+\label{thm:nolocal}
+A module cannot, in general, determine the necessity of its own task. Precisely:
+if the global intent $g$ lies outside the module's graph
+($g\notin V_\modu$), then necessity---a predicate on the global ensemble's reach
+toward $g$---is not a function of any datum available within $\Gamma_\modu$; and
+even when $g$ is present, if the ensemble's global state complexity exceeds
+$\kappa_\modu$ bits, no correctness criterion encodable in the module decides it.
+\end{theorem}
+
+\begin{proof}
+\emph{(i) Absent goal.} By \Cref{def:corr-nec} necessity quantifies over
+$\reach(\Ens)$ and $\reach(\Ens\setminus\set\task)$, both defined by cuts toward
+$g$. If $g\notin V_\modu$ there is no $g$-cut inside $\Gamma_\modu$, so no
+internal quantity is a function of $\Sent_g$; two global ensembles agreeing on
+$\Gamma_\modu$ but differing in whether $\task$ is necessary are indistinguishable
+to the module. Hence necessity is not module-internal.
+
+\emph{(ii) Present goal, insufficient capacity.} Suppose $g\in V_\modu$ but the
+global ensemble has $N$ distinguishable necessity-configurations with $\log_2
+N>\kappa_\modu$. A decision of necessity is a function from configurations to
+$\set{0,1}$ that must be \emph{stored} (encoded) within the module's
+$\kappa_\modu$ bits to be applied; by the pigeonhole principle a $\kappa_\modu$-bit
+state cannot label $N>2^{\kappa_\modu}$ distinct configurations injectively, so
+some two configurations with opposite necessity collapse to one module-state and
+are decided alike---wrongly for one. No module-encodable criterion is correct on
+all of them.
+\end{proof}
+
+\begin{corollary}[Necessity is the layer above]
+\label{cor:above}
+Necessity is decidable only by an observer whose graph contains the global goal
+$g$ and the whole ensemble $\Ens$, with capacity $\ge\log_2 N$. Since a module is
+by definition bounded to its own task, this observer is a distinct layer
+\emph{above} the modules.
+\end{corollary}
+
+\begin{proof}
+Immediate from \Cref{thm:nolocal}: the two failure modes are exactly absence of
+$g$ and insufficiency of capacity; an observer holding $g$, $\Ens$, and enough
+bits suffers neither, and is not any single module.
+\end{proof}
+
+\begin{remark}[The orchestra, stated exactly]
+\label{rem:orchestra}
+\Cref{thm:nolocal} is the formal content of the orchestra. Each player renders a
+correct part (membership in its own action cell, \Cref{thm:cell}); no player can
+hear whether the \emph{piece} is right, because the piece is a property of the
+whole ensemble's convergence on a goal that no part contains
+(\Cref{cor:above}). The conductor is not a better player; the conductor is the
+observer the theorem requires. No theorem depends on the reading.
+\end{remark}
+
+% ============================================================================
+\part{The federation and the three measurements}
+% ============================================================================
+
+% ============================================================================
+\section{Modules, languages, and the orchestrator}
+\label{sec:modules}
+% ============================================================================
+
+We now build the federation and the layer above it, and fix what each is allowed
+to do.
+
+\begin{definition}[Module; its language; termination of a domain]
+\label{def:module}
+A \emph{module} $\modu$ is a pair $(\dsl_\modu,\;[\![\cdot]\!]_\modu)$ of a
+\emph{domain-specific language} $\dsl_\modu$---a set of well-formed
+\emph{instructions}---and an interpretation taking each instruction to a result.
+The module \emph{terminates} its domain: $\dsl_\modu$ admits exactly the
+well-formed tasks of the domain and no others, and every admitted instruction is
+interpreted to a correct result ($x\in\cell(g_\task)$, \Cref{thm:cell}). A module
+is a bounded observer (\Cref{def:bounded}).
+\end{definition}
+
+\begin{definition}[Intent; the orchestrator]
+\label{def:orchestrator}
+An \emph{intent} $\intent$ is a request written by the user in a single
+\emph{orchestration language}, naming a global goal $g$. The \emph{orchestrator}
+$\orch$ (the conductor; \emph{kwasa-kwasa}) is a map that takes an intent and a
+federation $\mods=\set{\modu_1,\dots,\modu_k}$ and returns a result surfaced to
+the user. $\orch$ generates \emph{no} domain instructions of its own beyond
+emitting, for each chosen subtask, a well-formed instruction in the relevant
+module's language $\dsl_\modu$. The competence of each domain is the module's;
+$\orch$'s competence is elsewhere, and is the subject of \Cref{sec:contribution}
+onward.
+\end{definition}
+
+\begin{principle}[Separation of competence]
+\label{prin:separation}
+Two competences are kept disjoint. \emph{Correctness} is each module's, enforced
+by $\dsl_\modu$'s termination of its domain (\Cref{def:module}). \emph{Necessity}
+is the orchestrator's, and by \Cref{thm:nolocal} can be nowhere else. The
+orchestrator never re-checks a module's correctness, and a module never judges its
+own necessity.
+\end{principle}
+
+\begin{remark}[Why the orchestrator emits a language, not code]
+\label{rem:emit-dsl}
+A general code generator must hold the competence of every target domain---it must
+know how to write a correct simulation, a correct test, a correct alignment---which
+makes it an all-knowing part, contradicting boundedness and inviting error at
+every domain it touches. Emitting into $\dsl_\modu$ removes this: the orchestrator
+commits only the intent (which task, toward which goal), and the module's
+termination of its domain supplies correctness. The orchestrator is thereby freed
+to spend its whole capacity on the one thing no module can do---necessity.
+This is the classical compiler discipline of lowering to a typed target
+\citep{aho2006,mernik2005} put to the service of \Cref{prin:separation}; no
+theorem depends on the reading.
+\end{remark}
+
+\begin{definition}[Task graph]
+\label{def:taskgraph}
+For an intent $\intent$ the orchestrator forms a \emph{task graph}: a directed
+graph $G_\Ens=(\Ens,A)$ whose vertices are tasks (each routed to a module) and
+whose arcs $u\to v$ record that $v$ consumes $u$'s result. Sources are the
+intent's givens; the designated sink carries the global goal $g$. Each task $\task$
+has a local goal $g_\task$ and, once run, a result $x_\task\in\cell(g_\task)$.
+\end{definition}
+
+The next three sections give the orchestrator's three instruments, each a
+measurement on $G_\Ens$ that needs no module re-execution.
+
+% ============================================================================
+\section{Contribution: the necessity of a single task}
+\label{sec:contribution}
+% ============================================================================
+
+\begin{definition}[Ensemble floor; contribution score]
+\label{def:contribution}
+The \emph{ensemble floor} is the best semantic distance the ensemble can reach
+toward $g$,
+\[
+\Sflat(\Ens)=\min_{x\in\reach(\Ens)}\Sent_g(x)\ \ge\ \Sflat .
+\]
+The \emph{contribution} of a task $\task$ is the increase in the ensemble floor
+caused by removing it,
+\[
+\contrib(\task,\Ens)=\Sflat(\Ens\setminus\set\task)-\Sflat(\Ens)\ \ge 0 .
+\]
+\end{definition}
+
+\begin{theorem}[Contribution decides necessity]
+\label{thm:contribution}
+$\contrib(\task,\Ens)>0$ iff $\task$ is necessary
+(\Cref{def:corr-nec}); $\contrib(\task,\Ens)=0$ iff $\task$ is
+\emph{purposeless}---its removal leaves unchanged everything the ensemble can
+achieve toward $g$. Monotonicity holds: removing a task cannot lower the floor,
+so $\contrib\ge0$ always.
+\end{theorem}
+
+\begin{proof}
+Removing a task can only shrink $\reach$ (fewer producible states), so the minimum
+over a subset cannot fall: $\Sflat(\Ens\setminus\set\task)\ge\Sflat(\Ens)$, giving
+$\contrib\ge0$. By \Cref{def:corr-nec} necessity is exactly
+$\Sflat(\Ens\setminus\set\task)>\Sflat(\Ens)$, i.e.\ $\contrib>0$; its negation
+$\contrib=0$ is equality of the floors, i.e.\ purposelessness.
+\end{proof}
+
+\begin{corollary}[A correct task may be purposeless]
+\label{cor:correct-purposeless}
+There exist tasks with $x_\task\in\cell(g_\task)$ (perfectly correct) and
+$\contrib(\task,\Ens)=0$ (purposeless): a flawless answer that the ensemble did
+not need. Correctness does not imply necessity.
+\end{corollary}
+
+\begin{proof}
+Let $\task$ produce a correct result on a local goal $g_\task$ disconnected from
+the sink $g$ in $G_\Ens$ (its arc does not reach the sink). Then $\reach$ toward
+$g$ is unchanged by its presence, so $\contrib=0$ while $x_\task\in\cell(g_\task)$.
+\end{proof}
+
+\begin{remark}[The pruning the conductor performs]
+\label{rem:prune}
+\Cref{thm:contribution,cor:correct-purposeless} give the conductor its first act:
+compute $\contrib$ for each task and \emph{prune} those with $\contrib=0$. A
+purposeless task is correct and removable; pruning it changes nothing the ensemble
+can achieve and spares its cost. This is necessity exercised positively, by
+subtraction. Soundness---that pruning never removes a necessary task---is
+\Cref{thm:gate-sound}.
+\end{remark}
+
+% ============================================================================
+\section{Holonomy: necessity around a cycle}
+\label{sec:holonomy}
+% ============================================================================
+
+Single-task contribution does not catch a subtler failure: tasks each correct and
+each necessary, composed around a feedback cycle that drifts from the goal. We
+measure the drift directly.
+
+\begin{definition}[Transport; specification; holonomy]
+\label{def:holonomy}
+Each arc $u\to v$ of $G_\Ens$ carries a \emph{transport} $T_{u\to v}$: the map by
+which $v$ transforms $u$'s result. For a directed cycle $c=(v_0\to
+v_1\to\cdots\to v_n=v_0)$ the \emph{accumulated transport} is
+$T_c=T_{v_{n-1}\to v_0}\circ\cdots\circ T_{v_0\to v_1}$. The intent supplies a
+\emph{specification} $T_c^{\mathrm{spec}}$, the transformation the cycle is
+declared to realise (the identity if the cycle should restore its starting
+state). The \emph{holonomy} of $c$ at a probe $x$ is
+\[
+\hol(c,x)=\norm{T_c(x)-T_c^{\mathrm{spec}}(x)} .
+\]
+\end{definition}
+
+\begin{theorem}[Cycle inconsistency]
+\label{thm:holonomy}
+If $\hol(c,x)>0$ for some reachable probe $x$ on some cycle $c$ of $G_\Ens$, then
+the ensemble is globally inconsistent with the intent: there is no assignment of
+results, each locally correct, whose composition around $c$ matches the
+declared specification. Zero holonomy on every cycle is necessary for global
+consistency; on a DAG (no cycles) holonomy is vacuous and consistency is decided
+by the contribution scores alone.
+\end{theorem}
+
+\begin{proof}
+Composition around $c$ returns to $v_0$; consistency with the intent requires the
+returned state equal the specified one, i.e.\ $T_c(x)=T_c^{\mathrm{spec}}(x)$ for
+all reachable $x$, i.e.\ $\hol(c,x)=0$. A single $x$ with $\hol(c,x)>0$ exhibits a
+state the cycle transforms against specification; since each $T_{u\to v}$ is fixed
+by its (correct) module, no reassignment of \emph{correct} results removes the
+mismatch---it lives in the composition, not in any node. Necessity of the
+condition is its definition; on a DAG there is no cycle, so the universally
+quantified condition is vacuously true and only \Cref{thm:contribution} remains.
+\end{proof}
+
+\begin{remark}[The route audit]
+\label{rem:route}
+Holonomy is an audit of the \emph{route}, not the endpoints. Every node may be
+correct and every node necessary, yet the loop they form may accumulate a drift
+that no node reveals---a discrepancy visible only by transporting a probe all the
+way around and comparing with what was promised. Kirchhoff's loop law
+\citep{kirchhoff1847} and the holonomy of a connection
+\citep{kobayashinomizu1963} are the same shape: a quantity that is consistent iff
+its accumulation around every closed loop vanishes. The conductor's second act is
+to enumerate the cycles (by Johnson's algorithm \citep{johnson1975}, after a
+strongly-connected decomposition \citep{tarjan1972}) and test each for holonomy.
+No theorem depends on the reading.
+\end{remark}
+
+% ============================================================================
+\section{The order parameter: convergence on one goal}
+\label{sec:order}
+% ============================================================================
+
+The third instrument measures, in a single scalar, how nearly the whole ensemble
+is pulling toward one goal, and detects the sharp moment at which it locks on.
+
+\begin{definition}[Phase; coupling; order parameter]
+\label{def:order}
+Assign each task $\task$ a \emph{phase} $\theta_\task\in[0,2\pi)$: the direction,
+in goal-space, of its result's pull (its alignment angle toward $g$). Arcs couple
+phases with strength $K$ proportional to shared contribution. The \emph{ensemble
+order parameter} is
+\[
+\Rens\,e^{\mathrm i\psi}=\frac1{\abs\Ens}\sum_{\task\in\Ens}e^{\mathrm
+i\theta_\task},\qquad \Rens\in[0,1],
+\]
+the magnitude of the mean phase: $\Rens=0$ when pulls cancel (no shared goal),
+$\Rens=1$ when all pulls align (one goal) \citep{kuramoto1975,kuramoto1984,
+strogatz2000}.
+\end{definition}
+
+\begin{theorem}[Regimes and the locking transition]
+\label{thm:order}
+Under phase coupling on $G_\Ens$ there is a critical coupling $K_c$ such that for
+$K<K_c$ the only stable state is incoherent ($\Rens\approx0$: the tasks do not
+share a goal), and for $K>K_c$ a coherent state with $\Rens>0$ emerges and grows.
+The order parameter stratifies the ensemble into regimes from \emph{turbulent}
+($\Rens$ small, no common action cell) through \emph{coherent} ($\Rens$ near $1$,
+converging on a common cell) to \emph{phase-locked} ($\Rens=1$); the onset at
+$K_c$ is a genuine transition in the sense of \citet{landau1937}.
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+The mean-field reduction of phase coupling \citep{kuramoto1984,strogatz2000} gives
+a self-consistency equation $\Rens=K\,\Rens\,F(\Rens)$ with $F$ the
+coupling-weighted alignment kernel; $\Rens=0$ always solves it, and a second,
+positive solution bifurcates from it exactly when $K$ exceeds
+$K_c=1/F(0^+)$. Below $K_c$ only $\Rens=0$ is stable; above, the coherent branch
+is stable and increasing in $K$. The free-energy expansion in the order parameter
+near $K_c$ is that of a second-order transition \citep{landau1937}, giving the
+sharp onset. Full coherence $\Rens=1$ is the fixed point at which all phases
+coincide.
+\end{proof}
+
+\begin{remark}[A map, not a verdict]
+\label{rem:regimemap}
+The conductor's third act returns not a pass/fail but a \emph{regime map}:
+$(\Rens,\Sflat(\Ens),\hol,\contrib)$. By \Cref{thm:cell} ``correct'' is already a
+region, so the honest report of an ensemble's health is likewise a region-valued
+characterisation---how coherently the tasks converge---rather than a point verdict.
+A low $\Rens$ says the ensemble is doing many correct things that do not add up to
+one goal; that is precisely a failure of \emph{necessity}, made quantitative. No
+theorem depends on the reading.
+\end{remark}
+
+% ============================================================================
+\part{The language, the cell of plans, and the conductor}
+% ============================================================================
+
+% ============================================================================
+\section{kwasa-kwasa as a typed compiler with a necessity gate}
+\label{sec:language}
+% ============================================================================
+
+We now assemble the three instruments into the orchestration language and prove
+its central property: it judges necessity soundly while never touching
+correctness.
+
+\begin{definition}[The orchestration pipeline]
+\label{def:pipeline}
+$\orch$ maps an intent $\intent$ (global goal $g$) to a surfaced result by:
+\begin{enumerate}[label=\textup{(\arabic*)},leftmargin=2em,itemsep=1pt]
+\item \emph{Decompose}: form a task graph $G_\Ens$ (\Cref{def:taskgraph}),
+routing each task to a module whose domain it falls in.
+\item \emph{Lower}: emit, for each task, a well-formed instruction in its module's
+language $\dsl_\modu$ (\Cref{rem:emit-dsl}); correctness is the module's
+(\Cref{def:module}).
+\item \emph{Gate}: judge necessity on $G_\Ens$---prune tasks with $\contrib=0$
+(\Cref{thm:contribution}), reject ensembles with $\hol>0$ on any cycle
+(\Cref{thm:holonomy}), and report the regime $\Rens$ (\Cref{thm:order}).
+\item \emph{Surface}: return the result of the gated, coherent ensemble; clear the
+surface.
+\end{enumerate}
+\end{definition}
+
+\begin{definition}[Well-typed orchestration]
+\label{def:welltyped}
+A task is \emph{well-typed} if its instruction is well-formed in its module's
+language and its arcs connect output types to input types along $G_\Ens$. $\orch$
+\emph{accepts} an ensemble iff it is well-typed, has zero holonomy on every cycle,
+and contains no purposeless task after pruning.
+\end{definition}
+
+\begin{theorem}[Soundness of the necessity gate]
+\label{thm:gate-sound}
+The gate is \emph{sound}: it never prunes a necessary task and never rejects a
+globally consistent ensemble. Formally, if $\task$ is necessary
+(\Cref{def:corr-nec}) then the gate retains it; if $\Ens$ is globally consistent
+with the intent (zero holonomy on every cycle, every task necessary) then the gate
+accepts it.
+\end{theorem}
+
+\begin{proof}
+The gate prunes $\task$ only when $\contrib(\task,\Ens)=0$, which by
+\Cref{thm:contribution} is exactly purposelessness, the negation of necessity; so
+a necessary task ($\contrib>0$) is never pruned. The gate rejects only on
+$\hol>0$ for some cycle, which by \Cref{thm:holonomy} is exactly global
+inconsistency; so a consistent ensemble (all holonomies zero) is never rejected.
+Both gate actions are characterisations, not heuristics, so each is sound by the
+theorem it invokes.
+\end{proof}
+
+\begin{theorem}[The gate touches only necessity, never correctness]
+\label{thm:gate-orthogonal}
+The gate's three measurements---$\contrib$, $\hol$, $\Rens$---are functions of the
+task graph $G_\Ens$ and the results $x_\task$ alone, and never re-evaluate whether
+$x_\task\in\cell(g_\task)$. Correctness is read from the module's contract and
+treated as given; the gate decides only necessity and consistency.
+\end{theorem}
+
+\begin{proof}
+$\contrib$ depends on $\reach$ and $\Sflat(\Ens)$ (\Cref{def:contribution}); $\hol$ on
+the transports and the specification (\Cref{def:holonomy}); $\Rens$ on the phases
+(\Cref{def:order}). Each is computed from $G_\Ens$ and the delivered results; none
+recomputes a module's local goal $g_\task$ or re-checks $x_\task\in\cell(g_\task)$,
+which is supplied by \Cref{def:module}. Hence the gate is orthogonal to
+correctness, realising \Cref{prin:separation}.
+\end{proof}
+
+\begin{remark}[Why the language can be thin]
+\label{rem:thin}
+\Cref{thm:gate-orthogonal} is the reason the orchestration language is small. It
+carries none of the domains' competence---no module's grammar, no domain
+correctness---only the three graph measurements and the routing. A user learns to
+\emph{express intent and route it}, not to write simulations or tests; the surface
+of the language is the entire interface to the system, and it is thin precisely
+because competence lives below it. No theorem depends on the reading.
+\end{remark}
+
+% ============================================================================
+\section{Orchestration converges to a region of plans}
+\label{sec:cell}
+% ============================================================================
+
+We show that the gate does not seek a unique plan---there is none to seek---but
+relaxes the ensemble into an \emph{action cell of plans}, and that this relaxation
+halts or declines.
+
+\begin{definition}[Plan; demand; relaxation]
+\label{def:relax}
+A \emph{plan} is an accepted ensemble (\Cref{def:welltyped}). Its \emph{demand} is
+$\dem(\Ens)=\Sflat(\Ens)-\Sflat$, the ensemble's distance above the irreducible
+floor. The \emph{relaxation} repeatedly: prunes a purposeless task, repairs a
+holonomy violation by re-routing the offending cycle, or adds a task that strictly
+lowers $\Sflat(\Ens)$---each step a committing change to $G_\Ens$.
+\end{definition}
+
+\begin{theorem}[Monotone relaxation; quiescence or decline]
+\label{thm:relax}
+Along the relaxation the demand $\dem(\Ens)$ is non-increasing and bounded below by
+$0$. The relaxation either reaches \emph{quiescence}---a plan whose demand cannot
+be lowered, the ensemble resting in the action cell of the intent
+(\Cref{thm:cell})---in finitely many steps, or it does not halt, in which case no
+plan attains the intent and the honest output is to \emph{decline} rather than
+surface a non-converged ensemble.
+\end{theorem}
+
+\begin{proof}
+Each step either removes a task that does not raise $\Sflat$ (pruning,
+$\dem$ unchanged or lower), repairs a cycle (restoring consistency without raising
+$\Sflat$), or adds a task that strictly lowers $\Sflat$; none raises $\dem$, so
+$\dem$ is non-increasing, and $\dem\ge0$ by \Cref{def:Sfunctional}. The space of
+ensembles over finitely many available tasks and routings is finite, so a
+non-increasing demand either attains its infimum at a finite step---quiescence, a
+fixed point in the sense of \citet{banach1922,tarski1955,knastertarski1928}---or
+the relaxation cycles without lowering it, never reaching the floor. In the latter
+case $\dem(\Ens)>0$ for every reachable plan, so no plan lands in $\cell$;
+surfacing any of them would report attainment that does not hold, and declining is
+the only output consistent with the floor.
+\end{proof}
+
+\begin{theorem}[The plan is a region, certified blind]
+\label{thm:plan-region}
+At quiescence the set of admissible plans is in general a positive-volume region,
+not a single plan: distinct accepted ensembles may share the minimal demand. The
+orchestrator certifies a plan by the \emph{absence of any lowering move}---a
+property of the demand---without ever reading the meaning of any module's result.
+\end{theorem}
+
+\begin{proof}
+By \Cref{thm:cell} the floor of $\Sent$ is attained on a region; distinct ensembles
+reaching that region have equal minimal demand and are gate-indistinguishable, so
+the admissible set has $>1$ element in general. Acceptance tests only
+$\contrib,\hol,\Rens$ (\Cref{thm:gate-orthogonal}), all functions of the graph and
+the delivered results, never of an interpreted ``meaning'' of a result; hence the
+certification is blind.
+\end{proof}
+
+\begin{remark}[Why blind certification is the right standard]
+\label{rem:blind}
+The orchestrator cannot read what a module's result \emph{means}---that would
+require occupying the module's entire domain, i.e.\ being the module, collapsing
+\Cref{prin:separation}. It does not need to. Necessity and consistency are
+graph-level facts about contribution, holonomy, and coherence, decidable without
+interpretation. The conductor judges whether the parts \emph{add up}, not what each
+part privately is. No theorem depends on the reading.
+\end{remark}
+
+% ============================================================================
+\section{The conductor is indispensable}
+\label{sec:conductor}
+% ============================================================================
+
+We close with the structural statement that motivates the whole construction: the
+federation cannot do without the orchestrator, and the orchestrator's
+indispensable function is exactly necessity.
+
+\begin{theorem}[Indispensability of the conductor]
+\label{thm:indispensable}
+Let a federation $\mods$ of modules be given, each individually flawless (every
+delivered result correct, \Cref{def:module}). Without the orchestration layer:
+\textup{(i)} purposeless tasks are undetectable, since no module can compute
+$\contrib$ over the global ensemble (\Cref{thm:nolocal}); \textup{(ii)} cyclic
+inconsistency is undetectable, since holonomy lives in the composition and in no
+node (\Cref{thm:holonomy}); \textup{(iii)} convergence on a single goal is
+unmeasured, since $\Rens$ is a property of the ensemble, not of any task
+(\Cref{def:order}). Hence a federation of correct modules, however excellent,
+cannot certify that its work is necessary, consistent, or convergent: it can be a
+hall of flawless players producing no coherent result.
+\end{theorem}
+
+\begin{proof}
+Each of (i)--(iii) is a global quantity---a function of $G_\Ens$ and $g$---and by
+\Cref{thm:nolocal,cor:above} no bounded module computes a global necessity
+predicate. A federation is exactly a set of bounded modules; absent a layer
+holding $g$ and $\Ens$, none of the three measurements is available, so none of
+the three failures is detectable. Correctness of every part is consistent with all
+three failures by \Cref{cor:correct-purposeless} and \Cref{thm:holonomy}. Thus the
+federation alone cannot certify its own coherence.
+\end{proof}
+
+\begin{theorem}[Master equivalence]
+\label{thm:master}
+For a federation orchestrated toward a non-completable whole, the following are
+equivalent:
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=2em,itemsep=1pt]
+\item there is a floor $\flo>0$ on individuating any part of the whole
+(\Cref{thm:floor});
+\item correctness is a region (an action cell), not a point
+(\Cref{thm:cell});
+\item necessity is not decidable within any bounded module
+(\Cref{thm:nolocal});
+\item judging necessity, consistency, and convergence is the irreducible function
+of a layer above the modules---the conductor (\Cref{cor:above,thm:indispensable});
+\item the orchestration language is a thin, typed compiler that lowers intent into
+module languages and gates only on the three graph measurements, certifying plans
+blind and to within the floor
+(\Cref{thm:gate-sound,thm:gate-orthogonal,thm:plan-region}).
+\end{enumerate}
+Each is the same fact: telling a part from a non-completable whole costs a
+positive, irreducible residue; that residue makes correctness a region and
+necessity global; a global judgment cannot be made by a part; so it is made by the
+conductor, whose language need carry nothing but the judgment.
+\end{theorem}
+
+\begin{proof}
+$(\mathrm i)\!\Rightarrow\!(\mathrm{ii})$ is \Cref{thm:cell};
+$(\mathrm{ii})\!\Rightarrow\!(\mathrm{iii})$ holds because a region-valued
+correctness leaves the global goal underdetermined locally, the content of
+\Cref{thm:nolocal}; $(\mathrm{iii})\!\Rightarrow\!(\mathrm{iv})$ is
+\Cref{cor:above} with \Cref{thm:indispensable};
+$(\mathrm{iv})\!\Rightarrow\!(\mathrm v)$ is the construction of
+\Cref{sec:language,sec:cell}; and $(\mathrm v)\!\Rightarrow\!(\mathrm i)$ because
+the gate's measurements are defined through $\Sflat=\flo/\Om>0$, whose positivity
+is the floor. The cycle closes.
+\end{proof}
+
+\subsection{Computational note}
+
+Every quantity above is computable on finite weighted graphs without
+interpretation: minimum cuts (hence $\str$, $\Sent$, $\Sflat$, $\contrib$) by
+maximum flow \citep{fordfulkerson1956,menger1927}; cycles for holonomy by
+strongly-connected decomposition \citep{tarjan1972} and elementary-circuit
+enumeration \citep{johnson1975}; the order parameter by the mean-phase sum
+(\Cref{def:order}); and the regime by the mean-field threshold
+(\Cref{thm:order}). The contribution score requires, in the worst case, one
+ensemble-floor evaluation per task (ablation), which the static measurements
+$\hol$ and $\Rens$ do not; a regime map can thus be produced before paying the
+ablation cost.
+
+\subsection{Scope}
+
+Every result is a theorem about finite weighted graphs and the constructions on
+them, provable from \Cref{def:graph} and the derived floor \Cref{thm:floor}. The
+development establishes \emph{that} correctness is local and region-valued,
+\emph{that} necessity is global and not locally decidable, \emph{that} an
+above-the-modules conductor is required and suffices, and \emph{that} the
+orchestration language is exactly a thin gated compiler. It does not prescribe the
+internal design of any module or the syntax of any module language; those are the
+federation's, by \Cref{prin:separation}. One hypothesis beyond the graphs is used:
+that the whole is non-completable (\Cref{def:noncompletable}), an order condition,
+not a cardinality posit, and exactly what forces the floor; absent it, the floor
+may vanish and the separation of competence is not compelled. Interpretive
+readings---of modules as players, of the orchestrator as a conductor, of a blank
+surface as the user interface, of holonomy as a feedback drift---are confined to
+remarks on which no theorem depends, and material that could not be proved at this
+standard has been omitted.
+
+\subsection{Conclusion}
+
+A research operating system that shows nothing until asked needs one language to
+be asked in, and that language need not be wise. Wisdom---the competence of each
+domain---belongs to a federation of modules, each terminating its domain in its own
+tongue and answering correctly within it. What such a federation cannot supply,
+from a theorem rather than an oversight, is the judgment of whether its correct
+answers were the \emph{needed} ones: necessity is a property of the whole, and a
+bounded part cannot read the whole. The orchestration language is therefore not a
+better player but the conductor: it lowers a researcher's intent into the modules'
+own languages, and then, on the graph of tasks alone, prunes what contributes
+nothing, rejects what drifts around a cycle, and reports how nearly the work
+converges on one goal---certifying the plan blind, to within the floor, never to a
+point. Its excellence is concentrated where no module can help: in telling the
+right work from the merely correct. A hall of the finest players is silent without
+it; with it, the silence of the surface between requests is the sign that exactly
+the necessary work, and no more, was done.
+
+% ============================================================================
+\bibliographystyle{plainnat}
+\bibliography{references}
+% ============================================================================
+
+\end{document}
