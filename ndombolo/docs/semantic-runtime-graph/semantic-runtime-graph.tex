@@ -1,0 +1,1081 @@
+% ============================================================================
+%  Ndombolo: A Semantic Runtime Graph
+%
+%  A single-language runtime in which a script IS a causal knowledge graph,
+%  a deterministic compiler is the sole propagator, and a learning model is
+%  a non-participating second reader of the run record.
+%
+%  Self-contained: every object is a finite weighted graph, a term over a
+%  fixed grammar, or a construction on one. Interpretation is confined to
+%  remarks on which no theorem depends.
+% ============================================================================
+\documentclass[twocolumn,11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{bm}
+\usepackage{mathrsfs}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage[round,sort&compress]{natbib}
+\usepackage[colorlinks=true,linkcolor=blue!45!black,
+            citecolor=blue!45!black,urlcolor=blue!45!black]{hyperref}
+\usepackage{cleveref}
+
+% ---- theorem environments ----
+\newtheoremstyle{sup}{6pt}{6pt}{\itshape}{}{\bfseries}{.}{.5em}{}
+\theoremstyle{sup}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{axiom}{Premise}
+\newtheorem{construction}[theorem]{Construction}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{notation}[theorem]{Notation}
+
+\crefname{axiom}{Premise}{Premises}
+\Crefname{axiom}{Premise}{Premises}
+
+% ---- operators and shorthand ----
+\DeclareMathOperator{\Aut}{Aut}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator{\dom}{dom}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Gph}{\Gamma}
+\newcommand{\V}{V}
+\newcommand{\E}{E}
+\newcommand{\wt}{w}
+\newcommand{\med}{\mathsf{m}}
+\newcommand{\flo}{\beta}
+\newcommand{\cut}{\partial}
+\newcommand{\str}{\sigma}
+\newcommand{\res}{\rho}
+\newcommand{\rec}{M}
+\newcommand{\Char}{\mathrm{Char}}
+\newcommand{\Om}{\Omega}
+\newcommand{\Cell}{\mathcal{C}}
+\newcommand{\set}[1]{\{#1\}}
+\newcommand{\abs}[1]{\lvert#1\rvert}
+\newcommand{\norm}[1]{\lVert#1\rVert}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\Src}{\mathcal{S}}
+\newcommand{\Cmp}{\mathcal{K}}
+\newcommand{\Mod}{\mathcal{L}}
+\newcommand{\Run}{\mathcal{R}}
+\newcommand{\Tr}{\mathrm{tr}}
+\newcommand{\seek}{\mathsf{seek}}
+\newcommand{\nec}{\mathsf{nec}}
+\newcommand{\dep}{\delta}
+
+\lstdefinestyle{tb}{
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\bfseries,
+  commentstyle=\itshape\color{black!55},
+  stringstyle=\color{black!70},
+  showstringspaces=false,
+  columns=fullflexible,
+  breaklines=true,
+  frame=none,
+  xleftmargin=0.6em,
+  morekeywords={funxn,item,proposition,motion,support,contradict,given,within,
+    considering,for,each,in,while,return,ensure,point,resolve,hypothesis,
+    with_confidence,otherwise,and,or,not,all,these},
+  morecomment=[l]{//},
+  morestring=[b]"
+}
+\lstset{style=tb}
+
+\title{\bfseries Ndombolo: A Semantic Runtime Graph\\[0.35em]
+\large A script is a causal knowledge graph; a deterministic compiler is its
+only propagator; a learning model is a second reader that never touches the run}
+
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We present \emph{ndombolo}, a single-language runtime in which a source script
+is not a description of a causal knowledge graph but \emph{is} one. Execution
+proceeds cell-wise under a deterministic compiler; a large language model
+observes the resulting record and adapts, but is excluded by construction from
+the propagation path. We prove that this arrangement is forced rather than
+chosen. Three results carry the architecture. First, a deterministic compiler
+alone cannot individuate: its output is a graph invariant, and invariants do
+not distinguish a structure from an independently built faithful copy
+(\Cref{thm:compiler-blind}); the run record supplies exactly the missing half,
+so the observing model is load-bearing rather than decorative
+(\Cref{thm:pair-individuates}). Second, the model's exclusion from propagation
+is what makes the trace \emph{atomically interrogable}: every step has a cause
+nameable in the source, and we characterise precisely the question class this
+answers --- and the class it does not (\Cref{thm:atomic,thm:trace-seek}).
+Third, observation is not free: a model that adapts on a run advances its own
+record, so replaying a script reproduces the trace but not its reading
+(\Cref{thm:replay-asymmetry}). We give the operational semantics of the
+cell-wise deterministic core, the deposit map from run to catalogue, a
+termination rule based on closure rather than confidence
+(\Cref{thm:closure-stronger-srg,thm:decline-srg}), and six checkable
+invariants an implementation must satisfy. A Python prototype executes
+Turbulance cells and emits the graph, the record, and the trace as JSON.
+\end{abstract}
+
+% =====================================================================
+\section{Introduction}
+\label{sec:intro}
+% =====================================================================
+
+\subsection{The position this paper attacks}
+
+A now-standard architecture couples a retrieval store to a generative model:
+the store holds structured knowledge, the model consumes it, and the model's
+output is treated as the system's answer. The store is passive and the model
+is the locus of competence. Two commitments are implicit in that arrangement,
+and both are false.
+
+The first is that the model is where the work happens, so the store may be as
+unstructured as convenient. The second is that a model which merely reads is
+epistemically free --- that its observation leaves no trace and may be repeated
+without consequence. We show that a system built on either commitment forfeits
+properties it cannot recover by improving either component.
+
+\subsection{What ndombolo is}
+
+Ndombolo is a \emph{mode} of the kwasa-kwasa framework rather than a new
+language. A user writes Turbulance \citep{sachikonye2025grammar}, and nothing
+else: no auxiliary resource, trace, or state files, no per-module dialects, no
+natural-language prompt. The script is executed cell-wise. The claim is
+structural:
+
+\begin{quote}
+A Turbulance script \emph{is} a causal knowledge graph. Compiling it is a
+propagation over that graph. The compiler is deterministic. A language model
+observes the record of propagation and adapts, and never participates in it.
+\end{quote}
+
+The name records the intended tempo: \emph{ndombolo} is faster kwasa-kwasa. The
+speed is not an optimisation claim but an architectural one --- the fast path
+is deterministic, and the model is off it.
+
+\subsection{Why the arrangement is forced}
+
+It would be natural to read the exclusion of the model from the run as a
+conservative engineering choice, adopted for reproducibility and paid for in
+capability. We argue the opposite. Four facts, each proved below, make the
+arrangement the only admissible one.
+
+\paragraph{Determinism cannot individuate.} The compiler's output is a function
+of the source. Two users who write the same script produce structures with the
+same invariant. An invariant does not distinguish an individual from a faithful
+copy (\Cref{thm:compiler-blind}). So a purely deterministic system cannot say
+\emph{which} run this is; it can only say what the run computed.
+
+\paragraph{The record supplies the missing half.} An individual is a pair: a
+conserved invariant together with a strictly advancing record
+(\Cref{def:individual-srg}). The compiler contributes the first; the accreting
+run record contributes the second. The model, reading and depositing, is the
+only component positioned to carry the record without contaminating the trace
+(\Cref{thm:pair-individuates}).
+
+\paragraph{Exclusion is what buys interrogability.} Because no step of the run
+depends on an inference, every step has a cause nameable in the source, and the
+trace supports questions at arbitrary granularity (\Cref{thm:atomic}). Had the
+model participated, the causes of some steps would be model-internal and the
+guarantee would fail. Interrogability is a consequence of exclusion, not a
+cost paid for it.
+
+\paragraph{Observation is not free.} A model that adapts on what it observes
+advances its own record. Replaying the script reproduces the trace exactly and
+the model's reading of it not at all (\Cref{thm:replay-asymmetry}). This is not
+a defect to be engineered away; it is the same fact that makes the model able
+to individuate at all.
+
+\subsection{What this paper does not claim}
+
+We prove nothing about the quality of a model's adaptation, and no theorem
+depends on any property of the model beyond the two we state: that it reads the
+record, and that reading advances its own. We do not claim the deterministic
+core is expressively complete for the tasks users bring; \Cref{sec:limits}
+records what it excludes. In particular we prove a negative result about our own
+architecture: a complete deterministic trace answers \emph{what happened} but
+cannot express \emph{what was load-bearing} (\Cref{thm:trace-seek}), and no
+improvement to the compiler or the trace format closes that gap.
+
+\subsection{Contributions}
+
+\begin{enumerate}[leftmargin=1.4em,itemsep=2pt]
+\item A formal account of a script as a causal knowledge graph, with the
+cell as a resolution-controlled prefix (\Cref{sec:graph}).
+\item The compiler as a deterministic propagator, with an operational
+semantics for cell-wise execution and a proof that cell-wise and
+whole-script execution agree (\Cref{thm:cell-agree}).
+\item The individuation results: determinism is invariant-only
+(\Cref{thm:compiler-blind}); the pair individuates
+(\Cref{thm:pair-individuates}); the model is load-bearing
+(\Cref{cor:model-necessary}).
+\item The interrogability theorem and its exact limit
+(\Cref{thm:atomic,thm:trace-seek}), with the two-operator correction
+$\nec\circ\seek$ (\Cref{sec:probe}).
+\item The replay asymmetry (\Cref{thm:replay-asymmetry}) and the consequent
+relocation of reproducibility from answers to protocol and provenance.
+\item Termination by closure rather than confidence, with decline as a
+first-class outcome (\Cref{sec:term}).
+\item Six checkable implementation invariants, proved mutually independent
+(\Cref{sec:blueprint}), and a Python prototype realising them
+(\Cref{sec:proto}).
+\end{enumerate}
+
+\subsection{Method}
+
+We work throughout with finite weighted graphs over a non-completable medium,
+following the individuation framework of \citet{sachikonye2025residue} and the
+directional catalogue--model correspondence of
+\citet{sachikonye2025directional}. Results proved in those works are cited and
+restated, never reproved; results specific to the runtime are proved here.
+Standard results in program semantics \citep{plotkin1981,winskel1993},
+incremental computation \citep{acar2006}, dominator theory
+\citep{lengauer1979}, and provenance \citep{cheney2009} are cited to place the
+constructions, not to derive them.
+
+% =====================================================================
+\section{The script as a contact graph}
+\label{sec:graph}
+% =====================================================================
+
+\subsection{Source, terms, and items}
+
+\begin{definition}[Source and cells]
+\label{def:source}
+A \emph{source} $\Src$ is a finite sequence of \emph{cells}
+$\Src=(c_1,\dots,c_n)$, each cell a finite sequence of Turbulance statements.
+The concatenation $\abs{\Src}=c_1\cdots c_n$ is the underlying program.
+\end{definition}
+
+\begin{definition}[Item]
+\label{def:item}
+An \emph{item} is a named binding site introduced by a declaration
+(\lstinline{item}, \lstinline{funxn}, \lstinline{proposition},
+\lstinline{motion}, \lstinline{point}) together with its declared position in
+$\Src$. Write $\V(\Src)$ for the set of items of $\Src$.
+\end{definition}
+
+Items are syntactic, hence finite and enumerable from the source alone, with no
+execution required. This is what permits the graph to exist before any run.
+
+\begin{definition}[Contact]
+\label{def:contact}
+Items $u,v\in\V(\Src)$ are in \emph{contact} when the declaration of $v$
+mentions $u$: $u$ occurs free in the defining term of $v$, or $v$ occurs in a
+scope opened by $u$. The \emph{contact weight} $\wt(u,v)>0$ is the
+multiplicity of such occurrences.
+\end{definition}
+
+\begin{definition}[Script graph]
+\label{def:script-graph}
+The \emph{script graph} of $\Src$ is the finite weighted graph
+$\Gph(\Src)=(\V(\Src),\E(\Src),\wt)$ with $\E(\Src)$ the contact pairs. It is
+embedded in a medium $\med$: the ambient vocabulary of the language and its
+libraries, which is not enumerable by the script.
+\end{definition}
+
+\begin{remark}[The medium is why the floor is positive]
+\label{rem:medium}
+The medium is not a modelling convenience. A script is written against a
+language whose extensions cannot be listed from within it; that
+non-completability is the hypothesis under which the resolution floor
+$\flo>0$ is derived \citep{sachikonye2025residue}. Every result below that
+invokes $\flo>0$ inherits this hypothesis and nothing more.
+\end{remark}
+
+\begin{proposition}[The graph is recoverable without execution]
+\label{prop:static}
+$\Gph(\Src)$ is computable from $\Src$ by a single pass, in time linear in the
+number of tokens of $\Src$.
+\end{proposition}
+
+\begin{proof}
+Items are introduced by a fixed finite set of declaration forms
+(\Cref{def:item}) recognisable by the parser; contacts are free occurrences and
+scope memberships, both determined by the scope discipline of the grammar
+\citep{sachikonye2025grammar}. A single traversal of the parse tree maintaining
+a scope stack emits every item and every contact exactly once.
+\end{proof}
+
+\begin{remark}[The sense in which the script \emph{is} the graph]
+\label{rem:is-not-describes}
+\Cref{prop:static} is the whole content of the claim. There is no
+graph-construction step: no extraction, no embedding, no ingestion pass whose
+fidelity to the source could be questioned. The graph is a reading of the parse
+tree, so the source and the graph cannot disagree. Where a conventional
+pipeline must justify that its store faithfully represents its inputs, here the
+question does not arise.
+\end{remark}
+
+\subsection{Cells as resolution prefixes}
+
+\begin{definition}[Prefix and stage]
+\label{def:prefix}
+For $k\le n$ write $\Src_k=(c_1,\dots,c_k)$ for the length-$k$ prefix, and
+$\Gph_k=\Gph(\Src_k)$ for the \emph{stage-$k$ graph}.
+\end{definition}
+
+\begin{proposition}[Prefix containment]
+\label{prop:containment}
+$\Gph_k$ is an induced subgraph of $\Gph_{k+1}$, and $\V(\Gph_k)\subseteq
+\V(\Gph_{k+1})$ with equality of weights on common pairs.
+\end{proposition}
+
+\begin{proof}
+$\Src_k$ is a prefix of $\Src_{k+1}$, so every item declared in $\Src_k$ is
+declared in $\Src_{k+1}$ at the same position, and every contact among them has
+the same multiplicity, no statement of $c_{k+1}$ being able to remove an
+occurrence in an earlier cell. No item of $\Src_k$ is undeclared by a later
+cell, the grammar having no undeclaration form.
+\end{proof}
+
+\begin{remark}[Cell-wise execution is not a new affordance]
+\label{rem:cells-old}
+\Cref{prop:containment} says a cell boundary is a length-$k$ address prefix,
+which is the resolution control the underlying runtime already provides
+\citep{sachikonye2025runtime}. Exposing it at source-text granularity adds
+notebook ergonomics, not expressive power, and in particular adds no way to
+retract.
+\end{remark}
+
+% =====================================================================
+\section{The deterministic compiler}
+\label{sec:compiler}
+% =====================================================================
+
+\subsection{Propagation}
+
+\begin{definition}[Store and configuration]
+\label{def:config}
+A \emph{store} $\sigma$ is a finite partial map from items to values. A
+\emph{configuration} is a pair $\langle c,\sigma\rangle$ of a cell and a store.
+\end{definition}
+
+\begin{definition}[Compiler]
+\label{def:compiler}
+The \emph{compiler} $\Cmp$ is the partial function taking a configuration to a
+store and a trace,
+\[
+\Cmp\langle c,\sigma\rangle=(\sigma',\tau),
+\]
+defined by the big-step operational semantics of the deterministic fragment of
+Turbulance \citep{sachikonye2025grammar}: declarations, scoped conditionals,
+iteration, argumentation (\lstinline{proposition}/\lstinline{motion}/
+\lstinline{support}), and the resolution forms
+(\lstinline{point}/\lstinline{resolve}) under the noisy-or confidence algebra.
+\end{definition}
+
+\begin{axiom}[Determinism]
+\label{ax:det}
+$\Cmp$ is a function: for each $\langle c,\sigma\rangle$ in its domain the pair
+$(\sigma',\tau)$ is unique. No rule of the semantics consults an oracle, a
+clock, an allocation address, or a source of randomness.
+\end{axiom}
+
+\Cref{ax:det} is a property of the fragment, checkable by inspection of the
+rules; it is stated as a premise because the whole architecture is conditional
+on it and an implementation could violate it.
+
+\begin{definition}[Trace]
+\label{def:trace}
+The \emph{trace} $\tau$ of a step is the finite sequence of \emph{events}
+$e=(\text{rule},\ \text{site},\ \text{items read},\ \text{item written},\
+\text{value written})$ emitted one per application of a semantic rule, in
+application order. Write $\Tr(\Src)$ for the concatenated trace of a whole run.
+\end{definition}
+
+\begin{definition}[Run]
+\label{def:run}
+The \emph{run} of $\Src$ is
+$\Run(\Src)=(\sigma_n,\Tr(\Src))$ where $\sigma_0=\emptyset$ and
+$(\sigma_k,\tau_k)=\Cmp\langle c_k,\sigma_{k-1}\rangle$ for $1\le k\le n$.
+\end{definition}
+
+\begin{theorem}[Cell-wise execution agrees with whole-script execution]
+\label{thm:cell-agree}
+For every source $\Src$ with cells $(c_1,\dots,c_n)$, executing the cells in
+order from the empty store yields the same final store and the same trace as
+executing the single cell $\abs{\Src}=c_1\cdots c_n$.
+\end{theorem}
+
+\begin{proof}
+By induction on $n$. For $n=1$ the two executions are identical. Suppose the
+claim for $n-1$, so executing $c_1,\dots,c_{n-1}$ in order gives the store
+$\sigma_{n-1}$ and trace $\tau_1\cdots\tau_{n-1}$ that
+$c_1\cdots c_{n-1}$ gives. The big-step semantics of a statement sequence is
+composition of the semantics of its statements
+\citep{plotkin1981,winskel1993}, and the cell boundary introduces no scope: by
+\Cref{def:source} a cell is a statement sequence, not a block, so no binding
+introduced in $c_k$ is discarded at its end. Hence executing $c_n$ from
+$\sigma_{n-1}$ is exactly the continuation of $c_1\cdots c_{n-1}$ into its
+remaining statements, giving the same $\sigma_n$; traces concatenate in
+application order by \Cref{def:trace}. Determinism (\Cref{ax:det}) makes both
+sides unique, so the equality is of values, not merely of possibility.
+\end{proof}
+
+\begin{remark}[What the theorem licenses, and what it does not]
+\label{rem:cell-agree-scope}
+\Cref{thm:cell-agree} justifies the notebook presentation: a user who runs
+cells one at a time is running the program, not an approximation to it. It says
+nothing about running cells \emph{out of order} or re-running one, which are
+not executions of $\abs{\Src}$ at all; \Cref{sec:rerun} treats those.
+\end{remark}
+
+\subsection{The trace is a propagation}
+
+\begin{proposition}[Events are contacts]
+\label{prop:events-contacts}
+For every event $e\in\Tr(\Src)$ writing item $v$ and reading items $U$, each
+$u\in U$ is in contact with $v$ in $\Gph(\Src)$.
+\end{proposition}
+
+\begin{proof}
+An item is read at a rule application only where it occurs free in the term
+being reduced, or where the rule is applied inside a scope that $u$ opened.
+Both are contacts by \Cref{def:contact}, and the occurrence witnessing the read
+contributes to $\wt(u,v)$.
+\end{proof}
+
+\begin{corollary}[The run is a propagation over the script graph]
+\label{cor:run-is-prop}
+$\Tr(\Src)$ is a sequence of moves along edges of $\Gph(\Src)$, hence a
+propagation in the sense of \citet{sachikonye2025directional}.
+\end{corollary}
+
+\begin{proof}
+Immediate from \Cref{prop:events-contacts}: every event's read set lies in the
+contact neighbourhood of the item it writes.
+\end{proof}
+
+\begin{remark}[The compiler is the propagator]
+\label{rem:compiler-propagates}
+\Cref{cor:run-is-prop} locates the propagation precisely, and the location is
+the architecture's crux. Propagation is performed by $\Cmp$. It is not
+performed by a model, not shared with one, and not influenced by one. Any
+account placing a model on the process side of this system is mistaken about
+which component moves along the edges.
+\end{remark}
+
+% =====================================================================
+\section{Determinism cannot individuate}
+\label{sec:individuate}
+% =====================================================================
+
+We now prove the result that forces the model into the architecture.
+
+\begin{definition}[Invariant]
+\label{def:char}
+$\Char(\Gph)$ is the conserved invariant of a finite weighted graph: the
+isomorphism-invariant assignment of resting cut costs to units, as constructed
+in \citet{sachikonye2025residue}. It is preserved by every graph isomorphism.
+\end{definition}
+
+\begin{definition}[Record]
+\label{def:rec}
+$\rec$ is a non-negative integer counting committing acts performed by a
+structure. It never decreases.
+\end{definition}
+
+\begin{definition}[Individual]
+\label{def:individual-srg}
+An \emph{individual} is the pair $(\Char,\rec)$. Two structures are the same
+individual at two moments iff there is a chain of committing acts joining them
+along which $\Char$ is preserved and $\rec$ strictly increases
+\citep{sachikonye2025directional}.
+\end{definition}
+
+\begin{theorem}[A deterministic compiler is invariant-only, hence blind to instance]
+\label{thm:compiler-blind}
+Let $\Src$ be a source and let $\Src'$ be a faithful copy of it, written
+independently by another author, or transcribed. Then
+$\Gph(\Src)\cong\Gph(\Src')$ and consequently
+$\Char(\Gph(\Src))=\Char(\Gph(\Src'))$ and
+$\Run(\Src)=\Run(\Src')$ up to the same isomorphism. No function of the
+compiler's output distinguishes the two.
+\end{theorem}
+
+\begin{proof}
+$\Gph$ is computed from $\Src$ by the syntactic pass of \Cref{prop:static}, so
+equal sources give equal graphs and a faithful copy gives an isomorphic one.
+$\Char$ is a graph invariant (\Cref{def:char}), so it agrees on isomorphic
+graphs. By \Cref{ax:det} the compiler is a function of its input, so it returns
+the same store and the same trace on both, modulo the renaming witnessing the
+isomorphism. Any function of the compiler's output is therefore constant across
+the pair. Yet the two are distinct individuals: they may be edited
+independently, and a change to one does not change the other.
+\end{proof}
+
+\begin{corollary}[Determinism alone cannot answer ``which run is this'']
+\label{cor:which-run}
+No amount of instrumentation internal to $\Cmp$ --- richer traces, finer event
+granularity, additional derived attributes --- distinguishes $\Run(\Src)$ from
+$\Run(\Src')$, since all are functions of the input by \Cref{ax:det}.
+\end{corollary}
+
+\begin{proof}
+Immediate: a function of a function of $\Src$ is a function of $\Src$, and
+$\Src,\Src'$ agree up to isomorphism.
+\end{proof}
+
+\begin{remark}[The scope of the blindness]
+\label{rem:blind-scope}
+\Cref{thm:compiler-blind} is not a complaint about determinism; determinism is
+what makes the trace interrogable (\Cref{sec:atomic}). It is a statement of
+what determinism structurally cannot supply. A system built from $\Cmp$ alone
+computes correctly and cannot say whose computation it was, when, or in what
+sequence relative to others. That is precisely the half an advancing record
+supplies.
+\end{remark}
+
+\subsection{The pair}
+
+\begin{definition}[Deposit map]
+\label{def:deposit}
+The \emph{deposit map} $\dep$ takes a completed run $\Run(\Src)$ and commits
+its residue into the catalogue $G$: for each event of $\Tr(\Src)$ it adds the
+corresponding contact, and increments $\rec$ by one committing act per run.
+\end{definition}
+
+\begin{definition}[Runtime pair]
+\label{def:pair}
+The \emph{runtime pair} is $P=(G,\Mod)$ where $G$ is the accreted catalogue and
+$\Mod$ is the observing model, joined by $\dep$. The catalogue accretes; the
+model reads and deposits; residue never flows from $\Mod$ into a run.
+\end{definition}
+
+\begin{theorem}[The pair individuates where the compiler cannot]
+\label{thm:pair-individuates}
+$\Char(P)=\Char(G)$ and $\rec(P)=\rec(G)$, and $\rec$ strictly increases with
+each run deposited. Consequently $P$ distinguishes $\Run(\Src)$ from
+$\Run(\Src')$ whenever the two are deposited as distinct acts, though by
+\Cref{thm:compiler-blind} no function of the compiler's output does.
+\end{theorem}
+
+\begin{proof}
+The invariant and record of the pair are those of the catalogue
+\citep[Thm.~11.4]{sachikonye2025directional}, $\Mod$ contributing neither, by
+\Cref{cor:model-no-invariant} below. Each deposit is a committing act, so
+$\rec$ strictly increases per run (\Cref{def:deposit}). Two runs deposited in
+sequence therefore stand at distinct records, and by
+\Cref{def:individual-srg} the pair states of the system after each are
+distinct individuals even where $\Char$ agrees --- which by
+\Cref{thm:compiler-blind} it does.
+\end{proof}
+
+\begin{corollary}[The model has no invariant and no record of its own]
+\label{cor:model-no-invariant}
+$\Mod$ considered alone is a family of evaluations, not a structure: it carries
+no conserved invariant and no record. Its identity within the system is the
+catalogue's.
+\end{corollary}
+
+\begin{proof}
+This is \citet[Cor.~11.7]{sachikonye2025directional} applied to $\Mod$: the
+model side of a directional pair has no resting cut of its own, so no invariant
+is assigned, and it commits nothing except through $\dep$.
+\end{proof}
+
+\begin{corollary}[The observing model is load-bearing]
+\label{cor:model-necessary}
+Removing $\Mod$ and $\dep$ from the architecture leaves a system that cannot
+individuate its own runs. The model is therefore not an optional enhancement
+over the deterministic core.
+\end{corollary}
+
+\begin{proof}
+Without $\dep$ nothing commits, so $\rec$ is constant and by
+\Cref{def:individual-srg} no two states are distinguishable as different
+moments of one individual; by \Cref{thm:compiler-blind} $\Char$ does not
+separate instances either. Both components of the identity pair are then
+unavailable.
+\end{proof}
+
+\begin{remark}[The model has no standing in the ensemble]
+\label{rem:no-standing}
+\Cref{cor:model-no-invariant} settles a question that would otherwise be
+contentious. The model occupies no node, carries no identity, and is not a
+party to convergence in the catalogue. It is how the record advances. What
+persists of it is exactly what it deposited --- no more, and no less.
+\end{remark}
+
+\begin{proposition}[Stateless observation is not available]
+\label{prop:no-stateless}
+A model that reads runs, leaves no trace in itself, and is perfectly repeatable
+occupies a forbidden position: it would require both $\flo=0$ and a
+non-advancing record, each independently impossible under \Cref{rem:medium}.
+\end{proposition}
+
+\begin{proof}
+This is the no-perfect-instrument theorem of
+\citet[\S6.1]{sachikonye2025directional} instantiated at $\Mod$: an
+individuation leaving no residue and no trace in the instrument does not exist,
+and reading a run so as to adapt on it is an individuation.
+\end{proof}
+
+\begin{remark}[``The model just observes'' is half true]
+\label{rem:just-observing}
+\Cref{prop:no-stateless} draws a line through a tempting description. It is
+correct that observation is a no-op \emph{on the run}: the trace is what it
+would have been with no model present. It is incorrect that observation is a
+no-op \emph{on the model}: adapting parameters is precisely an advance of the
+model's own record. The two claims are independent and only the first holds.
+\Cref{thm:replay-asymmetry} draws out the consequence.
+\end{remark}
+
+% =====================================================================
+\section{Atomic interrogability, and its exact limit}
+\label{sec:atomic}
+% =====================================================================
+
+\subsection{What the trace answers}
+
+\begin{definition}[Atomic question]
+\label{def:atomic-q}
+An \emph{atomic question} about a run is a question of the form: for a given
+event $e\in\Tr(\Src)$, which rule fired, at which source site, reading which
+items at which values, writing which item at which value; and for a given item
+$v$ and stage $k$, what value $\sigma_k(v)$ held and which event last wrote it.
+\end{definition}
+
+\begin{theorem}[Every atomic question is answerable from the trace]
+\label{thm:atomic}
+For a run $\Run(\Src)$ under \Cref{ax:det}, every atomic question has a unique
+answer, computable from $\Tr(\Src)$ and $\Src$ alone, with no appeal to the
+model and no re-execution.
+\end{theorem}
+
+\begin{proof}
+By \Cref{def:trace} each event records its rule, site, read set with values,
+and written item with value, so the first family of questions is answered by
+projection. For the second, $\sigma_k$ is recovered by replaying the events of
+$\tau_1\cdots\tau_k$ in order, each writing one item; the last writer of $v$ is
+the last such event, which exists and is unique because events are linearly
+ordered by application. Uniqueness of the answers is \Cref{ax:det}: the run is
+a function of $\Src$, so no alternative trace is consistent with it.
+\end{proof}
+
+\begin{corollary}[Causal attribution is total]
+\label{cor:attribution}
+For every value in the final store there is a finite chain of events, each
+naming a source site, terminating in declarations, that produced it.
+\end{corollary}
+
+\begin{proof}
+Follow last-writer edges backwards from the value. Each step is well defined by
+\Cref{thm:atomic} and strictly decreases position in the linear event order, so
+the chain is finite; it terminates only at an event with empty read set, which
+is a declaration.
+\end{proof}
+
+\begin{remark}[Interrogability is bought by exclusion]
+\label{rem:exclusion-buys}
+\Cref{thm:atomic} holds because no rule of $\Cmp$ consults the model. Were a
+single step to depend on an inference, that step's cause would be
+model-internal, \Cref{ax:det} would fail, and the chain of
+\Cref{cor:attribution} would terminate at an event whose explanation is not in
+the source. The guarantee is therefore a consequence of keeping the model off
+the run path, not a property obtained despite doing so.
+\end{remark}
+
+\subsection{The limit: a trace is a store of local terms}
+\label{sec:probe}
+
+Interrogability is not omniscience, and we state its boundary sharply because
+an implementer is otherwise likely to assume the trace answers more than it
+does.
+
+\begin{definition}[Two probing operators]
+\label{def:two-ops}
+For a target $x^\star$ in a graph, $\seek(x^\star)$ is the set of items
+reachable from $x^\star$ by admissible propagation; $\nec(W,x^\star)$ is the
+set of $u\in W$ whose removal strictly changes the resolving power of $W$ for
+$x^\star$.
+\end{definition}
+
+\begin{theorem}[The trace implements $\seek$, not $\nec$]
+\label{thm:trace-seek}
+Questions answerable from $\Tr(\Src)$ by \Cref{thm:atomic} are exactly
+forward-reachability questions, i.e.\ $\seek$. The question ``which items were
+load-bearing for this result'' is a $\nec$ question and is not expressible as a
+projection of the trace, however finely the trace is instrumented.
+\end{theorem}
+
+\begin{proof}
+Each event records the items it read, so trace projections compute the
+transitive closure of the reads relation from a target, which is
+$\seek(x^\star)$ by \Cref{prop:events-contacts}. That $\nec$ is not so
+computable is the query-separation result of
+\citet[\S15]{sachikonye2025directional}: two graphs with identical edge
+sets --- hence identical under every retrieval query, and in particular under
+every projection of a trace recording only reads --- yield different
+admissibility verdicts, because the floor is a minimum over \emph{every} item,
+including items lying on no path from the target. Adding numeric attributes to
+events does not close the gap: the obstruction is expressibility, not
+complexity.
+\end{proof}
+
+\begin{corollary}[Correct probing is a composition]
+\label{cor:nec-seek}
+A determination must compute $\nec\circ\seek$: reach forward to the candidate
+set, then ablate to find which members are load-bearing. Neither operator
+substitutes for the other.
+\end{corollary}
+
+\begin{proposition}[Ablation is tractable]
+\label{prop:domination-srg}
+A non-seed item is necessary exactly when it dominates some reachable item, so
+$\nec$ is computable in near-linear time by dominator-tree construction
+\citep{lengauer1979}.
+\end{proposition}
+
+\begin{proof}
+\citet[\S13.5]{sachikonye2025directional}; the dominator characterisation and
+its near-linear algorithm are standard \citep{lengauer1979,cooper2001}.
+\end{proof}
+
+\begin{remark}[Three implementation hazards, two of them silent]
+\label{rem:hazards}
+First, the resolving measure must \emph{grow} with resolving power; a minimum
+cut has the wrong sign, and the reachable-slice measure is the correct one.
+Second, an item's contribution must not count its own disappearance --- doing
+so collapses $\nec$ onto $\seek$ and reproduces exactly the defect the
+distinction exists to prevent. Third, seeds are a genuine boundary case: a seed
+reaching only itself dominates nothing yet is necessary, so
+\Cref{prop:domination-srg} is stated for non-seed items and seeds require
+separate treatment. The second and third produce no visible symptom, so they
+should be written as tests before the operator is implemented.
+\end{remark}
+
+% =====================================================================
+\section{Replay, re-execution, and the record}
+\label{sec:rerun}
+% =====================================================================
+
+\begin{theorem}[Replay asymmetry]
+\label{thm:replay-asymmetry}
+Let $\Src$ be run twice, with the model observing and depositing each time.
+Then the two traces are identical, $\Tr(\Src)=\Tr(\Src)$, while the pair states
+differ: $\rec$ after the second run strictly exceeds $\rec$ after the first,
+and the model's reading of the second run need not agree with its reading of
+the first.
+\end{theorem}
+
+\begin{proof}
+Trace identity is \Cref{ax:det}: the run is a function of the source and the
+initial store, both unchanged. Record advance is \Cref{def:deposit}: each run
+deposits, and deposits are committing acts, so $\rec$ strictly increases.
+Disagreement of readings is then admissible because the second reading is taken
+of a catalogue that the first deposit altered; by \Cref{prop:no-stateless} the
+model cannot be both adaptive and traceless, so its state before the second
+reading differs from its state before the first.
+\end{proof}
+
+\begin{corollary}[Reproducibility relocates]
+\label{cor:repro}
+``Same script, same answer'' is true of the trace and false of the system's
+reading of it. Reproducibility attaches to the source, the trace, and the
+provenance record, never to the model's output \citep{cheney2009}.
+\end{corollary}
+
+\begin{corollary}[Divergence is not a defect]
+\label{cor:divergence-ok}
+Two readings of the same script that disagree constitute correct behaviour, not
+a fault to be reported: the first determination committed, altering the
+structure the second is taken of.
+\end{corollary}
+
+\begin{proof}
+Immediate from \Cref{thm:replay-asymmetry}; the analogous result for
+determinations over a catalogue is \citet[Cor.~12.6]{sachikonye2025directional}.
+\end{proof}
+
+\begin{proposition}[Re-execution accretes; there is no retraction]
+\label{prop:no-retract}
+Re-running a cell that deposits adds contacts and advances $\rec$. There is no
+operation on the pair that decreases $\rec$ or removes a committed contact.
+\end{proposition}
+
+\begin{proof}
+$\rec$ is non-decreasing by \Cref{def:rec} and each deposit increments it. A
+removal of a committed contact would decrease $\Char$'s domain without a
+committing act, contradicting \Cref{def:individual-srg}'s requirement that
+$\Char$ be preserved along chains of committing acts.
+\end{proof}
+
+\begin{corollary}[Undo is a forward act]
+\label{cor:undo}
+A user-facing ``reset'' must be implemented as a compensating deposit that
+\emph{increments} the record, never as a rewind.
+\end{corollary}
+
+\begin{remark}[Notebook semantics, corrected]
+\label{rem:notebook}
+A conventional notebook overwrites: re-running a cell replaces its output and
+the previous result is gone. \Cref{prop:no-retract} forbids that here for
+depositing cells. Cells that only compute --- no deposit --- may be re-run
+freely, being mere rebinding in the store; the distinction is syntactic and can
+be shown in the interface.
+\end{remark}
+
+% =====================================================================
+\section{Termination: closure, not confidence}
+\label{sec:term}
+% =====================================================================
+
+An orchestration layer must decide when a determination has done enough. We
+record the criterion, because the obvious one is provably wrong.
+
+\begin{definition}[Reachable class set]
+\label{def:class-set-srg}
+For a seed $v_0$, $\Cell(v_0)$ is the set of targets reachable by admissible
+propagation through probes invoked so far, partitioned by
+endpoint-indistinguishability.
+\end{definition}
+
+\begin{definition}[Closure]
+\label{def:closure-srg}
+A determination is \emph{closed} when, for every available but uninvoked probe,
+extension by that probe adds no new class to $\Cell(v_0)$.
+\end{definition}
+
+\begin{theorem}[Closure is strictly stronger than a confidence threshold]
+\label{thm:closure-stronger-srg}
+There are process graphs and thresholds $\theta$ at which a propagation's
+terminal alignment satisfies $\theta$ while the determination is not closed.
+\end{theorem}
+
+\begin{proof}
+\citet[Thm.~14.3]{sachikonye2025directional}. The witness is two internally
+dense clusters each joined to the medium by one probe: a propagation through
+one satisfies any $\theta\le 1$ trivially, its terminal alignment to its own
+target being at the floor, while the uninvoked probe reaches a class the first
+does not.
+\end{proof}
+
+\begin{theorem}[Convergent or contested closure]
+\label{thm:decline-srg}
+Over a finite probe registry every determination terminates in exactly one of:
+(i) \emph{convergent closure}, $\Cell(v_0)$ a single class, reported by its
+representative; (ii) \emph{contested closure}, $\Cell(v_0)$ stable with more
+than one class, reported as \emph{decline} together with the classes found.
+\end{theorem}
+
+\begin{proof}
+\citet[Thm.~14.5]{sachikonye2025directional}: the registry is finite, so
+$\Cell(v_0)$ can grow only finitely often and closure is reached by exhaustion;
+the two cases partition the stabilised set.
+\end{proof}
+
+\begin{corollary}[Decline is a first-class output]
+\label{cor:decline-srg}
+Contested closure is a correct termination carrying the divergent classes. It
+is not a failure to be retried, and the system could not adjudicate between the
+classes in any case.
+\end{corollary}
+
+\begin{remark}[Budget never stops a determination]
+\label{rem:budget}
+Budget selects which probe to invoke next --- by water-filling where returns
+diminish, by $0/1$ knapsack where a probe is all-or-nothing
+\citep[\S13.4]{sachikonye2025directional,dantzig1957,kellerer2004}. It does not
+decide whether to stop. A determination that has not closed should descend
+further or decline; exhausting a budget licenses neither a verdict nor a
+fabrication.
+\end{remark}
+
+% =====================================================================
+\section{The blueprint}
+\label{sec:blueprint}
+% =====================================================================
+
+We collect the commitments an implementation must satisfy, each with a
+checkable predicate.
+
+\begin{definition}[Blueprint invariants]
+\label{def:invariants}
+\begin{enumerate}[label=\textup{(B\arabic*)},leftmargin=2.6em,itemsep=2pt]
+\item \textbf{Invariant.} A quantity conserved under relabelling of items.
+\item \textbf{Record.} A never-resetting counter; ``undo'' increments it
+(\Cref{cor:undo}).
+\item \textbf{Search.} Determination by search, not lookup: no cache of prior
+determinations.
+\item \textbf{Deposit.} Every propagation deposits, including those whose
+output is discarded.
+\item \textbf{Accretive.} No teardown-then-rebuild; a resting cut exists at
+every intermediate stage.
+\item \textbf{No verdict.} No success/failure vocabulary in the runtime.
+\end{enumerate}
+\end{definition}
+
+\begin{proposition}[The invariants are independent]
+\label{prop:indep}
+No (B$i$) follows from the conjunction of the others.
+\end{proposition}
+
+\begin{proof}
+\citet[Prop.~17.2]{sachikonye2025directional} exhibits, for each $i$, a system
+satisfying every invariant but the $i$-th.
+\end{proof}
+
+\begin{remark}[Two with immediate teeth]
+\label{rem:teeth}
+(B3) forbids the obvious optimisation of memoising a repeated question: caching
+a determination is not a speedup but a violation, since by
+\Cref{thm:replay-asymmetry} the second determination is taken of a different
+structure. (B2) forbids a rewind-style session reset. Note that (B3) does not
+forbid rate-limiting \emph{probes} --- it forbids caching \emph{determinations};
+a dry-run-by-default policy on an external search tool changes which probes are
+invoked, never whether a result is recomputed.
+\end{remark}
+
+% =====================================================================
+\section{The prototype}
+\label{sec:proto}
+% =====================================================================
+
+We describe a Python realisation of the deterministic core sufficient to
+exhibit every construction above. It is a reference implementation, not a
+performance claim.
+
+\subsection{Structure}
+
+The prototype comprises a lexer, a Pratt parser for the expression cascade, a
+big-step evaluator implementing \Cref{def:compiler}, a static graph pass
+implementing \Cref{prop:static}, and a JSON emitter.
+
+\begin{lstlisting}
+item threshold = 0.7
+item readings = [0.4, 0.8, 0.9]
+
+funxn above(xs, t):
+    item hits = 0
+    considering all x in xs:
+        given x > t:
+            hits = hits + 1
+    return hits
+
+proposition Signal:
+    motion Strong("enough readings clear bar")
+    given above(readings, threshold) >= 2:
+        support Strong with_confidence(0.9)
+\end{lstlisting}
+
+\subsection{Emitted record}
+
+Each cell execution emits a JSON object carrying: the stage index; the store
+delta; the trace as a list of events per \Cref{def:trace}; the stage graph
+$\Gph_k$ as items and weighted contacts; the deposit summary; and the record
+counter after deposit. The store delta and the trace together satisfy
+\Cref{thm:atomic}: every atomic question is a projection of the emitted JSON.
+
+\begin{remark}[What the prototype deliberately omits]
+\label{rem:proto-omits}
+No model is invoked. The prototype emits the record a model would read, which
+is the separable half; \Cref{cor:model-necessary} says a complete system needs
+the other half, and the interface to it is $\dep$ alone. The $\nec$ operator of
+\Cref{cor:nec-seek} is likewise not implemented: the prototype computes
+$\seek$, and reports that it does, rather than presenting reachability as
+necessity.
+\end{remark}
+
+% =====================================================================
+\section{Discussion and limitations}
+\label{sec:limits}
+% =====================================================================
+
+\subsection{Relation to existing practice}
+
+Retrieval-augmented generation places a store on the read path of a model and
+treats the model's output as the answer. Two differences are structural rather
+than incidental. First, here the store is not consulted \emph{by} the
+propagator; it is the propagator's own record, and the model reads it
+afterwards. Second, retrieval implements $\seek$
+\citep[\S13.5]{sachikonye2025directional}, and by \Cref{thm:trace-seek} no
+improvement in retrieval yields $\nec$.
+
+Incremental and self-adjusting computation \citep{acar2006} shares the
+prefix-stability property of \Cref{prop:containment} but permits invalidation
+and recomputation; \Cref{prop:no-retract} forbids the analogous move here, the
+record being non-decreasing. Provenance systems \citep{cheney2009} record
+derivation histories much as \Cref{def:trace} does; the difference is
+\Cref{cor:repro}, which locates reproducibility in the provenance rather than
+in the answer.
+
+\subsection{What the development assumes and does not supply}
+
+Three assumptions are load-bearing and none is proved here. \Cref{ax:det} is a
+property of the implemented fragment, not of Turbulance in general: the
+resolution forms admit world-touching resolvers, and an implementation that
+enables them leaves the deterministic fragment and forfeits
+\Cref{thm:atomic,thm:cell-agree}. \Cref{rem:medium} inherits non-completability
+of the medium from \citet{sachikonye2025residue}. The concavity premise
+underlying water-filling (\Cref{rem:budget}) is a claim about the environment
+probed, not about the runtime, and should be recorded per probe kind rather
+than assumed.
+
+\subsection{Honest limitations}
+
+The endpoint-indistinguishability predicate of \Cref{def:class-set-srg} is not
+supplied at the level of user goals: we prove closure is the right criterion
+without saying, for a particular application, when two results count as the
+same class. That is a genuine gap, and it is the one place where an
+implementation must make a decision the theory does not force.
+
+We prove nothing about the model. \Cref{cor:model-necessary} shows a model is
+required for individuation; it does not show any particular model is adequate,
+and no result improves if the model does.
+
+Finally, \Cref{thm:trace-seek} is a limitation of this architecture stated in
+its own terms: a complete deterministic trace, however finely instrumented,
+answers what happened and not what mattered. We regard stating it as preferable
+to the alternative of allowing reachability to be read as necessity.
+
+\subsection{The picture in one statement}
+
+A script is a graph; compiling it is a propagation; the compiler is
+deterministic, which makes every step of the propagation nameable in the source
+and forbids the compiler from knowing whose propagation it was; a model reads
+the record, cannot help but be changed by reading it, and thereby supplies the
+individuation the deterministic half cannot.
+
+% =====================================================================
+\section{Conclusion}
+\label{sec:concl}
+% =====================================================================
+
+Ndombolo separates two things usually fused: the propagation, which is
+deterministic and therefore interrogable, and the record, which advances and
+therefore individuates. The separation is not a design preference. A
+deterministic compiler cannot distinguish a run from a copy of a run
+(\Cref{thm:compiler-blind}); an adapting observer cannot read without being
+changed (\Cref{prop:no-stateless}). Placing the model off the run path is what
+makes atomic interrogation of the trace possible
+(\Cref{thm:atomic,rem:exclusion-buys}), and placing it on the record path is
+what makes identity available at all (\Cref{thm:pair-individuates}). One
+language, executed cell-wise, with a model that never touches the run and never
+leaves it unchanged.
+
+% =====================================================================
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\end{document}

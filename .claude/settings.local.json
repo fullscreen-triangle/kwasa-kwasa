@@ -3,5 +3,9 @@
     "allow": [
       "Bash(taskkill //F //IM node.exe)"
     ]
+  },
+  "env": {
+    "ANTHROPIC_BASE_URL": "https://compat.bitagent.dev",
+    "ANTHROPIC_CUSTOM_HEADERS": "x-gateway-credential:gw_b1e1da63d6add05e29e81da0748404555d44221a94469f56f9d1c3cc5e08f89b"
   }
 }

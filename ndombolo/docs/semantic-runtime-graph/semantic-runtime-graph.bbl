@@ -1,0 +1,77 @@
+\begin{thebibliography}{12}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Acar et~al.(2006)Acar, Blelloch, and Harper]{acar2006}
+Umut~A. Acar, Guy~E. Blelloch, and Robert Harper.
+\newblock Adaptive functional programming.
+\newblock \emph{ACM Transactions on Programming Languages and Systems},
+  28\penalty0 (6):\penalty0 990--1034, 2006.
+
+\bibitem[Cheney et~al.(2009)Cheney, Chiticariu, and Tan]{cheney2009}
+James Cheney, Laura Chiticariu, and Wang-Chiew Tan.
+\newblock Provenance in databases: Why, how, and where.
+\newblock \emph{Foundations and Trends in Databases}, 1\penalty0 (4):\penalty0
+  379--474, 2009.
+
+\bibitem[Cooper et~al.(2001)Cooper, Harvey, and Kennedy]{cooper2001}
+Keith~D. Cooper, Timothy~J. Harvey, and Ken Kennedy.
+\newblock A simple, fast dominance algorithm.
+\newblock \emph{Software Practice and Experience}, 2001.
+
+\bibitem[Dantzig(1957)]{dantzig1957}
+George~B. Dantzig.
+\newblock Discrete-variable extremum problems.
+\newblock \emph{Operations Research}, 5\penalty0 (2):\penalty0 266--277, 1957.
+
+\bibitem[Kellerer et~al.(2004)Kellerer, Pferschy, and Pisinger]{kellerer2004}
+Hans Kellerer, Ulrich Pferschy, and David Pisinger.
+\newblock \emph{Knapsack Problems}.
+\newblock Springer, Berlin, 2004.
+
+\bibitem[Lengauer and Tarjan(1979)]{lengauer1979}
+Thomas Lengauer and Robert~Endre Tarjan.
+\newblock A fast algorithm for finding dominators in a flowgraph.
+\newblock \emph{ACM Transactions on Programming Languages and Systems},
+  1\penalty0 (1):\penalty0 121--141, 1979.
+
+\bibitem[Plotkin(1981)]{plotkin1981}
+Gordon~D. Plotkin.
+\newblock A structural approach to operational semantics.
+\newblock Technical Report DAIMI FN-19, Computer Science Department, Aarhus
+  University, 1981.
+
+\bibitem[Sachikonye(2025{\natexlab{a}})]{sachikonye2025directional}
+Kundai~Farai Sachikonye.
+\newblock The directional model: Causal knowledge graphs and generative models
+  as one catalogue.
+\newblock Manuscript, 2025{\natexlab{a}}.
+
+\bibitem[Sachikonye(2025{\natexlab{b}})]{sachikonye2025grammar}
+Kundai~Farai Sachikonye.
+\newblock Turbulance: A formal specification of a domain grammar for semantic
+  computation.
+\newblock Manuscript, 2025{\natexlab{b}}.
+
+\bibitem[Sachikonye(2025{\natexlab{c}})]{sachikonye2025residue}
+Kundai~Farai Sachikonye.
+\newblock The irreducible residue: Individuation by negation in bounded
+  resolvable spaces.
+\newblock Manuscript, 2025{\natexlab{c}}.
+
+\bibitem[Sachikonye(2025{\natexlab{d}})]{sachikonye2025runtime}
+Kundai~Farai Sachikonye.
+\newblock Semantic runtime specifications: Resolution, provenance, and
+  scheduling.
+\newblock Manuscript, 2025{\natexlab{d}}.
+
+\bibitem[Winskel(1993)]{winskel1993}
+Glynn Winskel.
+\newblock \emph{The Formal Semantics of Programming Languages: An
+  Introduction}.
+\newblock MIT Press, Cambridge, MA, 1993.
+
+\end{thebibliography}

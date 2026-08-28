@@ -1,0 +1,21 @@
+// Worked example from the manuscript, Section 9.
+// Cells are separated by a line beginning with "// ---".
+
+item threshold = 0.7
+item readings = [0.4, 0.8, 0.9]
+
+// ---
+
+funxn above(xs, t):
+    item hits = 0
+    considering all x in xs:
+        given x > t:
+            hits = hits + 1
+    return hits
+
+// ---
+
+proposition Signal:
+    motion Strong("enough readings clear bar")
+    given above(readings, threshold) >= 2:
+        support Strong with_confidence(0.9)

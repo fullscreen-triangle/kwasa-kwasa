@@ -1,0 +1,50 @@
+// A second example: points, contested motions, nested scope, decline.
+
+item spectra = [
+    {mass: 180.06, intensity: 0.91, label: "glucose"},
+    {mass: 180.06, intensity: 0.44, label: "galactose"},
+    {mass: 342.12, intensity: 0.77, label: "sucrose"}
+]
+item tolerance = 0.02
+
+// ---
+
+funxn near(a, b, tol):
+    item gap = a - b
+    given gap < 0:
+        gap = 0 - gap
+    return gap <= tol
+
+funxn strongest(rows):
+    item best = 0
+    considering all row in rows:
+        given row.intensity > best:
+            best = row.intensity
+    return best
+
+// ---
+
+point candidate = {
+    mass: 180.06,
+    certainty: 0.6,
+    basis: "single peak, two isomers share it"
+}
+
+// ---
+
+proposition Identification:
+    motion Glucose("the 180.06 peak is glucose")
+    motion Ambiguous("the peak does not separate the isomers")
+
+    item peak = strongest(spectra)
+    given peak >= 0.9:
+        support Glucose with_confidence(0.7)
+    otherwise:
+        inconclusive Glucose
+
+    considering all row in spectra:
+        given near(row.mass, candidate.mass, tolerance):
+            within row:
+                given intensity < 0.5:
+                    contradict Glucose with_confidence(0.5)
+                    support Ambiguous with_confidence(0.8)
