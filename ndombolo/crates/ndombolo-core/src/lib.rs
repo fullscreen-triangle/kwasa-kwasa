@@ -11,6 +11,7 @@
 pub mod ast;
 pub mod lexer;
 pub mod eval;
+pub mod graph;
 pub mod parser;
 pub mod session;
 pub mod value;
