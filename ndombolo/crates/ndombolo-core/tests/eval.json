@@ -39011,7 +39011,7 @@
     {
      "index": 0,
      "first_line": 1,
-     "text": "item a = 7 % 3\nitem b = 0 - 7 % 3\nitem c = 7 % (0 - 3)\nitem d = 2 * 3 + 1\nitem e = 0 - 5\nitem f = - -5\n",
+     "text": "item a = 7 % 3\nitem b = 0 - 7 % 3\nitem c = 7 % (0 - 3)\nitem d = 2 * 3 + 1\nitem e = 0 - 5\nitem f = - -5\nitem g = (0 - 7) % 3\nitem h = (0 - 7) % (0 - 3)\n",
      "ok": true,
      "store_delta": {
       "a": {
@@ -39042,6 +39042,16 @@
       "f": {
        "change": "added",
        "value": 5,
+       "tag": "num"
+      },
+      "g": {
+       "change": "added",
+       "value": -1,
+       "tag": "num"
+      },
+      "h": {
+       "change": "added",
+       "value": -1,
        "tag": "num"
       }
      },
@@ -39123,6 +39133,32 @@
         "value": 5,
         "tag": "num"
        }
+      },
+      {
+       "seq": 6,
+       "rule": "declare-item",
+       "site": {
+        "line": 7
+       },
+       "reads": [],
+       "writes": {
+        "item": "g",
+        "value": -1,
+        "tag": "num"
+       }
+      },
+      {
+       "seq": 7,
+       "rule": "declare-item",
+       "site": {
+        "line": 8
+       },
+       "reads": [],
+       "writes": {
+        "item": "h",
+        "value": -1,
+        "tag": "num"
+       }
       }
      ],
      "output": []
@@ -39156,12 +39192,14 @@
      "c": 1,
      "d": 7,
      "e": -5,
-     "f": 5
+     "f": 5,
+     "g": -1,
+     "h": -1
     },
     "output": [],
     "propositions": {},
     "points": {},
-    "trace_length": 6
+    "trace_length": 8
    }
   },
   {
@@ -43771,6 +43809,54 @@
     "propositions": {},
     "points": {},
     "trace_length": 1
+   }
+  },
+  {
+   "name": "edge-err-pipe-order",
+   "cells": [
+    {
+     "index": 0,
+     "first_line": 1,
+     "text": "item a = x |> f\n",
+     "ok": false,
+     "error": {
+      "phase": "run",
+      "message": "line 1: undefined name 'f'",
+      "line": 1
+     },
+     "store_delta": {},
+     "trace": [],
+     "output": []
+    }
+   ],
+   "final": {
+    "store": {
+     "print": {
+      "builtin": "_print"
+     },
+     "len": {
+      "builtin": "_len"
+     },
+     "sum": {
+      "builtin": "f"
+     },
+     "min": {
+      "builtin": "f"
+     },
+     "max": {
+      "builtin": "f"
+     },
+     "abs": {
+      "builtin": "f"
+     },
+     "round": {
+      "builtin": "f"
+     }
+    },
+    "output": [],
+    "propositions": {},
+    "points": {},
+    "trace_length": 0
    }
   },
   {

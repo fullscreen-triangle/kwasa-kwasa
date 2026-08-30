@@ -10,8 +10,14 @@
 
 pub mod ast;
 pub mod lexer;
+pub mod eval;
 pub mod parser;
+pub mod session;
+pub mod value;
 
 pub use ast::{Entry, Node};
 pub use lexer::{tokenize, Kind, LexError, Token};
+pub use eval::{Compiler, RuntimeErr};
 pub use parser::{parse, ParseError};
+pub use session::{split_cells, CellResult, Session, StoreChange};
+pub use value::{render, text, Value};

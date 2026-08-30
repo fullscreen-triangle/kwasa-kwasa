@@ -8,4 +8,8 @@ license.workspace = true
 
 [dependencies]
 serde = { version = "1", features = ["derive"] }
-serde_json = "1"
+# `preserve_order` is not a preference: a rendered value is a Python dict, and
+# a Python dict is insertion-ordered. Without it `Map` sorts keys, and every
+# rendered map, every trace note and the whole store dump come out alphabetical
+# -- observable in `print`, in an event's `note`, and in the record on disk.
+serde_json = { version = "1", features = ["preserve_order"] }

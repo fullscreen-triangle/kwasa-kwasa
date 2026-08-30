@@ -93,8 +93,14 @@ EDGE: List[Tuple[str, str]] = [
     # `%` is math.fmod, which takes the sign of the dividend. Rust's `%` on
     # f64 agrees; Python's own `%` operator does not, so a port that reads the
     # source as `a % b` and writes `a.rem_euclid(b)` diverges on negatives.
+    # `g` and `h` are the ones that bite: `0 - 7 % 3` binds as `0 - (7 % 3)`,
+    # so every other case has a non-negative dividend and fmod agrees with
+    # rem_euclid. Only a parenthesised negative dividend separates them --
+    # fmod(-7, 3) is -1, rem_euclid is 2. Sabotage found this: swapping the
+    # operator left the harness green until these two were added.
     ("arith", 'item a = 7 % 3\nitem b = 0 - 7 % 3\nitem c = 7 % (0 - 3)\n'
-              'item d = 2 * 3 + 1\nitem e = 0 - 5\nitem f = - -5\n'),
+              'item d = 2 * 3 + 1\nitem e = 0 - 5\nitem f = - -5\n'
+              'item g = (0 - 7) % 3\nitem h = (0 - 7) % (0 - 3)\n'),
 
     # A map literal keeps insertion order, in the value, in `_text`, and in the
     # JSON. A BTreeMap would sort it and the divergence would show up only in
@@ -191,7 +197,11 @@ EDGE: List[Tuple[str, str]] = [
                  'print(abs(0 - 4))\nprint(round(2.5))\nprint(round(3.5))\n'
                  'print(round(2.4))\nprint(sum())\nprint(min())\n'),
 
-    # Pipes are application, so `x |> f` traces exactly as `f(x)` would.
+    # Pipes are application, so `x |> f` traces exactly as `f(x)` would --
+    # but the **right** operand is evaluated first. With both operands pure
+    # that is invisible, which is why sabotage caught nothing here until
+    # `err-pipe-order` was added below: it names two unbound operands, and
+    # the error says which one the evaluator reached.
     ("pipe", 'funxn double(v):\n    return v * 2\n'
              'item a = 3 |> double\nitem b = 3 |> double |> double\n'
              'item c = double(3)\n'),
@@ -221,6 +231,10 @@ EDGE: List[Tuple[str, str]] = [
     ("err-no-field", 'item a = 5\nitem b = a.f\n'),
     ("err-not-callable", 'item a = 5\nitem b = a()\n'),
     ("err-arity", 'funxn f(a, b):\n    return a\nitem x = f(1)\n'),
+    # Right-operand-first, made observable: both names are unbound, so the
+    # error names whichever the evaluator reached. Right-first says `f`;
+    # left-first would say `x`.
+    ("err-pipe-order", 'item a = x |> f\n'),
     ("err-ensure", 'item a = 1\nensure a == 2\n'),
     ("err-verdict-outside", 'motion M\nsupport M\n'),
     ("err-point-not-map", 'point p = 5\n'),
