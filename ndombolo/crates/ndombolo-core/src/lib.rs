@@ -8,6 +8,10 @@
 //! Port order is lexer → parser → evaluator → graph, each stage checked
 //! against the frozen corpus before the next begins.
 
+pub mod ast;
 pub mod lexer;
+pub mod parser;
 
+pub use ast::{Entry, Node};
 pub use lexer::{tokenize, Kind, LexError, Token};
+pub use parser::{parse, ParseError};
