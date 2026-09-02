@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>{{NAME}}</title>
+<style>
+  /* Chrome-less on purpose: the document is the interface. There is no
+     toolbar, no sidebar and no status bar -- what is on screen is what will
+     be in the file, plus the outputs the runtime wrote. */
+  :root {
+    --bg: #fdfdfc; --fg: #23231f; --muted: #8a8a80; --rule: #e6e4dd;
+    --cell-bg: #f6f5f1; --out-bg: #fbfaf7; --accent: #3b5b8c; --err: #9b2c1e;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16171a; --fg: #dcdcd6; --muted: #82827c; --rule: #2c2e33;
+      --cell-bg: #1d1f23; --out-bg: #191b1e; --accent: #8fb0e0; --err: #e08b7c;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--fg); }
+  body {
+    font: 16px/1.65 ui-serif, Georgia, "Times New Roman", serif;
+    padding: 4rem 1.5rem 12rem;
+  }
+  #doc { max-width: 46rem; margin: 0 auto; }
+
+  /* prose: rendered, editable in place, no source view */
+  .prose {
+    outline: none; white-space: pre-wrap; padding: 0.1rem 0.4rem;
+    margin: 0 -0.4rem; border-radius: 3px;
+  }
+  .prose:focus { background: color-mix(in srgb, var(--accent) 7%, transparent); }
+  .prose h1, .prose h2, .prose h3 { font-weight: 600; line-height: 1.25; }
+  .prose h1 { font-size: 1.7rem; margin: 2rem 0 0.6rem; }
+  .prose h2 { font-size: 1.3rem; margin: 1.8rem 0 0.5rem; }
+  .prose h3 { font-size: 1.1rem; margin: 1.5rem 0 0.4rem; }
+  .prose code {
+    font: 0.87em ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    background: var(--cell-bg); padding: 0.1em 0.3em; border-radius: 3px;
+  }
+  .prose a { color: var(--accent); }
+
+  /* cells */
+  .cell { margin: 1.4rem 0; border-left: 2px solid var(--rule); }
+  .cell.running { border-left-color: var(--accent); }
+  .cell.failed { border-left-color: var(--err); }
+  .cell-src {
+    font: 13.5px/1.6 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    background: var(--cell-bg); padding: 0.7rem 0.9rem; white-space: pre;
+    overflow-x: auto; outline: none; tab-size: 2; color: var(--fg);
+    border: none; width: 100%; resize: none; display: block;
+  }
+  .cell-bar {
+    display: flex; gap: 0.8rem; align-items: baseline;
+    padding: 0.2rem 0.9rem; font: 11px ui-sans-serif, system-ui, sans-serif;
+    color: var(--muted); opacity: 0; transition: opacity 0.12s;
+  }
+  .cell:hover .cell-bar, .cell:focus-within .cell-bar { opacity: 1; }
+  .cell-bar button {
+    font: inherit; color: var(--accent); background: none; border: none;
+    padding: 0; cursor: pointer;
+  }
+  .cell-bar button:hover { text-decoration: underline; }
+
+  /* output: plain text below the cell, as asked */
+  .output {
+    font: 13px/1.6 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    background: var(--out-bg); color: var(--muted);
+    padding: 0.6rem 0.9rem; white-space: pre-wrap; overflow-x: auto;
+    border-left: 2px solid transparent; margin: 0;
+  }
+  .output.err { color: var(--err); }
+
+  /* the document's own context menu */
+  #menu {
+    position: fixed; display: none; z-index: 40; min-width: 15rem;
+    background: var(--bg); border: 1px solid var(--rule); border-radius: 6px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.16); padding: 0.3rem;
+    font: 13px ui-sans-serif, system-ui, sans-serif;
+  }
+  #menu button {
+    display: block; width: 100%; text-align: left; background: none;
+    border: none; font: inherit; color: var(--fg); padding: 0.4rem 0.6rem;
+    border-radius: 4px; cursor: pointer;
+  }
+  #menu button:hover { background: var(--cell-bg); }
+  #menu hr { border: none; border-top: 1px solid var(--rule); margin: 0.3rem 0; }
+  #menu .label { padding: 0.4rem 0.6rem 0.2rem; color: var(--muted); font-size: 11px; }
+  #menu input {
+    width: calc(100% - 1.2rem); margin: 0 0.6rem 0.4rem; padding: 0.3rem 0.4rem;
+    font: inherit; background: var(--cell-bg); color: var(--fg);
+    border: 1px solid var(--rule); border-radius: 4px;
+  }
+
+  /* the ask panel */
+  #ask {
+    position: fixed; right: 1.5rem; bottom: 1.5rem; width: 24rem; max-width: calc(100vw - 3rem);
+    display: none; z-index: 30; background: var(--bg);
+    border: 1px solid var(--rule); border-radius: 8px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.18); overflow: hidden;
+    font: 13px/1.55 ui-sans-serif, system-ui, sans-serif;
+  }
+  #ask header {
+    display: flex; justify-content: space-between; padding: 0.5rem 0.8rem;
+    border-bottom: 1px solid var(--rule); color: var(--muted); font-size: 11px;
+  }
+  #ask header button { background: none; border: none; color: var(--muted); cursor: pointer; font: inherit; }
+  #ask-q {
+    width: 100%; border: none; border-bottom: 1px solid var(--rule);
+    padding: 0.6rem 0.8rem; font: inherit; background: var(--bg); color: var(--fg);
+    outline: none;
+  }
+  #ask-a { padding: 0.7rem 0.8rem; max-height: 22rem; overflow-y: auto; white-space: pre-wrap; }
+  #ask-searches {
+    padding: 0 0.8rem 0.6rem; color: var(--muted); font-size: 11px;
+    font-family: ui-monospace, Menlo, Consolas, monospace; white-space: pre-wrap;
+  }
+  #ask-foot { padding: 0 0.8rem 0.7rem; }
+  #ask-foot button {
+    font: inherit; color: var(--accent); background: none; border: none;
+    padding: 0; cursor: pointer;
+  }
+
+  #status {
+    position: fixed; left: 1.5rem; bottom: 1.5rem; z-index: 30;
+    font: 11px ui-sans-serif, system-ui, sans-serif; color: var(--muted);
+  }
+</style>
+</head>
+<body>
+<div id="doc"></div>
+
+<div id="menu"></div>
+
+<div id="ask">
+  <header><span>ask about this run</span><button id="ask-close">close</button></header>
+  <input id="ask-q" placeholder="which rule wrote greeting?" autocomplete="off">
+  <div id="ask-a"></div>
+  <div id="ask-searches"></div>
+  <div id="ask-foot"><button id="ask-insert">insert as prose</button></div>
+</div>
+
+<div id="status"></div>
+
+<script>
+"use strict";
+
+/* The page holds no copy of the document. Every edit posts a block and every
+ * render re-reads /api/doc, so what is on screen is what is on disk. A local
+ * model of the file would be a second source of truth, and the one on disk
+ * would lose. */
+
+const $ = (s) => document.querySelector(s);
+let RECORD = 0;
+let LAST_ANSWER = "";
+
+function status(text) {
+  $("#status").textContent = text;
+}
+
+async function api(path, body) {
+  const res = await fetch(path, body === undefined ? {} : {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  const data = await res.json().catch(() => ({ error: "no response" }));
+  if (!res.ok) throw new Error(data.error || ("http " + res.status));
+  return data;
+}
+
+/* -- markdown, only as far as this document needs -------------------------
+ *
+ * Headings, bold, italic, inline code and links. Deliberately small: the file
+ * is markdown on disk, and anything this does not render round-trips as the
+ * literal text the user typed rather than being silently rewritten. */
+function mdToHtml(src) {
+  const esc = (t) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  return esc(src)
+    .replace(/^### (.*)$/gm, "<h3>$1</h3>")
+    .replace(/^## (.*)$/gm, "<h2>$1</h2>")
+    .replace(/^# (.*)$/gm, "<h1>$1</h1>")
+    .replace(/`([^`]+)`/g, "<code>$1</code>")
+    .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+    .replace(/(^|[^*])\*([^*]+)\*/g, "$1<em>$2</em>")
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" rel="noreferrer">$1</a>');
+}
+
+/* The inverse, for the block being edited. A contenteditable div holding
+ * rendered HTML cannot be posted back as markdown, so editing swaps the block
+ * to its source and rendering swaps it back -- per block, not per document. */
+function htmlToText(el) {
+  return el.innerText.replace(/ /g, " ");
+}
+
+/* -- turbulance highlighting ---------------------------------------------
+ *
+ * The same keyword set the interpreter uses, ported from the web playground's
+ * CodeMirror mode. Written as a tokenizer over a string rather than pulled
+ * from a CDN: the highlight is one regex pass and a network dependency for it
+ * would mean the page stops colouring when offline. */
+const KEYWORDS = new Set(["funxn","item","proposition","motion","support","contradict",
+  "inconclusive","within","given","considering","for","each","in","while","return",
+  "ensure","allow","research","cause","point","resolution","resolve","cycle","drift",
+  "flow","roll","until","settled","over","on","goal","metacognitive","import","from",
+  "as","otherwise","with_confidence","and","or","not"]);
+const DECL = new Set(["funxn","proposition","motion","point","goal","metacognitive",
+  "evidence","pattern","item","cause"]);
+const ATOMS = new Set(["true","false","none"]);
+
+function highlight(src) {
+  const esc = (t) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  let out = "", i = 0, expectName = false;
+  const push = (cls, text) => { out += cls ? `<span class="t-${cls}">${esc(text)}</span>` : esc(text); };
+
+  while (i < src.length) {
+    const rest = src.slice(i);
+    let m;
+    if ((m = /^\s+/.exec(rest))) { push(null, m[0]); i += m[0].length; continue; }
+    if ((m = /^(\/\/|#).*/.exec(rest))) { push("comment", m[0]); i += m[0].length; continue; }
+    if ((m = /^"(?:[^"\\]|\\.)*"?/.exec(rest))) { push("string", m[0]); i += m[0].length; continue; }
+    if ((m = /^\d+(?:\.\d+)?/.exec(rest))) { push("number", m[0]); i += m[0].length; continue; }
+    if ((m = /^[A-Za-z_][A-Za-z0-9_]*/.exec(rest))) {
+      const w = m[0], wasDecl = expectName;
+      expectName = DECL.has(w);
+      push(ATOMS.has(w) ? "atom" : KEYWORDS.has(w) ? "kw" : wasDecl ? "def" : null, w);
+      i += w.length; continue;
+    }
+    if ((m = /^(==|!=|<=|>=|&&|\|\||\|>|=>|[+\-*/<>=|!])/.exec(rest))) {
+      push("op", m[0]); i += m[0].length; continue;
+    }
+    push(null, src[i]); i += 1;
+  }
+  return out;
+}
+
+/* -- rendering ------------------------------------------------------------ */
+
+async function render() {
+  const data = await api("/api/doc");
+  RECORD = data.record;
+  const doc = $("#doc");
+  doc.textContent = "";
+
+  for (const b of data.blocks) {
+    if (b.kind === "prose") doc.appendChild(proseBlock(b));
+    else if (b.kind === "cell") doc.appendChild(cellBlock(b));
+    else if (b.kind === "output") doc.appendChild(outputBlock(b));
+    else doc.appendChild(fenceBlock(b));
+  }
+  status("record " + RECORD);
+}
+
+function proseBlock(b) {
+  const el = document.createElement("div");
+  el.className = "prose";
+  el.dataset.index = b.index;
+  el.contentEditable = "true";
+  el.innerHTML = mdToHtml(b.text);
+  el.dataset.source = b.text;
+
+  // On focus, show the source: what is edited is what is saved. Rendering
+  // over the top would mean typing `**x**` and saving <strong>x</strong>.
+  el.addEventListener("focus", () => { el.textContent = el.dataset.source; });
+  el.addEventListener("blur", async () => {
+    const text = htmlToText(el);
+    el.dataset.source = text;
+    el.innerHTML = mdToHtml(text);
+    try {
+      await api("/api/prose", { index: Number(el.dataset.index), text });
+      status("record " + RECORD);
+    } catch (e) { status(e.message); }
+  });
+  return el;
+}
+
+function cellBlock(b) {
+  const wrap = document.createElement("div");
+  wrap.className = "cell";
+  wrap.dataset.cell = b.cell;
+
+  const pre = document.createElement("pre");
+  pre.className = "cell-src";
+  pre.contentEditable = "true";
+  pre.spellcheck = false;
+  pre.dataset.index = b.index;
+  pre.textContent = b.text;
+  paint(pre);
+
+  pre.addEventListener("input", () => { pre.dataset.dirty = "1"; });
+  pre.addEventListener("blur", async () => {
+    const text = pre.innerText.replace(/ /g, " ").replace(/\n$/, "");
+    paint(pre);
+    if (!pre.dataset.dirty) return;
+    delete pre.dataset.dirty;
+    try { await api("/api/cell", { index: Number(pre.dataset.index), text }); }
+    catch (e) { status(e.message); }
+  });
+  // ctrl/cmd-enter runs this cell, the one shortcut worth having.
+  pre.addEventListener("keydown", (ev) => {
+    if ((ev.ctrlKey || ev.metaKey) && ev.key === "Enter") {
+      ev.preventDefault();
+      pre.blur();
+      runCell(b.cell);
+    }
+  });
+
+  const bar = document.createElement("div");
+  bar.className = "cell-bar";
+  const run = document.createElement("button");
+  run.textContent = "run";
+  run.addEventListener("click", () => runCell(b.cell));
+  const label = document.createElement("span");
+  label.textContent = "cell " + b.cell + " · line " + b.line + " · ctrl-enter";
+  bar.append(run, label);
+
+  wrap.append(pre, bar);
+  return wrap;
+}
+
+function paint(pre) {
+  // Repainting moves the caret, so only do it when the element is not focused
+  // -- on load and on blur. Live recolouring while typing is not worth losing
+  // the cursor position.
+  if (document.activeElement === pre) return;
+  pre.innerHTML = highlight(pre.textContent);
+}
+
+function outputBlock(b) {
+  const el = document.createElement("pre");
+  el.className = "output";
+  if (/^(parse|run): /m.test(b.text)) el.classList.add("err");
+  el.textContent = b.text;
+  return el;
+}
+
+function fenceBlock(b) {
+  const el = document.createElement("pre");
+  el.className = "output";
+  el.textContent = b.text;
+  return el;
+}
+
+/* -- running -------------------------------------------------------------- */
+
+async function runCell(n) {
+  status("running…");
+  try {
+    const res = await api("/api/run", n === undefined ? {} : { cell: n });
+    RECORD = res.record;
+    await render();
+    const stopped = res.stopped_at;
+    status("ran " + res.ran + " cell" + (res.ran === 1 ? "" : "s") +
+           " · record " + RECORD +
+           (stopped === null || stopped === undefined ? "" : " · stopped at cell " + stopped));
+  } catch (e) { status(e.message); }
+}
+
+/* -- the document's context menu ------------------------------------------ */
+
+const menu = $("#menu");
+
+document.addEventListener("contextmenu", (ev) => {
+  // Inside a cell, leave the browser's own menu alone: cut/paste there is
+  // more useful than these entries.
+  if (ev.target.closest(".cell-src")) return;
+  ev.preventDefault();
+  openMenu(ev.clientX, ev.clientY);
+});
+document.addEventListener("click", (ev) => {
+  if (!menu.contains(ev.target)) menu.style.display = "none";
+});
+
+async function openMenu(x, y) {
+  const s = await api("/api/settings");
+  menu.textContent = "";
+
+  const item = (text, fn) => {
+    const b = document.createElement("button");
+    b.textContent = text;
+    b.addEventListener("click", () => { menu.style.display = "none"; fn(); });
+    menu.appendChild(b);
+  };
+  const rule = () => menu.appendChild(document.createElement("hr"));
+  const label = (t) => {
+    const d = document.createElement("div");
+    d.className = "label"; d.textContent = t; menu.appendChild(d);
+  };
+
+  item("run all cells", () => runCell(undefined));
+  item("ask about this run…", () => openAsk());
+  rule();
+  item("show the record", showRecord);
+  rule();
+  label("model");
+  const model = document.createElement("input");
+  model.value = s.model;
+  model.addEventListener("change", async () => {
+    await api("/api/settings", { model: model.value });
+    status("model " + model.value);
+  });
+  menu.appendChild(model);
+  label("ollama");
+  const host = document.createElement("input");
+  host.value = s.host;
+  host.addEventListener("change", async () => {
+    await api("/api/settings", { host: host.value });
+  });
+  menu.appendChild(host);
+  label(s.file);
+
+  menu.style.display = "block";
+  // Keep it on screen when opened near an edge.
+  const r = menu.getBoundingClientRect();
+  menu.style.left = Math.min(x, window.innerWidth - r.width - 8) + "px";
+  menu.style.top = Math.min(y, window.innerHeight - r.height - 8) + "px";
+}
+
+async function showRecord() {
+  const r = await api("/api/record");
+  const lines = r.deposits.map((d) =>
+    "record " + d.record + "  cell " + d.cell + "  " + d.events + " events" +
+    (d.items_touched.length ? "  " + d.items_touched.join(", ") : "") +
+    (d.completed ? "" : "  (did not complete)")
+  );
+  $("#ask-a").textContent = lines.length ? lines.join("\n") : "no deposits yet";
+  $("#ask-searches").textContent = "";
+  $("#ask").style.display = "block";
+  $("#ask-q").value = "";
+}
+
+/* -- asking --------------------------------------------------------------- */
+
+function openAsk() {
+  $("#ask").style.display = "block";
+  $("#ask-q").focus();
+}
+$("#ask-close").addEventListener("click", () => { $("#ask").style.display = "none"; });
+
+$("#ask-q").addEventListener("keydown", async (ev) => {
+  if (ev.key !== "Enter") return;
+  const q = $("#ask-q").value.trim();
+  if (!q) return;
+  $("#ask-a").textContent = "searching the record…";
+  $("#ask-searches").textContent = "";
+  try {
+    const res = await api("/api/ask", { question: q });
+    LAST_ANSWER = res.text;
+    $("#ask-a").textContent = res.text;
+    $("#ask-searches").textContent = res.searches
+      .map((s) => s.tool + " " + JSON.stringify(s.arguments) +
+                  " → " + s.events_found + " events")
+      .join("\n");
+  } catch (e) {
+    $("#ask-a").textContent = e.message;
+    LAST_ANSWER = "";
+  }
+});
+
+/* The model's words reach the file only here, through the same route a user's
+ * prose takes, and only when the user asks for it. */
+$("#ask-insert").addEventListener("click", async () => {
+  if (!LAST_ANSWER) return;
+  const data = await api("/api/doc");
+  const prose = data.blocks.filter((b) => b.kind === "prose");
+  const last = prose[prose.length - 1];
+  if (!last) { status("no prose block to write into"); return; }
+  const text = (last.text.replace(/\s+$/, "") + "\n\n" + LAST_ANSWER + "\n");
+  await api("/api/prose", { index: last.index, text });
+  $("#ask").style.display = "none";
+  await render();
+});
+
+/* -- shortcuts ------------------------------------------------------------ */
+
+document.addEventListener("keydown", (ev) => {
+  if ((ev.ctrlKey || ev.metaKey) && ev.key === "Enter" && !ev.target.closest(".cell-src")) {
+    ev.preventDefault(); runCell(undefined);
+  }
+  if (ev.key === "Escape") { menu.style.display = "none"; $("#ask").style.display = "none"; }
+});
+
+const style = document.createElement("style");
+style.textContent = `
+  .t-kw { color: #8959a8; } .t-def { color: #4271ae; } .t-string { color: #718c00; }
+  .t-number { color: #f5871f; } .t-comment { color: #8e908c; font-style: italic; }
+  .t-atom { color: #c82829; } .t-op { color: #3e999f; }
+  @media (prefers-color-scheme: dark) {
+    .t-kw { color: #c397d8; } .t-def { color: #7aa6da; } .t-string { color: #b9ca4a; }
+    .t-number { color: #e78c45; } .t-comment { color: #6b6b66; }
+    .t-atom { color: #d54e53; } .t-op { color: #70c0b1; }
+  }
+`;
+document.head.appendChild(style);
+
+render().catch((e) => status(e.message));
+</script>
+</body>
+</html>

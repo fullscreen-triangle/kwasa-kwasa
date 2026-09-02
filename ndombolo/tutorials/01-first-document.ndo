@@ -1,0 +1,87 @@
+# 1. The document, and the two things beside it
+
+An `.ndo` file is prose with fenced blocks. A block tagged `turbulance` is a
+**cell**. Running the document compiles each cell and writes an `output` block
+directly below it.
+
+Nothing here is a notebook kernel. There is no live session between commands:
+every run builds a fresh interpreter and replays the document from cell 0.
+
+## Run this file
+
+    ndombolo run 01-first-document.ndo
+
+Then look at what changed on disk. Three things exist now, and it matters that
+you can tell them apart.
+
+## The first cell
+
+```turbulance
+item greeting = "hello"
+print(greeting)
+```
+
+Run it and an output block appears below the fence. That block is a **view of
+the last run** -- run it again and it is replaced, not appended.
+
+## Cells share a store
+
+A later cell sees what an earlier one left. That is why `run` always replays
+from the top: cell 1's meaning depends on the store cell 0 built.
+
+```turbulance
+item names = ["ndombolo", "turbulance"]
+item n = len(names)
+print(greeting, n)
+```
+
+`greeting` was never declared in this cell. It is in scope because cell 0 ran
+first.
+
+## The record is not the output
+
+Beside the file sits `01-first-document.ndo.record` -- a counter that only ever
+goes up. Clearing an output block removes the *view*; the deposits that produced
+it stay.
+
+    ndombolo record 01-first-document.ndo
+    ndombolo clear  01-first-document.ndo
+    ndombolo record 01-first-document.ndo
+
+Run those three in order. The `clear` prints how many output blocks it removed
+and then prints the record, which has not moved. Re-run the document and the
+record advances again -- past where it was, never back to it.
+
+There is no undo. `clear` is itself a thing that happened.
+
+## Reading the document without running it
+
+    ndombolo cells 01-first-document.ndo
+
+Lists each cell with its line and first line of source. It compiles nothing, so
+a half-written cell is listed like any other.
+
+## The whole command surface
+
+    ndombolo run    <file> [--cell N]   run cells, write outputs back
+    ndombolo clear  <file> [--cell N]   remove output blocks
+    ndombolo cells  <file>              list cells without running
+    ndombolo graph  <file>              the script graph, as JSON
+    ndombolo trace  <file>              every event, as JSON
+    ndombolo record <file>              the deposits behind this file
+    ndombolo new    <file>              write a starter document
+    ndombolo edit   <file>              open it in the editor
+
+`--cell N` selects what is **written**, not what is run. With `--cell 1`, cell 0
+still runs -- it has to, to build the store -- but only cell 1's output block is
+replaced. The earlier run still deposits, which is why the record advances by
+two.
+
+Try it:
+
+    ndombolo clear 01-first-document.ndo
+    ndombolo run   01-first-document.ndo --cell 1
+
+Only the second cell gets an output block. The record moved by two.
+
+Next: [02-values-and-operators.ndo](02-values-and-operators.ndo).

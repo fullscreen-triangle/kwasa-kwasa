@@ -1,0 +1,10 @@
+[package]
+name = "ndombolo"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+ndombolo-core = { path = "../ndombolo-core" }
+serde_json = { version = "1", features = ["preserve_order"] }

@@ -1,0 +1,307 @@
+# 5. The evidential layer
+
+The first four tutorials treated Turbulance as an ordinary small language:
+values, operators, control flow, and the three commands that let you interrogate
+a run. This one takes up the part that is not ordinary. A proposition collects
+motions, verdicts contact those motions, and the run reports a score for each
+one.
+
+Every claim below was checked against the code and against a real run. Where a
+surface behaves unlike the obvious guess, the guess is named rather than
+smoothed over. This tutorial has more of those than any of the previous four,
+and two of them will change what you write.
+
+## `point`: a claim with a confidence attached
+
+A point is a claim you can carry a number alongside. It requires a map literal.
+
+```turbulance
+point claim = {
+    text: "the sample is contaminated",
+    certainty: 0.7
+}
+point unmeasured = {text: "the blank was clean"}
+print(claim.text, claim.confidence)
+print(unmeasured.confidence, claim.nosuch)
+```
+
+
+```output
+the sample is contaminated 0.7
+1 none
+
+claim = point(claim, conf=0.7)
+unmeasured = point(unmeasured, conf=1.0)
+```
+
+
+Three things there are worth naming.
+
+`certainty` is the key you write; `confidence` is the field you read. Both
+field names read the same value, so `a.confidence` and `a.certainty` are the same
+number, and it is the confidence the point was built with rather than whatever
+the map happens to hold under that key.
+
+The confidence is clamped to the range 0 to 1, and clamping is silent.
+`certainty: 5` does not raise; it gives a confidence of 1. If you write a
+percentage by mistake, nothing will tell you.
+
+A point without a `certainty` key is confidence 1. Not zero, and not an
+error. An unmeasured claim is taken at full strength unless you say otherwise.
+
+Any other field reads out of the map, and a field that is not there gives
+`none` rather than raising.
+
+## `proposition` and `motion`
+
+A proposition names a question. The motions inside it are the specific claims
+the run can contact.
+
+```turbulance
+proposition Contamination:
+    motion Peak("a peak at 214 appears in three replicates")
+    motion Blank("the blank shows the same peak")
+```
+
+
+```output
+Peak = motion(Peak)
+Blank = motion(Blank)
+```
+
+
+### Motions are lifted out of the block
+
+This is the first surprise, and it shows up in the store delta above: the
+motions are there as items, and the proposition is not.
+
+Parsing a proposition partitions its block. Every `motion` statement is
+lifted out into a separate list; everything else stays as the body. The run then
+declares the motions first, then the proposition, then executes the body. So in
+the trace the motion at line 21 is declared before the proposition at line 20 --
+the proposition's own event fires at its own line, after the events of the lines
+below it.
+
+The value written for the proposition is the list of its motion names as
+strings. Not the block, and not a score.
+
+### The proposition name is not bound
+
+The second surprise, and the one most likely to catch you. `declare-proposition` writes
+to the trace, not to the store. So this fails:
+
+    resolve P
+
+with `undefined name 'P'`. The proposition exists as a structure the run tracks; it is
+not a value you can name in an expression. The motions are values; the
+proposition is not.
+
+### Motion text is optional
+
+All three of these parse:
+
+    motion Bare
+    motion Empty()
+    motion Full("a peak at 214 appears in three replicates")
+
+The first two give a motion whose text is the empty string. A motion carries
+exactly two readable fields, `name` and `text`. Any other field gives
+`none` silently -- no error, no warning. `Bare.nosuch` prints
+`none` and moves on.
+
+## Verdicts: `support`, `contradict`, `inconclusive`
+
+A verdict contacts one motion by name.
+
+```turbulance
+proposition Replicates:
+    motion Consistent("the peak appears in all three")
+
+    support Consistent with_confidence(0.5)
+    support Consistent with_confidence(0.5)
+```
+
+
+```output
+Consistent = motion(Consistent)
+```
+
+
+The default confidence is 1. `with_confidence` sets it, and the value is clamped
+the same way a point's is.
+
+### The score is noisy-or, not a sum
+
+This is the surprise that will change what you write. Look at the trace:
+
+    support         writes Replicates.Consistent = 0.5
+    support         writes Replicates.Consistent = 0.5
+    resolve-motion  writes Replicates.Consistent = 0.75
+
+Two supports of 0.5 give 0.75. Not 1.0, and not 0.5. The supports are combined
+as one minus the product of their complements, and the contradicts are combined
+the same way and multiplied in as a complement:
+
+    score = noisy_or(supports) * (1 - noisy_or(contradicts))
+
+So evidence accumulates with diminishing returns and can approach 1 without
+reaching it, and a single contradict of 1.0 drives the score to 0 no matter how
+much support there is. Adding a third weak support to a motion that already has
+two moves the score less than the first one did. That is the intended reading:
+two independent halves of a case are stronger than one, but not twice as strong.
+
+### `inconclusive` is zero, and takes no confidence
+
+`inconclusive` parses a motion name and nothing else. There is no
+`with_confidence` form for it, and it forces the confidence to 0.
+
+That is not the same as declining to record a verdict. It records one, at zero.
+
+### Two verdicts on one motion collapse in the reads
+
+The third surprise, and it is visible only in the trace. The third cell above
+already does it:
+
+    support Consistent with_confidence(0.5)
+    support Consistent with_confidence(0.5)
+
+and the `resolve-motion` event reports its reads as a single entry for
+`Consistent` carrying 0.5 -- the last verdict's confidence, not both. The
+reads are keyed by motion name, so the second verdict overwrites the first in
+that view.
+
+The score is still computed from every verdict. It is 0.75, which is only
+reachable from two of them. But if you read the `resolve-motion` reads
+expecting a list of everything that contributed, you will see one entry and
+conclude there was one verdict.
+
+The consequence for reading a trace: the `support` and `contradict` events
+are the record of what was said. The `resolve-motion` event is the record of
+what it came to. Do not read the second for the first.
+
+Here is the case where that matters most:
+
+```turbulance
+proposition Ordering:
+    motion Blank("the blank shows the same peak")
+
+    contradict Blank with_confidence(0.8)
+    inconclusive Blank
+```
+
+
+```output
+```
+
+
+That output block is empty, and the reason is worth a paragraph of its own
+below. First the verdicts.
+
+The score for `Blank` ends at 0. The contradict of 0.8 would have given 0.2
+on its own; the `inconclusive` that follows it is the last verdict, and its
+zero is what the score reflects. Order matters, and the collapsed reads will
+show you only the zero.
+
+## `hypothesis`
+
+A hypothesis is a named block. It does not partition.
+
+```turbulance
+hypothesis Instrument:
+    item column_age = 400
+    motion Drift("retention times drift after 300 runs")
+```
+
+
+```output
+column_age = 400
+Drift = motion(Drift)
+```
+
+
+Two differences from a proposition. The motion inside is not lifted -- it is
+declared in place, in the order it is written. And the value written for the
+hypothesis is its own name as a string, not a list and not the block.
+
+A hypothesis is a label over a region of a script. It groups; it does not score.
+
+## `resolve`
+
+`resolve` takes an expression, not a name:
+
+    resolve a.confidence * 2
+
+It evaluates the expression and emits a `resolve` event carrying the
+result as its note. It writes nothing to the store. Structurally it is a bare
+expression statement under a different rule name, which is the point: it marks a
+line as the place a determination was reached, so a search of the trace can find
+it.
+
+Since the proposition name is not bound, `resolve P` does not work. Resolve
+the thing you actually want to report -- a point's confidence, an arithmetic
+combination of several -- and let the `resolve-motion` events carry the
+per-motion scores.
+
+## A verdict outside a proposition
+
+    support Stray with_confidence(1)
+
+raises `support outside a proposition`. Worth knowing precisely when: the confidence expression is
+evaluated first, and only then is the enclosing proposition checked. So a stray
+verdict whose confidence is itself broken reports the confidence's error, not
+this one. The line number in the message is the verdict's line either way.
+
+## The store delta reports change, not content
+
+The empty output block above is not the proposition being skipped. It is the
+delta doing what it says.
+
+A delta reports what a cell *changed*. `Blank` was already declared in an
+earlier cell, and this cell declared it again with the same text, so nothing
+changed and nothing is reported. Three cases:
+
+    Fresh = motion(Fresh)                        a name that is new
+    Other = motion(Other)  (was motion(Other))   a name whose value changed
+                                                  an unchanged name: omitted
+
+The middle case is nearly useless for a motion, and it is worth seeing why. A
+motion renders as its name alone, so both halves read `motion(Other)` even
+though the text differs. The delta tells you something changed without telling
+you what. For a motion or a point, the trace is where the content is.
+
+An empty output block therefore means the cell changed no name. It ran, it
+deposited, and its verdicts are in the trace.
+
+## What reaches the store
+
+Points and motions are values, so they appear in the store delta below a cell,
+rendered as `point(claim, conf=0.7)` and `motion(Peak)`. Propositions do not appear
+at all, and neither do the per-motion scores.
+
+The scores live in the trace, as `resolve-motion` events writing a dotted
+item name:
+
+    P.Peak = 0.75
+    P.Blank = 0
+
+So `ndombolo trace` is not an optional extra for the evidential layer the way it
+was for arithmetic. It is the only place the scores are reported. The output
+block below a cell will show you the motions and never the verdicts.
+
+## Things to try
+
+- Give a motion two supports of 0.5 and check the score is 0.75. Then add a
+  third and note that it moves less than the second did.
+- Add `contradict M with_confidence(1)` to a motion with heavy support and watch the score go to 0.
+- Put `inconclusive` after a `contradict` on the same motion, then before
+  it, and compare the `resolve-motion` reads in each case.
+- Read `Bare` with a field that does not exist and confirm it prints
+  `none` rather than raising.
+- Write `certainty: 5` and confirm from the trace that the stored confidence is 1.
+- Try `resolve P` and read the error. Then resolve a point's confidence
+  instead.
+- Graph a document with a proposition in it and see which of these names became
+  items.
+
+The next tutorial takes up the keywords that parse and do nothing, and why they
+are in the grammar at all.

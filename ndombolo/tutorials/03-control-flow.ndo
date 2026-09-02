@@ -1,0 +1,323 @@
+# 3. Control flow
+
+Tutorial 2 covered values. This one covers the statements that decide *whether*
+and *how often* a value is computed: `given`, `within`, `considering`, `for
+each`, `while`, `ensure`, `funxn` and `return`.
+
+Every claim below was checked against the parser and the evaluator, and every
+cell here has been run. Where the behaviour is surprising, the surprise is
+stated rather than smoothed over.
+
+## `given` and `otherwise`
+
+`given` takes a condition and a block; `otherwise` is optional.
+
+```turbulance
+item n = 7
+
+given n > 5:
+    print("big")
+otherwise:
+    print("small")
+
+given n > 100:
+    print("never")
+```
+
+```output
+big
+
+n = 7
+```
+Truthiness is not just booleans. `none` is false, `0` is false, an empty
+string, an empty list and an empty map are all false, and anything else is
+true. A `point` is true when its confidence is above zero.
+
+```turbulance
+given "":
+    print("empty string was true")
+otherwise:
+    print("empty string is false")
+
+given [1]:
+    print("a non-empty list is true")
+
+given 0:
+    print("never")
+otherwise:
+    print("zero is false")
+```
+
+```output
+empty string is false
+a non-empty list is true
+zero is false
+```
+### A blank line after a block does not eat the next statement
+
+This is worth stating because it is the kind of thing that quietly breaks a
+parser. To see whether `otherwise` follows a `given` block, the parser has to
+consume the newlines after it -- and if `otherwise` is not there, it puts them
+back by restoring the token index. So a `given` with no `otherwise`, followed
+by a blank line, followed by an ordinary statement, parses as three things and
+not two.
+
+```turbulance
+item marker = "before"
+
+given true:
+    marker = "inside"
+
+print(marker, "and this line still runs")
+```
+
+```output
+inside and this line still runs
+
+marker = inside
+```
+## `within`
+
+`within EXPR:` opens a child scope. If the target is a map, **each key becomes
+a local** inside the block.
+
+```turbulance
+item config = {host: "127.0.0.1", port: 7749}
+
+within config:
+    print(host, port)
+```
+
+```output
+127.0.0.1 7749
+
+config = {host: 127.0.0.1, port: 7749}
+```
+The scope is a child, so an assignment inside it that names an outer item
+still reaches the outer one -- but a name that only existed as a map key
+disappears at the end of the block.
+
+```turbulance
+item outer = 1
+
+within {a: 10, b: 20}:
+    print("inside:", a, b)
+    outer = 2
+
+print("outer is now", outer)
+```
+
+```output
+inside: 10 20
+outer is now 2
+
+outer = 2
+```
+If the target is **not** a map, the scope still opens and nothing is bound.
+That is not an error; it is simply a block with a fresh scope.
+
+```turbulance
+within "a string":
+    print("the block runs, and binds nothing")
+```
+
+```output
+the block runs, and binds nothing
+```
+## `considering` and `for each`
+
+Both iterate, and the quantifier on `considering` is not decoration -- it decides how
+many items are visited.
+
+```turbulance
+item xs = [1, 2, 3]
+
+considering all x in xs:
+    print("all:", x)
+
+considering these x in xs:
+    print("these:", x)
+
+considering item x in xs:
+    print("item:", x)
+
+considering x in xs:
+    print("bare:", x)
+```
+
+```output
+all: 1
+all: 2
+all: 3
+these: 1
+these: 2
+these: 3
+item: 1
+bare: 1
+
+xs = [1, 2, 3]
+```
+**A bare `considering` visits one item.** The default quantifier is `item`,
+and `item` truncates the sequence to its first element -- so the last two
+loops above each printed once while the first two printed three times. Write
+`all` (or `these`) when you mean the whole list. It reads like a filler word
+and behaves like a limit, which is exactly the sort of thing worth knowing
+before you rely on it.
+
+A non-list is not an error here: it is wrapped in a one-element sequence and
+the body runs once over it.
+
+```turbulance
+considering all n in 42:
+    print("wrapped:", n)
+```
+
+```output
+wrapped: 42
+```
+
+`for each` takes no quantifier and always visits the whole sequence. It is the
+plainer spelling, and the one to reach for by default.
+
+```turbulance
+for each name in ["ndombolo", "turbulance"]:
+    print(name, len(name))
+```
+
+```output
+ndombolo 8
+turbulance 10
+```
+## `while`
+
+`while` repeats until its condition is false. It is bounded: past 100000
+rounds it stops with `loop limit exceeded`, so a runaway loop in a cell cannot
+hang the document.
+
+```turbulance
+item i = 0
+item total = 0
+
+while i < 5:
+    total = total + i
+    i = i + 1
+
+print("i =", i, "total =", total)
+```
+
+```output
+i = 5 total = 10
+
+i = 5
+total = 10
+```
+The trace records each round. `ndombolo trace` on this document shows one
+`while` event per round, noted `round 1`, `round 2` and so on, and exactly one
+`while-exit` noted `5 rounds`. The condition is tested once more than the body
+runs -- the final test is the one that ends the loop, and it emits no `while`
+event of its own.
+
+## `ensure`
+
+`ensure` states a condition that the rest of the cell depends on. When it
+holds, nothing happens. When it does not, the cell stops with `ensure failed`.
+
+```turbulance
+item xs = [3, 1, 2]
+
+ensure len(xs) > 0
+print("the list is not empty, so we can go on")
+```
+
+```output
+the list is not empty, so we can go on
+
+xs = [3, 1, 2]  (was [1, 2, 3])
+```
+**The event is emitted before the raise.** A failing `ensure` still leaves
+its mark on the trace, noted `failed` rather than `held` -- so a stopped cell
+is still interrogable, and you can ask which check stopped it. That is the
+record-versus-view distinction from tutorial 1 showing up in a second place: a
+run that stops still happened.
+
+Try it, if you like, by adding `ensure len(xs) > 100` to the cell above and
+running it. The cell will stop, an output block will say `run: line N: ensure
+failed`, and the record will advance anyway.
+
+## `funxn`
+
+A function is declared with `funxn`, called by name.
+
+```turbulance
+funxn twice(x):
+    return x * 2
+
+funxn describe(name, n):
+    return name + " has " + n + " letters"
+
+print(twice(21))
+print(describe("ndombolo", 8))
+```
+
+```output
+42
+ndombolo has 8 letters
+
+twice = closure(twice)
+describe = closure(describe)
+```
+### Three things about calls that are worth knowing
+
+**A function body runs in a child of the environment where it was *defined*,
+not where it was called.** That is lexical scoping: a function sees the items
+that existed around its declaration, not the caller's locals.
+
+**A function that falls off its end returns `none`.** There is no implicit
+last-expression return.
+
+**A bare `return` is only bare at a newline.** A script that *ends* with a bare
+`return` is a parse error, because at end-of-input the parser tries to read an
+expression after it and finds nothing.
+
+```turbulance
+item base = 100
+
+funxn add_base(x):
+    return x + base
+
+funxn says_nothing():
+    print("ran, but returns nothing")
+
+print(add_base(5))
+item r = says_nothing()
+print("r =", r)
+```
+
+```output
+105
+ran, but returns nothing
+r = none
+
+base = 100
+add_base = closure(add_base)
+says_nothing = closure(says_nothing)
+r = none
+```
+Calling with the wrong number of arguments is an error naming both counts:
+`twice expects 1 argument(s), got 2`. Like every other run error it stops the
+cell, writes the message into the output block, and deposits.
+
+## What the trace shows
+
+Each of these statements emits its own rule name, so the shapes above are
+visible in `ndombolo trace` without re-reading the source:
+
+- `given` for a conditional, noted `then` or `otherwise`
+- `within` for a scope
+- `considering` and `for-each` for the two loops, each noting its iteration count
+- `while` once per round, then one `while-exit`
+- `ensure` with `held` or `failed`
+- `declare-funxn` at the declaration, `return` at each return
+
+Run `ndombolo trace 03-control-flow.ndo` and you will see them in order. The
+next tutorial covers that surface properly.

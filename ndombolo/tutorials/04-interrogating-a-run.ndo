@@ -1,0 +1,279 @@
+# 4. Interrogating a run
+
+The first three tutorials wrote Turbulance and read the output block below the
+cell. This one is about the other three commands: the ones that let you ask what
+actually happened, rather than trusting the printed answer.
+
+| command | the question it answers |
+|---|---|
+| ndombolo trace | what happened, event by event, in order |
+| ndombolo graph | what the script declares, and what touches what |
+| ndombolo record | what runs have ever happened to this file |
+
+All three take a .ndo file and print JSON. None of them writes to the document.
+
+Every claim below was checked against the code and against a real run. Where a
+surface behaves unlike the obvious guess, the guess is named rather than
+smoothed over.
+
+## A document worth interrogating
+
+Two small cells, so the trace stays short enough to read in full.
+
+```turbulance
+item base = 10
+item scale = 3
+item total = base * scale
+print("total is", total)
+```
+
+```output
+total is 30
+
+base = 10
+scale = 3
+total = 30
+```
+
+
+The second cell uses `total` from the first, so there is something for the
+graph to link across a cell boundary.
+
+```turbulance
+item labels = ["base", "scale"]
+item n = len(labels)
+item summary = total + n
+print(summary)
+```
+
+```output
+32
+
+labels = [base, scale]
+n = 2
+summary = 32
+```
+
+
+Run the document first. Every command below reads a run, and `record` in
+particular has nothing to show until one has happened.
+
+    ndombolo run 04-interrogating-a-run.ndo
+
+## `trace`: what happened, in order
+
+    ndombolo trace 04-interrogating-a-run.ndo
+
+One object with a count and a list:
+
+    {
+      "events": 10,
+      "trace": [
+        { "cell": 0, "event": { ... } },
+        ...
+      ]
+    }
+
+Each event carries a `seq` that counts across the whole run rather than
+restarting per cell, a `rule` naming what fired, a `site` with the line,
+and then `reads` plus either `writes` or `note`.
+
+### `reads` is not a list of names
+
+This is the part worth reading slowly, because the obvious guess is wrong.
+`reads` is a list of records, and each one carries the value the item held at
+the moment it was read:
+
+    "reads": [
+      { "item": "base",  "value": 10 },
+      { "item": "scale", "value": 3 }
+    ]
+
+That is what makes the trace an answer rather than a hint. A bare name would
+send you back to the script to work out what it held; the value is already
+there.
+
+### Builtins appear as reads
+
+Looking up `len` is a read like any other, so it appears in the list:
+
+    { "item": "len", "value": { "builtin": "_len" } }
+
+So `item n = len(labels)` reads two things, not one. If you count reads expecting only
+your own items, the builtin will look like an extra.
+
+### `print` is two events, not one
+
+A printing statement emits a `print` event and then an `expr` event, and
+they carry different halves of the story:
+
+- the `print` event has the printed line in its `note` and an empty
+  `reads`;
+- the enclosing `expr` event carries the reads, and its `note` is the
+  string `"None"`. That is a string, not JSON null, and it is the value the
+  statement evaluated to.
+
+So if you want to know what a printed line depended on, look at the `expr`
+beside it. The `print` itself will tell you nothing.
+
+### `writes`
+
+    "writes": { "item": "total", "value": 30, "tag": "num" }
+
+The tag is the value kind. That matters because Turbulance compares `1` and
+`true` as equal, so the tag is the only thing in the trace that tells them
+apart.
+
+### It stops at the first failing cell
+
+If a cell fails, `trace` reports the events up to and including that cell and
+stops. Later cells did not run, so they have no events to report. `graph`
+behaves differently, and the difference is deliberate.
+
+## `graph`: what the script declares
+
+    ndombolo graph 04-interrogating-a-run.ndo
+
+Two lists. `items` is every declared name with the line it was declared at
+and the `stage`, meaning the cell index, it was declared in. `contacts` is
+the directed edges between them, with a weight.
+
+    {
+      "items": [
+        { "name": "base",  "kind": "item", "line": 24, "stage": 0 },
+        ...
+      ],
+      "contacts": [
+        { "from": "base", "to": "total", "weight": 1 },
+        ...
+      ],
+      "item_count": 6,
+      "contact_count": 5
+    }
+
+This is a static reading. It parses the cells; it does not run them. That is why
+a cell which does not parse is skipped rather than fatal: the indices come back
+under `cells_that_did_not_parse` so you know the picture is partial. A half-written cell
+should not stop you seeing what the rest of the document declares.
+
+### Four things it silently does not do
+
+Each of these is deliberate, and each will look like a bug the first time you
+meet it.
+
+A name used twice in one expression is one contact. `item b = a + a` gives the edge
+from `a` to `b` a weight of 1, not 2. Free names are collected as a set.
+
+A redeclaration keeps the first site. Declare `a` in cell 0 and again in cell
+1, and the graph still reports the line and stage from cell 0. There is no
+second entry. Keeping the later one would break the guarantee that the graph
+after n cells contains the graph after n minus one.
+
+An edge with an undeclared endpoint vanishes. `len` is not a declared item,
+so `item d = len(c)` yields `c` to `d` and nothing from `len`. The graph is
+over the document's own names.
+
+A self-contact is dropped, but the declaration is not. `item x = x` produces no
+edge. It still produces the item: `x` appears in `items` with its line.
+Only the loop is gone. This is the one most likely to be misread as the whole
+statement being ignored.
+
+### It accretes
+
+Adding a cell extends the graph. Nothing is ever removed and no weight ever goes
+down. That is the same discipline the record keeps, and it is why an undo in the
+editor advances the record instead of rewinding it.
+
+## `record`: what has ever happened
+
+    ndombolo record 04-interrogating-a-run.ndo
+
+    {
+      "record": 4,
+      "file": "04-interrogating-a-run.ndo.record",
+      "deposits": [
+        { "record": 1, "record_before": 0, "cell": 0, "events": 5,
+          "items_touched": ["base", "scale", "total"],
+          "completed": true, "at": 1788196481 },
+        ...
+      ]
+    }
+
+It lives in a file beside the document, so `foo.ndo` keeps `foo.ndo.record`, as one
+JSON object per line, appended and never rewritten. A line-oriented format is
+the point: appending cannot corrupt what is already there, and a truncated final
+line costs one deposit rather than the file.
+
+`record_before` is there so the counter is auditable rather than merely
+asserted. Each deposit says what the count was before it and what it is after,
+so a gap would be visible.
+
+### The record is not the document
+
+This is the distinction the whole design turns on, and the easiest way to see it
+is to do it.
+
+Run the document twice. The output blocks look identical, because an output
+block is a view of the last run, replaced each time; a cell run ten times leaves
+one block. The record, meanwhile, went up by the number of cells, twice.
+
+Now clear the outputs:
+
+    ndombolo clear 04-interrogating-a-run.ndo
+
+It prints something like `cleared 2 output blocks, record still 4`. The views are gone from the file; the
+deposits are untouched. Clearing removes what you can see, not what happened.
+
+### Every run deposits, including the ones you discard
+
+Two cases make this concrete.
+
+`ndombolo run f.ndo --cell 1` writes only the output block of cell 1. But cell 0 still ran. It
+has to, because the meaning of cell 1 depends on the store cell 0 left. So the
+record advances by two, not one. The flag selects what is written, not what is
+run.
+
+And a cell that fails deposits too, with `completed` false. A run that raised
+is still a run that happened.
+
+## One footnote on line numbers
+
+`ndombolo cells` prints the fence line of each cell. `trace` and `graph`
+print the line of the first line of source, one further down. So a cell listed
+at line 23 by `ndombolo cells` will have its first event at line 24. They are not
+disagreeing; they are naming different lines.
+
+Lines also move as you run and clear. An output block is part of the file, so
+inserting one pushes every later cell down; clearing pulls it back up. Cell 1
+here reports line 35 in a cleared document and line 43 in a run one. The line
+is where the cell is now, not a name it keeps.
+
+## Why there is no cache
+
+Every one of these commands replays the document from the top through a fresh
+session. So does the ask panel in the editor. Nothing stores the store from the
+previous run to resume from, and nothing remembers a previous answer so that a
+repeated question could skip the search.
+
+That is not an oversight waiting to be optimised. A determination has to be
+reached by search each time; a lookup table of past determinations is exactly
+what the design forbids. Probing is cheap and you may probe as often as you
+like. What you may not do is remember the verdict instead of re-reaching it.
+
+## Things to try
+
+- Trace the document and find the event that wrote `total`. Its `reads`
+  give you both operands and their values.
+- Find the `expr` event beside the first `print`. Note that the
+  `print` holds the text and the `expr` holds the dependencies.
+- Graph it and check that `summary` has two in-edges, and that `len`
+  appears nowhere.
+- Run it again, then `clear`, then `record`. Count the deposits and
+  compare against the number of output blocks left in the file.
+- Add a cell containing a syntax error and run `graph` again: the rest of the
+  document still graphs, and the broken cell is named rather than fatal.
+- Add `item base = 99` to the second cell and graph it. The item still reports line
+  24, stage 0.
+
+The next tutorial takes up the evidential layer: propositions, motions, and the
+verdicts that contact them.

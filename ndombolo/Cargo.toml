@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["crates/ndombolo-core"]
+members = ["crates/ndombolo-core", "crates/ndombolo"]
 
 [workspace.package]
 version = "0.1.0"

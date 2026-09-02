@@ -1,0 +1,171 @@
+# 2. Values, operators, and the seven builtins
+
+Everything in this file is exact. Where a result is surprising -- and three of
+them are -- the surprise is documented rather than smoothed over.
+
+## The value kinds
+
+Numbers are all `f64`; there is no separate integer type. Strings are double
+quoted. There are lists, maps, `true`/`false`, and `none`.
+
+```turbulance
+item n = 42
+item pi = 3.14
+item s = "text"
+item xs = [3, 1, 2]
+item d = {a: 1, b: 2}
+item yes = true
+item nothing = none
+print(n, pi, s, xs, d, yes, nothing)
+```
+
+```output
+42 3.14 text [3, 1, 2] {a: 1, b: 2} true none
+
+n = 42
+pi = 3.14
+s = text
+xs = [3, 1, 2]
+d = {a: 1, b: 2}
+yes = true
+nothing = none
+```
+
+Note how a map renders: `{a: 1, b: 2}`. Maps are **insertion-ordered** -- write
+`{z: 1, a: 2}` and it prints `z` first. Sorting them would be tidier and would
+change what a script can observe, so it is not done.
+
+A number renders without a trailing `.0` when it is integral, so a runtime
+`1.0` prints as `1`.
+
+## Arithmetic and comparison
+
+```turbulance
+print(7 + 2, 7 - 2, 7 * 2, 7 / 2, 7 % 3)
+print(1 < 2, 2 <= 2, 3 > 4, 3 >= 4, 1 == 1, 1 != 2)
+```
+
+```output
+9 5 14 3.5 1
+true true false false true true
+```
+
+`7 / 2` is `3.5`, not `3`. There is no integer division.
+
+## Logic
+
+`and`, `or` and `not` are words, not symbols.
+
+```turbulance
+print(true and not false)
+print(false or true)
+print(not (1 == 2))
+```
+
+```output
+true
+true
+true
+```
+
+### Surprise 0: a boolean compares equal to a number
+
+`==` compares values as they *render*, and in the language this is ported
+from, `bool` is a kind of `int`. So `1 == true` and `0 == false`, and it is
+observable:
+
+```turbulance
+print(1 == true, 0 == false, 2 == true)
+```
+
+```output
+true true false
+```
+
+## The seven builtins -- and their real arities
+
+There are exactly seven, and they are all **lowercase**. `Print` is not `print`.
+
+`print` takes any number of arguments and joins them with a single space.
+
+`len` takes one argument, and accepts a list, a string, or a map. Anything else
+is an error naming the kind it got.
+
+```turbulance
+print(len([1, 2, 3]), len("hello"), len({a: 1, b: 2}))
+```
+
+```output
+3 5 2
+```
+
+### Surprise 1: len of a string counts characters, not bytes
+
+This matters the moment a document holds anything but ASCII. `len` on a string
+is Python's `len`, over characters.
+
+### Surprise 2: sum, min and max are variadic over numbers
+
+They do **not** take a list. This is the single most common mistake when writing
+a first cell:
+
+    print(sum(xs))          -- error: expected a number, found list
+
+They take numbers, as many as you like:
+
+```turbulance
+print(sum(1, 2, 3), min(3, 1, 2), max(3, 1, 2), abs(-4), round(2.4))
+```
+
+```output
+6 1 3 4 2
+```
+
+All five of `sum`, `min`, `max`, `abs`, `round` coerce **every** argument to a
+number before doing anything, so a non-number raises even in a position that
+would never have been looked at. `min(1, "x")` fails, though `1` is plainly the
+smaller.
+
+Called with no arguments at all they are `0` rather than an error:
+`min()`, `max()`, `abs()` and `round()` are all `0`.
+
+### Surprise 3: round is banker's rounding
+
+Half goes to **even**, exactly as Python does it -- not half away from zero.
+
+```turbulance
+print(round(2.5), round(3.5), round(-2.5), round(2.4), round(2.6))
+```
+
+```output
+2 4 -2 2 3
+```
+
+`round(2.5)` is `2` and `round(3.5)` is `4`. If you were expecting `3` and `4`,
+this is the line to remember.
+
+## Indexing and members
+
+```turbulance
+item xs2 = [10, 20, 30]
+item d2 = {name: "ndombolo", kind: "runtime"}
+print(xs2[0], xs2[2])
+print(d2.name, d2["kind"])
+```
+
+```output
+10 30
+ndombolo runtime
+
+xs2 = [10, 20, 30]
+d2 = {name: ndombolo, kind: runtime}
+```
+
+Both `d.name` and `d["kind"]` reach a map value.
+
+## What the store looks like afterwards
+
+Every cell's output block ends with the items that cell touched, one per line,
+sorted by name. That block is how you check a value without printing it.
+
+Next: [03-control-flow.ndo](03-control-flow.ndo).

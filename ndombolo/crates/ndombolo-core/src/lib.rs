@@ -10,6 +10,7 @@
 
 pub mod ast;
 pub mod lexer;
+pub mod doc;
 pub mod eval;
 pub mod graph;
 pub mod parser;
