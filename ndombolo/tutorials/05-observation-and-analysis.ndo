@@ -1,0 +1,259 @@
+# 5. Observation, and the chain that turns it into a number
+
+PythonLab section 2.5 is the sentence this tutorial exists for:
+
+> Measurements are observations. The number is data attached to the
+> observation.
+
+Not the other way round. An Observation carries a subject, an observable, an
+instrument, the raw data, a processing method, an uncertainty and a calibration;
+the number you would print is one field of it. Section 27 then separates
+Measurement from DerivedResult, because a blank-corrected mean is not something
+an instrument ever saw.
+
+Section 5 gives the worked analysis chain: raw OD600, then blanks, then
+correction, then a validity mask, then an average. We build it here.
+
+## An observation is not its number
+
+```turbulance
+item reading = {
+    subject: "W-A1",
+    observable: "OD600",
+    instrument: "plate-reader-02",
+    raw: 0.45,
+    method: "absorbance, 600nm, 25 flashes"
+}
+
+print(reading.subject, reading.observable, reading.raw)
+print("via", reading.instrument)
+```
+
+```output
+W-A1 OD600 0.45
+via plate-reader-02
+
+reading = {subject: W-A1, observable: OD600, instrument: plate-reader-02, raw: 0.45, method: absorbance, 600nm, 25 flashes}
+```
+
+`reading.raw` is 0.45. `reading` is an observation. Everything downstream reads
+the field explicitly, which means a number can never be used without its
+provenance being one dot away.
+
+## The plate, with blanks
+
+Section 15's protocol reserves blank wells and corrects against them. Here are
+six sample wells and three blanks.
+
+```turbulance
+item samples = [
+    {well: "A1", raw: 0.45},
+    {well: "A2", raw: 0.42},
+    {well: "A3", raw: 0.51},
+    {well: "B1", raw: 0.39},
+    {well: "B2", raw: 0.04},
+    {well: "B3", raw: 0.47}
+]
+
+item blanks = [
+    {well: "H1", raw: 0.038},
+    {well: "H2", raw: 0.041},
+    {well: "H3", raw: 0.039}
+]
+
+print("samples", len(samples), "blanks", len(blanks))
+```
+
+```output
+samples 6 blanks 3
+
+samples = [{well: A1, raw: 0.45}, {well: A2, raw: 0.42}, {well: A3, raw: 0.51}, {well: B1, raw: 0.39}, {well: B2, raw: 0.04}, {well: B3, raw: 0.47}]
+blanks = [{well: H1, raw: 0.038}, {well: H2, raw: 0.041}, {well: H3, raw: 0.039}]
+```
+
+## Step one: the blank level
+
+Turbulance has `sum`, but it is **variadic, not list-taking**: `sum(1, 2, 3)` is
+6 and `sum([1, 2, 3])` is an error. Averaging a list means accumulating.
+
+```turbulance
+funxn mean_raw(rows):
+    item total = 0
+    for each r in rows:
+        total = total + r.raw
+    return total / len(rows)
+
+item blank_level = mean_raw(blanks)
+print("blank level", blank_level)
+```
+
+```output
+blank level 0.0393333
+
+mean_raw = closure(mean_raw)
+blank_level = 0.03933333333333333
+```
+
+## Step two: correction
+
+```turbulance
+funxn blank_correct(rows, level):
+    item out = []
+    for each r in rows:
+        out = out + [{well: r.well, raw: r.raw, od: r.raw - level}]
+    return out
+
+item corrected = blank_correct(samples, blank_level)
+
+for each c in corrected:
+    print(c.well, c.raw, "->", c.od)
+```
+
+```output
+A1 0.45 -> 0.410667
+A2 0.42 -> 0.380667
+A3 0.51 -> 0.470667
+B1 0.39 -> 0.350667
+B2 0.04 -> 0.000666667
+B3 0.47 -> 0.430667
+
+blank_correct = closure(blank_correct)
+corrected = [{well: A1, raw: 0.45, od: 0.4106666666666667}, {well: A2, raw: 0.42, od: 0.38066666666666665}, {well: A3, raw: 0.51, od: 0.4706666666666667}, {well: B1, raw: 0.39, od: 0.3506666666666667}, {well: B2, raw: 0.04, od: 0.0006666666666666696}, {well: B3, raw: 0.47, od: 0.43066666666666664}]
+```
+
+Each row keeps its raw value beside the corrected one. That is section 27's
+distinction made concrete: the measurement did not disappear when the derived
+result appeared.
+
+## Step three: the validity mask
+
+Section 15 passes `minimum_valid_fraction=40*percent` to `quality_control`. A
+well is valid if its corrected OD is meaningfully above zero; the plate passes
+if enough wells are.
+
+```turbulance
+funxn valid_mask(rows, floor):
+    item out = []
+    for each r in rows:
+        out = out + [{well: r.well, od: r.od, valid: r.od > floor}]
+    return out
+
+item masked = valid_mask(corrected, 0.05)
+
+item valid_count = 0
+for each m in masked:
+    given m.valid:
+        valid_count = valid_count + 1
+
+item fraction = valid_count / len(masked)
+
+print("valid", valid_count, "of", len(masked))
+print("fraction", fraction)
+print("passes 0.40 rule", fraction >= 0.40)
+```
+
+```output
+valid 5 of 6
+fraction 0.833333
+passes 0.40 rule true
+
+valid_mask = closure(valid_mask)
+masked = [{well: A1, od: 0.4106666666666667, valid: true}, {well: A2, od: 0.38066666666666665, valid: true}, {well: A3, od: 0.4706666666666667, valid: true}, {well: B1, od: 0.3506666666666667, valid: true}, {well: B2, od: 0.0006666666666666696, valid: false}, {well: B3, od: 0.43066666666666664, valid: true}]
+valid_count = 5
+fraction = 0.8333333333333334
+```
+
+Well B2 was a blank-level reading sitting in a sample position -- the mask
+catches it, and the plate still passes because five of six wells are good.
+
+## Step four: the average, over the mask only
+
+```turbulance
+funxn mean_valid(rows):
+    item total = 0
+    item n = 0
+    for each r in rows:
+        given r.valid:
+            total = total + r.od
+            n = n + 1
+    return total / n
+
+item plate_od = mean_valid(masked)
+
+print("plate OD600", plate_od)
+print("rounded", round(plate_od * 100) / 100)
+```
+
+```output
+plate OD600 0.408667
+rounded 0.41
+
+mean_valid = closure(mean_valid)
+plate_od = 0.4086666666666667
+```
+
+`round` takes **one** argument -- there is no digit count. Multiplying by 100,
+rounding and dividing is the idiom, and the rounding is banker's: `round(2.5)`
+is 2 and `round(3.5)` is 4.
+
+## Uncertainty, which the observation was supposed to carry
+
+The observation map at the top had no uncertainty field, and nothing so far has
+produced one. PythonLab requires it; a spread over the valid wells is the least
+you can do:
+
+```turbulance
+item spread_hi = 0
+item spread_lo = 1
+
+for each m in masked:
+    given m.valid:
+        given m.od > spread_hi:
+            spread_hi = m.od
+        given m.od < spread_lo:
+            spread_lo = m.od
+
+print("range", spread_lo, "to", spread_hi)
+print("half-width", (spread_hi - spread_lo) / 2)
+```
+
+```output
+range 0.350667 to 0.470667
+half-width 0.06
+
+spread_hi = 0.4706666666666667
+spread_lo = 0.3506666666666667
+```
+
+That half-width is an interval, not a standard error -- there is no statistics
+library here and inventing one in a tutorial would be worse than saying so.
+
+What Turbulance offers instead of a distribution is a `point`: a claim that
+carries its own confidence.
+
+```turbulance
+point plate_claim = {
+    content: "plate OD600 is at induction threshold",
+    certainty: 0.85
+}
+
+print(plate_claim)
+print(plate_claim.content)
+```
+
+```output
+point(plate_claim, conf=0.85)
+plate OD600 is at induction threshold
+
+plate_claim = point(plate_claim, conf=0.85)
+```
+
+A point is a value, so you can print it and read its fields. Note the
+`certainty` key -- that is the one the runtime reads for the confidence. A
+missing or misspelled key silently gives 1.0, and a value above 1 is silently
+clamped, so check the printed `conf=` rather than trusting what you typed.
+
+Tutorial 6 puts points and propositions together, which is where the analysis
+chain stops producing numbers and starts producing findings.
+
+Next: [06-acceptance-as-evidence.ndo](06-acceptance-as-evidence.ndo).

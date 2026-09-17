@@ -1,0 +1,219 @@
+# 6. Acceptance criteria, as evidence rather than assertions
+
+PythonLab section 28 defines a **Finding** as a traceable claim that cites the
+observations and analyses behind it. Section 29 defines a **Hypothesis** as a
+structured object with a statement, its variables, its expected observations,
+and *supporting and contradicting evidence*.
+
+That last phrase is the one to hold on to. A hypothesis does not have a boolean.
+It has evidence on two sides.
+
+Most laboratory code cannot express this. An acceptance criterion becomes an
+`assert`, which either passes silently or stops the run, and a plate that was
+marginal in three different ways is indistinguishable from one that was perfect.
+Tutorial 2 used `ensure` that way and it was the right tool there, for a
+physically impossible transfer.
+
+It is the wrong tool for *this culture is ready to induce*. That is a judgement,
+and Turbulance has a construct for judgements.
+
+## Proposition and motion
+
+A `proposition` groups `motion`s. A motion is a named claim in plain language.
+Inside the proposition, `support` and `contradict` attach confidences to
+motions.
+
+```turbulance
+item plate_od = 0.4087
+item valid_fraction = 0.8333
+item drift_t = -0.18
+item OD_threshold = 0.40
+
+proposition CultureIsReady:
+    motion AtThreshold("corrected OD600 has reached the induction threshold")
+    motion PlateIsSound("enough wells survived blank correction")
+    motion Incubated("the incubator held the requested temperature")
+
+    within plate_od:
+        given plate_od >= OD_threshold:
+            support AtThreshold with_confidence(0.9)
+        given valid_fraction >= 0.40:
+            support PlateIsSound with_confidence(0.85)
+        given abs(drift_t) < 0.5:
+            support Incubated with_confidence(0.8)
+```
+
+```output
+plate_od = 0.4087
+valid_fraction = 0.8333
+drift_t = -0.18
+OD_threshold = 0.4
+AtThreshold = motion(AtThreshold)
+PlateIsSound = motion(PlateIsSound)
+Incubated = motion(Incubated)
+```
+
+Three criteria, three motions, three confidences. The document did not stop.
+Nothing was asserted.
+
+Look at the store listing: the motions appear, and `CultureIsReady` does not.
+**A proposition name is not a value.** You cannot `print(CultureIsReady)` and
+you cannot `resolve CultureIsReady` -- both fail with an undefined name. The
+proposition writes to the run, not to the store.
+
+So where did the verdict go?
+
+    ndombolo trace 06-acceptance-as-evidence.ndo
+
+It is in the trace, as one `resolve-motion` event per motion, all reported at
+the proposition's own line. Each carries the motion's score.
+
+This is a deliberate shape, not an omission. A verdict that landed in the store
+could be read by a later cell and silently steer the protocol; a verdict in the
+trace is a *finding about* the run, in PythonLab's sense -- something a reader
+consults, not something the run consumes.
+
+## Evidence on both sides
+
+Now a plate that is genuinely marginal, which is where the construct earns its
+place.
+
+```turbulance
+item od_marginal = 0.37
+item fraction_marginal = 0.50
+item drift_marginal = 1.4
+
+proposition MarginalCulture:
+    motion Ready("this culture should be induced now")
+
+    within od_marginal:
+        given od_marginal >= 0.40:
+            support Ready with_confidence(0.9)
+        given od_marginal >= 0.35:
+            support Ready with_confidence(0.5)
+        given fraction_marginal < 0.60:
+            contradict Ready with_confidence(0.4)
+        given abs(drift_marginal) > 1.0:
+            contradict Ready with_confidence(0.3)
+```
+
+```output
+od_marginal = 0.37
+fraction_marginal = 0.5
+drift_marginal = 1.4
+Ready = motion(Ready)
+```
+
+Three of those four branches fired: one support at 0.5, two contradicts at 0.4
+and 0.3. The first branch did not, because 0.37 is below 0.40.
+
+The score combines them with a noisy-or on each side, then attenuates:
+
+    score = noisy_or(supports) * (1 - noisy_or(contradicts))
+
+Noisy-or of a single 0.5 is 0.5. Noisy-or of 0.4 and 0.3 is
+`1 - 0.6 * 0.7 = 0.58`. So the score is `0.5 * (1 - 0.58) = 0.21`.
+
+Check that against the trace rather than taking it from the prose. The
+`resolve-motion` event for `MarginalCulture.Ready` carries the number.
+
+A `given` that does not fire contributes nothing -- it is not a zero, it is an
+absence. That is why the marginal plate scores low rather than scoring the
+average of a pass and two fails.
+
+## Unit checking, as evidence
+
+Tutorial 1 left a gap open: Turbulance has no unit system, so nothing stops you
+adding a temperature to a volume. PythonLab would reject that statically.
+
+The move available here is to check it and let the result be evidence:
+
+```turbulance
+item temp_q = {value: 37, unit: "degC"}
+item vol_q = {value: 15, unit: "uL"}
+
+proposition QuantitiesAreWellFormed:
+    motion TempIsTemp("the incubation parameter is a temperature")
+    motion VolIsVol("the transfer parameter is a volume")
+
+    within temp_q:
+        given temp_q.unit == "degC":
+            support TempIsTemp with_confidence(1.0)
+        given temp_q.unit != "degC":
+            contradict TempIsTemp with_confidence(1.0)
+        given vol_q.unit == "uL":
+            support VolIsVol with_confidence(1.0)
+        given vol_q.unit != "uL":
+            contradict VolIsVol with_confidence(1.0)
+
+print("checked", temp_q.unit, vol_q.unit)
+```
+
+```output
+checked degC uL
+
+temp_q = {value: 37, unit: degC}
+vol_q = {value: 15, unit: uL}
+TempIsTemp = motion(TempIsTemp)
+VolIsVol = motion(VolIsVol)
+```
+
+This is weaker than a type system: it runs at run time, it only checks what you
+wrote a branch for, and a mislabelled quantity still computes. It is stronger
+than nothing, and it has one property a type error does not -- the check appears
+in the trace beside the science, as a finding with a confidence, rather than as
+a compiler message in a terminal that no one kept.
+
+Be clear about which you have. If you need dimensional correctness enforced,
+this runtime does not give it to you.
+
+## What makes it inconclusive
+
+There is a third verdict word. `inconclusive` records that the evidence did not
+decide.
+
+```turbulance
+item od_unknown = 0.39
+
+proposition Undecided:
+    motion Induce("induce this well")
+
+    within od_unknown:
+        given od_unknown >= 0.40:
+            support Induce with_confidence(0.9)
+        given od_unknown < 0.40:
+            inconclusive Induce
+```
+
+```output
+od_unknown = 0.39
+Induce = motion(Induce)
+```
+
+Run the trace and look at the score: `Undecided.Induce` resolves to **0**.
+
+That is worth dwelling on, because it is not what "inconclusive" sounds like.
+An inconclusive is not a shrug that leaves the score where it was, and it is not
+a midpoint. It records a verdict at confidence zero, and zero support
+multiplied by anything is zero.
+
+So `inconclusive` says *the evidence for this motion came to nothing*, which is
+a stronger statement than *nobody looked*. If you mean the latter, write no
+branch at all -- a `given` that never fires contributes nothing, as the marginal
+plate above showed. Check the number rather than assuming either way.
+
+## Why this is the right shape for a protocol
+
+PythonLab section 43 puts hypothesis generation, causal discovery and Bayesian
+reasoning **out of scope** for v0.1, and says why: those are downstream
+consumers, and the specification's job is to retain enough information that they
+do not have to reconstruct the experiment from an opaque log.
+
+That is exactly what the proposition does. It does not decide whether to
+induce. It records, in a form a later reader can use, that three criteria were
+checked, which ones fired, and how strongly -- with the reads that fed each one
+sitting in the same trace.
+
+An `assert` throws that away. A boolean keeps one bit of it.
+
+Next: [07-the-whole-experiment.ndo](07-the-whole-experiment.ndo).

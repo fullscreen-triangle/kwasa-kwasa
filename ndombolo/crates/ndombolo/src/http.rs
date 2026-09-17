@@ -24,14 +24,29 @@ use std::net::{TcpListener, TcpStream};
 
 /// A parsed request: enough of one to route on.
 ///
-/// No query string. Every route here either takes no argument or takes a JSON
-/// body, so a request is `(method, path, body)` and a parameter parser would be
-/// a second way to say the same thing.
+/// Routing is on the path alone. The query string is kept but never routed on:
+/// it carries which document a request is about, so that one server can serve a
+/// directory without a route per file.
 pub struct Request {
     pub method: String,
     /// Path with any query string stripped.
     pub path: String,
+    /// The raw query string, without the `?`. Empty when there was none.
+    pub query: String,
     pub body: Vec<u8>,
+}
+
+impl Request {
+    /// The first value for `key`, percent-decoded.
+    ///
+    /// Returns `None` for a missing key and `Some("")` for one written without
+    /// a value, so a caller can tell `?doc=` from no `doc` at all.
+    pub fn param(&self, key: &str) -> Option<String> {
+        self.query.split('&').find_map(|pair| {
+            let (k, v) = pair.split_once('=').unwrap_or((pair, ""));
+            (percent_decode(k) == key).then(|| percent_decode(v))
+        })
+    }
 }
 
 /// A response to write back.
@@ -137,14 +152,15 @@ fn read_request(stream: &mut TcpStream) -> std::io::Result<Option<Request>> {
         reader.read_exact(&mut body)?;
     }
 
-    let path = match target.split_once('?') {
-        Some((p, _)) => p.to_string(),
-        None => target,
+    let (path, query) = match target.split_once('?') {
+        Some((p, q)) => (p.to_string(), q.to_string()),
+        None => (target, String::new()),
     };
 
     Ok(Some(Request {
         method,
         path: percent_decode(&path),
+        query,
         body,
     }))
 }
@@ -207,6 +223,24 @@ fn percent_decode(s: &str) -> String {
         }
     }
     String::from_utf8_lossy(&out).into_owned()
+}
+
+/// Encode a string for use in a URL query value or an HTML attribute.
+///
+/// Deliberately conservative: everything outside the unreserved set is escaped,
+/// so the result is safe both in `?doc=` and inside `href="..."`. A filename is
+/// the only thing this encodes, and a filename may contain a quote.
+pub fn percent_encode(s: &str) -> String {
+    let mut out = String::with_capacity(s.len());
+    for b in s.as_bytes() {
+        match b {
+            b'A'..=b'Z' | b'a'..=b'z' | b'0'..=b'9' | b'-' | b'_' | b'.' | b'~' => {
+                out.push(*b as char)
+            }
+            _ => out.push_str(&format!("%{b:02X}")),
+        }
+    }
+    out
 }
 
 // -- a client, for talking to ollama ---------------------------------------

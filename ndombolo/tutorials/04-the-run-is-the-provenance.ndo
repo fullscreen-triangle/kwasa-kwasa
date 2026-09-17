@@ -1,0 +1,181 @@
+# 4. The run is the provenance
+
+PythonLab section 45 states an invariant that most systems fail:
+
+> The graph must keep INTENDED, PLANNED, EXECUTED, OBSERVED, DERIVED, INFERRED
+> and HYPOTHESIZED distinct. A requested temperature, a measured one, and a
+> causal claim are three different things.
+
+And section 25 requires provenance for everything, including failures.
+
+The usual way to meet this is to instrument: run the protocol, emit log lines,
+then parse the log back into a graph. Section 39 forbids the analogous move on
+the input side -- there must not be a separate Semantic IR parser -- and for the
+same reason it is worth not doing on the output side either. A log that is
+re-parsed can disagree with the thing that produced it.
+
+ndombolo does not have a logging step. The script **is** the graph, and the run
+deposits its own record. This tutorial is about reading them.
+
+## Set up something worth tracing
+
+```turbulance
+item OD_threshold = 0.40
+item blank = 0.04
+
+funxn corrected(raw):
+    return raw - blank
+
+item raw_a1 = 0.45
+item raw_a2 = 0.42
+item raw_a3 = 0.51
+
+item od_a1 = corrected(raw_a1)
+item od_a2 = corrected(raw_a2)
+item od_a3 = corrected(raw_a3)
+
+item total = od_a1 + od_a2 + od_a3
+item mean_od = total / 3
+
+print("mean corrected OD600", mean_od)
+print("above threshold", mean_od > OD_threshold)
+```
+
+```output
+mean corrected OD600 0.42
+above threshold true
+
+OD_threshold = 0.4
+blank = 0.04
+corrected = closure(corrected)
+raw_a1 = 0.45
+raw_a2 = 0.42
+raw_a3 = 0.51
+od_a1 = 0.41000000000000003
+od_a2 = 0.38
+od_a3 = 0.47000000000000003
+total = 1.26
+mean_od = 0.42
+```
+
+Three raw readings, a blank correction, a mean. PythonLab section 27 insists a
+Measurement and a DerivedResult are different objects; here `raw_a1` is the
+measurement and `mean_od` is derived, and the next two commands show that the
+distinction survived.
+
+## The graph, without running anything new
+
+    ndombolo graph 04-the-run-is-the-provenance.ndo
+
+It prints JSON with two arrays. `items` lists every name the document declares,
+with its kind and the line it came from. `contacts` lists which name fed which,
+with a weight counting how many times.
+
+There is no extraction step here. The graph comes from one linear pass over the
+source, which is why the source and the graph cannot disagree -- there is
+nothing for them to disagree about.
+
+Look for `raw_a1 -> od_a1` and `od_a1 -> total`. That chain is the derivation,
+and it is exactly what a later reader needs in order to ask *where did this
+number come from*.
+
+## The trace: every event, in order
+
+    ndombolo trace 04-the-run-is-the-provenance.ndo
+
+The trace is the run rather than the text. Each event carries a sequence
+number, a rule name, the line, what it read, and what it wrote.
+
+The rules in this document are `declare-item`, `declare-funxn`, `return`,
+`print` and `expr`. Later tutorials add `declare-motion`, `declare-proposition`,
+`support`, `contradict`, `within`, `given`, `declare-point` and
+`resolve-motion`.
+
+There is no `call` rule. A funxn call surfaces as the `return` event at the
+funxn's own line, carrying the arguments it read -- so the three calls to
+`corrected` appear as three `return` events at line 27, each reading `blank`
+and its own `raw`.
+
+Two things to notice.
+
+First, **reads are recorded by name and value together**. An event that read
+`blank` records both the name and `0.04`. PythonLab section 24 asks execution
+activities to record requested versus actual parameters; this is the same
+information, one level down.
+
+Second, `trace` **stops at the first failing cell** while `graph` does not.
+That asymmetry is deliberate: the graph is a statement about the text, which is
+readable whether or not it runs, while the trace is a statement about a run,
+which genuinely stopped.
+
+## A measurement that disagrees with its request
+
+Section 24's example is a requested 37 degrees against an actual 36.82. Keeping
+both is the whole point:
+
+```turbulance
+item requested = {temperature: 37, shaking: 700}
+item actual = {temperature: 36.82, shaking: 698}
+
+item drift_t = actual.temperature - requested.temperature
+item drift_s = actual.shaking - requested.shaking
+
+print("temperature drift", drift_t)
+print("shaking drift", drift_s)
+print("within half a degree", abs(drift_t) < 0.5)
+```
+
+```output
+temperature drift -0.18
+shaking drift -2
+within half a degree true
+
+requested = {temperature: 37, shaking: 700}
+actual = {temperature: 36.82, shaking: 698}
+drift_t = -0.17999999999999972
+drift_s = -2
+```
+
+Neither map overwrites the other. Ask the trace what `drift_t` read and it
+names both sources, which is the machine-readable form of *this number is a
+discrepancy, not a measurement*.
+
+## The record is not the output
+
+Three different things sit beside this document, and telling them apart is most
+of understanding what ndombolo guarantees.
+
+The **output block** is a view of the last run. Clearing removes it.
+
+The **trace** is the events of a run, regenerated each time you ask.
+
+The **record** is a counter of deposits that only goes up.
+
+    ndombolo record 04-the-run-is-the-provenance.ndo
+    ndombolo clear  04-the-run-is-the-provenance.ndo
+    ndombolo record 04-the-run-is-the-provenance.ndo
+
+The `clear` reports how many output blocks it removed. The record does not
+move -- and when you re-run, it advances past where it was rather than back to
+it.
+
+This is what makes the record provenance rather than state. A protocol you ran,
+discarded the output of, and ran again is a protocol that was run twice, and
+the record is the only one of the three that says so.
+
+## What the trace cannot tell you
+
+The trace answers every question of the form *what happened, and what did it
+read*. It does not answer *which of these steps was load-bearing*.
+
+Those are different questions. The trace is a complete record of the search --
+every step the run actually took. Whether a given step was **necessary** to the
+result is not a projection of that record, however finely you instrument it:
+you would have to run the protocol without that step and compare.
+
+So when you ask *did the blank correction matter*, the trace tells you that it
+happened and what it read, and you are the one who has to remove it and look.
+The document makes that cheap, because removing a cell and re-running is one
+edit -- and the record will show both runs.
+
+Next: [05-observation-and-analysis.ndo](05-observation-and-analysis.ndo).

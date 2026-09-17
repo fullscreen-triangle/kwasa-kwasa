@@ -1,0 +1,159 @@
+# 1. An experiment has an intent
+
+These tutorials convert the **PythonLab semantic DSL specification** (v0.3) into
+Turbulance. PythonLab is a laboratory workflow language whose guiding rule is
+that *the semantic model is the specification* -- the text is one surface
+syntax, and what a protocol means has to survive being rewritten, replanned, or
+serialised.
+
+Turbulance makes the same bet from the other end. Where PythonLab defines a
+metamodel and then projects Python-like text onto it, Turbulance puts the
+distinctions into the language itself: an `item` is a binding, a `point` is a
+claim with a confidence, a `proposition` is a set of motions that evidence can
+support or contradict. Running the document is the projection.
+
+The example we build over seven tutorials is PythonLab's own worked example
+(specification section 15): an *E. coli* culture experiment with two
+precultures, three replicates each, growth to an OD600 threshold, IPTG
+induction, and a cold spin-down.
+
+## The unit of work is a cell
+
+An `.ndo` file is prose with fenced blocks. A block tagged `turbulance` is a
+**cell**. Running the document compiles each cell and writes an `output` block
+below it.
+
+    ndombolo run 01-an-experiment-has-an-intent.ndo
+
+There is no live kernel. Every run replays the document from cell 0, so a
+protocol you read top to bottom is the protocol that ran.
+
+## An intent, before any action
+
+PythonLab section 5 gives `Intent` these fields: objective, hypothesis,
+independent variables, dependent variables, controls, expected observations,
+success criteria. It insists these are recorded *before* the protocol, because
+a protocol without an intent cannot be checked against anything.
+
+In Turbulance an intent is ordinary data. `item` binds a name; a `{...}` literal
+is an insertion-ordered map.
+
+There is one snag worth hitting on purpose, because PythonLab's vocabulary and
+Turbulance's keyword list overlap. `hypothesis` is a Turbulance keyword, so it
+cannot be a bare field name. Quote it, and reach it with `[...]` instead of a
+dot:
+
+```turbulance
+item intent = {
+    objective: "express the target protein in E. coli at reproducible density",
+    "hypothesis": "induction at OD600 0.40 gives higher yield than at 0.25",
+    independent: "induction threshold",
+    dependent: "OD600 at harvest"
+}
+
+print(intent.objective)
+print(intent["hypothesis"])
+```
+
+```output
+express the target protein in E. coli at reproducible density
+induction at OD600 0.40 gives higher yield than at 0.25
+
+intent = {objective: express the target protein in E. coli at reproducible density, hypothesis: induction at OD600 0.40 gives higher yield than at 0.25, independent: induction threshold, dependent: OD600 at harvest}
+```
+
+Bare fields come out with a dot, quoted ones with brackets. The store listing
+below the printed lines is the second half of the output block: it reports every
+name this cell **changed**.
+
+Other PythonLab words that are also Turbulance keywords, and so need quoting
+as field names: `item`, `point`, `motion`, `until`, `over`, `on`, `in`, `for`,
+`each`, `while`, `given`, `within`, `as` and `from`. Words like `step`,
+`result`, `subject`, `observable` and `instrument` are free.
+
+## Variables stay symbolic
+
+Specification section 9 is firm that a variable reference must survive into the
+semantic model -- the IR keeps `Variable(threshold)` rather than collapsing it
+to `0.40`, so that a later diff can say *the threshold moved* instead of *some
+number moved*.
+
+Turbulance gets this for free: a name is a name, and the run records reads of it
+by name.
+
+```turbulance
+item OD_threshold = 0.40
+item culture_temperature = 37
+item culture_shaking = 700
+item expression_shaking = 500
+item transfer_volume = 15
+item inducer_volume = 5
+
+print("induce at OD600", OD_threshold)
+```
+
+```output
+induce at OD600 0.4
+
+OD_threshold = 0.4
+culture_temperature = 37
+culture_shaking = 700
+expression_shaking = 500
+transfer_volume = 15
+inducer_volume = 5
+```
+
+Those six bindings are the experiment's independent variables. Nothing has been
+done with them yet, which is the point: PythonLab separates *semantic before
+execution*, and so does this.
+
+## Quantities, and what Turbulance does not do for you
+
+PythonLab section 8 requires every quantity to carry a numerical value, a unit,
+and a dimension, and to reject `37 * uL` where a temperature is wanted.
+
+**Turbulance has no unit system.** `37` is a number and so is `15`; nothing
+stops you adding a temperature to a volume. This is a real gap against the
+specification, not a simplification to gloss over.
+
+What you can do is carry the unit as data and keep the arithmetic on the value:
+
+```turbulance
+item temperature = {value: 37, unit: "degC"}
+item volume = {value: 15, unit: "uL"}
+
+print(temperature.value, temperature.unit)
+print(volume.value, volume.unit)
+```
+
+```output
+37 degC
+15 uL
+
+temperature = {value: 37, unit: degC}
+volume = {value: 15, unit: uL}
+```
+
+That records the dimension for a reader and for the trace. It does not check
+it. Tutorial 6 shows how to turn the check into evidence rather than a type
+error, which is the move Turbulance actually offers in place of a unit system.
+
+## What is on disk now
+
+Beside the file sits `01-an-experiment-has-an-intent.ndo.record` -- a counter
+that only goes up. Clearing an output block removes the *view*; the deposits
+that produced it stay.
+
+    ndombolo record 01-an-experiment-has-an-intent.ndo
+    ndombolo clear  01-an-experiment-has-an-intent.ndo
+    ndombolo record 01-an-experiment-has-an-intent.ndo
+
+The record does not move when you clear. Re-run and it advances past where it
+was, never back to it. There is no undo; `clear` is itself a thing that
+happened.
+
+This matters more here than it would in a notebook. PythonLab section 25 makes
+provenance mandatory and section 36 requires that *failures still produce
+provenance*. A record that could be rewound would not be provenance.
+
+Next: [02-entities-and-states.ndo](02-entities-and-states.ndo).

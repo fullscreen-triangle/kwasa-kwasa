@@ -1,0 +1,388 @@
+# 7. The whole experiment
+
+This is PythonLab's worked example (specification section 15) as one Turbulance
+document: `EcoliCultureTriplicate`. Two precultures, three replicates each,
+growth to an OD600 threshold, IPTG induction, a barrier, a cold spin, and a
+finding at the end.
+
+The PythonLab original is about forty lines of restricted Python. This is
+longer, because Turbulance has no domain verbs -- there is no `centrifuge` or
+`quality_control` built in, so each becomes a `funxn` you can read. That is a
+fair trade for a tutorial and a real cost in a production protocol, and section
+7 of the specification is explicit that domain vocabulary is meant to be
+supplied by the domain, not by the language.
+
+Read this one top to bottom. Every cell depends on the ones above it.
+
+## Intent and variables
+
+```turbulance
+item experiment = {
+    name: "EcoliCultureTriplicate",
+    objective: "express the target protein at reproducible density",
+    "hypothesis": "induction at OD600 0.40 gives higher yield than at 0.25"
+}
+
+item OD_threshold = 0.40
+item culture_temperature = 37
+item culture_shaking = 700
+item expression_shaking = 500
+item transfer_volume = 15
+item inducer_volume = 5
+item minimum_valid_fraction = 0.40
+
+print(experiment.name)
+print("threshold", OD_threshold, "at", culture_temperature, "degC")
+```
+
+```output
+EcoliCultureTriplicate
+threshold 0.4 at 37 degC
+
+experiment = {name: EcoliCultureTriplicate, objective: express the target protein at reproducible density, hypothesis: induction at OD600 0.40 gives higher yield than at 0.25}
+OD_threshold = 0.4
+culture_temperature = 37
+culture_shaking = 700
+expression_shaking = 500
+transfer_volume = 15
+inducer_volume = 5
+minimum_valid_fraction = 0.4
+```
+
+## The design
+
+```turbulance
+item precultures = ["PC-01", "PC-02"]
+item replicate_ids = ["R1", "R2", "R3"]
+
+item wells = []
+item slot = 0
+
+for each pc in precultures:
+    for each rep in replicate_ids:
+        slot = slot + 1
+        wells = wells + [{
+            id: pc + "-" + rep,
+            slot: slot,
+            source: pc,
+            volume: 0,
+            od: 0,
+            induced: false
+        }]
+
+print("wells", len(wells))
+print("first", wells[0].id, "last", wells[5].id)
+```
+
+Six wells, named from their source and replicate. Nothing has happened to them.
+
+## Precultures: barcode, stagger, grow, measure
+
+Section 15 barcodes each preculture, waits a staggered offset so the two do not
+contend for the reader, grows for four minutes, then measures.
+
+```turbulance
+funxn barcode(pc, index):
+    return {id: pc, barcode: "BC-" + pc, offset: index * 2}
+
+funxn grow(state, minutes, degrees, rpm):
+    return {
+        id: state.id,
+        barcode: state.barcode,
+        offset: state.offset,
+        elapsed: minutes,
+        temperature: degrees,
+        shaking: rpm
+    }
+
+item prepared = []
+item idx = 0
+
+for each pc in precultures:
+    item tagged = barcode(pc, idx)
+    prepared = prepared + [grow(tagged, 4, culture_temperature, culture_shaking)]
+    idx = idx + 1
+
+for each p in prepared:
+    print(p.id, p.barcode, "offset", p.offset, "grown", p.elapsed, "min")
+```
+
+## Quality control on the precultures
+
+Blank correction, then a validity fraction, exactly as tutorial 5 built it.
+
+```turbulance
+item blanks = [0.038, 0.041, 0.039]
+
+item blank_total = 0
+for each b in blanks:
+    blank_total = blank_total + b
+item blank_level = blank_total / len(blanks)
+
+item preculture_raw = [{id: "PC-01", raw: 0.47}, {id: "PC-02", raw: 0.44}]
+
+item preculture_od = []
+for each r in preculture_raw:
+    preculture_od = preculture_od + [{id: r.id, raw: r.raw, od: r.raw - blank_level}]
+
+item valid = 0
+for each p in preculture_od:
+    given p.od > 0.05:
+        valid = valid + 1
+
+item qc_fraction = valid / len(preculture_od)
+
+for each p in preculture_od:
+    print(p.id, "raw", p.raw, "corrected", p.od)
+print("valid fraction", qc_fraction, "passes", qc_fraction >= minimum_valid_fraction)
+```
+
+## Transfer into the replicates
+
+Fifteen microlitres from each preculture into each of its three wells.
+
+```turbulance
+item filled = []
+for each w in wells:
+    filled = filled + [{
+        id: w.id,
+        slot: w.slot,
+        source: w.source,
+        volume: w.volume + transfer_volume,
+        od: 0,
+        induced: false
+    }]
+
+item dispensed = len(filled) * transfer_volume
+print("wells filled", len(filled), "total dispensed", dispensed)
+print(filled[0].id, filled[0].volume)
+```
+
+## Growth to threshold
+
+Six minutes minimum, then up to one adaptive two-minute step -- section 11's
+`grow_until`, written as tutorial 3 wrote it.
+
+```turbulance
+funxn grow_until(od_start, threshold, gain, max_steps):
+    item od = od_start
+    item steps = 0
+    while od < threshold:
+        given steps >= max_steps:
+            return {od: od, steps: steps, reached: false}
+        od = od + gain
+        steps = steps + 1
+    return {od: od, steps: steps, reached: true}
+
+item starts = [0.36, 0.33, 0.39, 0.35, 0.28, 0.37]
+
+item grown = []
+item k = 0
+for each w in filled:
+    item result = grow_until(starts[k], OD_threshold, 0.06, 1)
+    grown = grown + [{
+        id: w.id,
+        slot: w.slot,
+        volume: w.volume,
+        od: result.od,
+        reached: result.reached,
+        steps: result.steps
+    }]
+    k = k + 1
+
+for each g in grown:
+    print(g.id, "od", g.od, "reached", g.reached)
+```
+
+Two wells failed: PC-01-R2 started at 0.33 and PC-02-R2 at 0.28, and one
+0.06 step takes neither to 0.40. Four of six reached threshold.
+
+Both are carried forward as `reached: false` rather than dropped, because a well
+that failed to grow is a result. Section 25 requires provenance for failures too,
+and a well that vanishes from the list has none.
+
+## Induction
+
+Five microlitres of IPTG into every well that reached threshold.
+
+```turbulance
+item induced = []
+item induced_count = 0
+
+for each g in grown:
+    given g.reached:
+        induced = induced + [{
+            id: g.id,
+            volume: g.volume + inducer_volume,
+            od: g.od,
+            induced: true,
+            shaking: expression_shaking
+        }]
+        induced_count = induced_count + 1
+    given not g.reached:
+        induced = induced + [{
+            id: g.id,
+            volume: g.volume,
+            od: g.od,
+            induced: false,
+            shaking: 0
+        }]
+
+print("induced", induced_count, "of", len(grown))
+for each i in induced:
+    print(i.id, "volume", i.volume, "induced", i.induced)
+```
+
+## The barrier
+
+Nothing is centrifuged until every well has finished. Tutorial 3 made this an
+`ensure` over a completion list.
+
+```turbulance
+item all_settled = true
+for each i in induced:
+    given i.volume < transfer_volume:
+        all_settled = false
+
+ensure all_settled
+print("barrier passed, plate ready to spin")
+```
+
+## Centrifuge, remove supernatant, store cold
+
+1600 rcf for one minute, then the supernatant goes and the pellet is stored at
+four degrees.
+
+```turbulance
+funxn spin(well, rcf, minutes):
+    return {
+        id: well.id,
+        pellet: true,
+        supernatant: well.volume,
+        rcf: rcf,
+        spun_for: minutes
+    }
+
+funxn remove_supernatant(spun):
+    return {id: spun.id, pellet: true, supernatant: 0, removed: spun.supernatant}
+
+funxn store(pellet, degrees):
+    return {id: pellet.id, pellet: true, temperature: degrees, location: "cold store"}
+
+item stored = []
+item waste = 0
+
+for each i in induced:
+    item spun = spin(i, 1600, 1)
+    item drained = remove_supernatant(spun)
+    waste = waste + drained.removed
+    stored = stored + [store(drained, 4)]
+
+print("pellets stored", len(stored))
+print("supernatant removed", waste, "uL")
+print(stored[0].id, "at", stored[0].temperature, "in", stored[0].location)
+```
+
+## The finding
+
+Everything above produced numbers. This produces a finding: a claim, with
+evidence on both sides, traceable to the reads behind it.
+
+```turbulance
+item reached_count = 0
+for each g in grown:
+    given g.reached:
+        reached_count = reached_count + 1
+
+item reached_fraction = reached_count / len(grown)
+
+proposition ExperimentSucceeded:
+    motion AllReplicatesGrew("every replicate reached the induction threshold")
+    motion PrecultureWasSound("the precultures passed quality control")
+    motion InductionWasUniform("all induced wells received the same treatment")
+
+    within grown:
+        given reached_fraction == 1:
+            support AllReplicatesGrew with_confidence(0.95)
+        given reached_fraction < 1:
+            contradict AllReplicatesGrew with_confidence(0.7)
+        given qc_fraction >= minimum_valid_fraction:
+            support PrecultureWasSound with_confidence(0.9)
+        given induced_count == reached_count:
+            support InductionWasUniform with_confidence(0.9)
+
+print("reached", reached_count, "of", len(grown), "=", reached_fraction)
+```
+
+Read the verdicts:
+
+    ndombolo trace 07-the-whole-experiment.ndo
+
+Three `resolve-motion` events at the proposition's line:
+
+    ExperimentSucceeded.AllReplicatesGrew   0
+    ExperimentSucceeded.PrecultureWasSound  0.9
+    ExperimentSucceeded.InductionWasUniform 0.9
+
+`AllReplicatesGrew` is **exactly zero**, not merely low. Four of six is not one,
+so the support branch never fired and only the contradiction did -- and the
+score is `noisy_or(supports) * (1 - noisy_or(contradicts))`, which is
+`0 * (1 - 0.7)`. A contradiction with no support on the other side does not
+reduce a score; there is nothing to reduce.
+
+That is worth knowing before you rely on these numbers. A motion at zero means
+either *contradicted with nothing in its favour* or *never supported at all*,
+and the score alone does not distinguish them. The trace does: look for whether
+a `support` event exists at all.
+
+The other two score high. So the experiment neither passed nor failed -- it
+produced a finding that says which part of it did. The precultures were sound
+and the induction was uniform; the growth was not universal. That is three
+separate facts, and a boolean would have kept one of them.
+
+That is the whole argument for writing a protocol this way. PythonLab section
+45 insists that INTENDED, EXECUTED, OBSERVED and INFERRED stay distinct; this
+document has the intent in cell 0, the execution in the middle, the observations
+in the quality-control cell, and the inference here at the end -- and the trace
+keeps them apart without anyone having tagged them.
+
+## Reading it back
+
+Three commands on this document, in increasing distance from the text:
+
+    ndombolo cells  07-the-whole-experiment.ndo
+    ndombolo graph  07-the-whole-experiment.ndo
+    ndombolo trace  07-the-whole-experiment.ndo
+
+`cells` is the text. `graph` is the text's dependency structure -- one linear
+pass, no extraction, so it cannot disagree with the source. `trace` is the run.
+
+And beside all three:
+
+    ndombolo record 07-the-whole-experiment.ndo
+
+which counts what actually happened, and does not go down.
+
+## Where this stops
+
+Honest inventory of what PythonLab asks for and this document does not deliver:
+
+- **No units.** `37` and `15` are both numbers. Tutorial 6 shows unit checking
+  as evidence, which is weaker than the static rejection section 8 specifies.
+- **No capability matching.** Section 12's requirement that an action declares
+  `TemperatureControl` and a resource advertises it, with a planner between
+  them, has no counterpart here. The `funxn spin` above simply assumes a
+  centrifuge.
+- **No implicit movement.** Section 13's planner that inserts the plate move to
+  the reader does not exist; nothing moves because nothing is scheduled.
+- **No RDF projection.** Sections 20 to 22 require SHACL, PROV-O and EMMO
+  output. `graph` and `trace` emit JSON with a different shape and no ontology.
+- **No fingerprints or semantic diff.** Sections 18 and 35 want a hash over
+  semantic content so a diff reports *the threshold moved from 0.40 to 0.50*.
+  The record counts deposits; it does not identify them.
+- **Four iteration constructs missing.** `cycle`, `drift`, `flow` and `roll
+  until settled` are keywords with no parse rule, as tutorial 3 demonstrates.
+
+What it does deliver is the part PythonLab spends most of its length on: the
+separation of intent from plan from execution from observation from inference,
+kept honestly, in a document you can hand to someone.

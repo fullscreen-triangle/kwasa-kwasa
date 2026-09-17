@@ -1,0 +1,195 @@
+# 2. Entities, and the states they pass through
+
+PythonLab section 2.4 states the rule this tutorial is about:
+
+> Actions are state transformations. State-zero, then an Action, then
+> state-one.
+
+An entity is a thing in the lab -- a Sample, a Reagent, a Labware, a Culture, a
+Pellet, a Supernatant. A state is what is true of that entity at a moment:
+location, volume, temperature, composition, concentration, container.
+
+The specification is careful that these are different kinds of object. A
+culture is not its volume. Turbulance does not enforce that distinction either,
+but it makes it easy to write down, and -- as tutorial 4 shows -- the run
+records each transformation separately, so the distinction survives into the
+trace even though the language did not police it.
+
+## An entity, and its first state
+
+```turbulance
+item preculture = {
+    id: "PC-01",
+    kind: "Culture",
+    organism: "E. coli BL21"
+}
+
+item state0 = {
+    subject: preculture.id,
+    volume: 200,
+    temperature: 4,
+    location: "cold store"
+}
+
+print(preculture.id, preculture.kind)
+print("volume", state0.volume, "at", state0.temperature)
+```
+
+```output
+PC-01 Culture
+volume 200 at 4
+
+preculture = {id: PC-01, kind: Culture, organism: E. coli BL21}
+state0 = {subject: PC-01, volume: 200, temperature: 4, location: cold store}
+```
+
+Two bindings, deliberately not one. PythonLab keeps the entity stable across
+states -- the culture that comes out of the incubator is the same culture that
+went in -- and the state is what moves.
+
+## An action is a funxn from state to state
+
+`funxn` declares a function. It is the same word PythonLab uses for its domain
+verbs, one level down: `incubate`, `transfer`, `measure`.
+
+```turbulance
+funxn incubate(state, minutes, degrees, rpm):
+    return {
+        subject: state.subject,
+        volume: state.volume,
+        temperature: degrees,
+        location: "incubator",
+        shaking: rpm,
+        elapsed: minutes
+    }
+
+item state1 = incubate(state0, 4, 37, 700)
+
+print(state1.subject, state1.temperature, state1.shaking)
+print("came from", state0.temperature)
+```
+
+```output
+PC-01 37 700
+came from 4
+
+incubate = closure(incubate)
+state1 = {subject: PC-01, volume: 200, temperature: 37, location: incubator, shaking: 700, elapsed: 4}
+```
+
+`state0` is untouched. That is the shape the specification asks for: the action
+did not mutate a world, it produced the next state, and both are still
+addressable. A later diff can say *the temperature moved from 4 to 37* because
+both numbers still exist.
+
+## A transfer consumes from one state and fills another
+
+Section 15's protocol transfers 15 microlitres from each preculture into each
+replicate well. Two states change, and the arithmetic has to agree.
+
+```turbulance
+funxn transfer(source, target, amount):
+    return {
+        source: {
+            subject: source.subject,
+            volume: source.volume - amount,
+            temperature: source.temperature
+        },
+        target: {
+            subject: target.subject,
+            volume: target.volume + amount,
+            temperature: target.temperature
+        }
+    }
+
+item well = {subject: "W-A1", volume: 185, temperature: 37}
+item moved = transfer(state1, well, 15)
+
+print("source now", moved.source.volume)
+print("target now", moved.target.volume)
+```
+
+```output
+source now 185
+target now 200
+
+transfer = closure(transfer)
+well = {subject: W-A1, volume: 185, temperature: 37}
+moved = {source: {subject: PC-01, volume: 185, temperature: 37}, target: {subject: W-A1, volume: 200, temperature: 37}}
+```
+
+Nested fields chain with dots. Returning a map with two entries is how one
+action reports two effects, which is what PythonLab's `effects` slot is for.
+
+## The precondition that nobody checks
+
+PythonLab section 36 gives this diagnostic as its example of a *good* error:
+
+> a 50 microlitre transfer is impossible from a source holding only 20
+
+Turbulance will not raise that. Subtraction below zero is a number like any
+other:
+
+```turbulance
+item nearly_empty = {subject: "W-B2", volume: 20, temperature: 37}
+item impossible = transfer(nearly_empty, well, 50)
+
+print("source volume is now", impossible.source.volume)
+```
+
+```output
+source volume is now -30
+
+nearly_empty = {subject: W-B2, volume: 20, temperature: 37}
+impossible = {source: {subject: W-B2, volume: -30, temperature: 37}, target: {subject: W-A1, volume: 235, temperature: 37}}
+```
+
+Minus thirty microlitres. The run completed and deposited, and nothing in the
+language noticed.
+
+There are two honest responses to this, and it is worth being clear which one
+Turbulance offers.
+
+The first is `ensure`, which aborts:
+
+```turbulance
+funxn checked_transfer(source, target, amount):
+    ensure source.volume >= amount
+    return transfer(source, target, amount)
+
+item ok = checked_transfer(state1, well, 15)
+print("fine:", ok.source.volume)
+```
+
+```output
+fine: 185
+
+checked_transfer = closure(checked_transfer)
+ok = {source: {subject: PC-01, volume: 185, temperature: 37}, target: {subject: W-A1, volume: 200, temperature: 37}}
+```
+
+Run the next cell and the document stops there.
+
+```turbulance
+item bad = checked_transfer(nearly_empty, well, 50)
+print("never reached")
+```
+
+```output
+run: line 125: ensure failed
+```
+
+The line it names is 125 -- the `ensure` inside the funxn, not the call on line
+174. The abort is reported where the condition failed, which is the line you
+would need to look at.
+
+`ensure` is a defined abort, not a crash: the failure is recorded and the cells
+after it do not run. Compare `ndombolo record` before and after -- the failed
+run deposited too. PythonLab section 36 asks for exactly this, that *failures
+still produce provenance*.
+
+The second response is to not stop at all, and instead let the impossible
+transfer stand as **evidence against** the protocol. That is what propositions
+are for, and it is the whole of tutorial 6.
+
+Next: [03-a-protocol-is-a-loop.ndo](03-a-protocol-is-a-loop.ndo).

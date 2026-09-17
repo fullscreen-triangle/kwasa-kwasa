@@ -21,6 +21,12 @@ item greeting = "hello"
 print(greeting)
 ```
 
+```output
+hello
+
+greeting = hello
+```
+
 Run it and an output block appears below the fence. That block is a **view of
 the last run** -- run it again and it is replaced, not appended.
 

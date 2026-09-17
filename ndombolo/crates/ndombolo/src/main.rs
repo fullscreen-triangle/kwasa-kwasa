@@ -13,6 +13,7 @@
 //! ndombolo record notes.ndo             the deposits behind the document
 //! ndombolo new   notes.ndo              write a starter document
 //! ndombolo edit  notes.ndo              open the document in the editor
+//! ndombolo edit  tutorials/            open every .ndo in a directory
 //! ```
 //!
 //! # The editor is a second face on this runtime, not a second runtime
@@ -62,7 +63,7 @@ ndombolo -- run the cells of a .ndo document
     ndombolo trace  <file.ndo>              every trace event, as JSON
     ndombolo record <file.ndo>              the deposits behind this document
     ndombolo new    <file.ndo>              write a starter document
-    ndombolo edit   <file.ndo>              open the document in the editor
+    ndombolo edit   <file.ndo|dir>          open a document, or a directory of them
 
 Options
     --cell N     act on cell N only (0-based). Earlier cells still run: a
@@ -443,11 +444,17 @@ fn cmd_edit(path: &Path, port: u16, model: &str, host: &str) -> Result<(), Strin
             path.display()
         ));
     }
-    // Read once before binding, so a document that cannot be parsed fails here
-    // rather than as a 500 in the browser.
-    load(path)?;
 
-    let mut editor = editor::Editor::new(path, model, host);
+    let mut editor = if path.is_dir() {
+        // No pre-flight parse: one unreadable document in a directory should
+        // not stop the others being served. It reports itself when opened.
+        editor::Editor::dir(path, model, host)
+    } else {
+        // Read once before binding, so a document that cannot be parsed fails
+        // here rather than as a 500 in the browser.
+        load(path)?;
+        editor::Editor::file(path, model, host)
+    };
     println!("{}", path.display());
     http::serve(port, |req| editor.handle(req))
         .map_err(|e| format!("cannot serve on 127.0.0.1:{port}: {e}"))

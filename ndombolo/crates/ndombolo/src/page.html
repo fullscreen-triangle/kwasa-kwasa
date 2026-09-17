@@ -8,14 +8,8 @@
      toolbar, no sidebar and no status bar -- what is on screen is what will
      be in the file, plus the outputs the runtime wrote. */
   :root {
-    --bg: #fdfdfc; --fg: #23231f; --muted: #8a8a80; --rule: #e6e4dd;
-    --cell-bg: #f6f5f1; --out-bg: #fbfaf7; --accent: #3b5b8c; --err: #9b2c1e;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #16171a; --fg: #dcdcd6; --muted: #82827c; --rule: #2c2e33;
-      --cell-bg: #1d1f23; --out-bg: #191b1e; --accent: #8fb0e0; --err: #e08b7c;
-    }
+    --bg: #16171a; --fg: #dcdcd6; --muted: #82827c; --rule: #2c2e33;
+    --cell-bg: #1d1f23; --out-bg: #191b1e; --accent: #8fb0e0; --err: #e08b7c;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; background: var(--bg); color: var(--fg); }
@@ -159,8 +153,16 @@ function status(text) {
   $("#status").textContent = text;
 }
 
+/* Which document this page is about. One server can serve a directory, so
+ * every request names its document; the reader is otherwise unchanged. */
+const DOC = new URLSearchParams(location.search).get("doc");
+
+function url(path) {
+  return DOC === null ? path : path + "?doc=" + encodeURIComponent(DOC);
+}
+
 async function api(path, body) {
-  const res = await fetch(path, body === undefined ? {} : {
+  const res = await fetch(url(path), body === undefined ? {} : {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
@@ -483,14 +485,9 @@ document.addEventListener("keydown", (ev) => {
 
 const style = document.createElement("style");
 style.textContent = `
-  .t-kw { color: #8959a8; } .t-def { color: #4271ae; } .t-string { color: #718c00; }
-  .t-number { color: #f5871f; } .t-comment { color: #8e908c; font-style: italic; }
-  .t-atom { color: #c82829; } .t-op { color: #3e999f; }
-  @media (prefers-color-scheme: dark) {
-    .t-kw { color: #c397d8; } .t-def { color: #7aa6da; } .t-string { color: #b9ca4a; }
-    .t-number { color: #e78c45; } .t-comment { color: #6b6b66; }
-    .t-atom { color: #d54e53; } .t-op { color: #70c0b1; }
-  }
+  .t-kw { color: #c397d8; } .t-def { color: #7aa6da; } .t-string { color: #b9ca4a; }
+  .t-number { color: #e78c45; } .t-comment { color: #6b6b66; font-style: italic; }
+  .t-atom { color: #d54e53; } .t-op { color: #70c0b1; }
 `;
 document.head.appendChild(style);
 

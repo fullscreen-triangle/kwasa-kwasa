@@ -1,0 +1,237 @@
+# 3. A protocol is a loop over a known domain
+
+PythonLab section 10 keeps Python's `for`, `if`, `else` and assignment, and then
+adds constructs that ordinary Python does not have, because a protocol has to be
+*plannable* before it runs. The planner needs to know how many wells, how many
+replicates, how many times at most.
+
+Section 10 makes that explicit: a for-each is only allowed over a **semantically
+known domain**, and `range(3)` is acceptable only when it is statically
+interpretable as a finite design. A loop whose extent depends on a measurement
+gets a different construct.
+
+This tutorial builds section 15's nested structure: two precultures, three
+replicates each.
+
+## For-each over a known domain
+
+```turbulance
+item precultures = ["PC-01", "PC-02"]
+item replicates = ["R1", "R2", "R3"]
+
+for each pc in precultures:
+    print("preculture", pc)
+
+print("wells needed", len(precultures) * len(replicates))
+```
+
+```output
+preculture PC-01
+preculture PC-02
+wells needed 6
+
+precultures = [PC-01, PC-02]
+replicates = [R1, R2, R3]
+```
+
+`for each x in xs` is the whole form. The domain is a list that exists before
+the loop, which is what makes the well count knowable without running anything.
+
+## Nesting, and building the plate
+
+```turbulance
+item plate = []
+item i = 0
+
+for each pc in precultures:
+    for each rep in replicates:
+        i = i + 1
+        plate = plate + [{well: i, source: pc, replicate: rep}]
+
+print("plate size", len(plate))
+print(plate[0].well, plate[0].source, plate[0].replicate)
+print(plate[5].well, plate[5].source, plate[5].replicate)
+```
+
+```output
+plate size 6
+1 PC-01 R1
+6 PC-02 R3
+
+plate = [{well: 1, source: PC-01, replicate: R1}, {well: 2, source: PC-01, replicate: R2}, {well: 3, source: PC-01, replicate: R3}, {well: 4, source: PC-02, replicate: R1}, {well: 5, source: PC-02, replicate: R2}, {well: 6, source: PC-02, replicate: R3}]
+i = 6
+```
+
+`+` on two lists concatenates, and `[i]` indexes from zero. Six wells, in the
+order the two loops visit them, which is the order the plate is laid out.
+
+## considering, and the quantifier that is not decoration
+
+Turbulance has a second traversal, `considering`, and it carries a quantifier.
+This is a place where reading the keyword as sugar for `for each` will bite you.
+
+```turbulance
+considering all w in plate:
+    print("visiting", w.well)
+```
+
+```output
+visiting 1
+visiting 2
+visiting 3
+visiting 4
+visiting 5
+visiting 6
+```
+
+`all` visits every element. Now the bare form:
+
+```turbulance
+considering w in plate:
+    print("bare form visited", w.well)
+```
+
+```output
+bare form visited 1
+```
+
+One element. Not six. The quantifier is **semantic**: `considering all` means
+every item, `considering these` means the ones selected, and a bare `considering
+x in xs` means *an item* -- a representative, visited once.
+
+For a protocol this distinction is the difference between pipetting six wells
+and pipetting one, so use `for each` when you mean iteration and `considering
+all` when you mean a claim about every member.
+
+## Bounded repetition
+
+PythonLab prefers `repeat(at_most=n)` over `while`, because an unbounded loop
+cannot be planned. Turbulance has `while`, and the bound is yours to write:
+
+```turbulance
+item attempts = 0
+item settled_ok = false
+
+while attempts < 3:
+    attempts = attempts + 1
+    given attempts == 2:
+        settled_ok = true
+
+print("attempts", attempts, "settled", settled_ok)
+```
+
+```output
+attempts 3 settled true
+
+attempts = 3
+settled_ok = true
+```
+
+`given` is the conditional -- PythonLab's `if`, under the name the Turbulance
+specification fixes for it. There is an `otherwise` for the else branch.
+
+The interpreter also has a hard ceiling: a loop that runs past 100000 steps is
+cut off rather than hanging the document. That is a backstop, not a plan bound.
+Writing `while attempts < 3` is what makes the protocol plannable; the ceiling
+only stops a mistake from becoming a hang.
+
+## Observation-dependent growth
+
+This is section 11's `grow_until`, the construct that exists because you cannot
+know in advance how long a culture takes to reach OD600 0.40:
+
+    grow(at_least=6*min, until=OD600 > OD_threshold, step=2*min, max_steps=1)
+
+Four parts: a floor, a condition, a step, and a cap. Written out:
+
+```turbulance
+funxn grow_until(od_start, threshold, step_gain, max_steps):
+    item od = od_start
+    item steps = 0
+    while od < threshold:
+        given steps >= max_steps:
+            return {od: od, steps: steps, reached: false}
+        od = od + step_gain
+        steps = steps + 1
+    return {od: od, steps: steps, reached: true}
+
+item slow = grow_until(0.30, 0.40, 0.06, 1)
+item fast = grow_until(0.36, 0.40, 0.06, 1)
+
+print("slow:", slow.od, slow.steps, slow.reached)
+print("fast:", fast.od, fast.steps, fast.reached)
+```
+
+```output
+slow: 0.36 1 false
+fast: 0.42 1 true
+
+grow_until = closure(grow_until)
+slow = {od: 0.36, steps: 1, reached: false}
+fast = {od: 0.42, steps: 1, reached: true}
+```
+
+The slow culture used its one step and still did not reach threshold, so it
+returns `reached: false` rather than looping forever or raising. PythonLab
+section 17 says `grow_until` normalises into an AdaptiveGrowth with an
+InitialPhase, an Observation, a Decision, a ConditionalStep, a RepeatBound and a
+TerminationCondition -- every one of those is visible in the funxn above, which
+is the point of writing it out rather than hiding it behind a keyword.
+
+## barrier
+
+Section 15 calls `barrier(expression_replicates)` before the joint centrifuge
+step: every replicate must finish growing before any of them is spun.
+
+Turbulance has no concurrency, so cells run in order and the barrier is already
+satisfied. The useful thing is to make it checkable rather than implicit:
+
+```turbulance
+item finished = [true, true, true]
+item all_done = true
+
+for each f in finished:
+    given not f:
+        all_done = false
+
+ensure all_done
+print("barrier passed, all replicates ready")
+```
+
+```output
+barrier passed, all replicates ready
+
+finished = [true, true, true]
+all_done = true
+```
+
+If one replicate had failed, `ensure` would stop the document before the spin --
+which is what a barrier is for.
+
+## What Turbulance does not have here
+
+The Turbulance language specification defines four hybrid iteration constructs:
+`cycle x over floor`, `drift x in corpus`, `flow x on source`, and `roll until
+settled`. `roll until settled` is the natural home for `grow_until`.
+
+**None of the four are implemented in this runtime.** They are keywords -- the
+lexer knows them -- but there is no parse rule, so a cell using one fails:
+
+```turbulance
+item xs = [1, 2]
+cycle x over xs:
+    print(x)
+```
+
+```output
+parse: line 168: unexpected 'cycle'
+```
+
+That is a parse error, and it is the last cell in this document on purpose:
+nothing after it is stranded. It is here so that you meet the gap in a tutorial
+rather than in your own protocol.
+
+The working substitutes are the ones above: `while` with an explicit bound for
+`roll until settled`, and `for each` over a list for `cycle over floor`.
+
+Next: [04-the-run-is-the-provenance.ndo](04-the-run-is-the-provenance.ndo).
