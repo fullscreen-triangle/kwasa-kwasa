@@ -1,0 +1,318 @@
+# 9. What the schema cannot say
+
+Tutorial 8 ended with a promise: there is a question the capability layer cannot
+reach, and not because the schema is too small.
+
+This is that question.
+
+> Of the questions I could pose against this data, which ones are actually
+> **admissible** -- that is, which ones would an answer even mean something for?
+
+Call it the second question. The first question is *what does a record look
+like*, and a schema answers it. This tutorial shows that no schema answers the
+second one, at any degree of enrichment, and shows **why** -- because the two
+questions are about different kinds of property.
+
+## The shape of the argument
+
+One sentence, and then the rest of the tutorial is making it concrete:
+
+> A capability feature is **local** -- decidable by looking at one record.
+> Admissibility is a **global minimum over subsets** -- decidable only by
+> looking at the whole contact structure at once.
+> No conjunction of local predicates computes a global minimum.
+
+That is the separation. Everything below is an instance of it you can run.
+
+## The contact graph
+
+A source has records, and the records touch one another: this enzyme acts on
+that substrate, this compound is a descendant of that one, this measurement was
+made under those conditions. Weight the contacts by how strongly they hold, and
+you have a graph.
+
+Note what it keeps and what it drops. It keeps **items and weighted relations**.
+It drops the per-field typing the schema drew -- there is no `k_cat` slot in a
+contact graph, only the fact that two things are in contact and how strongly.
+
+That loss is not incidental. It is why the contact graph cannot reconstruct the
+capability set, just as we are about to see the capability set cannot
+reconstruct the graph.
+
+```turbulance
+funxn in_set(xs, t):
+    item found = false
+    for each x in xs:
+        given x == t:
+            found = true
+    return found
+
+funxn cut_weight(edges, side):
+    item total = 0
+    for each e in edges:
+        item a = in_set(side, e["from"])
+        item b = in_set(side, e["to"])
+        given a and not b:
+            total = total + e.weight
+        given b and not a:
+            total = total + e.weight
+    return total
+
+item demo = [
+    {"from": "v0", "to": "e1", weight: 0.8},
+    {"from": "e1", "to": "x",  weight: 0.5}
+]
+
+print("cut at {v0}      ", cut_weight(demo, ["v0"]))
+print("cut at {v0, e1}  ", cut_weight(demo, ["v0", "e1"]))
+```
+
+```output
+cut at {v0}       0.8
+cut at {v0, e1}   0.5
+
+in_set = closure(in_set)
+cut_weight = closure(cut_weight)
+demo = [{from: v0, to: e1, weight: 0.8}, {from: e1, to: x, weight: 0.5}]
+```
+
+`from` and `to` are **keywords**, so they are written as quoted keys and read
+with `e["from"]`. Bare `{from: ...}` is a parse error, not a subtle bug --
+tutorial 2 met the same escape hatch with `hypothesis`.
+
+A **cut** puts the question's starting point on one side and its target on the
+other, and adds up every contact that crosses. The two cuts above cross
+different edges and so weigh different amounts.
+
+## Separation cost is a minimum over *all* cuts
+
+The separation cost is the **cheapest** such cut: the least total contact you
+would have to sever to disconnect the question from its answer.
+
+```turbulance
+funxn separation(edges, sides):
+    item best = 99
+    for each s in sides:
+        item w = cut_weight(edges, s)
+        given w < best:
+            best = w
+    return best
+
+item sides = [["v0"], ["v0","e1"], ["v0","e2"], ["v0","e1","e2"]]
+print("enumerating", len(sides), "cuts")
+```
+
+```output
+enumerating 4 cuts
+
+separation = closure(separation)
+sides = [[v0], [v0, e1], [v0, e2], [v0, e1, e2]]
+```
+
+Two enzymes means four subsets. Twenty means over a million. The enumeration is
+explicit here so you can see what is being minimised over; a real implementation
+uses a max-flow algorithm rather than listing them.
+
+But the *shape* is the point, and it survives the optimisation: **a minimum over
+an exponential family of subsets.** Keep that in view for the last section.
+
+## The separation theorem, as two sources you can run
+
+Here are two sources. Read the setup carefully, because the whole argument is in
+what is held fixed.
+
+- **Identical capability sets.** Both declare `ec_number`, `substrate`, `k_cat`.
+- **Identical record counts.** Both have the same five items: `v0`, `e1`, `e2`,
+  `x`, and the contacts between them.
+- **Every record conforms to the schema.** Neither source has a validation
+  error. `linkml validate` passes on both.
+
+The only difference is **how the records contact one another**.
+
+```turbulance
+item cap_a = ["ec_number", "substrate", "k_cat"]
+item cap_b = ["ec_number", "substrate", "k_cat"]
+
+item source_a = [
+    {"from": "v0", "to": "e1", weight: 0.80},
+    {"from": "e1", "to": "x",  weight: 0.75},
+    {"from": "v0", "to": "e2", weight: 0.70},
+    {"from": "e2", "to": "x",  weight: 0.65},
+    {"from": "e1", "to": "e2", weight: 0.60}
+]
+
+item source_b = [
+    {"from": "v0", "to": "e1", weight: 0.80},
+    {"from": "e1", "to": "e2", weight: 0.70},
+    {"from": "e2", "to": "x",  weight: 0.10},
+    {"from": "v0", "to": "e2", weight: 0.05}
+]
+
+item beta = 0.25
+
+item sigma_a = separation(source_a, sides)
+item sigma_b = separation(source_b, sides)
+
+print("capability sets identical:", cap_a == cap_b)
+print("A: sigma", sigma_a, " admissible", sigma_a > beta)
+print("B: sigma", sigma_b, " admissible", sigma_b > beta)
+```
+
+```output
+capability sets identical: true
+A: sigma 1.4  admissible true
+B: sigma 0.1  admissible false
+
+cap_a = [ec_number, substrate, k_cat]
+cap_b = [ec_number, substrate, k_cat]
+source_a = [{from: v0, to: e1, weight: 0.8}, {from: e1, to: x, weight: 0.75}, {from: v0, to: e2, weight: 0.7}, {from: e2, to: x, weight: 0.65}, {from: e1, to: e2, weight: 0.6}]
+source_b = [{from: v0, to: e1, weight: 0.8}, {from: e1, to: e2, weight: 0.7}, {from: e2, to: x, weight: 0.1}, {from: v0, to: e2, weight: 0.05}]
+beta = 0.25
+sigma_a = 1.4
+sigma_b = 0.1
+```
+
+There it is.
+
+Source A separates at **1.4**, well clear of the floor. Source B separates at
+**0.1**, below it. Ask both the same question and the first gives you an answer
+that means something; the second gives you an answer that is indistinguishable
+from noise, because the evidence connecting the question to its target is
+thinner than the floor beneath which nothing can be resolved at all.
+
+And the capability sets are **equal**. The schemas are equal. The validators
+agree. The two sources are indistinguishable at every point a shape language can
+look.
+
+This is the separation theorem, and it is not a pathological construction --
+source B is just a source where the evidence is strung out in a chain with one
+weak link, which is what a real federation of curated databases very often is.
+
+## Why enriching the schema does not help
+
+The obvious repair is to add a feature. If `k_cat` does not capture it, declare
+`evidence_strength`; if that is not enough, declare `path_reliability`.
+
+Watch what happens.
+
+```turbulance
+item enriched = ["ec_number", "substrate", "k_cat",
+                 "evidence_strength", "path_reliability", "curation_level"]
+
+item sigma_a_after = separation(source_a, sides)
+item sigma_b_after = separation(source_b, sides)
+
+print("features before 3, after", len(enriched))
+print("A sigma before", sigma_a, "after", sigma_a_after)
+print("B sigma before", sigma_b, "after", sigma_b_after)
+print("either number moved:", sigma_a_after != sigma_a or sigma_b_after != sigma_b)
+```
+
+```output
+features before 3, after 6
+A sigma before 1.4 after 1.4
+B sigma before 0.1 after 0.1
+either number moved: false
+
+enriched = [ec_number, substrate, k_cat, evidence_strength, path_reliability, curation_level]
+sigma_a_after = 1.4
+sigma_b_after = 0.1
+```
+
+
+It did not, and it could not, and the reason is structural rather than a
+question of picking better features.
+
+Every feature you can declare is **checkable on a record**, or on a record and
+its neighbours. That is what makes it a schema feature -- if you needed the
+whole dataset to decide whether a record has `evidence_strength`, you could not
+validate one record at a time, and validating one record at a time is what a
+schema language is for.
+
+But `sigma` is a **minimum over subsets of the whole graph**. Changing one
+edge's weight can change which subset achieves the minimum, and therefore change
+the answer, without changing any record's local properties at all.
+
+A conjunction of local predicates -- which is what any schema is, however many
+slots you add -- has no way to express a minimum over an exponential family. It
+is not that the right feature has not been found. It is that the property being
+asked about is not of the kind that features are.
+
+## Two certificates, both necessary
+
+So the data layer has two halves, and neither derives from the other:
+
+```turbulance
+funxn assess(cap, request, sigma, floor):
+    item gap = missing_from(request, cap)
+    given len(gap) > 0:
+        return {verdict: "unsupported", stage: "capability", diagnosis: gap}
+    given sigma <= floor:
+        return {verdict: "starved", stage: "floor", diagnosis: floor - sigma}
+    return {verdict: "answer", stage: "issued", diagnosis: "none"}
+
+funxn missing_from(required, available):
+    item gap = []
+    for each r in required:
+        item found = false
+        for each a in available:
+            given a == r:
+                found = true
+        given not found:
+            gap = gap + [r]
+    return gap
+
+item ask_ok      = ["ec_number", "k_cat"]
+item ask_unknown = ["ec_number", "ph_optimum"]
+
+print(assess(cap_a, ask_unknown, sigma_a, beta).verdict, "<- schema stage")
+print(assess(cap_b, ask_ok,      sigma_b, beta).verdict, "<- floor stage")
+print(assess(cap_a, ask_ok,      sigma_a, beta).verdict, "<- both cleared")
+```
+
+```output
+unsupported <- schema stage
+starved <- floor stage
+answer <- both cleared
+
+assess = closure(assess)
+missing_from = closure(missing_from)
+ask_ok = [ec_number, k_cat]
+ask_unknown = [ec_number, ph_optimum]
+```
+
+`unsupported` and `starved` are **different verdicts, and must stay different**.
+
+The first says: *you asked for something this source never claimed to have.*
+Fixable by writing a better schema, or by asking a different source. Detected
+before any request is issued.
+
+The second says: *this source has exactly the fields you asked for, every record
+validates, and the evidence still does not reach far enough to support an
+answer.* No schema change fixes it. It was not detectable until the contact
+structure was computed.
+
+Collapse them into one failure and you lose the ability to tell a fixable
+problem from an unfixable one -- which is the single most useful thing a
+federated query can tell you.
+
+## What this does and does not claim
+
+Stated plainly, because it is easy to overstate:
+
+- It does **not** claim LinkML is inadequate. LinkML answers the first question
+  well, and `Cap` above *is* a LinkML schema with the syntax stripped off.
+- It does **not** propose replacing it. For a dataset catalogue or a FAIR
+  compliance check -- pure shape requests -- adopting LinkML unmodified is
+  correct and extending it would be cost for no gain.
+- It **does** claim that a second question exists, that it is the one working
+  scientists actually ask, and that no shape language answers it at any degree
+  of enrichment.
+
+The composition is the point: a shape language for what records look like, a
+floor layer for which questions are worth asking, computed independently over
+the same items.
+
+Adopting LinkML costs nothing and settles nothing.
+
+Next: [10-three-frameworks-one-question.ndo](10-three-frameworks-one-question.ndo).

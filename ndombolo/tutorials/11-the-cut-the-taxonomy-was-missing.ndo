@@ -1,0 +1,339 @@
+# 11. The cut the taxonomy was missing
+
+Tutorial 8 treated `unsupported` as one verdict. It is two, and separating
+them is the whole content of this tutorial.
+
+The cheminformatics paper says so itself, in its own list of limitations:
+
+> **The gap taxonomy is under-resolved.** Three values, and G6 shows
+> `vocabulary` covering two structurally different situations -- a missing
+> type on a subject that is present, and a relation that is absent from the
+> schema entirely. We have not found the right cut, and we would rather ship
+> three honest values than five that the plan author assigns by coin flip.
+
+That is an open problem left standing in the paper. This tutorial closes it,
+and the tool it closes it with is already in *Shape Is Not Admissibility* --
+just never pointed at this question.
+
+## Two alphabets, not one
+
+The federated query layer declares capabilities over a **fixed, finite set of
+eleven operations**:
+
+    pattern  path  filter  bind  agg  neg  order  regex  lookup  link  batch
+
+Each names something a source can *do*: match a triple pattern, traverse a
+path, apply a value restriction, evaluate negation. A source declares which
+eleven-bit answer it gives, and the paper is explicit that the set is
+"deliberately small and deliberately closed" so an adapter author can answer
+each question honestly.
+
+The composition paper declares capabilities over a **different alphabet**:
+qualified slot names, `(Class, slot)` -- `(Enzyme, ec_number)`,
+`(Reaction, medium)`. Not what a source can do. What a source can **say**.
+
+These are both capability sets and they are not the same set. Tutorial 8 ran
+them together because for its purposes the distinction did not bite.
+
+Here it bites.
+
+```turbulance
+item operations = ["pattern", "path", "filter", "bind", "agg",
+                   "neg", "order", "regex", "lookup", "link", "batch"]
+
+item terms = ["substrate", "product", "medium", "ec_number", "k_cat"]
+
+print("operations (what a source can do):", len(operations))
+print("terms (what a source can say):    ", len(terms))
+```
+
+```output
+operations (what a source can do): 11
+terms (what a source can say):     5
+
+operations = [pattern, path, filter, bind, agg, neg, order, regex, lookup, link, batch]
+terms = [substrate, product, medium, ec_number, k_cat]
+```
+
+The operation alphabet is closed by design and fixed for all time. The term
+alphabet is open -- it grows whenever the federation models something new.
+Two alphabets with opposite closure properties, and one verdict name serving
+both.
+
+## Where the cut falls
+
+Take the two cases the paper says it could not separate.
+
+**G2** asks for a subject that is present in the store and lacks a type.
+The term `type` is in the alphabet. This record does not carry it.
+
+**G6** asks for the solvent of a reaction. The corpus records reaction
+**media**. There is no solvent relation at all -- not missing from a record,
+missing from the schema.
+
+Both were labelled `vocabulary`. But look at what each one licenses you to
+do next.
+
+```turbulance
+funxn has(xs, t):
+    item f = false
+    for each x in xs:
+        given x == t:
+            f = true
+    return f
+
+item alphabet = ["substrate", "product", "medium", "ec_number"]
+
+item sources = [
+    {name: "chem", cap: ["substrate", "product"]},
+    {name: "bio",  cap: ["medium", "ec_number"]},
+    {name: "enz",  cap: ["ec_number", "substrate"]}
+]
+
+funxn any_source_has(all, term):
+    item hit = "none"
+    for each s in all:
+        given has(s.cap, term):
+            hit = s.name
+    return hit
+
+print("medium  is held by ->", any_source_has(sources, "medium"))
+print("solvent is held by ->", any_source_has(sources, "solvent"))
+```
+
+```output
+medium  is held by -> bio
+solvent is held by -> none
+
+has = closure(has)
+alphabet = [substrate, product, medium, ec_number]
+sources = [{name: chem, cap: [substrate, product]}, {name: bio, cap: [medium, ec_number]}, {name: enz, cap: [ec_number, substrate]}]
+any_source_has = closure(any_source_has)
+```
+
+Ask `chem` for `medium` and it refuses -- but `bio` has it, so the refusal
+tells you *where to go*. Ask any source for `solvent` and every one refuses,
+and no further asking will help, because the term is not in the alphabet the
+federation speaks.
+
+That is the cut. It is not about the severity of the failure. It is about
+**whether retrying elsewhere is a coherent thing to do.**
+
+## The three-way classification
+
+So the containment check has three outcomes, not two, and they are ordered:
+
+```turbulance
+funxn classify(term, alpha, cap):
+    given not has(alpha, term):
+        return "unexpressed"
+    given not has(cap, term):
+        return "unsupported"
+    return "ok"
+
+item chem_cap = ["substrate", "product"]
+
+print("substrate:", classify("substrate", alphabet, chem_cap))
+print("medium:   ", classify("medium",    alphabet, chem_cap))
+print("solvent:  ", classify("solvent",   alphabet, chem_cap))
+```
+
+```output
+substrate: ok
+medium:    unsupported
+solvent:   unexpressed
+
+classify = closure(classify)
+chem_cap = [substrate, product]
+```
+
+Read the order, because as in tutorial 8 it is normative and the early
+`return` is what enforces it.
+
+**`unexpressed` is tested first.** A term that is not in the alphabet cannot
+be in any source's capability set, so asking whether *this* source has it is
+a question with no content. Test the alphabet, then the source -- never the
+other way round, or you will report a source-specific failure for something
+no source could have had.
+
+- **`unexpressed`** -- not in `Feat`. The federation has no way to say this.
+  Retrying elsewhere is incoherent. Fix: model the thing, or accept that the
+  question is outside what these data can express.
+- **`unsupported`** -- in `Feat`, not in `Cap(Src)`. Retry against a source
+  that declares it. Fix: route differently.
+- **`starved`** -- both cleared, evidence too thin. Tutorial 9. No routing
+  and no modelling fixes it.
+
+Three refusals, three different next actions. That is the test of whether a
+distinction earns its keep: collapse any two and a reader loses a decision
+they could otherwise make.
+
+## Why the obvious repair is worse than the refusal
+
+The tempting fix for G6 is an ontology axiom. Declare buffer a subproperty of
+solvent, let the reasoner supply the relation, and the question becomes
+answerable.
+
+The paper takes this seriously because it is what the received method would
+actually do. Watch it go wrong in two separate ways.
+
+**First, it does not actually make anything answerable.**
+
+```turbulance
+item widened = alphabet + ["solvent"]
+
+print("before axiom, solvent classifies as:",
+      classify("solvent", alphabet, chem_cap))
+print("after axiom,  solvent classifies as:",
+      classify("solvent", widened, chem_cap))
+print("sources holding solvent, after the axiom:",
+      any_source_has(sources, "solvent"))
+```
+
+```output
+before axiom, solvent classifies as: unexpressed
+after axiom,  solvent classifies as: unsupported
+sources holding solvent, after the axiom: none
+
+widened = [substrate, product, medium, ec_number, solvent]
+```
+
+The verdict moved from `unexpressed` to `unsupported`, and **not one source
+gained the capability**. All the axiom did was change an honest "this
+federation cannot say that" into a misleading "try another source" -- and
+there is no other source. The refusal got less informative while the data
+stayed exactly as they were.
+
+**Second, if the reasoner also materialises, it writes a false triple.**
+
+```turbulance
+item records = [
+    {subject: "rxn-8", relation: "medium", object: "Tris 50 mM", prov: "observed"}
+]
+
+funxn entail(rows, axiom_from, axiom_to):
+    item out = []
+    for each r in rows:
+        out = out + [r]
+        given r.relation == axiom_from:
+            out = out + [{subject: r.subject, relation: axiom_to,
+                          object: r.object, prov: "derived"}]
+    return out
+
+item after = entail(records, "medium", "solvent")
+for each a in after:
+    print(a.prov, "|", a.subject, a.relation, a.object)
+
+print("---")
+print("chemically, the solvent of 50 mM Tris is:", "water")
+print("the axiom asserts it is:", after[1].object)
+print("axiom produces a false triple:", after[1].object != "water")
+```
+
+```output
+observed | rxn-8 medium Tris 50 mM
+derived | rxn-8 solvent Tris 50 mM
+---
+chemically, the solvent of 50 mM Tris is: water
+the axiom asserts it is: Tris 50 mM
+axiom produces a false triple: true
+
+records = [{subject: rxn-8, relation: medium, object: Tris 50 mM, prov: observed}]
+entail = closure(entail)
+after = [{subject: rxn-8, relation: medium, object: Tris 50 mM, prov: observed}, {subject: rxn-8, relation: solvent, object: Tris 50 mM, prov: derived}]
+```
+
+The chemistry is not subtle. The solvent of a 50 mM Tris buffer is **water**.
+Tris is a solute system dissolved in it. The axiom asserts that the solvent
+is Tris, which is false, and once that triple is materialised into the graph
+it is indistinguishable from an observation -- tutorial 10's laundering,
+arriving here by a different road.
+
+So the catalogue now answers G6. Fluently, and falsely.
+
+An `unexpressed` verdict is worth more than that answer, and this is the
+strongest case for refusal being first-class anywhere in the framework: the
+alternative to refusing was not a worse answer, it was a **wrong one that
+looks right**.
+
+## Where the verdicts now stand
+
+Tutorial 8 listed six. With the cut, seven -- and they partition cleanly by
+the stage at which the failure is found:
+
+```turbulance
+item verdicts = [
+    {name: "unexpressed", stage: "alphabet",   fix: "model it, or accept the limit"},
+    {name: "unsupported", stage: "capability", fix: "route to another source"},
+    {name: "refused",     stage: "budget",     fix: "raise the budget or lower the target"},
+    {name: "starved",     stage: "floor",      fix: "none at this layer"},
+    {name: "exhausted",   stage: "execution",  fix: "more time"},
+    {name: "empty",       stage: "result",     fix: "none needed, this is a finding"},
+    {name: "answer",      stage: "result",     fix: "none"}
+]
+
+item before_request = 0
+for each v in verdicts:
+    given v.stage == "alphabet":
+        before_request = before_request + 1
+    given v.stage == "capability":
+        before_request = before_request + 1
+    given v.stage == "budget":
+        before_request = before_request + 1
+
+for each v in verdicts:
+    print(v.name, "|", v.stage, "|", v.fix)
+print("---")
+print("decided before any request is issued:", before_request, "of", len(verdicts))
+```
+
+```output
+unexpressed | alphabet | model it, or accept the limit
+unsupported | capability | route to another source
+refused | budget | raise the budget or lower the target
+starved | floor | none at this layer
+exhausted | execution | more time
+empty | result | none needed, this is a finding
+answer | result | none
+---
+decided before any request is issued: 3 of 7
+
+verdicts = [{name: unexpressed, stage: alphabet, fix: model it, or accept the limit}, {name: unsupported, stage: capability, fix: route to another source}, {name: refused, stage: budget, fix: raise the budget or lower the target}, {name: starved, stage: floor, fix: none at this layer}, {name: exhausted, stage: execution, fix: more time}, {name: empty, stage: result, fix: none needed, this is a finding}, {name: answer, stage: result, fix: none}]
+before_request = 3
+```
+
+Three of seven are decided **before the network**, from declarations alone.
+That is what the shape layer buys, and it is now three distinct things rather
+than two, each naming a different repair.
+
+## What this changes in the comparison
+
+Nothing about LinkML's adequacy. `unexpressed` is a statement about the
+**alphabet a schema is drawn from**, and LinkML is exactly the tool for
+declaring that alphabet -- a slot that does not exist in any class of the
+schema is not expressible, and `linkml lint` will tell you so.
+
+What changes is the claim you can make about the refusal. Before the cut, a
+source saying `unsupported` told you something might be found elsewhere, and
+sometimes that was false. After it, `unexpressed` says the federation has
+reached the edge of what it can express, and that is a fact about the
+**schema** -- checkable, reportable, and fixable only by modelling.
+
+Which is to say: the shape layer got better at its own job by borrowing one
+distinction from the layer beneath it. Not a replacement, not a competitor.
+A cut that neither paper could make alone.
+
+## Where this stops
+
+- **The alphabet is a literal.** A real implementation reads it from the
+  schemas themselves -- every slot across every class -- and that is exactly
+  what a LinkML `SchemaView` gives you. Not wired here.
+- **No subsumption.** A term absent but *subsumed* by a present one is a
+  genuine third case this tutorial treats as `unexpressed`. Whether that is
+  right depends on whether the subsumption is sound chemistry, which is not
+  a question a verdict can settle.
+- **G2 is still not fully separated.** The cut handles the G2/G6 split --
+  present-but-untyped versus absent-from-schema. Whether `induction` and
+  `conditions` hide further cuts is untested.
+- **Honesty still assumed.** A schema that declares a slot no record carries
+  passes every check here, exactly as in tutorial 8.

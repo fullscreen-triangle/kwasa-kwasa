@@ -1,0 +1,465 @@
+# 10. Three frameworks, one question
+
+Tutorial 8 built the capability layer. Tutorial 9 showed what it cannot reach.
+This one runs the composition against a real question, through three different
+domain frameworks, and ends with the two failure modes that make the whole
+exercise worth the trouble.
+
+The question is one from working biocatalysis:
+
+> Which enzymes might catalyse this transformation, and would trying them tell
+> me anything the evidence does not already foreclose?
+
+Three frameworks answer it from three directions -- **cheminformatics** (what
+is the molecule, and what is it a kind of), **systems biology** (what pathway
+is it in, what else touches it), and **enzymology** (what is known about the
+catalytic step itself). Each is a source with its own capability set. None of
+them alone answers the question.
+
+## Three sources, three declarations
+
+```turbulance
+item chem = {
+    name: "chem",
+    capabilities: ["descendants_of", "formula", "charge", "inchikey", "similarity"]
+}
+
+item bio = {
+    name: "bio",
+    capabilities: ["pathway", "participants", "organism", "compartment"]
+}
+
+item enz = {
+    name: "enz",
+    capabilities: ["ec_number", "substrate", "k_cat", "k_m", "mechanism"]
+}
+
+item sources = [chem, bio, enz]
+for each s in sources:
+    print(s.name, "declares", len(s.capabilities))
+```
+
+```output
+chem declares 5
+bio declares 4
+enz declares 5
+
+chem = {name: chem, capabilities: [descendants_of, formula, charge, inchikey, similarity]}
+bio = {name: bio, capabilities: [pathway, participants, organism, compartment]}
+enz = {name: enz, capabilities: [ec_number, substrate, k_cat, k_m, mechanism]}
+sources = [{name: chem, capabilities: [descendants_of, formula, charge, inchikey, similarity]}, {name: bio, capabilities: [pathway, participants, organism, compartment]}, {name: enz, capabilities: [ec_number, substrate, k_cat, k_m, mechanism]}]
+```
+
+Note that these declarations are exactly what a LinkML schema gives you. Three
+schemas, one per source. Nothing here competes with LinkML -- this *is* the
+LinkML layer, with the YAML stripped off so you can see the set underneath.
+
+## A plan is a sequence of steps, and queries are leaves
+
+The organising principle of the host language, and the one that makes everything
+downstream possible:
+
+> **No plan construct denotes a triple, a pattern, or a URL.**
+
+A step names a source and what it requires. It does not contain a SPARQL string
+with a variable interpolated into it. That single restriction is what kills the
+first defect of the script everybody writes -- textual interpolation, where a
+malformed value becomes a malformed query and the failure surfaces as a parse
+error three systems away from its cause.
+
+```turbulance
+item plan = [
+    {step: "acids",    source: "chem", requires: ["descendants_of"],      budget: 10},
+    {step: "pathways", source: "bio",  requires: ["pathway", "participants"], budget: 15},
+    {step: "enzymes",  source: "enz",  requires: ["ec_number", "k_cat"],  budget: 20},
+    {step: "kinetics", source: "enz",  requires: ["k_cat", "ph_optimum"], budget: 5}
+]
+
+item total_budget = 0
+for each p in plan:
+    total_budget = total_budget + p.budget
+
+print("steps", len(plan), "requesting", total_budget, "of 50")
+print("within budget", total_budget <= 50)
+```
+
+```output
+steps 4 requesting 50 of 50
+within budget true
+
+plan = [{step: acids, source: chem, requires: [descendants_of], budget: 10}, {step: pathways, source: bio, requires: [pathway, participants], budget: 15}, {step: enzymes, source: enz, requires: [ec_number, k_cat], budget: 20}, {step: kinetics, source: enz, requires: [k_cat, ph_optimum], budget: 5}]
+total_budget = 50
+```
+
+The budget is **stated and allocated**, which is the fourth defect answered. A
+script that says "fetch until you have enough" has a budget too; it is just not
+written down, so nothing can check it and nothing can refuse on it.
+
+## Running the plan: the verdict per step
+
+```turbulance
+funxn has(xs, t):
+    item f = false
+    for each x in xs:
+        given x == t:
+            f = true
+    return f
+
+funxn missing(required, available):
+    item gap = []
+    for each r in required:
+        given not has(available, r):
+            gap = gap + [r]
+    return gap
+
+funxn find_source(all, name):
+    item hit = {name: "none", capabilities: []}
+    for each s in all:
+        given s.name == name:
+            hit = s
+    return hit
+
+funxn run_step(step, all, inputs_ok, budget_left, sigma, floor):
+    item src = find_source(all, step.source)
+    item gap = missing(step.requires, src.capabilities)
+    given not inputs_ok:
+        return {step: step.step, verdict: "starved",     why: "predecessor fell short"}
+    given len(gap) > 0:
+        return {step: step.step, verdict: "unsupported", why: gap}
+    given budget_left < step.budget:
+        return {step: step.step, verdict: "refused",     why: step.budget - budget_left}
+    given sigma <= floor:
+        return {step: step.step, verdict: "starved",     why: floor - sigma}
+    return {step: step.step, verdict: "answer", why: "none"}
+
+item floor = 0.25
+
+for each p in plan:
+    item r = run_step(p, sources, true, 50, 1.4, floor)
+    print(r.step, "->", r.verdict, "|", r.why)
+```
+
+```output
+acids -> answer | none
+pathways -> answer | none
+enzymes -> answer | none
+kinetics -> unsupported | [ph_optimum]
+
+has = closure(has)
+missing = closure(missing)
+find_source = closure(find_source)
+run_step = closure(run_step)
+floor = 0.25
+```
+
+Three steps answer. The fourth, `kinetics`, reports **unsupported** and names
+`ph_optimum` -- the feature the `enz` source never declared.
+
+Read what did *not* happen there. No request was issued for `kinetics`. The
+budget was not spent. The failure is not a timeout, not an empty result set, and
+not an exception; it is a named missing feature, decided from declarations
+alone, before the network. That is the capability layer doing its whole job.
+
+## The catalytic ladder: evidence that composes
+
+The enzymology framework adds one construct. A **ladder** is a sequence of rungs,
+each with a power in `[0,1]` -- the fraction of the remaining gap that rung
+closes. They compose multiplicatively:
+
+```turbulance
+funxn compose(powers):
+    item residual = 1
+    for each p in powers:
+        residual = residual * (1 - p)
+    return 1 - residual
+
+item rungs = [0.45, 0.30, 0.55]
+item composite = compose(rungs)
+
+print("rungs", rungs)
+print("composite", composite)
+print("clears target 0.70:", composite >= 0.70)
+print("clears target 0.95:", composite >= 0.95)
+print("shortfall against 0.95:", 0.95 - composite)
+```
+
+```output
+rungs [0.45, 0.3, 0.55]
+composite 0.82675
+clears target 0.70: true
+clears target 0.95: false
+shortfall against 0.95: 0.12325
+
+compose = closure(compose)
+rungs = [0.45, 0.3, 0.55]
+composite = 0.82675
+```
+
+`1 - (0.55)(0.70)(0.45) = 0.82675`. Against a declared target of 0.70 the step
+answers. Against 0.95 it refuses, and names the shortfall.
+
+The refusal is **tight**: a ladder is refused if and only if executing its rungs
+would fall short. No ladder that could have reached its target is refused, and
+every refused ladder would have fallen short -- and this is decided from the
+declared numbers without executing anything.
+
+## Why multiplicative rather than additive
+
+The host already had a way to bound a chain: a union bound, which is additive.
+It is worth seeing why it was not enough.
+
+```turbulance
+funxn union_bound(powers):
+    item total = 0
+    for each p in powers:
+        total = total + (1 - p)
+    return 1 - total
+
+print("multiplicative", compose(rungs))
+print("additive      ", union_bound(rungs))
+print("additive is vacuous (<= 0):", union_bound(rungs) <= 0)
+```
+
+```output
+multiplicative 0.82675
+additive       -0.7
+additive is vacuous (<= 0): true
+
+union_bound = closure(union_bound)
+```
+
+At three rungs the additive bound has already gone **negative** -- it reports
+that the chain guarantees nothing, which is true but useless, since every chain
+guarantees at least nothing. On four-stage chains the additive form goes vacuous
+about half the time; on eight-stage chains, essentially always.
+
+The multiplicative form stays informative because it tracks what actually
+happens: each rung closes a fraction of what is *left*, not a fraction of the
+whole. A bound that goes vacuous cannot refuse, and a layer that cannot refuse
+cannot be a floor.
+
+## The first failure mode: every step answered, wrong question
+
+This is the one to take away, and it is the sharpest thing the cheminformatics
+framework contributes.
+
+```turbulance
+item all_answered = true
+item step_verdicts = ["answer", "answer", "answer"]
+for each v in step_verdicts:
+    given v != "answer":
+        all_answered = false
+
+item asked    = "enzymes acting on this specific acid"
+item answered = "enzymes acting on any member of its parent class"
+
+item report = {
+    verdict: "answer",
+    steps_ok: all_answered,
+    answers_question: false,
+    gap: "induction"
+}
+
+print("every step answered:", report.steps_ok)
+print("verdict:", report.verdict)
+print("answers the question asked:", report.answers_question)
+print("gap kind:", report.gap)
+print("asked   :", asked)
+print("answered:", answered)
+```
+
+```output
+every step answered: true
+verdict: answer
+answers the question asked: false
+gap kind: induction
+asked   : enzymes acting on this specific acid
+answered: enzymes acting on any member of its parent class
+
+all_answered = true
+step_verdicts = [answer, answer, answer]
+asked = enzymes acting on this specific acid
+answered = enzymes acting on any member of its parent class
+report = {verdict: answer, steps_ok: true, answers_question: false, gap: induction}
+```
+
+Every step reported `answer`. The plan produced rows. And the rows are about a
+**different question** than the one asked -- because a step widened from a
+specific compound to its parent class somewhere in the middle, and nothing about
+that step failed.
+
+`answers_question: false` sits **alongside** `verdict: answer`, not instead of
+it. Those are two independent facts and collapsing them loses one.
+
+The gap is drawn from a closed, author-named set of three:
+
+```turbulance
+item gap_kinds = ["induction", "vocabulary", "conditions"]
+print("gap kinds:", gap_kinds)
+```
+
+```output
+gap kinds: [induction, vocabulary, conditions]
+
+gap_kinds = [induction, vocabulary, conditions]
+```
+
+- **induction** -- the plan generalised from instances to a class.
+- **vocabulary** -- a term was matched to a near-neighbour that is not the same.
+- **conditions** -- the evidence holds, but under conditions other than the ones
+  asked about.
+
+A closed set is a strong commitment. It means the author must place each plan in
+one of three named buckets rather than writing prose, and a reader can check the
+placement.
+
+## The second failure mode: a prediction wearing the clothes of a record
+
+The other thing the cheminformatics framework warns about, which matters
+directly to anyone running a reasoner over an ontology.
+
+```turbulance
+funxn tag(rows, prov):
+    item out = []
+    for each r in rows:
+        out = out + [{fact: r, provenance: prov}]
+    return out
+
+item observed = tag(["1.1.1.1 acts on ethanol"], "observed")
+item entailed = tag(["1.1.1.1 acts on alcohol"], "derived")
+item both = observed + entailed
+
+for each b in both:
+    print(b.provenance, "|", b.fact)
+
+funxn materialise(rows):
+    item out = []
+    for each r in rows:
+        out = out + [r.fact]
+    return out
+
+item graph = materialise(both)
+print("after materialising the closure:")
+for each g in graph:
+    print("  ", g)
+```
+
+```output
+observed | 1.1.1.1 acts on ethanol
+derived | 1.1.1.1 acts on alcohol
+after materialising the closure:
+   1.1.1.1 acts on ethanol
+   1.1.1.1 acts on alcohol
+
+tag = closure(tag)
+observed = [{fact: 1.1.1.1 acts on ethanol, provenance: observed}]
+entailed = [{fact: 1.1.1.1 acts on alcohol, provenance: derived}]
+both = [{fact: 1.1.1.1 acts on ethanol, provenance: observed}, {fact: 1.1.1.1 acts on alcohol, provenance: derived}]
+materialise = closure(materialise)
+graph = [1.1.1.1 acts on ethanol, 1.1.1.1 acts on alcohol]
+```
+
+Before materialisation, one row is `observed` and one is `derived`, and you can
+see which. After, they are two triples in the same graph, in the same
+vocabulary, and **no query over that graph can tell them apart**.
+
+That is laundering. The entailed fact is a *prediction* -- it may be a very good
+one -- and once materialised it is indistinguishable from a record of something
+someone measured. Every downstream consumer now treats them alike.
+
+This is exactly the invariant tutorial 4 was built around: INTENDED, OBSERVED
+and INFERRED must stay distinct. A protocol that keeps a requested temperature
+beside the measured one, and then runs a reasoner that folds an inference into
+its observations, has thrown away at the data layer what it was careful about at
+the bench.
+
+The composition's answer is not to forbid entailment. It is that derived facts
+carry their stage, and the verdict carries it too -- which is why `answer` and
+`answers_question` are separate fields, and why `unsupported` and `starved` are
+separate verdicts.
+
+## What the three frameworks share
+
+They do not share a schema, a vocabulary, or a data model. Chemistry, pathways,
+and kinetics are genuinely different domains and no single ontology usefully
+covers all three.
+
+What they share is the **shape of a step**: declare what you require, get a
+verdict from a fixed set in a fixed order, carry a payload only on `answer`, and
+name the stage at which anything went wrong.
+
+```turbulance
+item summary = [
+    {layer: "shape", question: "what does a record look like",
+     answered_by: "LinkML, JSON Schema, SHACL, OWL", verdict: "unsupported"},
+    {layer: "floor", question: "which questions are admissible",
+     answered_by: "contact graph + separation cost", verdict: "starved"}
+]
+
+for each s in summary:
+    print(s.layer, "->", s.question)
+    print("   answered by:", s.answered_by)
+    print("   refuses with:", s.verdict)
+```
+
+```output
+shape -> what does a record look like
+   answered by: LinkML, JSON Schema, SHACL, OWL
+   refuses with: unsupported
+floor -> which questions are admissible
+   answered by: contact graph + separation cost
+   refuses with: starved
+
+summary = [{layer: shape, question: what does a record look like, answered_by: LinkML, JSON Schema, SHACL, OWL, verdict: unsupported}, {layer: floor, question: which questions are admissible, answered_by: contact graph + separation cost, verdict: starved}]
+```
+
+Two layers, two certificates, two verdicts, neither derivable from the other.
+
+## Where this leaves LinkML
+
+Plainly, and this is the whole position:
+
+Adopting LinkML for the shape layer **costs nothing and settles nothing**. It is
+the correct engineering choice for the question it answers -- and it is silent
+on the question the floor layer answers.
+
+If every request a surface must serve is a shape request, and no consumer ever
+asks an admissibility question, then LinkML unmodified is sufficient and
+anything more is cost for no gain. That is a real condition that real surfaces
+meet: dataset catalogues, metadata harvesters, FAIR compliance checks.
+
+The moment someone asks *would trying this tell me anything I don't already
+know*, the condition fails, and no amount of schema work restores it.
+
+So the comparison to make is not *which is better*. It is: **for this surface,
+which of the two questions do its consumers actually ask?** That is a question
+about the surface, answerable by looking at it, and both layers are available
+either way.
+
+## Where this stops
+
+Honest inventory, in the manner of tutorial 7:
+
+- **No network.** Every source here is a literal in the document. The real
+  frameworks resolve against local fixtures for the same reason: these are
+  claims about the compiler, and a live service can neither confirm nor refute
+  them.
+- **Subsets enumerated by hand.** Tutorial 9's `sides` list is written out.
+  Beyond about twenty items you need max-flow, not a list.
+- **No blame walk.** A starved step names the predecessor that starved it, and
+  walking those names up to the origin terminates. That walk is not built here.
+- **The floor is a literal.** `beta = 0.25` is asserted, not derived from the
+  data. Deriving it is the substance of the underlying theory and not something
+  a tutorial should fake.
+- **Honesty still assumed.** Everything in tutorial 8's last section applies
+  unchanged: a source that over-declares passes every check here.
+
+What these three tutorials do deliver is the distinction itself, executable: a
+schema is a capability declaration, admissibility is a global minimum, and no
+enrichment of the first computes the second.
+
+One of the entries above -- `unsupported` as a single verdict -- turns out to
+be two, and the cheminformatics paper says in its own limitations that it could
+not find the cut. Tutorial 11 makes it.
+
+Next: [11-the-cut-the-taxonomy-was-missing.ndo](11-the-cut-the-taxonomy-was-missing.ndo).

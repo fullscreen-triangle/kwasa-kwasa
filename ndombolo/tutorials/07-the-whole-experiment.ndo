@@ -74,6 +74,16 @@ print("wells", len(wells))
 print("first", wells[0].id, "last", wells[5].id)
 ```
 
+```output
+wells 6
+first PC-01-R1 last PC-02-R3
+
+precultures = [PC-01, PC-02]
+replicate_ids = [R1, R2, R3]
+wells = [{id: PC-01-R1, slot: 1, source: PC-01, volume: 0, od: 0, induced: false}, {id: PC-01-R2, slot: 2, source: PC-01, volume: 0, od: 0, induced: false}, {id: PC-01-R3, slot: 3, source: PC-01, volume: 0, od: 0, induced: false}, {id: PC-02-R1, slot: 4, source: PC-02, volume: 0, od: 0, induced: false}, {id: PC-02-R2, slot: 5, source: PC-02, volume: 0, od: 0, induced: false}, {id: PC-02-R3, slot: 6, source: PC-02, volume: 0, od: 0, induced: false}]
+slot = 6
+```
+
 Six wells, named from their source and replicate. Nothing has happened to them.
 
 ## Precultures: barcode, stagger, grow, measure
@@ -107,6 +117,16 @@ for each p in prepared:
     print(p.id, p.barcode, "offset", p.offset, "grown", p.elapsed, "min")
 ```
 
+```output
+PC-01 BC-PC-01 offset 0 grown 4 min
+PC-02 BC-PC-02 offset 2 grown 4 min
+
+barcode = closure(barcode)
+grow = closure(grow)
+prepared = [{id: PC-01, barcode: BC-PC-01, offset: 0, elapsed: 4, temperature: 37, shaking: 700}, {id: PC-02, barcode: BC-PC-02, offset: 2, elapsed: 4, temperature: 37, shaking: 700}]
+idx = 2
+```
+
 ## Quality control on the precultures
 
 Blank correction, then a validity fraction, exactly as tutorial 5 built it.
@@ -137,6 +157,20 @@ for each p in preculture_od:
 print("valid fraction", qc_fraction, "passes", qc_fraction >= minimum_valid_fraction)
 ```
 
+```output
+PC-01 raw 0.47 corrected 0.430667
+PC-02 raw 0.44 corrected 0.400667
+valid fraction 1 passes true
+
+blanks = [0.038, 0.041, 0.039]
+blank_total = 0.118
+blank_level = 0.03933333333333333
+preculture_raw = [{id: PC-01, raw: 0.47}, {id: PC-02, raw: 0.44}]
+preculture_od = [{id: PC-01, raw: 0.47, od: 0.43066666666666664}, {id: PC-02, raw: 0.44, od: 0.40066666666666667}]
+valid = 2
+qc_fraction = 1
+```
+
 ## Transfer into the replicates
 
 Fifteen microlitres from each preculture into each of its three wells.
@@ -156,6 +190,14 @@ for each w in wells:
 item dispensed = len(filled) * transfer_volume
 print("wells filled", len(filled), "total dispensed", dispensed)
 print(filled[0].id, filled[0].volume)
+```
+
+```output
+wells filled 6 total dispensed 90
+PC-01-R1 15
+
+filled = [{id: PC-01-R1, slot: 1, source: PC-01, volume: 15, od: 0, induced: false}, {id: PC-01-R2, slot: 2, source: PC-01, volume: 15, od: 0, induced: false}, {id: PC-01-R3, slot: 3, source: PC-01, volume: 15, od: 0, induced: false}, {id: PC-02-R1, slot: 4, source: PC-02, volume: 15, od: 0, induced: false}, {id: PC-02-R2, slot: 5, source: PC-02, volume: 15, od: 0, induced: false}, {id: PC-02-R3, slot: 6, source: PC-02, volume: 15, od: 0, induced: false}]
+dispensed = 90
 ```
 
 ## Growth to threshold
@@ -192,6 +234,20 @@ for each w in filled:
 
 for each g in grown:
     print(g.id, "od", g.od, "reached", g.reached)
+```
+
+```output
+PC-01-R1 od 0.42 reached true
+PC-01-R2 od 0.39 reached false
+PC-01-R3 od 0.45 reached true
+PC-02-R1 od 0.41 reached true
+PC-02-R2 od 0.34 reached false
+PC-02-R3 od 0.43 reached true
+
+grow_until = closure(grow_until)
+starts = [0.36, 0.33, 0.39, 0.35, 0.28, 0.37]
+grown = [{id: PC-01-R1, slot: 1, volume: 15, od: 0.42, reached: true, steps: 1}, {id: PC-01-R2, slot: 2, volume: 15, od: 0.39, reached: false, steps: 1}, {id: PC-01-R3, slot: 3, volume: 15, od: 0.45, reached: true, steps: 1}, {id: PC-02-R1, slot: 4, volume: 15, od: 0.41, reached: true, steps: 1}, {id: PC-02-R2, slot: 5, volume: 15, od: 0.34, reached: false, steps: 1}, {id: PC-02-R3, slot: 6, volume: 15, od: 0.43, reached: true, steps: 1}]
+k = 6
 ```
 
 Two wells failed: PC-01-R2 started at 0.33 and PC-02-R2 at 0.28, and one
@@ -233,6 +289,19 @@ for each i in induced:
     print(i.id, "volume", i.volume, "induced", i.induced)
 ```
 
+```output
+induced 4 of 6
+PC-01-R1 volume 20 induced true
+PC-01-R2 volume 15 induced false
+PC-01-R3 volume 20 induced true
+PC-02-R1 volume 20 induced true
+PC-02-R2 volume 15 induced false
+PC-02-R3 volume 20 induced true
+
+induced = [{id: PC-01-R1, volume: 20, od: 0.42, induced: true, shaking: 500}, {id: PC-01-R2, volume: 15, od: 0.39, induced: false, shaking: 0}, {id: PC-01-R3, volume: 20, od: 0.45, induced: true, shaking: 500}, {id: PC-02-R1, volume: 20, od: 0.41, induced: true, shaking: 500}, {id: PC-02-R2, volume: 15, od: 0.34, induced: false, shaking: 0}, {id: PC-02-R3, volume: 20, od: 0.43, induced: true, shaking: 500}]
+induced_count = 4
+```
+
 ## The barrier
 
 Nothing is centrifuged until every well has finished. Tutorial 3 made this an
@@ -246,6 +315,12 @@ for each i in induced:
 
 ensure all_settled
 print("barrier passed, plate ready to spin")
+```
+
+```output
+barrier passed, plate ready to spin
+
+all_settled = true
 ```
 
 ## Centrifuge, remove supernatant, store cold
@@ -283,6 +358,18 @@ print("supernatant removed", waste, "uL")
 print(stored[0].id, "at", stored[0].temperature, "in", stored[0].location)
 ```
 
+```output
+pellets stored 6
+supernatant removed 110 uL
+PC-01-R1 at 4 in cold store
+
+spin = closure(spin)
+remove_supernatant = closure(remove_supernatant)
+store = closure(store)
+stored = [{id: PC-01-R1, pellet: true, temperature: 4, location: cold store}, {id: PC-01-R2, pellet: true, temperature: 4, location: cold store}, {id: PC-01-R3, pellet: true, temperature: 4, location: cold store}, {id: PC-02-R1, pellet: true, temperature: 4, location: cold store}, {id: PC-02-R2, pellet: true, temperature: 4, location: cold store}, {id: PC-02-R3, pellet: true, temperature: 4, location: cold store}]
+waste = 110
+```
+
 ## The finding
 
 Everything above produced numbers. This produces a finding: a claim, with
@@ -312,6 +399,16 @@ proposition ExperimentSucceeded:
             support InductionWasUniform with_confidence(0.9)
 
 print("reached", reached_count, "of", len(grown), "=", reached_fraction)
+```
+
+```output
+reached 4 of 6 = 0.666667
+
+reached_count = 4
+reached_fraction = 0.6666666666666666
+AllReplicatesGrew = motion(AllReplicatesGrew)
+PrecultureWasSound = motion(PrecultureWasSound)
+InductionWasUniform = motion(InductionWasUniform)
 ```
 
 Read the verdicts:
@@ -386,3 +483,11 @@ Honest inventory of what PythonLab asks for and this document does not deliver:
 What it does deliver is the part PythonLab spends most of its length on: the
 separation of intent from plan from execution from observation from inference,
 kept honestly, in a document you can hand to someone.
+
+## Beyond the protocol
+
+Tutorials 1 to 7 are about running an experiment. The next three are about
+**querying** what is already known, across heterogeneous sources -- and about
+one distinction that decides how a data layer should be built.
+
+Next: [08-a-schema-is-a-capability-declaration.ndo](08-a-schema-is-a-capability-declaration.ndo).

@@ -224,7 +224,7 @@ cycle x over xs:
 ```
 
 ```output
-parse: line 168: unexpected 'cycle'
+parse: line 222: unexpected 'cycle'
 ```
 
 That is a parse error, and it is the last cell in this document on purpose:

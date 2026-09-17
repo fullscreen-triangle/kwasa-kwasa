@@ -1,0 +1,274 @@
+# 8. A schema is a capability declaration
+
+The previous seven tutorials built a protocol. This one and the next two build a
+**query** — and they exist to make one distinction visible, because it is the
+distinction the whole data-modeling argument turns on.
+
+LinkML is the industry standard for modelling data. It is a YAML schema
+language: you declare classes, you declare slots, and it compiles outward to
+JSON Schema, SHACL, ShEx, OWL, RDF, SQL DDL, GraphQL, and typed code in half a
+dozen languages. It is very good at what it does.
+
+The claim these tutorials make is **not** that it is inadequate. It is narrower
+and more precise, and it comes from *Shape Is Not Admissibility*:
+
+> A LinkML schema **is** a capability declaration -- not analogously, but
+> literally, as an instance of the same primitive.
+
+So the question is not *LinkML or this*. It is: once you have a schema, what
+have you got, and what have you not got? This tutorial answers the first half.
+Tutorial 9 answers the second. Tutorial 10 puts them together.
+
+## What a schema declares
+
+Take a LinkML class with four slots:
+
+```yaml
+classes:
+  Enzyme:
+    slots: [ec_number, organism, substrate, k_cat]
+```
+
+Strip the syntax and what remains is a **set of qualified slot names** --
+`(Enzyme, ec_number)`, `(Enzyme, organism)`, and so on. Call that set the
+source's capability set, `Cap(Src)`. It is drawn from a finite alphabet of
+features, and every feature in it has one property that matters:
+
+**it is independently checkable.** You can decide whether a record has an
+`ec_number` by looking at that record. You never need another record to decide
+it. That is what makes the feature *local*, and locality is the hinge of
+everything below.
+
+```turbulance
+item chebi = {
+    name: "chebi",
+    capabilities: ["descendants_of", "formula", "charge", "inchikey"]
+}
+
+item brenda = {
+    name: "brenda",
+    capabilities: ["ec_number", "organism", "k_cat", "substrate"]
+}
+
+item rhea = {
+    name: "rhea",
+    capabilities: ["ec_number", "reaction", "participants", "direction"]
+}
+
+print(chebi.name, len(chebi.capabilities), "features")
+print(brenda.name, len(brenda.capabilities), "features")
+print(rhea.name, len(rhea.capabilities), "features")
+```
+
+```output
+chebi 4 features
+brenda 4 features
+rhea 4 features
+
+chebi = {name: chebi, capabilities: [descendants_of, formula, charge, inchikey]}
+brenda = {name: brenda, capabilities: [ec_number, organism, k_cat, substrate]}
+rhea = {name: rhea, capabilities: [ec_number, reaction, participants, direction]}
+```
+
+Three sources, three declarations. Nothing has been fetched. No record has been
+read. These are statements *about* the sources, made by whoever wrote them down.
+
+## Containment is the whole check
+
+A step against a source declares what it requires. The step is **well-capability**
+when its requirements are contained in the source's declared capabilities.
+
+That is the entire test. One membership check per required feature.
+
+```turbulance
+funxn has(xs, target):
+    item found = false
+    for each x in xs:
+        given x == target:
+            found = true
+    return found
+
+funxn missing(required, available):
+    item gap = []
+    for each r in required:
+        given not has(available, r):
+            gap = gap + [r]
+    return gap
+
+funxn contained(required, available):
+    return len(missing(required, available)) == 0
+
+item request_a = ["ec_number", "k_cat"]
+item request_b = ["ec_number", "k_cat", "ph_optimum"]
+
+print("A against brenda:", contained(request_a, brenda.capabilities))
+print("B against brenda:", contained(request_b, brenda.capabilities))
+print("B is missing:", missing(request_b, brenda.capabilities))
+```
+
+```output
+A against brenda: true
+B against brenda: false
+B is missing: [ph_optimum]
+
+has = closure(has)
+missing = closure(missing)
+contained = closure(contained)
+request_a = [ec_number, k_cat]
+request_b = [ec_number, k_cat, ph_optimum]
+```
+
+Two things about that result are worth saying out loud.
+
+**First: it is decidable, and cheap.** The cost is one membership test per
+required feature -- linear in the size of the feature alphabet, and independent
+of how much data the source holds. A source with four records and a source with
+four billion records take the same time to fail this check.
+
+**Second, and this is the one people miss: no request was issued.** Request B
+was refused *before the network*. Not refused after a timeout, not refused after
+returning nothing -- refused without asking. The diagnosis is `ph_optimum`, a
+named feature, not an error string.
+
+That is what a schema buys you. It is a real thing to buy.
+
+## The verdict is not a boolean
+
+Here is where the host query language departs from the script everybody writes.
+
+In an ordinary script, a step succeeds or it fails, and failure is one bit wide.
+A step that returned nothing because the source was down, because the query was
+malformed, because the budget ran out, and because the answer genuinely is
+"there are none" all look identical from the outside.
+
+The host assigns one of **six verdicts**, by rules applied in a fixed order:
+
+```turbulance
+funxn verdict(inputs_ok, is_contained, budget_ok, completed, nonempty):
+    given not inputs_ok:
+        return "starved"
+    given not is_contained:
+        return "unsupported"
+    given not budget_ok:
+        return "refused"
+    given not completed:
+        return "exhausted"
+    given not nonempty:
+        return "empty"
+    return "answer"
+
+print("R1", verdict(false, false, false, false, false))
+print("R2", verdict(true,  false, false, false, false))
+print("R3", verdict(true,  true,  false, false, false))
+print("R4", verdict(true,  true,  true,  false, false))
+print("R5", verdict(true,  true,  true,  true,  false))
+print("R6", verdict(true,  true,  true,  true,  true))
+```
+
+```output
+R1 starved
+R2 unsupported
+R3 refused
+R4 exhausted
+R5 empty
+R6 answer
+
+verdict = closure(verdict)
+```
+
+Read the encoding, not just the output. Turbulance has no `elif`, and two
+`given` branches in sequence do not exclude one another -- tutorial 6 relied on
+exactly that when it let four branches all fire into one motion.
+
+Here the early `return` is doing the work. Each rule is reached **only when
+every earlier cause has been excluded**, which is not a convenience: the paper
+calls the order *normative*, and it is what makes a verdict attributive. A step
+labelled `empty` is a step that was well-capability, was affordable, completed
+in time, and genuinely found nothing. You can act on that. You cannot act on
+`false`.
+
+Note which rule is which. **R2 is the capability check** -- the schema layer,
+deciding from declarations alone. **R1 is not**: a step is starved when its
+*input* fell short, which is a fact about what flowed through the plan, and
+no schema predicts it. Hold on to that; tutorial 9 is about R1.
+
+One caution about R2, paid off in tutorial 11: `unsupported` as written here
+is doing the work of two verdicts. It fires both when a source lacks a feature
+another source has, and when the feature is absent from the federation's
+vocabulary entirely -- and those license completely different next actions.
+Take the six as provisional until then.
+
+## One payload rule
+
+```turbulance
+funxn step_result(v, rows):
+    given v == "answer":
+        return {verdict: v, payload: rows, carries: true}
+    return {verdict: v, payload: [], carries: false}
+
+item ok = step_result("answer", ["EC 1.1.1.1", "EC 1.1.1.2"])
+item no = step_result("unsupported", ["EC 1.1.1.1"])
+
+print(ok.verdict, "carries", ok.carries, ok.payload)
+print(no.verdict, "carries", no.carries, no.payload)
+```
+
+```output
+answer carries true [EC 1.1.1.1, EC 1.1.1.2]
+unsupported carries false []
+
+step_result = closure(step_result)
+ok = {verdict: answer, payload: [EC 1.1.1.1, EC 1.1.1.2], carries: true}
+no = {verdict: unsupported, payload: [], carries: false}
+```
+
+Only `answer` carries a result. A verdict that shipped a partial payload
+alongside a failure would put back exactly the ambiguity the six verdicts exist
+to remove -- you would be back to inspecting the rows to guess what happened.
+
+## Honesty is assumed, never verified
+
+One limitation, stated here rather than buried, because it is inherited
+unchanged and it is not fixable at this layer.
+
+`brenda.capabilities` is a **declaration**. Nothing in the containment check
+verifies it. A source that declares `k_cat` and has no such field passes every
+check this tutorial performs, and fails later, somewhere else, for reasons that
+will look like a different problem.
+
+```turbulance
+item honest = {name: "src-a", capabilities: ["ec_number", "k_cat"]}
+item liar   = {name: "src-b", capabilities: ["ec_number", "k_cat"]}
+
+print("indistinguishable at the interface:",
+      contained(["k_cat"], honest.capabilities) == contained(["k_cat"], liar.capabilities))
+```
+
+```output
+indistinguishable at the interface: true
+
+honest = {name: src-a, capabilities: [ec_number, k_cat]}
+liar = {name: src-b, capabilities: [ec_number, k_cat]}
+```
+
+Over-declaration is **indistinguishable from correct declaration at the
+interface**. This is true of LinkML too, and of JSON Schema, SHACL and OWL: a
+schema is a promise about records, and the promise is checkable against records
+you have, not against the source that will send you the next one.
+
+So the containment check is a check on *declarations*, and it is honest about
+being one.
+
+## Where this stops
+
+Everything above is decided from `Cap(Src)` and the request. That is a real and
+useful layer, and for a large class of questions it is the whole job: a dataset
+catalogue listing, a metadata harvest, a FAIR-compliance check. For those,
+adopting LinkML unmodified is the right engineering choice and extending it
+would be cost for no gain.
+
+The next tutorial is about a question this layer cannot reach -- not because the
+schema is too small, but because of what kind of property the question is
+asking about.
+
+Next: [09-what-the-schema-cannot-say.ndo](09-what-the-schema-cannot-say.ndo).

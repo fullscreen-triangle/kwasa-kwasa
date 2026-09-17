@@ -176,7 +176,7 @@ print("never reached")
 ```
 
 ```output
-run: line 125: ensure failed
+run: line 157: ensure failed
 ```
 
 The line it names is 125 -- the `ensure` inside the funxn, not the call on line
