@@ -678,6 +678,42 @@ const INDEX: &str = r#"<!doctype html>
 mod tests {
     use super::*;
 
+    /// The editor highlights Turbulance in the browser, so the keyword list
+    /// lives in `page.html` as JavaScript while the real one lives in the
+    /// lexer. Two lists in two languages in two files drift silently: the
+    /// highlighter had `hypothesis` missing, which made a valid declaration
+    /// render as an undefined identifier. This pins them together, so adding
+    /// a keyword to the lexer fails here until the highlighter learns it too.
+    #[test]
+    fn the_highlighter_knows_every_keyword_the_lexer_does() {
+        // Pull the literal out of page.html rather than duplicating it.
+        let start = PAGE
+            .find("const KEYWORDS = new Set([")
+            .expect("page.html defines a KEYWORDS set");
+        let body = &PAGE[start..];
+        let body = &body[..body.find("]);").expect("the set is closed")];
+        let listed: Vec<&str> = body
+            .split('"')
+            .skip(1)
+            .step_by(2)
+            .collect();
+
+        for kw in ndombolo_core::lexer::KEYWORDS {
+            assert!(
+                listed.contains(kw),
+                "the highlighter in page.html is missing the keyword `{kw}`"
+            );
+        }
+        // And nothing invented: a word highlighted as a keyword that the lexer
+        // does not know would colour an ordinary identifier.
+        for w in &listed {
+            assert!(
+                ndombolo_core::lexer::KEYWORDS.contains(w),
+                "page.html highlights `{w}`, which is not a keyword"
+            );
+        }
+    }
+
     #[test]
     fn the_page_names_the_document() {
         let html = page(Path::new("/tmp/notes.ndo"));

@@ -224,12 +224,12 @@ function htmlToText(el) {
  * CodeMirror mode. Written as a tokenizer over a string rather than pulled
  * from a CDN: the highlight is one regex pass and a network dependency for it
  * would mean the page stops colouring when offline. */
-const KEYWORDS = new Set(["funxn","item","proposition","motion","support","contradict",
+const KEYWORDS = new Set(["funxn","item","proposition","hypothesis","motion","support","contradict",
   "inconclusive","within","given","considering","for","each","in","while","return",
   "ensure","allow","research","cause","point","resolution","resolve","cycle","drift",
   "flow","roll","until","settled","over","on","goal","metacognitive","import","from",
   "as","otherwise","with_confidence","and","or","not"]);
-const DECL = new Set(["funxn","proposition","motion","point","goal","metacognitive",
+const DECL = new Set(["funxn","proposition","hypothesis","motion","point","goal","metacognitive",
   "evidence","pattern","item","cause"]);
 const ATOMS = new Set(["true","false","none"]);
 
