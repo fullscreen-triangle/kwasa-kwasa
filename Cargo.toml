@@ -14,11 +14,17 @@
 
 [workspace]
   members = ["turbulance"]
-  # Temporarily commented out due to parsing issues: "turbulance"
+  # `turbulance` was once listed here as excluded "due to parsing issues"
+  # while this members line included it anyway, so the exclusion never took
+  # effect. It compiles; the note is gone rather than made accurate.
 
 [dependencies]
-  # Use the standalone Turbulance crate
-  # turbulance = { path = "./turbulance", version = "0.1.0" }  # Commented out due to parsing issues
+  # The standalone Turbulance crate. Still not a dependency, but no longer
+  # for the reason once given here: it compiles. This crate carries its own
+  # parallel copy of the language under `src/turbulance/`, and every `use`
+  # in `src/` points at that module, so linking the sibling crate would add
+  # a second Turbulance rather than supply the one already referenced.
+  # turbulance = { path = "./turbulance", version = "0.1.0" }
 
   # Core Reasoning Engine - The Thinking Substrate (commented out until available)
   # autobahn = { version = "0.1.0", path = "../autobahn", features = [
