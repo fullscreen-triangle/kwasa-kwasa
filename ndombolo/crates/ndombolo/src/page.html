@@ -120,6 +120,26 @@
     position: fixed; left: 1.5rem; bottom: 1.5rem; z-index: 30;
     font: 11px ui-sans-serif, system-ui, sans-serif; color: var(--muted);
   }
+
+  /* charts: a figure is an output, so it sits where an output sits and is
+     coloured like one. It is not a panel and has no chrome of its own. */
+  .chart { background: var(--out-bg); padding: 0.7rem 0.9rem 0.4rem; margin: 0; }
+  .chart svg { display: block; width: 100%; height: auto; }
+  .chart .ct {
+    font: 11px ui-sans-serif, system-ui, sans-serif; color: var(--muted);
+    margin: 0 0 0.4rem; text-transform: lowercase; letter-spacing: 0.02em;
+  }
+  .chart .axis text { font: 10px ui-sans-serif, system-ui, sans-serif; fill: var(--muted); }
+  .chart .axis path, .chart .axis line { stroke: var(--rule); }
+  .chart .alab { font: 10px ui-sans-serif, system-ui, sans-serif; fill: var(--muted); }
+  .chart .nlab { font: 10px ui-sans-serif, system-ui, sans-serif; }
+  .chart .verdict { font: 11px ui-sans-serif, system-ui, sans-serif; }
+  .tip {
+    position: absolute; z-index: 50; pointer-events: none; opacity: 0;
+    background: var(--cell-bg); border: 1px solid var(--rule); border-radius: 4px;
+    padding: 0.35rem 0.5rem; font: 11px/1.45 ui-sans-serif, system-ui, sans-serif;
+    color: var(--fg); transition: opacity 0.1s; max-width: 18rem;
+  }
 </style>
 </head>
 <body>
@@ -137,6 +157,8 @@
 
 <div id="status"></div>
 
+<script src="/d3.js"></script>
+<script src="/charts.js"></script>
 <script>
 "use strict";
 
@@ -245,13 +267,63 @@ async function render() {
   const doc = $("#doc");
   doc.textContent = "";
 
+  // The store is fetched once, and only when the document actually declares
+  // a chart. A notebook with no figures pays nothing for this.
+  const wantsCharts = data.blocks.some((b) => b.lang === "chart");
+  let store = null, storeErr = null, stoppedAt = null;
+  if (wantsCharts) {
+    try {
+      const s = await api("/api/store");
+      store = s.store;
+      stoppedAt = s.stopped_at;
+    } catch (e) { storeErr = e.message; }
+  }
+
   for (const b of data.blocks) {
     if (b.kind === "prose") doc.appendChild(proseBlock(b));
     else if (b.kind === "cell") doc.appendChild(cellBlock(b));
     else if (b.kind === "output") doc.appendChild(outputBlock(b));
+    else if (b.lang === "chart") doc.appendChild(chartBlock(b, store, storeErr, stoppedAt));
     else doc.appendChild(fenceBlock(b));
   }
   status("record " + RECORD);
+}
+
+/* A ```chart fence. The fence is JSON saying what to draw and which bindings
+ * to draw it from; the values come from the store, never from the fence, so a
+ * chart cannot state a number the run did not produce. Anything that goes
+ * wrong -- bad JSON, an unknown chart kind, a name nothing bound -- is
+ * reported in place, in the figure's own slot, rather than thrown away into
+ * the console. A blank rectangle where a figure should be is the one outcome
+ * worth ruling out. */
+function chartBlock(b, store, storeErr, stoppedAt) {
+  const host = document.createElement("div");
+
+  const fail = (msg) => {
+    const el = document.createElement("pre");
+    el.className = "output err";
+    el.textContent = "chart: " + msg;
+    host.appendChild(el);
+    return host;
+  };
+
+  let spec;
+  try { spec = JSON.parse(b.text); }
+  catch (e) { return fail("the fence is not valid JSON -- " + e.message); }
+
+  if (storeErr !== null) return fail("cannot read the store -- " + storeErr);
+  if (store === null) return fail("no store was fetched");
+
+  try {
+    drawChart(host, spec, store);
+  } catch (e) {
+    // A cell that failed explains a missing binding, so say so: the fix is
+    // upstream, and pointing at the chart would send the reader the wrong way.
+    const because = stoppedAt === null ? ""
+      : " (the replay stopped at cell " + stoppedAt + ")";
+    return fail(e.message + because);
+  }
+  return host;
 }
 
 function proseBlock(b) {

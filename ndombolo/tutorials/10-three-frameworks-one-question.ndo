@@ -198,6 +198,21 @@ composite = 0.82675
 `1 - (0.55)(0.70)(0.45) = 0.82675`. Against a declared target of 0.70 the step
 answers. Against 0.95 it refuses, and names the shortfall.
 
+Each band is one rung, and its height is the fraction of the gap *still open*
+that the rung closes -- not its power. That is the whole difference between the
+two composition rules, and it is easier to see than to argue about.
+
+```chart
+{"chart": "ladder", "title": "three rungs against a target of 0.95",
+ "powers": "rungs", "target": 0.95}
+```
+
+Compare the first and last bands. Both rungs are strong -- 0.45 and 0.55 -- but
+the first closes 0.45 and the last only 0.212, because by the time the last one
+applies there is less than a quarter of the gap left for it to work on. A rule
+that added powers would have credited it with the full 0.55, which is how the
+additive bound manages to overspend its way past zero.
+
 The refusal is **tight**: a ladder is refused if and only if executing its rungs
 would fall short. No ladder that could have reached its target is refused, and
 every refused ladder would have fallen short -- and this is decided from the

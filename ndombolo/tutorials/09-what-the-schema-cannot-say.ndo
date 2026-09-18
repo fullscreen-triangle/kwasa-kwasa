@@ -174,6 +174,41 @@ sigma_b = 0.1
 
 There it is.
 
+The two contact graphs, drawn from the same bindings the cell above computed.
+Edge thickness is weight; an edge at or below the floor is coloured as the
+liability it is.
+
+```chart
+{"chart": "graph", "title": "source A -- contact graph",
+ "edges": "source_a", "floor": "beta",
+ "order": ["v0", "e1", "e2", "x"], "height": 190}
+```
+
+```chart
+{"chart": "graph", "title": "source B -- contact graph",
+ "edges": "source_b", "floor": "beta",
+ "order": ["v0", "e1", "e2", "x"], "height": 190}
+```
+
+Source B's weakness is not any one number being small in isolation. It is that
+every route from `v0` to `x` has to cross the 0.1 edge, so a cut containing just
+that edge severs the whole graph cheaply. Separation is a minimum over cuts, and
+a minimum finds that.
+
+```chart
+{"chart": "cuts", "title": "source B -- every cut, and the minimum",
+ "edges": "source_b", "sides": "sides", "floor": "beta"}
+```
+
+Each bar is one of the four cuts enumerated earlier; sigma is the shortest. Run
+the same chart against source A and no bar comes near the floor -- there is no
+single cheap crossing to find.
+
+```chart
+{"chart": "cuts", "title": "source A -- every cut, and the minimum",
+ "edges": "source_a", "sides": "sides", "floor": "beta"}
+```
+
 Source A separates at **1.4**, well clear of the floor. Source B separates at
 **0.1**, below it. Ask both the same question and the first gives you an answer
 that means something; the second gives you an answer that is indistinguishable

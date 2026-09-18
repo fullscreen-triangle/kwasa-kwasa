@@ -65,6 +65,20 @@ impl Response {
         }
     }
 
+    /// A script compiled into the binary.
+    ///
+    /// No caching header is sent. These assets cannot change without a rebuild,
+    /// so caching them would be safe -- but a rebuild during development is
+    /// exactly when a stale copy would be most confusing, and the server only
+    /// ever serves one reader on loopback.
+    pub fn js(text: &str) -> Response {
+        Response {
+            status: 200,
+            content_type: "application/javascript; charset=utf-8",
+            body: text.as_bytes().to_vec(),
+        }
+    }
+
     pub fn html(text: &str) -> Response {
         Response {
             status: 200,

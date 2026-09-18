@@ -302,6 +302,11 @@ verdicts = [{name: unexpressed, stage: alphabet, fix: model it, or accept the li
 before_request = 3
 ```
 
+```chart
+{"chart": "stages", "title": "seven verdicts, by the stage that decides them",
+ "rows": "verdicts", "before_request": 3}
+```
+
 Three of seven are decided **before the network**, from declarations alone.
 That is what the shape layer buys, and it is now three distinct things rather
 than two, each naming a different repair.

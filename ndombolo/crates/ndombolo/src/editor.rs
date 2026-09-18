@@ -20,6 +20,7 @@
 //! | `POST /api/run`   | output blocks, and one deposit per cell run |
 //! | `POST /api/cell`  | one cell's source, from the user only |
 //! | `POST /api/ask`   | nothing -- it reads the record and answers |
+//! | `GET  /api/store` | nothing -- it replays into a fresh session |
 //!
 //! `/api/ask` returning prose that the page then posts to `/api/prose` is the
 //! no-backflow wall as a route table: the model's words reach the document
@@ -130,6 +131,16 @@ impl Editor {
             return Response::html(&self.index());
         }
 
+        // The compiled-in assets belong to no document, so they are answered
+        // before a document is resolved. Routing them after `doc_path` would
+        // make a script tag on the index page a 400, and would put a static
+        // asset needlessly on the far side of the traversal guard.
+        match (req.method.as_str(), req.path.as_str()) {
+            ("GET", "/d3.js") => return Response::js(D3),
+            ("GET", "/charts.js") => return Response::js(CHARTS),
+            _ => {}
+        }
+
         let path = match self.doc_path(req) {
             Ok(p) => p,
             Err(e) => return Response::error(400, &e),
@@ -139,6 +150,7 @@ impl Editor {
             ("GET", "/") => Response::html(&page(&path)),
             ("GET", "/api/doc") => self.get_doc(&path),
             ("GET", "/api/record") => self.get_record(&path),
+            ("GET", "/api/store") => self.get_store(&path),
             ("GET", "/api/settings") => Response::json(&json!({
                 "host": self.settings.host,
                 "model": self.settings.model,
@@ -228,6 +240,43 @@ impl Editor {
             })),
             Err(e) => Response::error(500, &format!("cannot read the record: {e}")),
         }
+    }
+
+    /// The store a clean replay of this document ends with.
+    ///
+    /// Charts are drawn from this rather than from the text of an output
+    /// block. An output block is a rendering -- numbers already rounded,
+    /// lists already flattened into one line -- so a chart that read it back
+    /// would be charting a rendering, and could differ from the run without
+    /// anything being wrong. Here every binding arrives as the value the
+    /// evaluator actually held.
+    ///
+    /// This writes nothing, deposits nothing, and touches neither the
+    /// document nor the record. It is a GET for that reason: replaying is
+    /// how the store is obtained, but the replay is not a run of the
+    /// notebook, and nothing downstream may treat it as one. A cell that
+    /// fails stops the replay exactly as it stops a run, and the names bound
+    /// before it are still returned -- a chart below a failing cell should
+    /// say what is missing, not show nothing.
+    fn get_store(&self, path: &Path) -> Response {
+        let doc = match self.load(path) {
+            Ok(d) => d,
+            Err(e) => return Response::error(500, &e),
+        };
+        let mut session = Session::new();
+        let mut stopped_at: Option<usize> = None;
+        for (n, &block) in doc.cell_indices().iter().enumerate() {
+            let text = doc.cell_text(block).unwrap_or_default();
+            if !session.run_cell(n, doc.line_of(block) + 1, &text).ok {
+                stopped_at = Some(n);
+                break;
+            }
+        }
+        let mut store = serde_json::Map::new();
+        for (name, value) in session.store() {
+            store.insert(name, value);
+        }
+        Response::json(&json!({ "store": store, "stopped_at": stopped_at }))
     }
 
     // -- writing -----------------------------------------------------------
@@ -447,14 +496,14 @@ impl Editor {
     fn index(&self) -> String {
         let mut rows = String::new();
         for name in self.documents() {
-            let count = Record::open(&self.root.join(&name))
-                .map(|r| r.count())
-                .unwrap_or(0);
+            let path = self.root.join(&name);
+            let count = Record::open(&path).map(|r| r.count()).unwrap_or(0);
+            let title = title_of(&path).unwrap_or_else(|| name.clone());
             rows.push_str(&format!(
                 "<li><a href=\"/?doc={}\">{}</a><span>record {}</span></li>
 ",
                 percent_encode(&name),
-                escape(&name),
+                escape(&title),
                 count
             ));
         }
@@ -465,6 +514,31 @@ impl Editor {
             .replace("{{ROOT}}", &escape(&self.root.display().to_string()))
             .replace("{{ROWS}}", &rows)
     }
+}
+
+/// What a document calls itself: the text of its first `# ` heading.
+///
+/// The index lists these rather than filenames. A filename is an identifier
+/// chosen so the documents sort; the heading is the sentence the author wrote
+/// to say what the document is about, and a reader picking one from a list
+/// wants the second. Falls back to the filename when a document has no
+/// heading, so an unparseable or headless file is still reachable.
+///
+/// This reads only the first few lines. The index is drawn on every visit to
+/// `/`, and a directory of large documents should not be read end to end to
+/// render a list of links.
+fn title_of(path: &Path) -> Option<String> {
+    use std::io::{BufRead, BufReader};
+    let file = std::fs::File::open(path).ok()?;
+    for line in BufReader::new(file).lines().take(20).map_while(Result::ok) {
+        if let Some(rest) = line.strip_prefix("# ") {
+            let t = rest.trim();
+            if !t.is_empty() {
+                return Some(t.to_string());
+            }
+        }
+    }
+    None
 }
 
 /// Whether `name` is a plain document name in the served directory.
@@ -536,6 +610,17 @@ fn escape(s: &str) -> String {
 
 const PAGE: &str = include_str!("page.html");
 
+/// d3 v7.9.0, UMD build, vendored rather than fetched. The zero-dependency
+/// policy is about the *build*: no npm, no CDN, no network at page load. A
+/// compiled-in asset served from the same loopback origin breaks none of that,
+/// and it is the same version the enzymology notebook draws its charts with.
+const D3: &str = include_str!("vendor/d3.min.js");
+
+/// The chart renderings, kept beside the page rather than inside it. They are
+/// the only part of the front end that is about a particular kind of figure,
+/// and a document that declares no chart never calls into them.
+const CHARTS: &str = include_str!("charts.js");
+
 /// The index, inline rather than a second file: it is a list of links.
 ///
 /// The palette is the one `page.html` uses, repeated rather than shared because
@@ -570,6 +655,7 @@ const INDEX: &str = r#"<!doctype html>
   a:hover { text-decoration: underline; }
   li span { color: var(--muted); font-size: 0.8rem; white-space: nowrap; }
   footer { margin-top: 2.5rem; color: var(--muted); font-size: 0.8rem; }
+  footer p { margin: 0 0 0.6rem; }
 </style>
 </head>
 <body>
@@ -577,7 +663,13 @@ const INDEX: &str = r#"<!doctype html>
   <p class="root">{{ROOT}}</p>
   <ul>
 {{ROWS}}  </ul>
-  <footer>Open one to read it. Cells run in place with ctrl-enter.</footer>
+  <footer>
+    <p>Open one to read it. Cells run in place with ctrl-enter, and each
+    document links to the next.</p>
+    <p>1 to 7 run an experiment: intent, entities, protocol, provenance,
+    observation, acceptance. 8 to 11 query what is already known across
+    heterogeneous sources, and are the ones with figures in them.</p>
+  </footer>
 </body>
 </html>
 "#;
@@ -630,19 +722,54 @@ mod tests {
         let dir = std::env::temp_dir().join("ndombolo-index-test");
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        for name in ["02-second.ndo", "01-first.ndo", "notes.txt"] {
-            std::fs::write(dir.join(name), "# x
+        std::fs::write(dir.join("02-second.ndo"), "# The second one
 ").unwrap();
-        }
+        std::fs::write(dir.join("01-first.ndo"), "# The first one
+").unwrap();
+        std::fs::write(dir.join("notes.txt"), "# Not a document
+").unwrap();
         let ed = Editor::dir(&dir, "m", "h");
         assert_eq!(ed.documents(), vec!["01-first.ndo", "02-second.ndo"]);
 
         let html = ed.index();
-        let first = html.find("01-first.ndo").unwrap();
-        let second = html.find("02-second.ndo").unwrap();
+        let first = html.find("The first one").unwrap();
+        let second = html.find("The second one").unwrap();
         assert!(first < second, "filename order is the reading order");
+        // The filename orders the list; the heading is what is shown.
+        assert!(html.contains("href=\"/?doc=01-first.ndo\""));
         // A non-document in the directory is not listed.
         assert!(!html.contains("notes.txt"));
+        assert!(!html.contains("Not a document"));
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn a_document_with_no_heading_is_still_listed() {
+        // Falling back to the filename matters: a document that fails to parse,
+        // or has not been given a heading yet, must stay reachable from the
+        // index rather than vanishing from it.
+        let dir = std::env::temp_dir().join("ndombolo-untitled-test");
+        let _ = std::fs::remove_dir_all(&dir);
+        std::fs::create_dir_all(&dir).unwrap();
+        std::fs::write(dir.join("draft.ndo"), "no heading here
+").unwrap();
+        let html = Editor::dir(&dir, "m", "h").index();
+        assert!(html.contains(">draft.ndo</a>"));
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn a_heading_with_markup_in_it_is_escaped() {
+        // The heading is author-written text placed into HTML, so it is escaped
+        // for the same reason the filename is.
+        let dir = std::env::temp_dir().join("ndombolo-title-markup-test");
+        let _ = std::fs::remove_dir_all(&dir);
+        std::fs::create_dir_all(&dir).unwrap();
+        std::fs::write(dir.join("x.ndo"), "# <script>alert(1)</script>
+").unwrap();
+        let html = Editor::dir(&dir, "m", "h").index();
+        assert!(!html.contains("<script>alert"));
+        assert!(html.contains("&lt;script&gt;"));
         let _ = std::fs::remove_dir_all(&dir);
     }
 
@@ -657,5 +784,69 @@ mod tests {
         let html = page(Path::new("/tmp/<script>.ndo"));
         assert!(!html.contains("<script>.ndo"));
         assert!(html.contains("&lt;script&gt;.ndo"));
+    }
+
+    #[test]
+    fn the_store_route_writes_nothing() {
+        // `get_store` replays the document to obtain its bindings, and a replay
+        // is the same work a run does. The difference that matters is that this
+        // one leaves no trace: charts are drawn on every render, so if this
+        // deposited, merely looking at a document would advance its record and
+        // the record would stop meaning "cells that were run".
+        let dir = std::env::temp_dir().join("ndombolo-store-test");
+        let _ = std::fs::remove_dir_all(&dir);
+        std::fs::create_dir_all(&dir).unwrap();
+        let doc = dir.join("s.ndo");
+        std::fs::write(&doc, "# T
+
+```turbulance
+item a = [1, 2]
+```
+").unwrap();
+        let before = std::fs::read_to_string(&doc).unwrap();
+
+        let ed = Editor::dir(&dir, "m", "h");
+        let res = ed.get_store(&doc);
+        assert_eq!(res.status, 200);
+
+        let body: Json = serde_json::from_slice(&res.body).unwrap();
+        assert_eq!(body["store"]["a"], json!([1, 2]));
+        assert!(body["stopped_at"].is_null());
+
+        // The document is untouched and no record was created.
+        assert_eq!(std::fs::read_to_string(&doc).unwrap(), before);
+        assert!(!dir.join("s.ndo.record").exists());
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn a_failing_cell_stops_the_replay_and_says_where() {
+        // A chart under a failing cell must be able to say what is missing, so
+        // the names bound before the failure are still returned.
+        let dir = std::env::temp_dir().join("ndombolo-store-fail-test");
+        let _ = std::fs::remove_dir_all(&dir);
+        std::fs::create_dir_all(&dir).unwrap();
+        let doc = dir.join("f.ndo");
+        std::fs::write(
+            &doc,
+            "# T
+
+```turbulance
+item a = 1
+```
+
+```turbulance
+item b = nope
+```
+",
+        )
+        .unwrap();
+
+        let ed = Editor::dir(&dir, "m", "h");
+        let body: Json = serde_json::from_slice(&ed.get_store(&doc).body).unwrap();
+        assert_eq!(body["stopped_at"], json!(1));
+        assert_eq!(body["store"]["a"], json!(1));
+        assert!(body["store"].get("b").is_none());
+        let _ = std::fs::remove_dir_all(&dir);
     }
 }

@@ -19,3 +19,13 @@
 {"record":19,"record_before":18,"cell":7,"events":17,"items_touched":["all_settled"],"completed":true,"at":1789683892}
 {"record":20,"record_before":19,"cell":8,"events":60,"items_touched":["spin","remove_supernatant","store","stored","waste"],"completed":true,"at":1789683892}
 {"record":21,"record_before":20,"cell":9,"events":36,"items_touched":["reached_count","reached_fraction","AllReplicatesGrew","PrecultureWasSound","InductionWasUniform"],"completed":true,"at":1789683892}
+{"record":22,"record_before":21,"cell":0,"events":12,"items_touched":["experiment","OD_threshold","culture_temperature","culture_shaking","expression_shaking","transfer_volume","inducer_volume","minimum_valid_fraction"],"completed":true,"at":1789687929}
+{"record":23,"record_before":22,"cell":1,"events":31,"items_touched":["precultures","replicate_ids","wells","slot"],"completed":true,"at":1789687929}
+{"record":24,"record_before":23,"cell":2,"events":24,"items_touched":["barcode","grow","prepared","idx"],"completed":true,"at":1789687929}
+{"record":25,"record_before":24,"cell":3,"events":35,"items_touched":["blanks","blank_total","blank_level","preculture_raw","preculture_od","valid","qc_fraction"],"completed":true,"at":1789687929}
+{"record":26,"record_before":25,"cell":4,"events":19,"items_touched":["filled","dispensed"],"completed":true,"at":1789687929}
+{"record":27,"record_before":26,"cell":5,"events":98,"items_touched":["grow_until","starts","grown","k"],"completed":true,"at":1789687929}
+{"record":28,"record_before":27,"cell":6,"events":52,"items_touched":["induced","induced_count"],"completed":true,"at":1789687929}
+{"record":29,"record_before":28,"cell":7,"events":17,"items_touched":["all_settled"],"completed":true,"at":1789687929}
+{"record":30,"record_before":29,"cell":8,"events":60,"items_touched":["spin","remove_supernatant","store","stored","waste"],"completed":true,"at":1789687929}
+{"record":31,"record_before":30,"cell":9,"events":36,"items_touched":["reached_count","reached_fraction","AllReplicatesGrew","PrecultureWasSound","InductionWasUniform"],"completed":true,"at":1789687929}
