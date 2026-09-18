@@ -7,11 +7,17 @@ use std::collections::HashMap;
 /// Chart types for visualization
 #[derive(Debug)]
 pub enum ChartType {
+    /// Points joined in order: a series against a continuous axis.
     Line,
+    /// Unjoined points: two variables, no ordering implied.
     Scatter,
+    /// One bar per category.
     Bar,
+    /// Counts per bin: the distribution of a single variable.
     Histogram,
+    /// A matrix of values rendered as colour.
     Heatmap,
+    /// Intensity against m/z or wavelength.
     Spectrum,
 }
 

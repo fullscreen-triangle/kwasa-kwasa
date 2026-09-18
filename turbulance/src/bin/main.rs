@@ -134,9 +134,10 @@ fn main() {
         })
         .init();
 
+    let verbose = cli.verbose;
     if let Err(e) = run_command(cli) {
         eprintln!("{} {}", "Error:".red().bold(), e.user_message());
-        if cli.verbose {
+        if verbose {
             eprintln!("\n{} {:?}", "Debug info:".yellow(), e);
         }
         std::process::exit(1);
@@ -211,7 +212,8 @@ fn validate_files(files: &[PathBuf], semantic: bool, report: bool) -> Result<()>
             .map_err(|e| TurbulanceError::IoError { message: e.to_string() })?;
         
         match turbulance::validate(&source) {
-            Ok(is_valid) => {
+            Ok(result) => {
+                let is_valid = result.is_valid();
                 if is_valid {
                     println!("  {} Valid syntax", "✓".green());
                     
@@ -221,7 +223,13 @@ fn validate_files(files: &[PathBuf], semantic: bool, report: bool) -> Result<()>
                     }
                 } else {
                     println!("  {} Invalid syntax", "✗".red());
+                    for error in result.errors() {
+                        println!("      {}", error);
+                    }
                     all_valid = false;
+                }
+                for warning in result.warnings() {
+                    println!("  {} {}", "⚠".yellow(), warning);
                 }
                 
                 validation_results.push((file.clone(), is_valid));
@@ -470,7 +478,7 @@ fn show_info(detailed: bool) -> Result<()> {
         println!("\n{}", "System Information".bold());
         println!("Platform: {}", std::env::consts::OS);
         println!("Architecture: {}", std::env::consts::ARCH);
-        println!("Rust version: {}", env!("RUSTC_VERSION", "unknown"));
+        println!("Rust version: {}", option_env!("RUSTC_VERSION").unwrap_or("unknown"));
         
         println!("\n{}", "Features Enabled".bold());
         #[cfg(feature = "wasm")]

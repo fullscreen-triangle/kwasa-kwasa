@@ -7,230 +7,287 @@ use crate::error::{TurbulanceError, Result};
 /// Token types in the Turbulance language
 #[derive(Logos, Debug, Clone, Hash, Eq, PartialEq)]
 pub enum TokenKind {
-    // Keywords - Scientific constructs
+    /// The `funxn` token.
     #[token("funxn")]
     FunctionDecl,
 
+    /// The `project` token.
     #[token("project")]
     ProjectDecl,
 
+    /// The `proposition` token.
     #[token("proposition")]
     Proposition,
 
+    /// The `motion` token.
     #[token("motion")]
     Motion,
 
+    /// The `hypothesis` token.
     #[token("hypothesis")]
     Hypothesis,
 
+    /// The `experiment` token.
     #[token("experiment")]
     Experiment,
 
+    /// The `analysis` token.
     #[token("analysis")]
     Analysis,
 
-    // Variable and data declarations
+    /// The `item` token.
     #[token("item")]
     Item,
 
+    /// The `var` token.
     #[token("var")]
     Var,
 
+    /// The `point` token.
     #[token("point")]
     Point,
 
+    /// The `resolution` token.
     #[token("resolution")]
     Resolution,
 
-    // Control flow
+    /// The `given` token.
     #[token("given")]
     Given,
 
+    /// The `within` token.
     #[token("within")]
     Within,
 
+    /// The `considering` token.
     #[token("considering")]
     Considering,
 
+    /// The `ensure` token.
     #[token("ensure")]
     Ensure,
 
+    /// The `alternatively` token.
     #[token("alternatively")]
     Alternatively,
 
+    /// The `if` token.
     #[token("if")]
     If,
 
+    /// The `else` token.
     #[token("else")]
     Else,
 
+    /// The `for` token.
     #[token("for")]
     For,
 
+    /// The `each` token.
     #[token("each")]
     Each,
 
+    /// The `in` token.
     #[token("in")]
     In,
 
+    /// The `all` token.
     #[token("all")]
     All,
 
+    /// The `these` token.
     #[token("these")]
     These,
 
+    /// The `return` token.
     #[token("return")]
     Return,
 
-    // Scientific operations
+    /// The `research` token.
     #[token("research")]
     Research,
 
+    /// The `apply` token.
     #[token("apply")]
     Apply,
 
+    /// The `to_all` token.
     #[token("to_all")]
     ToAll,
 
+    /// The `sources` token.
     #[token("sources")]
     SourcesDecl,
 
+    /// The `cause` token.
     #[token("cause")]
     Cause,
 
+    /// The `allow` token.
     #[token("allow")]
     Allow,
 
-    // Literals
+    /// The `true` token.
     #[token("true")]
     True,
 
+    /// The `false` token.
     #[token("false")]
     False,
 
+    /// The `null` token.
     #[token("null")]
     Null,
 
-    // Operators - Arithmetic
+    /// The `+` token.
     #[token("+")]
     Plus,
 
+    /// The `-` token.
     #[token("-")]
     Minus,
 
+    /// The `*` token.
     #[token("*")]
     Multiply,
 
+    /// The `/` token.
     #[token("/")]
     Divide,
 
+    /// The `%` token.
     #[token("%")]
     Modulo,
 
+    /// The `**` token.
     #[token("**")]
     Power,
 
-    // Operators - Logical
+    /// The `&&` token.
     #[token("&&")]
     And,
 
+    /// The `||` token.
     #[token("||")]
     Or,
 
+    /// The `!` token.
     #[token("!")]
     Not,
 
-    // Operators - Comparison
+    /// The `==` token.
     #[token("==")]
     Equal,
 
+    /// The `!=` token.
     #[token("!=")]
     NotEqual,
 
+    /// The `<` token.
     #[token("<")]
     LessThan,
 
+    /// The `>` token.
     #[token(">")]
     GreaterThan,
 
+    /// The `<=` token.
     #[token("<=")]
     LessThanEqual,
 
+    /// The `>=` token.
     #[token(">=")]
     GreaterThanEqual,
 
-    // Assignment and flow
+    /// The `=` token.
     #[token("=")]
     Assign,
 
+    /// The `=>` token.
     #[token("=>")]
     Arrow,
 
+    /// The `|` token.
     #[token("|")]
     Pipe,
     
+    /// The `|>` token.
     #[token("|>")]
     PipeForward,
 
-    // Delimiters
+    /// The `(` token.
     #[token("(")]
     LeftParen,
 
+    /// The `)` token.
     #[token(")")]
     RightParen,
 
+    /// The `{` token.
     #[token("{")]
     LeftBrace,
 
+    /// The `}` token.
     #[token("}")]
     RightBrace,
 
+    /// The `[` token.
     #[token("[")]
     LeftBracket,
 
+    /// The `]` token.
     #[token("]")]
     RightBracket,
 
+    /// The `,` token.
     #[token(",")]
     Comma,
 
+    /// The `:` token.
     #[token(":")]
     Colon,
 
+    /// The `;` token.
     #[token(";")]
     Semicolon,
 
+    /// The `.` token.
     #[token(".")]
     Dot,
 
+    /// The `..` token.
     #[token("..")]
     Range,
 
+    /// The `...` token.
     #[token("...")]
     Spread,
 
-    // Complex tokens
+    /// A name: a letter or underscore, then letters, digits or underscores.
     #[regex(r"[a-zA-Z_][a-zA-Z0-9_]*")]
     Identifier,
 
+    /// A double-quoted string, with backslash escapes.
     #[regex(r#""([^"\\]|\\.)*""#)]
     StringLiteral,
 
+    /// A decimal number, optionally with a fraction and an exponent.
     #[regex(r"[0-9]+(\.[0-9]+)?([eE][+-]?[0-9]+)?")]
     NumberLiteral,
 
-    // Comments and whitespace
+    /// A `//` line comment or a `/* */` block comment. Skipped.
     #[regex(r"//[^\n]*", logos::skip)]
     #[regex(r"/\*([^*]|\*[^/])*\*/", logos::skip)]
     Comment,
 
+    /// A run of spaces, tabs or newlines. Skipped.
     #[regex(r"[ \t\n\r]+", logos::skip)]
     Whitespace,
 
-    // End of file
+    /// End of input.
     Eof,
 
-    // Error token
+    /// A character sequence that matches no other rule.
     Error,
 }
 

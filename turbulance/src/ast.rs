@@ -5,7 +5,11 @@ use std::collections::HashMap;
 use std::fmt;
 
 /// Position in source code
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+///
+/// `Copy`: three `usize` fields. Spans are threaded through every parser
+/// helper by reference, and without `Copy` each read of `span.start` is a
+/// move out of a shared reference.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Position {
     /// Line number (1-based)
     pub line: usize,
@@ -27,7 +31,7 @@ impl Position {
 }
 
 /// Span representing a range in source code
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Span {
     /// Start position
     pub start: Position,
@@ -45,183 +49,276 @@ impl Span {
 /// AST node representing any language construct
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub enum Node {
-    // Literals
+    /// A numeric literal. All Turbulance numbers are `f64`.
     Number {
+        /// The parsed value.
         value: f64,
+        /// The source range this node covers.
         span: Span,
     },
+    /// A string literal, already unescaped.
     String {
+        /// The literal's contents.
         value: String,
+        /// The source range this node covers.
         span: Span,
     },
+    /// A `true` or `false` literal.
     Boolean {
+        /// Which of the two.
         value: bool,
+        /// The source range this node covers.
         span: Span,
     },
+    /// The null literal.
     Null {
+        /// The source range this node covers.
         span: Span,
     },
+    /// A bare name, resolved against the environment at evaluation.
     Identifier {
+        /// The name as written.
         name: String,
+        /// The source range this node covers.
         span: Span,
     },
 
-    // Collections
+    /// A list literal, `[a, b, c]`.
     Array {
+        /// The elements, in source order.
         elements: Vec<Node>,
+        /// The source range this node covers.
         span: Span,
     },
+    /// A map literal, `{k: v}`.
     Object {
+        /// The fields, keyed by name.
         fields: HashMap<String, Node>,
+        /// The source range this node covers.
         span: Span,
     },
 
-    // Binary operations
+    /// An infix operation.
     BinaryOp {
+        /// The left operand.
         left: Box<Node>,
+        /// Which operation.
         operator: BinaryOp,
+        /// The right operand.
         right: Box<Node>,
+        /// The source range this node covers.
         span: Span,
     },
 
-    // Unary operations
+    /// A prefix operation.
     UnaryOp {
+        /// Which operation.
         operator: UnaryOp,
+        /// The single operand.
         operand: Box<Node>,
+        /// The source range this node covers.
         span: Span,
     },
 
-    // Function call
+    /// A function call, `callee(arguments)`.
     Call {
+        /// The expression being called.
         callee: Box<Node>,
+        /// The arguments, in source order.
         arguments: Vec<Node>,
+        /// The source range this node covers.
         span: Span,
     },
 
-    // Member access
+    /// Property access, `object.property`.
     Member {
+        /// The expression on the left of the dot.
         object: Box<Node>,
+        /// The property name.
         property: String,
+        /// The source range this node covers.
         span: Span,
     },
 
-    // Variable assignment
+    /// Assignment to an existing binding.
     Assignment {
+        /// The place being assigned to.
         target: Box<Node>,
+        /// The expression producing the new value.
         value: Box<Node>,
+        /// The source range this node covers.
         span: Span,
     },
 
-    // Function declaration
+    /// A `funxn` declaration.
     FunctionDecl {
+        /// The function's name.
         name: String,
+        /// Its parameters, in order.
         parameters: Vec<Parameter>,
+        /// The body, a block or a single expression.
         body: Box<Node>,
+        /// The source range this node covers.
         span: Span,
     },
 
-    // Project declaration
+    /// A `project` declaration.
     ProjectDecl {
+        /// The project's name.
         name: String,
+        /// Attributes given in the parentheses after the name.
         attributes: HashMap<String, Node>,
+        /// The project body.
         body: Box<Node>,
+        /// The source range this node covers.
         span: Span,
     },
 
-    // Proposition
+    /// A `proposition`: a named claim together with the motions that argue it.
     Proposition {
+        /// The proposition's name.
         name: String,
+        /// Its motions.
         motions: Vec<Motion>,
+        /// Statements in the proposition's body.
         body: Box<Node>,
+        /// The source range this node covers.
         span: Span,
     },
 
-    // Sources declaration
+    /// A `sources` block, declaring where evidence comes from.
     SourcesDecl {
+        /// The declared sources.
         sources: Vec<Source>,
+        /// The source range this node covers.
         span: Span,
     },
 
-    // Control flow
+    /// An `if` conditional.
     If {
+        /// The test.
         condition: Box<Node>,
+        /// Taken when the test holds.
         then_branch: Box<Node>,
+        /// Taken otherwise, when one was written.
         else_branch: Option<Box<Node>>,
+        /// The source range this node covers.
         span: Span,
     },
 
+    /// A `given` conditional. Turbulance's own spelling of a conditional; there is no `elif`, so ordered dispatch is written as early `return` inside successive `given`s.
     Given {
+        /// The test.
         condition: Box<Node>,
+        /// Taken when the test holds.
         then_branch: Box<Node>,
+        /// Taken otherwise, when one was written.
         else_branch: Option<Box<Node>>,
+        /// The source range this node covers.
         span: Span,
     },
 
+    /// A `within` statement, scoping a body to a target.
     Within {
+        /// What the body is scoped to.
         target: Box<Node>,
+        /// The scoped statements.
         body: Box<Node>,
+        /// The source range this node covers.
         span: Span,
     },
 
+    /// A `considering` statement, iterating a collection.
     Considering {
+        /// The collection iterated over.
         items: Box<Node>,
+        /// The body run per item.
         body: Box<Node>,
+        /// The source range this node covers.
         span: Span,
     },
 
+    /// An `ensure` assertion. Evaluation fails if the condition does not hold.
     Ensure {
+        /// The condition that must hold.
         condition: Box<Node>,
+        /// The source range this node covers.
         span: Span,
     },
 
-    // Statements
+    /// A `return`, with or without a value.
     Return {
+        /// The returned expression, absent for a bare `return`.
         value: Option<Box<Node>>,
+        /// The source range this node covers.
         span: Span,
     },
 
+    /// A `research` statement.
     Research {
+        /// The query expression.
         query: Box<Node>,
+        /// The source range this node covers.
         span: Span,
     },
 
+    /// A sequence of statements sharing a scope.
     Block {
+        /// The statements, in order.
         statements: Vec<Node>,
+        /// The source range this node covers.
         span: Span,
     },
 
-    // Expression statement
+    /// An expression evaluated for its effect, its value discarded.
     ExpressionStatement {
+        /// The expression.
         expression: Box<Node>,
+        /// The source range this node covers.
         span: Span,
     },
 
-    // Program root
+    /// The root of a parsed source file.
     Program {
+        /// The top-level statements, in order.
         statements: Vec<Node>,
+        /// The source range this node covers.
         span: Span,
     },
 
-    // Text operations (semantic)
+    /// A semantic operation applied to text.
     TextOperation {
+        /// Which operation.
         operation: TextOp,
+        /// The text operated on.
         target: Box<Node>,
+        /// Any further arguments.
         arguments: Vec<Node>,
+        /// The source range this node covers.
         span: Span,
     },
 
-    // Points and resolutions
+    /// A `point` declaration: a named bundle of properties.
     Point {
+        /// The point's name.
         name: String,
+        /// Its properties, keyed by name.
         properties: HashMap<String, Node>,
+        /// The source range this node covers.
         span: Span,
     },
 
+    /// A `resolution` declaration.
     Resolution {
+        /// The resolution's name.
         name: String,
+        /// Its parameters, in order.
         parameters: Vec<Parameter>,
+        /// The body.
         body: Box<Node>,
+        /// The declared return type, when one was written.
         return_type: Option<String>,
+        /// The source range this node covers.
         span: Span,
     },
 }
@@ -229,58 +326,87 @@ pub enum Node {
 /// Binary operators
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum BinaryOp {
-    // Arithmetic
+    /// Arithmetic `+`.
     Add,
+    /// Arithmetic `-`.
     Subtract,
+    /// Arithmetic `*`.
     Multiply,
+    /// Arithmetic `/`. Always float division; there is no integer division.
     Divide,
+    /// Arithmetic `%`.
     Modulo,
+    /// Exponentiation.
     Power,
 
-    // Comparison
+    /// Equality, `==`.
     Equal,
+    /// Inequality, `!=`.
     NotEqual,
+    /// Ordering, `<`.
     LessThan,
+    /// Ordering, `>`.
     GreaterThan,
+    /// Ordering, `<=`.
     LessThanEqual,
+    /// Ordering, `>=`.
     GreaterThanEqual,
 
-    // Logical
+    /// Logical conjunction.
     And,
+    /// Logical disjunction.
     Or,
 
-    // Semantic operations
+    /// `|`: pipe the left value into the right.
     Pipe,
+    /// `|>`: pipe forward.
     PipeForward,
+    /// `=>`: arrow, used where a mapping rather than a value is meant.
     Arrow,
 
-    // Scientific operations
-    SemanticAdd,      // Meaningful combination
-    SemanticSubtract, // Removal of elements
-    SemanticMultiply, // Amplification/repetition
-    SemanticDivide,   // Extraction/filtering
+    /// Semantic `+`: meaningful combination rather than numeric addition.
+    SemanticAdd,
+    /// Semantic `-`: removal of elements.
+    SemanticSubtract,
+    /// Semantic `*`: amplification or repetition.
+    SemanticMultiply,
+    /// Semantic `/`: extraction or filtering.
+    SemanticDivide,
 }
 
 /// Unary operators
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum UnaryOp {
+    /// Arithmetic negation, prefix `-`.
     Negate,
+    /// Logical negation, `not`.
     Not,
+    /// Prefix `+`, which leaves its operand unchanged.
     Plus,
 }
 
 /// Text operations for semantic processing
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum TextOp {
+    /// Reduce to plainer language.
     Simplify,
+    /// Draw out what was stated compactly.
     Expand,
+    /// Raise the register toward formal prose.
     Formalize,
+    /// Lower the register toward informal prose.
     Informalize,
+    /// Render in another language.
     Translate,
+    /// Shorten while keeping the substance.
     Summarize,
+    /// Pull out a named part.
     Extract,
+    /// Restate differently without changing what is said.
     Rewrite,
+    /// Produce a reading of the text.
     Understand,
+    /// Resolve what the text leaves ambiguous.
     Clarify,
 }
 

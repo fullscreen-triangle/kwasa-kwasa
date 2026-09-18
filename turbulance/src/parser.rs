@@ -83,7 +83,7 @@ impl Parser {
         self.consume(&TokenKind::Colon, "Expected ':' after function signature")?;
         let body = self.block_or_expression()?;
 
-        let span = self.span_from_to(&start_pos, body.span());
+        let span = self.span_from_token_to_node(&start_pos, &body);
 
         Ok(Node::FunctionDecl {
             name,
@@ -113,7 +113,7 @@ impl Parser {
         self.consume(&TokenKind::Colon, "Expected ':' after project declaration")?;
         let body = self.block_or_expression()?;
 
-        let span = self.span_from_to(&start_pos, body.span());
+        let span = self.span_from_token_to_node(&start_pos, &body);
 
         Ok(Node::ProjectDecl {
             name,
@@ -233,7 +233,7 @@ impl Parser {
         self.consume(&TokenKind::Colon, "Expected ':' after resolution signature")?;
         let body = self.block_or_expression()?;
 
-        let span = self.span_from_to(&start_pos, body.span());
+        let span = self.span_from_token_to_node(&start_pos, &body);
 
         Ok(Node::Resolution {
             name,
@@ -333,7 +333,7 @@ impl Parser {
         self.consume(&TokenKind::Colon, "Expected ':' after within target")?;
         let body = self.block_or_expression()?;
 
-        let span = self.span_from_to(&start_pos, body.span());
+        let span = self.span_from_token_to_node(&start_pos, &body);
 
         Ok(Node::Within {
             target: Box::new(target),
@@ -350,7 +350,7 @@ impl Parser {
         self.consume(&TokenKind::Colon, "Expected ':' after considering items")?;
         let body = self.block_or_expression()?;
 
-        let span = self.span_from_to(&start_pos, body.span());
+        let span = self.span_from_token_to_node(&start_pos, &body);
 
         Ok(Node::Considering {
             items: Box::new(items),
@@ -364,7 +364,7 @@ impl Parser {
         let start_pos = self.previous().clone();
 
         let condition = self.expression()?;
-        let span = self.span_from_to(&start_pos, condition.span());
+        let span = self.span_from_token_to_node(&start_pos, &condition);
 
         Ok(Node::Ensure {
             condition: Box::new(condition),
@@ -377,7 +377,7 @@ impl Parser {
         let start_pos = self.previous().clone();
 
         let query = self.expression()?;
-        let span = self.span_from_to(&start_pos, query.span());
+        let span = self.span_from_token_to_node(&start_pos, &query);
 
         Ok(Node::Research {
             query: Box::new(query),
@@ -393,7 +393,7 @@ impl Parser {
         self.consume(&TokenKind::Assign, "Expected '=' in assignment")?;
         let value = self.expression()?;
 
-        let span = self.span_from_to(&start_pos, value.span());
+        let span = self.span_from_token_to_node(&start_pos, &value);
 
         Ok(Node::Assignment {
             target: Box::new(target),
@@ -429,7 +429,7 @@ impl Parser {
                 _ => unreachable!(),
             };
             let right = self.logical_or()?;
-            let span = self.span_from_to(expr.span(), right.span());
+            let span = self.span_from_spans(expr.span(), right.span());
             expr = Node::binary_op(expr, operator, right, span);
         }
 
@@ -442,7 +442,7 @@ impl Parser {
 
         while self.match_token(&TokenKind::Or) {
             let right = self.logical_and()?;
-            let span = self.span_from_to(expr.span(), right.span());
+            let span = self.span_from_spans(expr.span(), right.span());
             expr = Node::binary_op(expr, BinaryOp::Or, right, span);
         }
 
@@ -455,7 +455,7 @@ impl Parser {
 
         while self.match_token(&TokenKind::And) {
             let right = self.equality()?;
-            let span = self.span_from_to(expr.span(), right.span());
+            let span = self.span_from_spans(expr.span(), right.span());
             expr = Node::binary_op(expr, BinaryOp::And, right, span);
         }
 
@@ -473,7 +473,7 @@ impl Parser {
                 _ => unreachable!(),
             };
             let right = self.comparison()?;
-            let span = self.span_from_to(expr.span(), right.span());
+            let span = self.span_from_spans(expr.span(), right.span());
             expr = Node::binary_op(expr, operator, right, span);
         }
 
@@ -497,7 +497,7 @@ impl Parser {
                 _ => unreachable!(),
             };
             let right = self.term()?;
-            let span = self.span_from_to(expr.span(), right.span());
+            let span = self.span_from_spans(expr.span(), right.span());
             expr = Node::binary_op(expr, operator, right, span);
         }
 
@@ -515,7 +515,7 @@ impl Parser {
                 _ => unreachable!(),
             };
             let right = self.factor()?;
-            let span = self.span_from_to(expr.span(), right.span());
+            let span = self.span_from_spans(expr.span(), right.span());
             expr = Node::binary_op(expr, operator, right, span);
         }
 
@@ -533,7 +533,7 @@ impl Parser {
                 _ => unreachable!(),
             };
             let right = self.unary()?;
-            let span = self.span_from_to(expr.span(), right.span());
+            let span = self.span_from_spans(expr.span(), right.span());
             expr = Node::binary_op(expr, operator, right, span);
         }
 
@@ -550,7 +550,7 @@ impl Parser {
                 _ => unreachable!(),
             };
             let operand = self.unary()?;
-            let span = self.span_from_to(&start_pos, operand.span());
+            let span = self.span_from_token_to_node(&start_pos, &operand);
 
             Ok(Node::UnaryOp {
                 operator,
@@ -581,11 +581,11 @@ impl Parser {
 
                 let end_pos =
                     self.consume(&TokenKind::RightParen, "Expected ')' after arguments")?;
-                let span = self.span_from_to(expr.span(), end_pos);
+                let span = self.span_from_node_to_token(&expr, &end_pos);
                 expr = Node::call(expr, arguments, span);
             } else if self.match_token(&TokenKind::Dot) {
                 let property = self.consume_identifier("Expected property name after '.'")?;
-                let span = self.span_from_to(expr.span(), &self.previous());
+                let span = self.span_from_node_to_token(&expr, self.previous());
                 expr = Node::Member {
                     object: Box::new(expr),
                     property,
@@ -686,7 +686,7 @@ impl Parser {
             &TokenKind::RightBracket,
             "Expected ']' after array elements",
         )?;
-        let span = self.span_from_to(&start_pos, end_pos);
+        let span = self.span_from_to(&start_pos, &end_pos);
 
         Ok(Node::Array { elements, span })
     }
@@ -722,7 +722,7 @@ impl Parser {
         }
 
         let end_pos = self.consume(&TokenKind::RightBrace, "Expected '}' after object fields")?;
-        let span = self.span_from_to(&start_pos, end_pos);
+        let span = self.span_from_to(&start_pos, &end_pos);
 
         Ok(Node::Object { fields, span })
     }
@@ -823,9 +823,9 @@ impl Parser {
 
             let end_pos = self.consume(&TokenKind::RightBrace, "Expected '}' after block")?;
             let span = if let Some(first) = statements.first() {
-                self.span_from_to(first.span(), end_pos)
+                self.span_from_node_to_token(first, &end_pos)
             } else {
-                self.span_from_to(&self.previous(), end_pos)
+                self.span_from_to(self.previous(), &end_pos)
             };
 
             Ok(Node::block(statements, span))
@@ -872,9 +872,9 @@ impl Parser {
         &self.tokens[self.current - 1]
     }
 
-    fn consume(&mut self, token_type: &TokenKind, message: &str) -> Result<&Token> {
+    fn consume(&mut self, token_type: &TokenKind, message: &str) -> Result<Token> {
         if self.check(token_type) {
-            Ok(self.advance())
+            Ok(self.advance().clone())
         } else {
             let token = self.peek();
             Err(TurbulanceError::syntax(token.line, token.column, message))

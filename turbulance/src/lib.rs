@@ -120,8 +120,9 @@ pub fn new_context() -> Context {
     Context::new()
 }
 
-/// Version information
+/// The crate version, as declared in `Cargo.toml`.
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
+/// The crate description, as declared in `Cargo.toml`.
 pub const DESCRIPTION: &str = env!("CARGO_PKG_DESCRIPTION");
 
 #[cfg(test)]

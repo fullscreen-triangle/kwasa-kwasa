@@ -6,11 +6,17 @@ use std::collections::HashMap;
 
 /// Research paper citation
 pub struct Citation {
+    /// Title of the work.
     pub title: String,
+    /// Authors, in the order the work lists them.
     pub authors: Vec<String>,
+    /// Journal or other venue of publication.
     pub journal: String,
+    /// Year of publication.
     pub year: u32,
+    /// Digital Object Identifier, when the work has one.
     pub doi: Option<String>,
+    /// PubMed identifier, so absent for anything not indexed there.
     pub pmid: Option<String>,
 }
 

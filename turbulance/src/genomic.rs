@@ -30,8 +30,11 @@ pub struct Sequence {
 /// Sequence type enumeration
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum SequenceType {
+    /// Deoxyribonucleic acid: the alphabet is A, C, G, T.
     DNA,
+    /// Ribonucleic acid: as DNA, but U in place of T.
     RNA,
+    /// An amino-acid sequence, so a residue alphabet rather than a base one.
     Protein,
 }
 
@@ -55,11 +58,17 @@ pub struct Variant {
 /// Variant type enumeration
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum VariantType {
-    SNP,      // Single nucleotide polymorphism
+    /// Single-nucleotide polymorphism: one base differs from the reference.
+    SNP,
+    /// Bases present in the sample that are absent from the reference.
     Insertion,
+    /// Bases present in the reference that are absent from the sample.
     Deletion,
+    /// A run of bases replaced by a run of the same length.
     Substitution,
+    /// A segment present in reverse-complement orientation.
     Inversion,
+    /// A segment present more times than in the reference.
     Duplication,
 }
 
