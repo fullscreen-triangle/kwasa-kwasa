@@ -110,9 +110,11 @@ otherwise users cannot predict which keywords cost a dispatch.
 **Scoping** — determine address depth and what is in play. Free.
 `given` (for) · `within`
 
-`item`, `given`, `within` already exist as live Turbulance prefixes in
-`route-input.js`. `constant`, `fact`, `rule`, `query_all`, `consolidate`,
-`constraint`, `assert` are new.
+`item`, `given` and `within` already exist as live Turbulance keywords: they
+are in the keyword table in `crates/ndombolo-core/src/lexer.rs` and each has a
+parse rule in `parser.rs`. `constant`, `fact`, `rule`, `query_all`,
+`consolidate`, `constraint` and `assert` are new -- none of the seven lexes
+today, so adding any of them is a change to both files, not just the parser.
 
 The declaration/act/scope axis is **orthogonal** to the typed-intent axis. Typed
 intent says *what kind of act*; this says *whether it is an act at all*.
@@ -287,8 +289,41 @@ This is the formal grounding of the naming the framework already had:
 | Framework name | Pair side |
 |---|---|
 | **Ensemble** (durable node catalogue) | Graph — the resting side |
-| **The LLM / the acts** | Model — the process side |
+| **The acts** (typed intent, §4) | Model — the process side |
 | **Ndombolo's gate** | the deposit map plus the closure test |
+
+### 7.1a The observing model is not the process side
+
+An earlier draft of this table put "the LLM" on the process side. That is wrong
+for the model ndombolo actually ships, and the distinction is worth stating
+because the two roles have opposite relationships to the record.
+
+What is implemented today is an **observing** model: the editor's ask panel.
+It reads the record and answers in prose. It deposits nothing — `editor.rs`
+says so at the call site ("this replay deposits nothing") and the reason is
+that reading the record is a *probe*, not a determination. Probes may be
+rate-limited; determinations may not be cached, which is the
+"determination by search" invariant in §7.3.
+A no-backflow wall enforces the rest: `Block::is_model_writable` admits prose
+and nothing else, so the model can never write a cell or an output block. It
+may describe what the runtime determined; it may not report it.
+
+The process side of the table is the **acts** — the typed-intent verbs of §4.
+Those are what consume and deposit, and none of them is built yet.
+
+So the two are distinguished by what they do to the record, not by whether a
+language model is involved:
+
+| | reads the record | deposits | writes cells |
+|---|---|---|---|
+| **observing model** (shipped) | yes | no | no, prose only |
+| **acts** (§4, unbuilt) | yes | yes, every act | yes, that is the point |
+
+The invariant "deposit on every propagation" in §7.3 governs the second row.
+It is not violated by the first, because a probe is not a propagation. When the
+acts are built they will need their own deposit path; the ask panel is not a
+precedent for it, and reusing its code would silently make a determination
+cacheable.
 
 ### 7.2 The consequence that matters most
 
@@ -305,9 +340,14 @@ propagation happens. What persists of it is exactly what it deposited.
 Note also what this forbids. A **stateless** predictor — perfectly repeatable
 and leaving no trace — occupies a formally forbidden position: it would require
 both a zero floor and a non-advancing record, each independently impossible. An
-LLM call in ndombolo is therefore *never* modelled as a pure function. It
-advances the record. That is not an implementation detail to be optimised away;
-it is what makes the pair admissible at all.
+LLM call *as an act* is therefore never modelled as a pure function. It advances
+the record. That is not an implementation detail to be optimised away; it is
+what makes the pair admissible at all.
+
+This says nothing about the observing model of §7.1a, which is not an act. It
+is repeatable and leaves no trace precisely because it determines nothing — the
+forbidden position is occupied only by something claiming to propagate while
+depositing nothing.
 
 ### 7.3 Six invariants ndombolo must satisfy
 
@@ -318,7 +358,7 @@ Each is checkable, and none follows from the others.
 | **Conserved invariant** | something is conserved under relabelling | τ-identity; the provenance fingerprint that excludes values (§2) |
 | **Never-resetting record** | the record only advances; "undo" is a *compensating commit that increments* | §9.2 — session reset must be a new commit, never a rewind |
 | **Determination by search** | no cache of prior determinations; determine, do not look up | forbids memoising `query_all`; forbids a "we asked this already" shortcut |
-| **Deposit on every propagation** | every act commits residue | every LLM act writes back, including ones whose output is discarded |
+| **Deposit on every propagation** | every act commits residue | every act writes back, including ones whose output is discarded; a probe such as the ask panel is not an act (§7.1a) |
 | **Accretive update** | no teardown-then-rebuild; a resting cut exists at every intermediate stage | §9.2's accretion recommendation, now a hard requirement |
 | **No verdict** | no success/failure vocabulary | already the runtime's no-exit-code theorem (§2) and the closed verb sets (§4) |
 

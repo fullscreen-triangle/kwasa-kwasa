@@ -81,8 +81,11 @@ EDGE: List[Tuple[str, str]] = [
     ("trailing-indent", 'funxn f(x):\n    item a = 1\n'),
     ("empty", ''),
 
-    # `col` is a byte offset in the Python and the record carries it, so a
-    # non-ASCII line is where a char-indexed port would silently disagree.
+    # `col` counts CHARACTERS, not bytes: the oracle puts the newline of
+    # `item s = "naive ug"` (with the non-ASCII forms) at col 19, which is its
+    # length in chars -- 21 in UTF-8 bytes. Rust indexes `&str` by byte, so a
+    # port that reaches for `.len()` or a byte offset disagrees here and only
+    # here. That is what this case is for.
     ("unicode-str", 'item s = "naïve µg"\nitem t = 1\n'),
 ]
 
